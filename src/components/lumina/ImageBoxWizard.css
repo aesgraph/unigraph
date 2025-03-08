@@ -1,0 +1,292 @@
+.image-box-wizard {
+  width: 550px;
+  max-width: 95%;
+  max-height: 90vh;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  padding: 24px;
+  overflow-y: auto;
+  color: #333;
+  animation: slideIn 0.3s ease-out;
+}
+
+.wizard-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.image-box-wizard-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 16px;
+}
+
+.image-preview {
+  position: relative;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f8f8f8;
+  text-align: center;
+  padding: 16px;
+  border: 1px solid #eaeaea;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.selection-overlay {
+  pointer-events: none;
+  border: 2px dashed #ff3b30;
+  border-radius: 4px;
+  z-index: 5;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.image-box-wizard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.image-box-wizard-form label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  gap: 12px;
+}
+
+.image-box-wizard-form input,
+.image-box-wizard-form textarea {
+  flex: 1;
+  margin-top: 0;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background-color: #fafafa;
+}
+
+.image-box-wizard-form input:focus,
+.image-box-wizard-form textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+  background-color: #fff;
+}
+
+.image-box-wizard-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* For the description field which should remain in column layout */
+.image-box-wizard-form label.description-field {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.image-box-wizard-form label.description-field textarea {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.annotations-section {
+  margin-top: 8px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eaeaea;
+}
+
+.annotations-section h3 {
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.no-annotations {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.annotation-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.annotation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.annotation-item span {
+  word-break: break-word;
+  margin-right: 8px;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: #ff3b30;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.remove-button:hover {
+  background-color: rgba(255, 59, 48, 0.1);
+}
+
+.add-annotation {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.add-annotation input {
+  flex-grow: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.add-annotation button {
+  background-color: #34c759;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-annotation button:hover {
+  background-color: #30b955;
+}
+
+.add-annotation button:disabled {
+  background-color: #b8e6c6;
+  cursor: not-allowed;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #eaeaea;
+}
+
+.submit-button,
+.cancel-button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.submit-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background-color: #e1e1e1;
+}
+
+@media (max-width: 640px) {
+  .image-box-wizard {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group button {
+    width: 100%;
+  }
+
+  .image-box-wizard-title {
+    font-size: 20px;
+  }
+}

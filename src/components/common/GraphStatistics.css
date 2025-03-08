@@ -1,0 +1,28 @@
+.graph-statistics {
+  font-family: Arial, sans-serif;
+  margin: 1.25rem;
+  z-index: 1000;
+  bottom: 50px;
+  right: 50px;
+}
+
+.graph-statistics h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.625rem;
+}
+
+.graph-statistics table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.graph-statistics th,
+.graph-statistics td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.graph-statistics th {
+  background-color: #f2f2f2;
+}

@@ -1,0 +1,17 @@
+.scenegraph-title {
+  /* position: absolute; */
+  /* top: 1rem; */
+  /* right: 1rem; */
+  /* background: rgba(0, 0, 0, 0.7); */
+  color: white;
+  padding: 1rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  z-index: 4000;
+}
+
+.scenegraph-description {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-top: 0.5rem;
+}

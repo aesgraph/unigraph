@@ -1,0 +1,54 @@
+.contextMenu {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 0.5rem 0;
+  z-index: 10000;
+  width: 10rem;
+}
+
+.contextMenu.dark {
+  background: #424242;
+  border-color: #666;
+  color: white;
+}
+
+.contextMenuItem {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative; /* Ensure proper positioning for submenu */
+  color: inherit;
+}
+
+.contextMenuItem:hover {
+  background: #f0f0f0;
+  color: black;
+}
+
+/* Fix the selector specificity by targeting the parent dark class */
+.contextMenu.dark .contextMenuItem:hover {
+  background: #555;
+  color: white;
+}
+
+.submenuIndicator {
+  margin-left: 0.5rem;
+  color: inherit;
+}
+
+.contextMenu.dark .submenuIndicator {
+  color: inherit;
+}
+
+.contextMenuItem:hover .submenuIndicator {
+  color: inherit;
+}
+
+.contextMenuItem.dark:hover .submenuIndicator {
+  color: inherit;
+}

@@ -1,0 +1,121 @@
+.searchable-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.selectdropdown-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  width: inherit;
+  padding-right: 5rem; /* Make room for color indicator and icons */
+}
+
+.searchable-dropdown.dark .selectdropdown-search-input {
+  color: white;
+}
+
+.searchable-dropdown.dark .selectdropdown-search-input::placeholder {
+  color: #999;
+}
+
+.color-indicator {
+  position: absolute;
+  right: 4rem; /* Position before the icons */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 1.5rem;
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.dropdown-icons {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  pointer-events: all;
+  z-index: 3;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+  color: #888;
+  transition: transform 0.2s;
+}
+
+.searchable-dropdown.dark .icon {
+  color: #aaa;
+}
+
+.clear-icon {
+  margin-right: 0.5rem;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-list {
+  position: absolute; /* Change to absolute to handle positioning correctly */
+  z-index: 6000; /* Ensure this is higher than the parent */
+  width: 100%;
+  margin-top: 0.25rem;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
+.searchable-dropdown.dark .dropdown-list {
+  background-color: #333;
+  border-color: #444;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-item {
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #333;
+  z-index: 10000;
+}
+
+.searchable-dropdown.dark .dropdown-item {
+  color: #fff;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.searchable-dropdown.dark .dropdown-item:hover {
+  background-color: #444;
+}
+
+.no-options {
+  padding: 0.5rem;
+  color: #888;
+}
+
+.searchable-dropdown.dark .no-options {
+  color: #aaa;
+}

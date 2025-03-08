@@ -1,0 +1,71 @@
+.import-svg-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px 30px; /* Add padding to the right side */
+  border-radius: 12px; /* Increase border radius for a more modern look */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow for a more modern look */
+  z-index: 10000; /* Ensure it is on top of other elements */
+}
+
+.dark-mode .import-svg-dialog {
+  background-color: #333;
+  color: white;
+}
+
+.import-svg-dialog h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem; /* Increase font size for a more modern look */
+  font-weight: 600; /* Increase font weight for a more modern look */
+}
+
+.import-svg-dialog input[type="text"] {
+  width: 100%;
+  padding: 10px; /* Increase padding for a more modern look */
+  margin-bottom: 15px; /* Increase margin for a more modern look */
+  border: 1px solid #ccc;
+  border-radius: 6px; /* Increase border radius for a more modern look */
+  font-size: 1rem; /* Increase font size for a more modern look */
+}
+
+.dark-mode .import-svg-dialog input[type="text"] {
+  background-color: #555;
+  color: white;
+  border: 1px solid #777;
+}
+
+.import-svg-dialog button {
+  padding: 12px 24px; /* Increase padding for a more modern look */
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px; /* Increase border radius for a more modern look */
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem; /* Increase font size for a more modern look */
+  transition: background-color 0.3s; /* Add transition for a more modern look */
+}
+
+.import-svg-dialog button:disabled {
+  background-color: #cccccc;
+}
+
+.import-svg-dialog .error {
+  color: red;
+  margin-top: 10px;
+  font-size: 0.9rem; /* Adjust font size for a more modern look */
+}
+
+.dark-mode .import-svg-dialog button {
+  background-color: #0056b3;
+}
+
+.dark-mode .import-svg-dialog button:disabled {
+  background-color: #444;
+}
+
+.dark-mode .import-svg-dialog .error {
+  color: #ff6666;
+}

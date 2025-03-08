@@ -1,0 +1,135 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.searchInput {
+  padding: 12px;
+  margin-bottom: 12px;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 200px;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.3);
+}
+
+.tableContainer {
+  flex: 1 0 auto;
+  overflow: auto;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  min-height: 400px !important;
+  height: 400px !important;
+  position: relative;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.tableCell {
+  height: 48px !important;
+  max-height: 48px !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 8px 16px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  border-bottom: 1px solid;
+}
+
+.headerCell {
+  composes: tableCell;
+  font-weight: 600 !important;
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: inherit;
+  box-sizing: border-box;
+}
+
+.headerCell > div {
+  gap: 8px;
+  width: 100%;
+}
+
+.headerCell input {
+  margin: 0;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  margin: 2px;
+  max-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.codeBlock {
+  margin: 0;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  max-height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 4px 8px;
+  border-radius: 4px;
+  max-width: 300px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.highlight {
+  background-color: rgba(255, 189, 0, 0.3);
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.darkHighlight {
+  background-color: rgba(255, 189, 0, 0.2);
+}
+
+.filterContainer {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+}

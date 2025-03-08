@@ -1,0 +1,16 @@
+body {
+  background-color: #f0f0f0;
+  color: #000;
+  touch-action: none;
+}
+
+a {
+  color: #08e;
+}
+
+.selectBox {
+  border: 2px solid #0974de;
+  background-color: rgba(75, 160, 255, 0.3);
+  position: fixed;
+  pointer-events: none;
+}

@@ -1,0 +1,13 @@
+.entity-data-display-card {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-width: 14rem;
+  pointer-events: none;
+  font-family: monospace;
+  font-size: 1em;
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "lib": ["ES2021", "DOM"],
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "inlineSourceMap": true
+  },
+  "include": ["src/**/*", "src/declaration.d.ts"]
+}

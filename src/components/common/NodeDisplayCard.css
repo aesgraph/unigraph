@@ -1,0 +1,236 @@
+.node-display-card {
+  background: rgba(245, 245, 245, 0.98);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  padding: 0.8rem;
+  /* min-width: 50rem; */
+  max-width: 40rem;
+  cursor: move; /* Add cursor: move to indicate draggability */
+  user-select: none; /* Prevent text selection while dragging */
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: -1px;
+  height: 100%; /* Make it fill the Rnd container */
+  overflow-y: auto; /* Add scrolling for content */
+}
+
+.node-header {
+  border-bottom: 3px solid #ddd;
+  padding-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensure space between elements */
+}
+
+.node-header h3 {
+  padding: 0.6rem;
+  margin: 0;
+  font-size: 1.4rem;
+  color: #1a1a1a;
+}
+
+.node-type {
+  font-size: 1.125rem;
+  color: white !important; /* Force white text */
+  font-weight: 500;
+  padding: 0.2rem 0.4rem; /* Increased padding */
+  border-radius: 0.375rem; /* More rectangular */
+  display: inline-block;
+}
+
+.node-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #444;
+  margin-bottom: 1.25rem;
+}
+
+.node-label {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #2a2a2a;
+  /* margin-bottom: 0.625rem; */
+}
+
+.edge-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.edge-panel {
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+  font-size: 1.25rem;
+  color: rgb(209, 209, 209);
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+  -webkit-user-select: none; /* Safari support */
+}
+
+.panel-header:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.edge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edge-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 0.4rem 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #eee;
+  font-size: 1em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.edge-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.edge-direction {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  color: white; /* Changed from #666 to white */
+}
+
+.edge-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edge-main-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edge-node {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.edge-type {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  padding: 4px 1rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  width: fit-content;
+  position: relative;
+}
+
+.edge-type,
+.edge-node-type {
+  position: relative;
+}
+
+.edge-type::before,
+.edge-node-type::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+}
+
+.edge-node-type {
+  font-size: 1rem;
+  padding: 2px 0.5rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  font-weight: 500;
+  position: relative;
+}
+
+.close-button {
+  margin-left: auto; /* Push the close button to the right */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: #666;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 1001;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.dark-mode .close-button {
+  color: #999;
+}
+
+.dark-mode .close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dark-mode .node-display-card {
+  background: rgba(40, 40, 40, 0.98);
+  color: #fff;
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark-mode .node-header {
+  border-bottom-color: #444;
+}
+
+.dark-mode .node-header h3 {
+  color: #fff;
+}
+
+.dark-mode .node-type,
+.dark-mode .edge-type {
+  color: #aaa;
+}
+
+.dark-mode .edge-panel {
+  background: rgba(40, 40, 40, 0.8);
+}
+
+.dark-mode .edge-card {
+  background: rgba(50, 50, 50, 0.8);
+  border-color: #444;
+}
+
+.dark-mode .edge-card:hover {
+  background: rgba(60, 60, 60, 0.95);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .edge-node {
+  color: #fff;
+}
+
+.dark-mode .edge-node {
+  color: #fff;
+}
