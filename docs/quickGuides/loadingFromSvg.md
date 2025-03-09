@@ -1,7 +1,7 @@
 ---
-title: "Loading from SVG"
-nav_order: 1
-parent: "Quick Quides"
+title: "Load SVGs"
+nav_order: 3
+parent: "Quick Guides"
 ---
 
 ### Load SVG files directly into Unigraph
