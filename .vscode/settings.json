@@ -7,5 +7,6 @@
     "source.organizeImports": "explicit",
     "source.removeUnusedImports": "explicit"
   },
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "prettier.configPath": ".prettierrc"
 }

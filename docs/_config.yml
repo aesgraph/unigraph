@@ -1,0 +1,54 @@
+# Site Settings
+title: Unigraph
+description: A structured documentation site with sidebar navigation.
+theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
+url: https://just-the-docs.github.io # For some reason I have to include this else the next repository definition is said to be invalid
+
+repository: "https://github.com/aesgraph/unigraph"
+
+# Enable search
+search_enabled: true
+
+# Navigation Sidebar Order
+nav_order: 1
+
+# Sidebar Navigation Configuration
+nav:
+  - title: Home
+    url: /
+    nav_order: 1
+  - title: Introduction
+    url: /introduction
+    nav_order: 2
+  - title: Core Concepts
+    url: /coreConcepts
+    nav_order: 3
+  - title: Usage
+    url: /usage
+    nav_order: 4
+  - title: API Reference
+    url: /api
+    nav_order: 5
+  - title: FAQ
+    url: /faq
+    nav_order: 6
+
+# Footer customization
+footer_content: "Copyright © 2025 Andrew Han. Powered by GitHub Pages."
+
+# Just the Docs Settings
+just_the_docs:
+  collections:
+    docs:
+      name: Documentation
+      nav_order: 1
+  search:
+    enabled: true
+  aux_links:
+    "GitHub Repository":
+      - "https://github.com/aesgraph/unigraph"
+
+# GitHub Pages Configuration
+github:
+  is_project_page: true
