@@ -2,3 +2,6 @@ node_modules/
 .env
 dist/
 .DS_Store
+docs/_site/
+docs/.jeckyll-cache
+Gemfile.lock
