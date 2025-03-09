@@ -9,5 +9,6 @@ if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   const urlParams = new URLSearchParams(window.location.search);
   const graphName = urlParams.get("graph") ?? undefined;
-  root.render(<App defaultGraph={graphName} />);
+  const svgUrl = urlParams.get("svgUrl") ?? undefined;
+  root.render(<App defaultGraph={graphName} svgUrl={svgUrl} />);
 }
