@@ -194,7 +194,7 @@ export type RenderingView =
   | "Gallery" // Add new view type
   | "Simulation";
 
-const AppContent: React.FC = () => {
+const AppContent: React.FC<{ defaultGraph?: string }> = ({ defaultGraph }) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -324,8 +324,13 @@ const AppContent: React.FC = () => {
   );
 
   useEffect(() => {
-    handleSetSceneGraph(appConfig.activeSceneGraph);
-  }, []);
+    if (defaultGraph) {
+      handleSetSceneGraph(defaultGraph);
+    } else {
+      handleSetSceneGraph(appConfig.activeSceneGraph);
+    }
+    
+  }, [defaultGraph]);
 
   useEffect(() => {
     if (
@@ -658,6 +663,7 @@ const AppContent: React.FC = () => {
       }
       if (!graph) {
         console.error(`Graph ${key} not found`);
+        console.log(`Available graphs are : ${Object.keys(getAllGraphs())}`);
         return;
       }
       handleLoadSceneGraph(graph);
@@ -1991,10 +1997,10 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
+const App: React.FC<{ defaultGraph?: string }> = ({ defaultGraph }) => {
   return (
     <MousePositionProvider>
-      <AppContent />
+      <AppContent defaultGraph={defaultGraph} />
     </MousePositionProvider>
   );
 };
