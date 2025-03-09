@@ -667,6 +667,11 @@ const AppContent: React.FC<{ defaultGraph?: string }> = ({ defaultGraph }) => {
         return;
       }
       handleLoadSceneGraph(graph);
+
+      // Update the URL query parameter
+      const url = new URL(window.location.href);
+      url.searchParams.set("graph", key);
+      window.history.pushState({}, "", url.toString());
     },
     [handleLoadSceneGraph]
   );
