@@ -7,5 +7,8 @@ import "./index.css";
 const rootElement = document.getElementById("root");
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
-  root.render(<App />);
+  const urlParams = new URLSearchParams(window.location.search);
+  const graphName = urlParams.get("graph") ?? undefined;
+  const svgUrl = urlParams.get("svgUrl") ?? undefined;
+  root.render(<App defaultGraph={graphName} svgUrl={svgUrl} />);
 }

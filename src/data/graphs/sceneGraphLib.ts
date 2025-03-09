@@ -28,8 +28,6 @@ export interface SceneGraphCategory {
   graphs: { [key: string]: SceneGraph };
 }
 
-console.log("URLSceneGraph", urlSceneGraph);
-
 export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
   Base: {
     name: "Base",
@@ -101,3 +99,14 @@ export const getAllGraphs = (): { [key: string]: SceneGraph } => {
   });
   return allGraphs;
 };
+
+export const getSceneGraph = (name: string): SceneGraph => {
+  for (const [k, graphs] of Object.entries(sceneGraphs)) {
+    for (const [key, graph] of Object.entries(graphs.graphs)) {
+      if (key === name) {
+        return graph;
+      }
+    }
+  }
+  throw new Error(`SceneGraph not found: ${name}`);
+}

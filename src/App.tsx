@@ -121,6 +121,7 @@ import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
 import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
+import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import {
   MousePositionProvider,
   useMousePosition,
@@ -194,7 +195,7 @@ export type RenderingView =
   | "Gallery" // Add new view type
   | "Simulation";
 
-const AppContent: React.FC = () => {
+const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defaultGraph, svgUrl }) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -324,8 +325,20 @@ const AppContent: React.FC = () => {
   );
 
   useEffect(() => {
-    handleSetSceneGraph(appConfig.activeSceneGraph);
-  }, []);
+    if (svgUrl) {
+      fetchSvgSceneGraph(svgUrl).then(({ sceneGraph, error }) => {
+        if (error) {
+          console.error("Failed to load SVG from URL:", error);
+        } else {
+          handleLoadSceneGraph(sceneGraph);
+        }
+      });
+    } else if (defaultGraph) {
+      handleSetSceneGraph(defaultGraph);
+    } else {
+      handleSetSceneGraph(appConfig.activeSceneGraph);
+    }
+  }, [defaultGraph, svgUrl]);
 
   useEffect(() => {
     if (
@@ -658,9 +671,15 @@ const AppContent: React.FC = () => {
       }
       if (!graph) {
         console.error(`Graph ${key} not found`);
+        console.log(`Available graphs are : ${Object.keys(getAllGraphs())}`);
         return;
       }
       handleLoadSceneGraph(graph);
+
+      // Update the URL query parameter
+      const url = new URL(window.location.href);
+      url.searchParams.set("graph", key);
+      window.history.pushState({}, "", url.toString());
     },
     [handleLoadSceneGraph]
   );
@@ -1039,6 +1058,13 @@ const AppContent: React.FC = () => {
   const handleLoadSceneGraphFromUrl = useCallback(
     (sceneGraph: SceneGraph) => {
       handleLoadSceneGraph(sceneGraph);
+      
+      // Update the URL query parameter
+      const url = new URL(window.location.href);
+      url.searchParams.delete("graph");
+      url.searchParams.set("svgUrl", sceneGraph.getMetadata().source ?? "");
+      window.history.pushState({}, "", url.toString());
+      
       setShowImportSvgFromUrlDialog(false);
     },
     [handleLoadSceneGraph]
@@ -1991,10 +2017,10 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
+const App: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defaultGraph, svgUrl }) => {
   return (
     <MousePositionProvider>
-      <AppContent />
+      <AppContent defaultGraph={defaultGraph} svgUrl={svgUrl} />
     </MousePositionProvider>
   );
 };
