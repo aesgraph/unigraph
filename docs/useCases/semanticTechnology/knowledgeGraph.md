@@ -8,3 +8,6 @@ parent: "Semantic Technology"
 
 ### Knowledge Graphs
 
+**dbpedia**
+
+[<https://dbpedia.org/sparql>](<https://dbpedia.org/sparql>)

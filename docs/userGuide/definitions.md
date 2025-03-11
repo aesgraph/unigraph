@@ -7,3 +7,8 @@ parent: "User Guide"
 ## User Guide
 
 This section describes all the features currently available in [Unigraph.app](<https://unigraph.vercel.app>).
+
+
+#### Entity
+
+#### SceneGraph

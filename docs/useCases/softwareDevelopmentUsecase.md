@@ -6,3 +6,4 @@ parent: "Use Cases"
 
 ## Software Development and Debugging
 
+Graph consistency checking via the ECS system

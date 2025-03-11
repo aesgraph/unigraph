@@ -4,7 +4,7 @@ Unigraph is a human-centric graph model engine, application library, and informa
 Unigraph is a general solution for web-based client-side interaction with Graphs.
 
 Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph
-model, allowing for highly flexible and interactive representations of structured data.
+model, allowing for highly flexible and interactive representations of complex structured data.
 
 **Links**
 Unigraph: https://unigraph.vercel.app/

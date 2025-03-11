@@ -20,5 +20,13 @@ Unigraph aims to combine the best of Obsidian, VSCode, and Copilot into a single
 
 Unigraph sees itself as becoming an indespensible tool for data scientists, educators, and students, and many others. Unigraph aims to become an "IDE for analytics" by unifying graph-based technologies through a standard language and framework.
 
-Unigraph offers a new paradigm for how humans represent and interpret information, to an unprecedented degree of accessibility.
+Unigraph offers a new paradigm for how humans represent and interpret information, with an unprecedented degree of accessibility.
 
+
+Aesgraph can be separated into layers:
+- Structural Layer
+- Semantic Layer
+- Permissioning Layer
+- Representation and Interaction Layer
+- Computational Layer
+- Application Layer
