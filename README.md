@@ -1,30 +1,30 @@
-**Unigraph**
+## Unigraph
 
 Unigraph is a human-centric graph model engine, application library, and information exchange platform.
-Unigraph is a general solution for web-based client-side interaction with Graphs.
+
+Unigraph is a general solution for web-based client-side interaction with Graphs. It aims to serve as a framework through which various independently developed graph-based applications can interoperate.
 
 Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph
 model, allowing for highly flexible and interactive representations of structured data.
 
-**Links**
-Unigraph: https://unigraph.vercel.app/
+### Links
+**Live Demo**: https://unigraph.vercel.app/ <br>
 Notes and documentation: https://aesgraph.github.io/unigraph/
 
-**Getting started**
+### Getting started
 
-<u>Running the app locally</u>
+<ins>Running the app locally</ins><br>
+1. `git clone https://github.com/aesgraph/unigraph.git`
+2. `cd unigraph`
+3. `npm install`<br>
+4. `npm start`<br>
+5. Open http://localhost:3000/
 
-`npm install`
-`npm start`
-Open http://localhost:3000/
-
-<u>Serving the documentation locally</u>
-
-1. Make sure ruby and the `jekyll` `bundler` packages are installed
-   `brew install ruby`
-   `gem install jekyll bundler`
-2. Go into `docs` and start the jekyll server
-   `cd docs`
-   `bundle install`
-   `bundle exec jekyll serve --livereload`
-3. Go to http://localhost:4000/
+<ins>Documentation: Serving Locally</ins><br>
+_For developing and previewing documentation locally before pushing_<br>
+1. `brew install ruby`
+2. `gem install jekyll bundler`
+3. `cd docs`
+4. `bundle install`
+5. `bundle exec jekyll serve --livereload`
+6. Go to http://localhost:4000/
