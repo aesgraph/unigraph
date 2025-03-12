@@ -1,3 +1,4 @@
+import { AppConfig } from "../AppConfig";
 import { GET_DEFAULT_RENDERING_CONFIG } from "../controllers/RenderingManager";
 import { IForceGraphRenderConfig } from "../core/force-graph/createForceGraph";
 import { PresetLayoutType } from "../core/layouts/LayoutEngine";
@@ -31,6 +32,7 @@ export async function loadSvgFromUrl(
 
 export interface ILoadSvgToSceneGraphOptions {
   forceGraphDisplayConfig?: IForceGraphRenderConfig;
+  appConfig?: AppConfig;
   metadata?: ISceneGraphMetadata;
 }
 
@@ -146,6 +148,7 @@ export const loadSvgToSceneGraph = (
         showOptionsPanel: false,
       },
       activeLayout: PresetLayoutType.NodePositions,
+      ...options?.appConfig,
     },
   });
 };
