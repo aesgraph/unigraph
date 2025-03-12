@@ -1,14 +1,21 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-import "./index.css";
+import './index.css';
 
-const rootElement = document.getElementById("root");
+const rootElement = document.getElementById('root');
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   const urlParams = new URLSearchParams(window.location.search);
-  const graphName = urlParams.get("graph") ?? undefined;
-  const svgUrl = urlParams.get("svgUrl") ?? undefined;
-  root.render(<App defaultGraph={graphName} svgUrl={svgUrl} />);
+  const graphName = urlParams.get('graph') ?? undefined;
+  const svgUrl = urlParams.get('svgUrl') ?? undefined;
+  const activeView = urlParams.get('activeView') ?? undefined;
+  root.render(
+    <App
+      defaultGraph={graphName}
+      svgUrl={svgUrl}
+      defaultActiveView={activeView}
+    />
+  );
 }

@@ -183,10 +183,11 @@ export type RenderingView =
   | 'Gallery' // Add new view type
   | 'Simulation';
 
-const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
-  defaultGraph,
-  svgUrl,
-}) => {
+const AppContent: React.FC<{
+  defaultGraph?: string;
+  svgUrl?: string;
+  defaultActiveView?: string;
+}> = ({ defaultGraph, svgUrl, defaultActiveView }) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -337,7 +338,11 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
     } else {
       handleSetSceneGraph(appConfig.activeSceneGraph);
     }
-  }, [defaultGraph, svgUrl]);
+
+    if (defaultActiveView) {
+      handleSetActiveView(defaultActiveView as RenderingView);
+    }
+  }, [defaultGraph, svgUrl, defaultActiveView]);
 
   useEffect(() => {
     if (
@@ -682,6 +687,7 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
       // Update the URL query parameter
       const url = new URL(window.location.href);
       url.searchParams.set('graph', key);
+      url.searchParams.delete('svgUrl');
       window.history.pushState({}, '', url.toString());
     },
     [handleLoadSceneGraph]
@@ -894,6 +900,7 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
 
   const handleSetActiveView = useCallback(
     (key: string) => {
+      console.log('setting active view', key);
       setAppConfig((prevConfig) => ({
         ...prevConfig,
         windows: {
@@ -905,6 +912,9 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
         activeView: key as any,
       }));
       handleFitToView(key);
+      const url = new URL(window.location.href);
+      url.searchParams.set('activeView', key);
+      window.history.pushState({}, '', url.toString());
     },
     [handleFitToView]
   );
@@ -1410,7 +1420,6 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
   ]);
 
   useEffect(() => {
-    console.log('activated', appConfig.activeView);
     if (
       layoutResult?.layoutType !== appConfig.activeLayout &&
       (appConfig.activeView === 'Graphviz' ||
@@ -2023,13 +2032,18 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
   );
 };
 
-const App: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({
-  defaultGraph,
-  svgUrl,
-}) => {
+const App: React.FC<{
+  defaultGraph?: string;
+  svgUrl?: string;
+  defaultActiveView?: string;
+}> = ({ defaultGraph, svgUrl, defaultActiveView }) => {
   return (
     <MousePositionProvider>
-      <AppContent defaultGraph={defaultGraph} svgUrl={svgUrl} />
+      <AppContent
+        defaultGraph={defaultGraph}
+        svgUrl={svgUrl}
+        defaultActiveView={defaultActiveView}
+      />
     </MousePositionProvider>
   );
 };
