@@ -18,7 +18,6 @@ import {
   DEFAULT_APP_CONFIG,
   ForceGraph3dLayoutMode,
 } from "./AppConfig";
-import { solvay_annotations } from "./assets/imageBoxes/solvay_annotations";
 import NodeEditorWizard from "./components/analysis/NodeEditorWizard";
 import PathAnalysisWizard, {
   IPathArgs,
@@ -29,14 +28,10 @@ import EntityJsonEditorDialog from "./components/common/EntityJsonEditorDialog";
 import EntityTabDialog from "./components/common/EntityTabDialog";
 import GraphLayoutToolbar from "./components/common/GraphLayoutToolbar";
 import { GraphEntityType } from "./components/common/GraphSearch";
-import JsonEditor from "./components/common/JsonConfigEditor";
-import ConfigPanel from "./components/common/JsonForms";
 import LayoutManager from "./components/common/LayoutManager";
 import LayoutModeRadio from "./components/common/LayoutModeRadio";
 import Legend from "./components/common/Legend";
 import NodeDisplayCard from "./components/common/NodeDisplayCard";
-import UnifiedForceGraphs from "./components/exampleCode/UnifiedForceGraph";
-import WebGLWithHTML from "./components/exampleCode/webglWithHtml";
 import FilterManager from "./components/filters/FilterManager";
 import {
   FilterPreset,
@@ -49,24 +44,14 @@ import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
 import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
 import ImportSvgFromUrlDialog from "./components/ImportSvgFromUrlDialog";
 import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
-import ImageSection from "./components/lumina/ImageBoxCanvas";
 import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
 import Lumina from "./components/lumina/Lumina";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import SceneGraphDetailView from "./components/SceneGraphDetailView";
 import SceneGraphTitle from "./components/SceneGraphTitle";
-import AtomicModel from "./components/simulations/AtomicModel";
-import GravitySimulation from "./components/simulations/GravitySimulation";
-import GravitySimulation2 from "./components/simulations/GravitySimulation2";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
-import ParticleStickFigure from "./components/simulations/ParticleStickFigure";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
-import SampleParticleEffect from "./components/simulations/SampleParticleEffect";
-import SimulationLab from "./components/simulations/SimulationLab";
-import SolarSystem from "./components/simulations/solarSystemSimulation";
 import UniAppToolbar from "./components/UniAppToolbar";
-import ImageSegmenter from "./components/visualization/ImageSegmenter";
-import TimelineTestbed from "./components/visualization/TimelineTestbed";
 import { AppContextProvider } from "./context/AppContext";
 import {
   DisplayConfig,
@@ -88,7 +73,6 @@ import { syncMissingNodesInForceGraph } from "./core/force-graph/forceGraphHelpe
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
 import {
   enableZoomAndPanOnSvg,
-  loadRenderingConfigFromFile,
 } from "./core/graphviz/appHelpers";
 import { GraphvizLayoutType } from "./core/layouts/GraphvizLayoutEngine";
 import {
@@ -104,11 +88,8 @@ import { EdgeId } from "./core/model/Edge";
 import { Entity } from "./core/model/entity/abstractEntity";
 import { getGraphStatistics, GraphStastics } from "./core/model/GraphBuilder";
 import { NodeDataArgs, NodeId } from "./core/model/Node";
-import {
-  GetCurrentDisplayConfigOf,
-  SetCurrentDisplayConfigOf,
-} from "./core/model/SceneGraph";
 import { SceneGraph } from "./core/model/SceneGraphv2";
+import { GetCurrentDisplayConfigOf, loadRenderingConfigFromFile, SetCurrentDisplayConfigOf } from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
 import { deserializeDotToSceneGraph } from "./core/serializers/fromDot";
 import { deserializeGraphmlToSceneGraph } from "./core/serializers/fromGraphml";
@@ -156,27 +137,26 @@ const simulations: ObjectOf<React.JSX.Element> = {
   demo3: <ImageGalleryV3 sceneGraph={demo_SceneGraph_StackedImageGallery} />,
   "ImageBox Creator": <ImageBoxCreator />,
   ImageGalleryV2: <ImageGalleryV2 />,
-  ParticleStickFigure: <ParticleStickFigure />,
-  SampleParticleEffect: <SampleParticleEffect />,
-  SolarSystem: <SolarSystem />,
-  AtomicModel: <AtomicModel />,
-  GravitySimulation1: <GravitySimulation />,
-  GravitySimulation2: <GravitySimulation2 />,
-  GravitySimulation3: <GravitySimulation3 />,
-  WebGlWithHtml: <WebGLWithHTML />,
-  SimulationLab: <SimulationLab />,
+  // ParticleStickFigure: <ParticleStickFigure />,
+  // SampleParticleEffect: <SampleParticleEffect />,
+  // SolarSystem: <SolarSystem />,
+  // AtomicModel: <AtomicModel />,
+  // GravitySimulation1: <GravitySimulation />,
+  // GravitySimulation2: <GravitySimulation2 />,
+  AccretionDisk: <GravitySimulation3 />,
+  // WebGlWithHtml: <WebGLWithHTML />,
+  // SimulationLab: <SimulationLab />,
   // StickFigure3d: <StickFigure3D />,
   ImageGallery: <ImageGallery />,
   // ImageGallery3: <ImageGallery3 />, // for navigating about procreate drawings
   // ImageGallery4: <ImageGallery4 />, // basic shape navigation test
   Lumina: <Lumina />,
-  ImageSection: <ImageSection imageBoxData={imageBox} />,
-  Unified: <UnifiedForceGraphs />,
-  JsonEditor: <JsonEditor />,
-  JsonForms: <ConfigPanel />,
+  // Unified: <UnifiedForceGraphs />,
+  // JsonEditor: <JsonEditor />,
+  // JsonForms: <ConfigPanel />,
   mp3: <AudioAnnotator />,
-  imageSegmenter: <ImageSegmenter />,
-  timelineTestbed: <TimelineTestbed annotations={solvay_annotations} />,
+  // imageSegmenter: <ImageSegmenter />,
+  // timelineTestbed: <TimelineTestbed annotations={solvay_annotations} />,
   // canvasSelection: <CanvasSelection />,
 };
 

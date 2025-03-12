@@ -1,6 +1,6 @@
-import { Edge, EdgeId } from "../Edge";
-import { Node, NodeId } from "../Node";
-import { EntitiesContainer } from "./entitiesContainer";
+import { Edge, EdgeId } from "../../Edge";
+import { Node, NodeId } from "../../Node";
+import { EntitiesContainer } from "../entitiesContainer";
 
 describe("EntitiesContainer", () => {
   it("should deep copy nodes", () => {

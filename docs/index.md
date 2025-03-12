@@ -1,10 +1,8 @@
 ---
 title: Home
 nav_order: 0
----
-        
+---   
 # Welcome to Unigraph 🚀 
-<br>
 <!-- ![Alt Text](./assets/images/unigraphIcon.png){: width="64" height="64"} -->
 <iframe src="https://unigraph.vercel.app" width="100%" height="600px" style="border: none;"></iframe>
 

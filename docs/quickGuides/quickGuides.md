@@ -11,22 +11,25 @@ There are several ways Unigraph can be used immediately.
 
 ### Read from graphviz or mermaidjs, edit in browser, save or export [in progress]
 
-Unigraph is a central application that allows importing, editing, and exporting of Graphs between various other Graph-based tool formats. The first focus of Unigraph is to offer enhanced inspection and interaction tools for Graphs. Existing tools like graphviz or mermaid js are not built for dynamic interaction and UI-based editing. Furthermore, they struggle to scale with entity count, and connectivity density. 
+Unigraph is a central application that allows importing, editing, and exporting of Graphs between various other Graph-based tool formats. The first focus of Unigraph is to offer enhanced inspection and interaction tools for Graphs. Existing tools like graphviz or mermaid js are not built for dynamic interaction and UI-based editing. Furthermore, they struggle to scale with entity count and connection density. 
 
 
 ```mermaid
 graph LR;
     TextDefinedGraph --> Graphviz
     Graphviz --> SVG
-    TextDefinedGraph --> MermaidJS 
+    TextDefinedGraph --> MermaidJS
     MermaidJS --> SVG 
     SVG --> Unigraph 
-    Unigraph --> UpdateNodePositions
-    Unigraph --> ApplyNode/EdgeVisibilityFilters
-    Unigraph --> AdjustNodeSizes
-    ApplyNode/EdgeVisibilityFilters --> UnigraphModelGraph
-    AdjustNodeSizes --> UnigraphModelGraph
-    UpdateNodePositions --> UnigraphModelGraph
+    TextDefinedGraph --> Unigraph
+    Unigraph --> UpdatePositions
+    Unigraph --> UpdateOpacity
+    Unigraph --> UpdateSizes
+    Unigraph --> UpdateColors
+    UpdateOpacity --> UnigraphModelGraph
+    UpdateSizes --> UnigraphModelGraph
+    UpdatePositions --> UnigraphModelGraph
+    UpdateColors --> UnigraphModelGraph
     UnigraphModelGraph --> Export
     Export --> TextDefinedGraph
 ```

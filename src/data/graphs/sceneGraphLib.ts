@@ -13,7 +13,7 @@ import { demo_SceneGraph_StackedImageGallery } from "./Gallery_Demos/demo_SceneG
 import { demo_SceneGraph_StackedGalleryTransparent } from "./Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
 import { demo_SceneGraph_Thinking } from "./Gallery_Demos/demo_SceneGraph_Thinking";
 import { journalSceneGraph } from "./journal";
-import { mergeGraph } from "./mergeGraph";
+import { demo_sceneGraph_academicsKG } from "./mergeGraph";
 import { randomBigGraph } from "./randomBig";
 import { randomBiggestGraph } from "./randomBiggest";
 import { sphereMeshGraph } from "./sphereMesh";
@@ -66,7 +66,7 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
       biggest: randomBiggestGraph,
       unigraph: unigraphGraph,
       journal: journalSceneGraph,
-      merged: mergeGraph,
+      AcademicsKG: demo_sceneGraph_academicsKG,
     },
   },
   "Thinker Graphs": {

@@ -28,7 +28,6 @@ import {
 } from "../core/force-graph/dynamics/randomizeVisible";
 import { createSongVisualizationTimeline } from "../core/force-graph/dynamics/songAnnotationTransitions";
 import { transitionToConfig } from "../core/force-graph/dynamics/transition";
-import { saveRenderingConfigToFile } from "../core/graphviz/appHelpers";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
 import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
@@ -39,8 +38,7 @@ import {
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { DisplayManager } from "../core/model/DisplayManager";
 import { SceneGraph } from "../core/model/SceneGraphv2";
-import { getRandomNode } from "../core/model/util";
-import { GetRandomNodeFromSceneGraph } from "../core/model/utils";
+import { getRandomNode, GetRandomNodeFromSceneGraph, saveRenderingConfigToFile } from "../core/model/utils";
 import { processImageNodesInSceneGraph } from "../core/processors/imageBoxProcessor";
 import { serializeSceneGraphToDot } from "../core/serializers/toDot";
 import { serializeSceneGraphToJson } from "../core/serializers/toFromJson";

@@ -8,7 +8,6 @@ export interface EntityData {
   tags: Set<Tag>;
   label?: string;
   type: string;
-  // subType?: string;
   userData: ObjectOf<any>;
   description?: string;
 }
@@ -38,7 +37,6 @@ export interface IEntity<T extends EntityId = EntityId> {
   getFullyQualifiedId(): string;
   setType(type: string): void;
   getType(): string;
-  // getSubtype(): string;
   getTags(): Set<Tag>;
   setTags(tags: Set<Tag>): void;
   addTag(tag: Tag): void;
@@ -48,7 +46,6 @@ export interface IEntity<T extends EntityId = EntityId> {
   getUserData(key: string): any;
   getDescription(): string;
   getEntityType(): string; // special method for resolving entity types in logic, not data.
-  //   data(): EntityData;
 }
 
 export abstract class AbstractEntity<
@@ -100,13 +97,6 @@ export abstract class AbstractEntity<
   setLabel(label: string | undefined): void {
     this.data.label = label;
   }
-
-  // getSubtype(): string {
-  //   if (!this.data.subType) {
-  //     throw new Error("SubType not defined");
-  //   }
-  //   return this.data.subType;
-  // }
 
   getTags(): Set<Tag> {
     return this.data.tags;
