@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { ImageBoxData } from "../../core/types/ImageBoxData";
-import { Annotation } from "./AnnotationsList";
-import "./ImageBoxWizard.css";
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { ImageBoxData } from '../../core/types/ImageBoxData';
+import { Annotation } from './AnnotationsList';
+import './ImageBoxWizard.css';
 
 interface ImageBoxWizardProps {
   imageBoxData: ImageBoxData | null;
@@ -19,12 +19,12 @@ const ImageBoxWizard: React.FC<ImageBoxWizardProps> = ({
 }) => {
   // Image box state
   const [id] = useState(imageBoxData?.id ?? uuidv4());
-  const [label, setLabel] = useState(imageBoxData?.label ?? "");
-  const [type, setType] = useState(imageBoxData?.type ?? "imageBox");
+  const [label, setLabel] = useState(imageBoxData?.label ?? '');
+  const [type, setType] = useState(imageBoxData?.type ?? 'imageBox');
   const [description, setDescription] = useState(
-    imageBoxData?.description ?? ""
+    imageBoxData?.description ?? ''
   );
-  const [imageUrl] = useState(imageBoxData?.imageUrl ?? "");
+  const [imageUrl] = useState(imageBoxData?.imageUrl ?? '');
   const [topLeft] = useState(imageBoxData?.topLeft ?? { x: 0, y: 0 });
   const [bottomRight] = useState(
     imageBoxData?.bottomRight ?? { x: 100, y: 100 }
@@ -33,21 +33,21 @@ const ImageBoxWizard: React.FC<ImageBoxWizardProps> = ({
   // Annotations state
   const [annotations, setAnnotations] =
     useState<Annotation[]>(existingAnnotations);
-  const [newAnnotationText, setNewAnnotationText] = useState("");
+  const [newAnnotationText, setNewAnnotationText] = useState('');
 
   const handleAddAnnotation = () => {
     if (!newAnnotationText.trim()) return;
 
     const newAnnotation: Annotation = {
       id: uuidv4(),
-      label: "",
+      label: '',
       description: newAnnotationText,
       imageBoxId: id,
       references: [],
     };
 
     setAnnotations((prev) => [...prev, newAnnotation]);
-    setNewAnnotationText("");
+    setNewAnnotationText('');
   };
 
   const handleRemoveAnnotation = (annotationId: string) => {
@@ -74,30 +74,30 @@ const ImageBoxWizard: React.FC<ImageBoxWizardProps> = ({
     <div className="wizard-overlay">
       <div className="image-box-wizard">
         <h2 className="image-box-wizard-title">
-          {imageBoxData ? "Edit ImageBox" : "Create ImageBox"}
+          {imageBoxData ? 'Edit ImageBox' : 'Create ImageBox'}
         </h2>
 
         {imageUrl && (
           <div className="image-preview">
             <img
               src={imageUrl}
-              alt={label || "Image preview"}
+              alt={label || 'Image preview'}
               style={{
-                maxWidth: "100%",
-                maxHeight: "200px",
-                objectFit: "contain",
+                maxWidth: '100%',
+                maxHeight: '200px',
+                objectFit: 'contain',
               }}
             />
             <div
               className="selection-overlay"
               style={{
-                position: "absolute",
+                position: 'absolute',
                 left: `${topLeft.x}px`,
                 top: `${topLeft.y}px`,
                 width: `${bottomRight.x - topLeft.x}px`,
                 height: `${bottomRight.y - topLeft.y}px`,
-                border: "2px solid red",
-                pointerEvents: "none",
+                border: '2px solid red',
+                pointerEvents: 'none',
               }}
             />
           </div>

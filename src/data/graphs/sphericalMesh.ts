@@ -69,22 +69,27 @@ function createCylindricalMesh(
   return graph;
 }
 
-const graph = createCylindricalMesh();
 
-export const cylindricalMeshGraph = new SceneGraph({
-  graph,
-  metadata: {
-    name: "Cylindrical Mesh",
-    description:
-      "A cylindrical mesh structure with latitude and longitude connections.",
-  },
-  //   displayConfig: {
-  //     mode: "type",
-  //     nodePositions: Object.fromEntries(
-  //       graph.getNodes().map((node) => [
-  //         node.getId(),
-  //         { x: node.getData().userData.x, y: node.getData().userData.y },
-  //       ])
-  //     ),
-  //   },
-});
+
+export const cylindricalMeshGraph = () => { 
+
+  const graph = createCylindricalMesh();
+  
+  return  new SceneGraph({
+    graph,
+    metadata: {
+      name: "Cylindrical Mesh",
+      description:
+        "A cylindrical mesh structure with latitude and longitude connections.",
+    },
+    //   displayConfig: {
+    //     mode: "type",
+    //     nodePositions: Object.fromEntries(
+    //       graph.getNodes().map((node) => [
+    //         node.getId(),
+    //         { x: node.getData().userData.x, y: node.getData().userData.y },
+    //       ])
+    //     ),
+    //   },
+  });
+}

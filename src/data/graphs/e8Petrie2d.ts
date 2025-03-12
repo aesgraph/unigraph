@@ -76,7 +76,7 @@ const innerProduct = (v1: Vector8, v2: Vector8): number => {
 export const createE8Petrie2DGraph = (): SceneGraph => {
   const sceneGraph = new SceneGraph();
   const roots = generateE8Roots();
-  console.log(`Generated ${roots.length} roots`); // Should be 240
+  console.log(`Generated ${roots.length} roots for 2d petrie`); // Should be 240
 
   const nodeMap = new Map<string, string>();
   const scale = 200; // Scale factor for better visualization

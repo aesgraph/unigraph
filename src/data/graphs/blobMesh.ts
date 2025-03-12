@@ -1,7 +1,7 @@
-import { NodePositionData } from "../../core/layouts/layoutHelpers";
-import { Graph } from "../../core/model/Graph";
-import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraph";
+import { NodePositionData } from '../../core/layouts/layoutHelpers';
+import { Graph } from '../../core/model/Graph';
+import { NodeId } from '../../core/model/Node';
+import { SceneGraph } from '../../core/model/SceneGraph';
 
 interface BlobNodeMetadata {
   id: string;
@@ -20,7 +20,7 @@ function createBlobMesh(
   const nodeMetadata: BlobNodeMetadata[] = [];
 
   // Create center node (core)
-  const coreId = "core";
+  const coreId = 'core';
   nodeMetadata.push({
     id: coreId,
     layer: 0,
@@ -30,8 +30,8 @@ function createBlobMesh(
   });
 
   graph.createNode(coreId, {
-    type: "blob-node",
-    tags: new Set(["core"]),
+    type: 'blob-node',
+    tags: new Set(['core']),
     userData: { x: 0, y: 0, z: 0, layer: 0 },
   });
 
@@ -60,7 +60,7 @@ function createBlobMesh(
       });
 
       graph.createNode(nodeId, {
-        type: "blob-node",
+        type: 'blob-node',
         tags: new Set([`shell-${shell}`]),
         userData: { x, y, z, shell },
       });
@@ -74,8 +74,8 @@ function createBlobMesh(
       const firstShellNodes = nodeMetadata.filter((n) => n.layer === 1);
       firstShellNodes.forEach((target) => {
         graph.createEdge(node.id, target.id as NodeId, {
-          type: "blob-edge",
-          tags: new Set(["core-connection"]),
+          type: 'blob-edge',
+          tags: new Set(['core-connection']),
           userData: { strength: 1.5 },
         });
       });
@@ -103,8 +103,8 @@ function createBlobMesh(
         .slice(0, 3) // Connect to 3 closest nodes in same shell
         .forEach((target) => {
           graph.createEdge(node.id, target.id as NodeId, {
-            type: "blob-edge",
-            tags: new Set(["shell-connection"]),
+            type: 'blob-edge',
+            tags: new Set(['shell-connection']),
             userData: { strength: 1.0 },
           });
         });
@@ -115,8 +115,8 @@ function createBlobMesh(
         .slice(0, 4) // Connect to 4 closest nodes in adjacent shells
         .forEach((target) => {
           graph.createEdge(node.id, target.id as NodeId, {
-            type: "blob-edge",
-            tags: new Set(["inter-shell-connection"]),
+            type: 'blob-edge',
+            tags: new Set(['inter-shell-connection']),
             userData: { strength: 0.8 },
           });
         });
@@ -126,40 +126,29 @@ function createBlobMesh(
   return graph;
 }
 
-const graph = createBlobMesh();
-
-export const blobMeshGraph = new SceneGraph({
-  graph,
-  metadata: {
-    name: "Organic Blob",
-    description: "A cohesive blob-like mesh with uniform connectivity.",
-  },
-  //   displayConfig: {
-  //     mode: "type",
-  //     forceConfig: {
-  //       d3: {
-  //         gravity: -15,
-  //         charge: -60,
-  //         linkDistance: 25,
-  //         linkStrength: 1,
-  //         alpha: 1,
-  //         alphaDecay: 0.001,
-  //         velocityDecay: 0.2,
-  //         radialStrength: 0.5
-  //       }
-  //     }
-  //   }
-});
-blobMeshGraph.getData().displayConfig.nodePositions = Object.fromEntries(
-  graph.getNodes().map((node) => [
-    node.getId(),
-    {
-      x: node.getData().userData.x,
-      y: node.getData().userData.y,
-      z: node.getData().userData.z,
+export const blobMeshGraph = () =>
+  new SceneGraph({
+    graph: createBlobMesh(),
+    metadata: {
+      name: 'Organic Blob',
+      description: 'A cohesive blob-like mesh with uniform connectivity.',
     },
-  ])
-);
+    //   displayConfig: {
+    //     mode: "type",
+    //     forceConfig: {
+    //       d3: {
+    //         gravity: -15,
+    //         charge: -60,
+    //         linkDistance: 25,
+    //         linkStrength: 1,
+    //         alpha: 1,
+    //         alphaDecay: 0.001,
+    //         velocityDecay: 0.2,
+    //         radialStrength: 0.5
+    //       }
+    //     }
+    //   }
+  });
 
 export const extractPositionsFromUserData = (sceneGraph: SceneGraph) => {
   const graph = sceneGraph.getGraph();

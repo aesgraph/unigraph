@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SelectionBox } from "three/examples/jsm/interactive/SelectionBox";
-import { ObjectOf } from "../../App";
-import { WINDOW_ASPECT_RATIO } from "../../core/geometry/convertCoordinates";
-import { fromSelectionArea, ImageBoxData } from "../../core/types/ImageBoxData";
+import React, { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
+import { ObjectOf } from '../../App';
+import { WINDOW_ASPECT_RATIO } from '../../core/geometry/convertCoordinates';
+import { SceneGraph } from '../../core/model/SceneGraph';
+import { fromSelectionArea, ImageBoxData } from '../../core/types/ImageBoxData';
 import {
   createSelectionArea,
   extractSelectionBoxGroups,
   GetTopLeft,
   SelectionBoxGroup,
-} from "../../core/webgl/selectionArea";
+} from '../../core/webgl/selectionArea';
 import {
   convertScreenToWorldCoordinates,
   extractIntersection,
@@ -20,17 +21,17 @@ import {
   getScreenCoordinates,
   getTopLeftBottomRightPoints,
   loadImage,
-} from "../../core/webgl/webglHelpers";
+} from '../../core/webgl/webglHelpers';
 import {
   demo_SceneGraph_ArtCollection,
   onSubmitImage,
-} from "../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection";
-import { CoordinatesDisplay } from "../exampleCode/CoordinatesDisplay";
-import ImageBoxCard from "./ImageBoxCard";
-import ImageBoxWizard from "./ImageBoxWizard"; // Import the ImageBoxWizard component
-import { images } from "./images";
-import "./Lumina.css"; // Import the CSS file
-import Magnifier from "./Magnifier"; // Import the Magnifier component
+} from '../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection';
+import { CoordinatesDisplay } from '../exampleCode/CoordinatesDisplay';
+import ImageBoxCard from './ImageBoxCard';
+import ImageBoxWizard from './ImageBoxWizard'; // Import the ImageBoxWizard component
+import { images } from './images';
+import './Lumina.css'; // Import the CSS file
+import Magnifier from './Magnifier'; // Import the Magnifier component
 
 export type LuminaScene = {
   scene: THREE.Scene;
@@ -40,7 +41,7 @@ export type LuminaScene = {
   raycaster: THREE.Raycaster;
 };
 
-const default_image = "./assets/image0.png";
+const default_image = './assets/image0.png';
 
 export const initializeLuminaScene = () => {
   const scene = new THREE.Scene();
@@ -83,7 +84,11 @@ export const initializeLuminaScene = () => {
   };
 };
 
-const Lumina: React.FC = () => {
+type LuminaProps = {
+  sceneGraph: SceneGraph;
+};
+
+const Lumina: React.FC<LuminaProps> = ({ sceneGraph }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [imageName, setImageName] = useState<string>(default_image);
   const [idsToImageBoxes, setIdsToImageBoxes] = useState<
@@ -112,7 +117,7 @@ const Lumina: React.FC = () => {
     }
     return luminaScene.scene.children.filter(
       (child) =>
-        (child as SelectionBoxGroup).userData.id === "SelectionBoxGroup"
+        (child as SelectionBoxGroup).userData.id === 'SelectionBoxGroup'
     ) as SelectionBoxGroup[];
   };
 
@@ -159,11 +164,11 @@ const Lumina: React.FC = () => {
     });
 
     const json = JSON.stringify(areas, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
+    const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = "selectionAreas.json";
+    a.download = 'selectionAreas.json';
     a.click();
     URL.revokeObjectURL(url);
   }, [idsToImageBoxes, imageName]);
@@ -207,19 +212,19 @@ const Lumina: React.FC = () => {
           ...prev,
           [imageBox.id]: imageBox,
         }));
-        onSubmitImage(imageBox);
+        onSubmitImage(sceneGraph, imageBox);
       });
     },
     [luminaScene]
   );
 
   const handleImportButtonClick = () => {
-    document.getElementById("import-file-input")?.click();
+    document.getElementById('import-file-input')?.click();
   };
 
   useEffect(() => {
     if (!luminaScene) {
-      throw new Error("Lumina scene not initialized");
+      throw new Error('Lumina scene not initialized');
     }
 
     const init = () => {
@@ -232,11 +237,11 @@ const Lumina: React.FC = () => {
       //   luminaScene.renderer
       // );
 
-      const imageBoxes = demo_SceneGraph_ArtCollection
+      const imageBoxes = demo_SceneGraph_ArtCollection()
         .getGraph()
         .getNodes()
-        .filter((node) => node.getType() === "ImageBox")
-        .map((node) => node.getUserData("imageBoxData") as ImageBoxData);
+        .filter((node) => node.getType() === 'ImageBox')
+        .map((node) => node.getUserData('imageBoxData') as ImageBoxData);
       loadImageBoxesIntoScene(imageBoxes, luminaScene.camera);
 
       const animate = () => {
@@ -279,15 +284,15 @@ const Lumina: React.FC = () => {
 
       const resizeButton = extractIntersection<THREE.Intersection>(
         intersections,
-        "resizeButton"
+        'resizeButton'
       );
       const selectionBoxMesh = extractIntersection<THREE.Intersection>(
         intersections,
-        "selectionBox"
+        'selectionBox'
       );
       const deleteButtonMesh = extractIntersection<THREE.Intersection>(
         intersections,
-        "deleteButton"
+        'deleteButton'
       );
       if (resizeButton) {
         onStartResizingSelectionArea(
@@ -326,7 +331,7 @@ const Lumina: React.FC = () => {
         return;
       }
       if (!selectionArea.userData.box.position) {
-        throw Error("Position required");
+        throw Error('Position required');
       }
       isResizingNode = true;
       selectedNode = selectionArea;
@@ -417,7 +422,7 @@ const Lumina: React.FC = () => {
     };
 
     const pointerUpHandler = (event: PointerEvent) => {
-      console.log("lumina scene", luminaScene);
+      console.log('lumina scene', luminaScene);
       if (event.button !== 0 || !luminaScene) return;
       if (isMovingNode) {
         onStopMovingSelectionArea();
@@ -455,22 +460,22 @@ const Lumina: React.FC = () => {
         );
         luminaScene.scene.add(selectionArea);
 
-        const newImageBox = fromSelectionArea(selectionArea, imageName, "");
+        const newImageBox = fromSelectionArea(selectionArea, imageName, '');
         setIsWizardOpen(true);
         setWizardImageData(newImageBox);
       }
     };
 
     const addEventListeners = () => {
-      document.addEventListener("pointerdown", pointerDownHandler);
-      document.addEventListener("pointermove", pointerMoveHandler);
-      document.addEventListener("pointerup", pointerUpHandler);
+      document.addEventListener('pointerdown', pointerDownHandler);
+      document.addEventListener('pointermove', pointerMoveHandler);
+      document.addEventListener('pointerup', pointerUpHandler);
     };
 
     const removeEventListeners = () => {
-      document.removeEventListener("pointerdown", pointerDownHandler);
-      document.removeEventListener("pointermove", pointerMoveHandler);
-      document.removeEventListener("pointerup", pointerUpHandler);
+      document.removeEventListener('pointerdown', pointerDownHandler);
+      document.removeEventListener('pointermove', pointerMoveHandler);
+      document.removeEventListener('pointerup', pointerUpHandler);
     };
 
     if (!isWizardOpen) {
@@ -503,7 +508,7 @@ const Lumina: React.FC = () => {
 
     const hoveredBoxes = extractIntersections<THREE.Intersection>(
       intersects,
-      "selectionBox"
+      'selectionBox'
     );
 
     getSelectionAreas().forEach((area) => {
@@ -523,8 +528,8 @@ const Lumina: React.FC = () => {
     }
   };
 
-  const handleImageBoxSubmit = (data: ImageBoxData) => {
-    onSubmitImage(data);
+  const handleImageBoxSubmit = (sceneGraph: SceneGraph, data: ImageBoxData) => {
+    onSubmitImage(sceneGraph, data);
     setIdsToImageBoxes((prev) => ({
       ...prev,
       [data.id]: data,
@@ -553,7 +558,7 @@ const Lumina: React.FC = () => {
           type="file"
           accept="application/json"
           onChange={handleImportSelectionAreas}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
         />
       </div>
     );
@@ -570,7 +575,7 @@ const Lumina: React.FC = () => {
     return (
       <div
         style={{
-          position: "fixed",
+          position: 'fixed',
           top: `40%`,
           left: `40px`,
         }}
@@ -578,7 +583,9 @@ const Lumina: React.FC = () => {
         <div>Nothing selected</div>;
         <ImageBoxCard
           data={imageBox!}
-          onSubmit={handleImageBoxSubmit}
+          onSubmit={(imageBoxData: ImageBoxData) =>
+            handleImageBoxSubmit(sceneGraph, imageBoxData)
+          }
           camera={luminaScene.camera!}
           canvasHeight={window.innerHeight}
           canvasWidth={window.innerWidth}
@@ -593,15 +600,15 @@ const Lumina: React.FC = () => {
     }
     return (
       <div
-        style={{ position: "fixed", top: 180, left: 40, width: "400px" }}
+        style={{ position: 'fixed', top: 180, left: 40, width: '400px' }}
         onPointerDown={(e) => e.stopPropagation()}
         onPointerMove={(e) => e.stopPropagation()}
       >
         <div
           style={{
-            position: "absolute",
-            top: "-40px",
-            right: "0px",
+            position: 'absolute',
+            top: '-40px',
+            right: '0px',
             zIndex: 1000,
           }}
         >
@@ -628,26 +635,26 @@ const Lumina: React.FC = () => {
         </div>
         <div
           style={{
-            backgroundColor: "white",
-            padding: "12px",
-            height: "50vh",
-            width: "10rem",
-            overflow: "hidden",
-            overflowY: "auto",
-            scrollbarColor: "#ccc #f9f9f9",
-            scrollbarWidth: "thin",
-            borderRadius: "16px",
-            pointerEvents: "auto", // Ensure the list captures pointer events
+            backgroundColor: 'white',
+            padding: '12px',
+            height: '50vh',
+            width: '10rem',
+            overflow: 'hidden',
+            overflowY: 'auto',
+            scrollbarColor: '#ccc #f9f9f9',
+            scrollbarWidth: 'thin',
+            borderRadius: '16px',
+            pointerEvents: 'auto', // Ensure the list captures pointer events
           }}
           onPointerDown={(e) => e.stopPropagation()} // Prevent event propagation to the WebGL scene
         >
           {Object.values(idsToImageBoxes).length === 0 ? (
             <div
               style={{
-                textAlign: "center",
-                color: "#888",
-                fontStyle: "italic",
-                marginTop: "20px",
+                textAlign: 'center',
+                color: '#888',
+                fontStyle: 'italic',
+                marginTop: '20px',
               }}
             >
               Image Boxes will be listed here
@@ -657,9 +664,9 @@ const Lumina: React.FC = () => {
               <div
                 key={box.id}
                 className={`image-box-list-item ${
-                  hoveredImageBoxId === box.id ? "hovered" : ""
+                  hoveredImageBoxId === box.id ? 'hovered' : ''
                 }`}
-                style={{ marginBottom: "8px" }}
+                style={{ marginBottom: '8px' }}
                 onMouseEnter={() => {
                   setHoveredImageBoxId(box.id);
                 }}
@@ -667,10 +674,12 @@ const Lumina: React.FC = () => {
               >
                 <ImageBoxCard
                   data={box}
-                  onSubmit={handleImageBoxSubmit}
+                  onSubmit={(imageBoxData: ImageBoxData) =>
+                    handleImageBoxSubmit(sceneGraph, imageBoxData)
+                  }
                   style={{
                     backgroundColor:
-                      hoveredImageBoxId === box.id ? "#f0f0f0" : "white",
+                      hoveredImageBoxId === box.id ? '#f0f0f0' : 'white',
                   }}
                   canvasHeight={window.innerHeight}
                   canvasWidth={window.innerWidth}
@@ -686,13 +695,13 @@ const Lumina: React.FC = () => {
 
   const renderMagnifier = React.useCallback(() => {
     if (!luminaScene) {
-      console.log("nope");
+      console.log('nope');
       return null;
     }
     return (
       <div
         style={{
-          position: "fixed",
+          position: 'fixed',
           top: 20,
           left: 20,
           zIndex: 1000,
@@ -715,7 +724,7 @@ const Lumina: React.FC = () => {
     }
 
     return (
-      <div ref={containerRef} style={{ width: "100vw", height: "100vh" }}>
+      <div ref={containerRef} style={{ width: '100vw', height: '100vh' }}>
         {renderImageSelectionActions()}
         <CoordinatesDisplay
           containerRef={containerRef}
@@ -727,7 +736,9 @@ const Lumina: React.FC = () => {
           <div className="wizard-overlay">
             <ImageBoxWizard
               imageBoxData={wizardImageData}
-              onSubmit={handleImageBoxSubmit}
+              onSubmit={(imageBoxData: ImageBoxData) =>
+                handleImageBoxSubmit(sceneGraph, imageBoxData)
+              }
               onCancel={() => setIsWizardOpen(false)}
               // camera={luminaScene.camera}
               // rendererOverride={luminaScene.renderer}

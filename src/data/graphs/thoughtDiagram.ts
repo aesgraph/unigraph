@@ -155,4 +155,8 @@ export const constructModel = () => {
   return graph;
 };
 
-export const thoughtDiagram = new SceneGraph({ graph: constructModel() });
+// export const thoughtDiagram = new SceneGraph({ graph: constructModel() });
+
+export const thoughtDiagram = () => {
+  return new SceneGraph({graph: constructModel()})
+}
