@@ -1,14 +1,17 @@
 ---
 title: Home
 nav_order: 0
----   
-# Welcome to Unigraph 🚀 
+---
+
+# Welcome to Unigraph 🚀
+
 <!-- ![Alt Text](./assets/images/unigraphIcon.png){: width="64" height="64"} -->
 <iframe src="https://unigraph.vercel.app" width="100%" height="600px" style="border: none;"></iframe>
 
 ## Quick Links
-**Live Demo**: [https://unigraph.vercel.app](<https://unigraph.vercel.app>)<br>
-**Repository**: [https://github.com/aesgraph/unigraph](<https://github.com/aesgraph/unigraph>)<br>
+
+**Live Demo**: [https://unigraph.vercel.app](https://unigraph.vercel.app)<br>
+**Repository**: [https://github.com/aesgraph/unigraph](https://github.com/aesgraph/unigraph)<br>
 **Discord**: <https://discord.gg/8MxDDNjvsq><br>
 Chrome Extension: [Coming Soon]
 
@@ -20,10 +23,7 @@ Chrome Extension: [Coming Soon]
 
 Unigraph is both a deep technology, and an attempt to materialize it. It aims to productize itself as a means to build interest and community, but its final intention is far beyond. It aims to build a field-theoretic framework for application ecosystems centered on human-centric graph-based modeling, interaction, and information exchange.
 
-Unigraph's first aim is to create an accessible platform for graph-based application software and information exchange. 
-**The MVP centralizes accessibility to various existing diagramming tools in a single state-of-the-art web application.**
+Unigraph's first aim is to create an accessible platform for graph-based application software and information exchange.
+**The MVP centralizes accessibility to various existing diagramming tools and features in a single state-of-the-art web application.**
 
 [Go to Overview](./overview/overview.md)
-
-    
-    
