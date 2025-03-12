@@ -5,7 +5,7 @@ import {
 } from "../../../assets/imageBoxes/demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes";
 import { demo_SceneGraph_StackedImageGalleryTransparent_images } from "../../../components/lumina/images";
 import { Graph } from "../../../core/model/Graph";
-import { SceneGraph } from "../../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 import { ImageBoxData } from "../../../core/types/ImageBoxData";
 import { generateRandomEdges } from "../../../utils/graphUtils";
 

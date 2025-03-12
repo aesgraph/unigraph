@@ -2,7 +2,7 @@ import { ForceGraph3DInstance } from "3d-force-graph";
 import { EdgeId } from "../../model/Edge";
 import { EntityIds } from "../../model/entity/entityIds";
 import { NodeId } from "../../model/Node";
-import { SceneGraph } from "../../model/SceneGraphv2";
+import { SceneGraph } from "../../model/SceneGraph";
 
 export const randomizeVisible = (
   forceGraph3dInstance: ForceGraph3DInstance,

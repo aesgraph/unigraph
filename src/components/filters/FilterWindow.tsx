@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { RenderingManager } from "../../controllers/RenderingManager";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import MultiSelectDropdown from "../common/MultiSelectDropdown";
 import {
   FilterOperator,

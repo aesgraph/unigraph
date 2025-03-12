@@ -1,5 +1,5 @@
 import React from "react";
-import { useMousePosition } from "../../MousePositionContext";
+import { useMousePosition } from "../../context/MousePositionContext";
 import "./EntityDataDisplayCard.css";
 
 interface EntityDataDisplayCardProps {

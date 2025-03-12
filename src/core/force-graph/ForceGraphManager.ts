@@ -3,7 +3,7 @@ import { Sprite, SpriteMaterial, SRGBColorSpace, TextureLoader } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { ImageBoxData } from "../types/ImageBoxData";
 import { reconstructImageSource } from "../utils/imageProcessing";
 import { IForceGraphRenderConfig } from "./createForceGraph";

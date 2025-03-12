@@ -3,7 +3,7 @@ import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
 import { LayoutEngine, LayoutEngineOption } from "../core/layouts/LayoutEngine";
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { Node } from "../core/model/Node";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 
 export type GraphvizOutput = {
   svg?: string;

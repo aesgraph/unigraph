@@ -1,6 +1,6 @@
 import { GraphEntityType } from "../components/common/GraphSearch";
 import { Tag } from "../core/model/entity/abstractEntity";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 
 export class SceneGraphCache {
   private sceneGraph: SceneGraph;

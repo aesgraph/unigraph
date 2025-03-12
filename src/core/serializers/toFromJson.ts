@@ -1,7 +1,7 @@
 import { JSONString } from "../model/entity/entitiesContainer";
 import { Graph } from "../model/Graph";
 import { NodeDataArgs } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { EdgeDataArgs } from "./../model/Edge";
 
 export function serializeSceneGraphToJson(sceneGraph: SceneGraph): string {

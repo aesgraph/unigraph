@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ISceneGraphMetadata, SceneGraph } from "../core/model/SceneGraphv2";
+import { ISceneGraphMetadata, SceneGraph } from "../core/model/SceneGraph";
 import "./SceneGraphDetailView.css"; // Import the CSS file
 
 interface SceneGraphDetailViewProps {

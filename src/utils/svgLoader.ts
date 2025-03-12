@@ -4,7 +4,7 @@ import { IForceGraphRenderConfig } from "../core/force-graph/createForceGraph";
 import { PresetLayoutType } from "../core/layouts/LayoutEngine";
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { Graph } from "../core/model/Graph";
-import { ISceneGraphMetadata, SceneGraph } from "../core/model/SceneGraphv2";
+import { ISceneGraphMetadata, SceneGraph } from "../core/model/SceneGraph";
 
 /**
  * Utility function to load SVG from a URL

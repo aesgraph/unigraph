@@ -1,5 +1,5 @@
 import { Graph } from "../../core/model/Graph";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 export const graph = new Graph();
 

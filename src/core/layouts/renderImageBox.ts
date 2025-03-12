@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { ImageBoxData } from "../types/ImageBoxData";
 import { createRandomBoxesForImage } from "./imageBoxUtils";
 

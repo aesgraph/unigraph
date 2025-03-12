@@ -10,15 +10,12 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import React, { useMemo, useState } from "react";
+import { useAppContext } from "../../context/AppContext";
 import { Entity } from "../../core/model/entity/abstractEntity";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
-import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
-import NodeEditorWizard from "../analysis/NodeEditorWizard";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import ContextMenu, { ContextMenuItem } from "./ContextMenu";
-import EntityJsonEditorDialog from "./EntityJsonEditorDialog";
 import styles from "./EntityTable.module.css";
-import { useAppContext } from "../../context/AppContext";
 
 interface EntityTableProps {
   container: EntitiesContainer<any, any>;

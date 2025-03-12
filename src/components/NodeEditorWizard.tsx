@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { RenderingManager } from "../../controllers/RenderingManager";
-import { Edge } from "../../core/model/Edge";
-import { NodeDataArgs, NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
-import MultiSelectDropdown from "../common/MultiSelectDropdown";
-import SelectDropdown from "../common/SelectDropdown";
-import EdgeListItem, { EdgeInfo } from "./EdgeListItem";
+import { RenderingManager } from "../controllers/RenderingManager";
+import { Edge } from "../core/model/Edge";
+import { NodeDataArgs, NodeId } from "../core/model/Node";
+import { SceneGraph } from "../core/model/SceneGraph";
+import EdgeListItem, { EdgeInfo } from "./common/EdgeListItem";
+import MultiSelectDropdown from "./common/MultiSelectDropdown";
+import SelectDropdown from "./common/SelectDropdown";
 import "./NodeEditorWizard.css";
 
 interface NodeEditorWizardProps {

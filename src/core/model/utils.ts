@@ -3,7 +3,7 @@ import { RenderingConfig } from "../../controllers/RenderingManager";
 import { DisplayManager } from "./DisplayManager";
 import { Graph } from "./Graph";
 import { Node } from "./Node";
-import { SceneGraph } from "./SceneGraphv2";
+import { SceneGraph } from "./SceneGraph";
 
 export const GetRandomNodeFromSceneGraph = (sceneGraph: SceneGraph): Node => {
   return sceneGraph.getGraph().getNodes().getRandomEntity();

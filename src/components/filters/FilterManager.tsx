@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { FilterPreset } from "./FilterRuleDefinition";
 import RulesPreviewDialog from "./RulesPreviewDialog";
 

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { RenderingManager } from "../../controllers/RenderingManager";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import "./GraphSearch.css";
 import SearchResultItem from "./SearchResultItem";
 

@@ -1,7 +1,7 @@
 import { NodePositionData } from "../../core/layouts/layoutHelpers";
 import { Graph } from "../../core/model/Graph";
 import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 interface BlobNodeMetadata {
   id: string;

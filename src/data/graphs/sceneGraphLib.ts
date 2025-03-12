@@ -1,4 +1,4 @@
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
 import { blobMeshGraph } from "./blobMesh";
 import { createE8Petrie2DGraph } from "./e8Petrie2d";

@@ -4,7 +4,7 @@ import {
   RenderingManager,
 } from "../../controllers/RenderingManager";
 import { Graph } from "../../core/model/Graph";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import {
   DEFAULT_RENDERING_CONFIG_AcademicDataset,
   Field,

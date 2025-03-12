@@ -18,7 +18,6 @@ import {
   DEFAULT_APP_CONFIG,
   ForceGraph3dLayoutMode,
 } from "./AppConfig";
-import NodeEditorWizard from "./components/analysis/NodeEditorWizard";
 import PathAnalysisWizard, {
   IPathArgs,
 } from "./components/analysis/PathAnalysisWizard";
@@ -47,12 +46,17 @@ import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
 import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
 import Lumina from "./components/lumina/Lumina";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
+import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/SceneGraphDetailView";
 import SceneGraphTitle from "./components/SceneGraphTitle";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
 import UniAppToolbar from "./components/UniAppToolbar";
 import { AppContextProvider } from "./context/AppContext";
+import {
+  MousePositionProvider,
+  useMousePosition,
+} from "./context/MousePositionContext";
 import {
   DisplayConfig,
   RenderingConfig,
@@ -88,7 +92,7 @@ import { EdgeId } from "./core/model/Edge";
 import { Entity } from "./core/model/entity/abstractEntity";
 import { getGraphStatistics, GraphStastics } from "./core/model/GraphBuilder";
 import { NodeDataArgs, NodeId } from "./core/model/Node";
-import { SceneGraph } from "./core/model/SceneGraphv2";
+import { SceneGraph } from "./core/model/SceneGraph";
 import { GetCurrentDisplayConfigOf, loadRenderingConfigFromFile, SetCurrentDisplayConfigOf } from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
 import { deserializeDotToSceneGraph } from "./core/serializers/fromDot";
@@ -103,10 +107,6 @@ import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/de
 import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
-import {
-  MousePositionProvider,
-  useMousePosition,
-} from "./MousePositionContext";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 
 export type ObjectOf<T> = { [key: string]: T };

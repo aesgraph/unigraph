@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 import { getRandomColor } from "../../utils/colorUtils";
 import { NodeId } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { createBoxOutline, ImageBox, ImageData } from "./renderImageBox";
 
 export const createRandomBoxesForImage = (

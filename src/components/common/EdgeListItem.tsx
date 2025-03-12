@@ -1,7 +1,7 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import React from "react";
-import { ArrowRight, ArrowLeft } from "lucide-react";
-import SelectDropdown from "../common/SelectDropdown";
 import styles from "./EdgeListItem.module.css";
+import SelectDropdown from "./SelectDropdown";
 
 export interface EdgeInfo {
   id: string;

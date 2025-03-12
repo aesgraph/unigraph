@@ -1,6 +1,6 @@
 import { Edge, Node } from "@xyflow/react";
 import { NodePositionData } from "../layouts/layoutHelpers";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { EntityIds } from "../model/entity/entityIds";
 
 export const exportGraphDataForReactFlow = (

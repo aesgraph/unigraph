@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Graph } from "../core/model/Graph";
 import { NodeId } from "../core/model/Node";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 import { getRandomColor } from "./colorUtils";
 
 interface RandomNodeOptions {

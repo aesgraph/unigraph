@@ -4,7 +4,7 @@ import { Rnd } from "react-rnd";
 import { RenderingManager } from "../../controllers/RenderingManager";
 import { Edge } from "../../core/model/Edge";
 import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { getTextColorBasedOnBackground } from "../../utils/colorUtils";
 import "./NodeDisplayCard.css";
 

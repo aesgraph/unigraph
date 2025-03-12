@@ -1,6 +1,6 @@
 import { Graph } from "../../core/model/Graph";
 import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 function createCylindricalMesh(
   radius: number = 100,

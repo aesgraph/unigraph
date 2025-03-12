@@ -3,7 +3,7 @@ import forceLayout from "graphology-layout-force";
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import noverlap from "graphology-layout-noverlap";
 import random from "graphology-layout/random";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import {
   createGraphologyGraph,
   NodePositionData,

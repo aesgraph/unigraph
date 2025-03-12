@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 import { fetchSvgSceneGraph } from "../hooks/useSvgSceneGraph";
 import "./ImportSvgFromUrlDialog.css";
 

@@ -85,7 +85,6 @@ export class SceneGraph {
         this.data.displayConfig = GET_DEFAULT_RENDERING_CONFIG(this.data.graph);
       }
     }
-    console.log("PRESETS ARE", data?.displayConfigPresets);
     validateSceneGraph(this);
     this.getNodes().validate();
     this.getEdges().validate();

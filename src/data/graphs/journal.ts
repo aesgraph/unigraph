@@ -1,6 +1,6 @@
 import { Graph } from "../../core/model/Graph";
 import { GraphBuilder } from "../../core/model/GraphBuilder";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 const journalGraph = new Graph();
 

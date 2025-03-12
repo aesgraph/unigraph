@@ -1,9 +1,9 @@
 import React from "react";
 import { NodeId } from "../../core/model/Node";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
 import EntityTable from "./EntityTable";
 import styles from "./EntityTableDialog.module.css";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
 
 interface EntityTableDialogProps {
   container: EntitiesContainer<any, any>;

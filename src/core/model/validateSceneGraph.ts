@@ -1,6 +1,5 @@
-import { get } from "lodash";
-import { SceneGraph } from "./SceneGraphv2";
 import { NodeId } from "./Node";
+import { SceneGraph } from "./SceneGraph";
 
 interface ISceneGraphValidationResult {
   missingNodes: NodeId[];

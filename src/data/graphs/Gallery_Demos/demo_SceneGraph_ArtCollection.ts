@@ -2,7 +2,7 @@ import { imageBoxes256 } from "../../../assets/imageBoxes/imageBoxes256";
 import { demo_SceneGraph_ArtCollection_Images } from "../../../components/lumina/images";
 import { GET_DEFAULT_RENDERING_CONFIG } from "../../../controllers/RenderingManager";
 import { Graph } from "../../../core/model/Graph";
-import { SceneGraph } from "../../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 import { ImageBoxData } from "../../../core/types/ImageBoxData";
 
 const imageGraph = new Graph();

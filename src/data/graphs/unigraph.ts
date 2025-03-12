@@ -6,7 +6,7 @@ import {
 } from "../../controllers/RenderingManager";
 import { requireCluster } from "../../controllers/graphvizHelpers";
 import { Graph } from "../../core/model/Graph";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { Tag } from "../../core/model/entity/abstractEntity";
 import {
   addFeatureSetsToGraph,

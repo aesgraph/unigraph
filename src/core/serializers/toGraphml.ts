@@ -1,4 +1,4 @@
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 
 export function serializeSceneGraphToGraphml(sceneGraph: SceneGraph): string {
   const graph = sceneGraph.getGraph();

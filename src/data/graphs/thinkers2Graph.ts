@@ -2,7 +2,7 @@ import { RenderingConfig } from "../../controllers/RenderingManager";
 import { EntityDataArgs } from "../../core/model/entity/abstractEntity";
 import { forceConsistencyOnGraph } from "../../core/model/forceConsistency";
 import { Graph } from "../../core/model/Graph";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { people } from "../datasets/academic-works";
 
 const graph = new Graph();

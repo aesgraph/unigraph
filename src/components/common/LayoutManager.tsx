@@ -5,7 +5,7 @@ import {
   RenderingConfig,
 } from "../../controllers/RenderingManager";
 import { NodePositionData } from "../../core/layouts/layoutHelpers";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import "./LayoutManager.css";
 
 interface LayoutManagerProps {

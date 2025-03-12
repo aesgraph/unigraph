@@ -1,4 +1,4 @@
-import { SceneGraph } from "../../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 
 // Import the SVG as a raw string
 import petrie421t2b6SvgUrl from "!!raw-loader!/public/svgs/e8_4_21_t2-B6.svg";

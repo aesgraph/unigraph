@@ -1,7 +1,7 @@
 import { demo_SceneGraph_Thinking_ImageBoxes } from "../../../assets/imageBoxes/demo_SceneGraph_Thinking_ImageBoxes";
 import { demo_SceneGraph_Thinking_images } from "../../../components/lumina/images";
 import { Graph } from "../../../core/model/Graph";
-import { SceneGraph } from "../../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 import { ImageBoxData } from "../../../core/types/ImageBoxData";
 
 const graph = new Graph();

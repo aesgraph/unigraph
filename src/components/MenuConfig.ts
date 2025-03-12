@@ -37,7 +37,7 @@ import {
 } from "../core/layouts/LayoutEngine";
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { DisplayManager } from "../core/model/DisplayManager";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 import { getRandomNode, GetRandomNodeFromSceneGraph, saveRenderingConfigToFile } from "../core/model/utils";
 import { processImageNodesInSceneGraph } from "../core/processors/imageBoxProcessor";
 import { serializeSceneGraphToDot } from "../core/serializers/toDot";

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 
 interface Point {
   x: number;
