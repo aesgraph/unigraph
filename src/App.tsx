@@ -188,10 +188,10 @@ const AppContent: React.FC<{
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-  showOptionsPanel?: boolean;
-  showLegendBars?: boolean;
-  showGraphLayoutToolbar?: boolean;
-  showRenderConfigOptions?: boolean;
+  showOptionsPanel?: string;
+  showLegendBars?: string;
+  showGraphLayoutToolbar?: string;
+  showRenderConfigOptions?: string;
 }> = ({
   defaultGraph,
   svgUrl,
@@ -209,6 +209,19 @@ const AppContent: React.FC<{
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
   const { mousePosition, setMousePosition } = useMousePosition();
+
+  const clearUrlOfQueryParams = useCallback(() => {
+    const url = new URL(window.location.href);
+    // url.searchParams.delete('graph');
+    // url.searchParams.delete('svgUrl');
+    // url.searchParams.delete('view');
+    // url.searchParams.delete('layout');
+    url.searchParams.delete('showOptionsPanel');
+    url.searchParams.delete('showLegendBars');
+    url.searchParams.delete('showGraphLayoutToolbar');
+    url.searchParams.delete('showRenderConfig');
+    window.history.pushState({}, '', url.toString());
+  }, []);
 
   const [simulations, setSimulations] = useState<{
     [key: string]: JSX.Element;
@@ -229,12 +242,49 @@ const AppContent: React.FC<{
       selectedNodes: new Set(),
     });
 
-  const [isForceGraphConfigEditorVisible, setIsForceGraphConfigEditorVisible] =
-    useState<boolean>(true);
-
-  const handleToggleForceGraphConfigEditor = useCallback(() => {
-    setIsForceGraphConfigEditorVisible((prev) => !prev);
+  const getAppConfigWithUrlOverrides = useCallback((config: AppConfig) => {
+    const layoutToUse = defaultActiveLayout
+      ? (defaultActiveLayout as LayoutEngineOption)
+      : config.activeLayout;
+    return {
+      ...config,
+      activeView: defaultActiveView ?? config.activeView,
+      activeLayout: layoutToUse,
+      forceGraph3dOptions: {
+        ...config.forceGraph3dOptions,
+        layout: defaultActiveLayout
+          ? 'Layout'
+          : config.forceGraph3dOptions.layout,
+        showOptionsPanel:
+          showRenderConfigOptions !== undefined
+            ? showRenderConfigOptions === 'true'
+            : config.forceGraph3dOptions.showOptionsPanel,
+      },
+      windows: {
+        ...config.windows,
+        showLegendBars:
+          showLegendBars !== undefined
+            ? showLegendBars === 'true'
+            : config.windows.showLegendBars,
+        showGraphLayoutToolbar:
+          showGraphLayoutToolbar !== undefined
+            ? showGraphLayoutToolbar === 'true'
+            : config.windows.showGraphLayoutToolbar,
+        showOptionsPanel:
+          showOptionsPanel !== undefined
+            ? showOptionsPanel === 'true'
+            : config.forceGraph3dOptions.showOptionsPanel,
+      },
+    };
   }, []);
+
+  const handleSetAppConfig = useCallback(
+    (config: AppConfig) => {
+      setAppConfig(getAppConfigWithUrlOverrides(config));
+      console.log('Set app config!', getAppConfigWithUrlOverrides(config));
+    },
+    [getAppConfigWithUrlOverrides]
+  );
 
   const setSelectedNode = useCallback((nodeId: NodeId | null) => {
     setAppInteractionConfig((prevConfig) => ({
@@ -348,7 +398,7 @@ const AppContent: React.FC<{
         }
       });
     } else if (defaultGraph) {
-      handleSetSceneGraph(defaultGraph);
+      handleSetSceneGraph(defaultGraph, false);
     } else {
       handleSetSceneGraph(appConfig.activeSceneGraph);
     }
@@ -369,31 +419,7 @@ const AppContent: React.FC<{
       showRenderConfigOptions
     );
 
-    setAppConfig((prevConfig) => ({
-      ...prevConfig,
-      forceGraph3dOptions: {
-        ...prevConfig.forceGraph3dOptions,
-        showOptionsPanel:
-          showRenderConfigOptions !== undefined
-            ? showRenderConfigOptions
-            : prevConfig.forceGraph3dOptions.showOptionsPanel,
-      },
-      windows: {
-        ...prevConfig.windows,
-        showLegendBars:
-          showLegendBars !== undefined
-            ? showLegendBars
-            : prevConfig.windows.showLegendBars,
-        showGraphLayoutToolbar:
-          showGraphLayoutToolbar !== undefined
-            ? showGraphLayoutToolbar
-            : prevConfig.windows.showGraphLayoutToolbar,
-        showOptionsPanel:
-          showOptionsPanel !== undefined
-            ? showOptionsPanel
-            : prevConfig.forceGraph3dOptions.showOptionsPanel,
-      },
-    }));
+    handleSetAppConfig(appConfig);
   }, [
     defaultGraph,
     svgUrl,
@@ -672,9 +698,12 @@ const AppContent: React.FC<{
   const [graphModelUpdateTime, setGraphModelUpdateTime] = useState<number>(0);
 
   const handleLoadSceneGraph = useCallback(
-    async (graph: SceneGraph) => {
+    async (graph: SceneGraph, clearQueryParams: boolean = true) => {
       const tick = Date.now();
       console.log('Loading SceneGraph', graph.getMetadata().name, '...');
+      if (clearQueryParams) {
+        clearUrlOfQueryParams();
+      }
       safeComputeLayout(graph, appConfig.activeLayout).then(() => {
         setCurrentSceneGraph(graph);
         if (graph.getData().defaultAppConfig) {
@@ -725,7 +754,7 @@ const AppContent: React.FC<{
   );
 
   const handleSetSceneGraph = useCallback(
-    async (key: string) => {
+    async (key: string, clearUrlOfQueryParams: boolean = true) => {
       // Find graph in any category
       let graph: SceneGraph | undefined;
       for (const category of Object.values(sceneGraphs)) {
@@ -743,7 +772,8 @@ const AppContent: React.FC<{
         console.log(`Available graphs are : ${Object.keys(getAllGraphs())}`);
         return;
       }
-      handleLoadSceneGraph(graph);
+
+      handleLoadSceneGraph(graph, clearUrlOfQueryParams);
 
       // Update the URL query parameter
       const url = new URL(window.location.href);
@@ -1164,7 +1194,6 @@ const AppContent: React.FC<{
       handleImportJson,
       handleImportSvg,
       handleFitToView,
-      handleToggleForceGraphConfigEditor,
       GraphMenuActions,
       SimulationMenuActions,
       applyNewLayout,
@@ -1188,16 +1217,10 @@ const AppContent: React.FC<{
     return new MenuConfig(
       menuConfigCallbacks,
       appConfig,
-      isForceGraphConfigEditorVisible,
       currentSceneGraph,
       forceGraphInstance
     );
-  }, [
-    appConfig,
-    currentSceneGraph,
-    isForceGraphConfigEditorVisible,
-    forceGraphInstance,
-  ]);
+  }, [appConfig, currentSceneGraph, forceGraphInstance]);
 
   const menuConfig = useMemo(
     () => menuConfigInstance.getConfig(),
@@ -1930,7 +1953,7 @@ const AppContent: React.FC<{
               }
             />
           )}
-        {isForceGraphConfigEditorVisible && (
+        {appConfig.forceGraph3dOptions.showOptionsPanel && (
           <div
             style={{
               zIndex: '3000',
@@ -2101,10 +2124,10 @@ interface AppProps {
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-  showOptionsPanel?: boolean | undefined;
-  showLegendBars?: boolean | undefined;
-  showGraphLayoutToolbar?: boolean | undefined;
-  showRenderConfigOptions?: boolean | undefined;
+  showOptionsPanel?: string;
+  showLegendBars?: string;
+  showGraphLayoutToolbar?: string;
+  showRenderConfigOptions?: string;
 }
 
 const App: React.FC<AppProps> = ({

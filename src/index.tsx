@@ -24,10 +24,10 @@ if (rootElement) {
       svgUrl={svgUrl}
       defaultActiveView={activeView}
       defaultActiveLayout={activeLayout}
-      showOptionsPanel={showOptionsPanel as boolean | undefined}
-      showLegendBars={showLegendBars as boolean | undefined}
-      showGraphLayoutToolbar={showGraphLayoutToolbar as boolean | undefined}
-      showRenderConfigOptions={showRenderConfigOptions as boolean | undefined}
+      showOptionsPanel={showOptionsPanel}
+      showLegendBars={showLegendBars}
+      showGraphLayoutToolbar={showGraphLayoutToolbar}
+      showRenderConfigOptions={showRenderConfigOptions}
     />
   );
 }

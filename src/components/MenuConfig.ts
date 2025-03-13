@@ -133,7 +133,6 @@ export interface IMenuConfigCallbacks {
   handleImportGraphml: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleImportJson: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleFitToView: (activeView: string) => void;
-  handleToggleForceGraphConfigEditor: () => void;
   GraphMenuActions: () => { [key: string]: { action: () => void } };
   SimulationMenuActions: () => { [key: string]: { action: () => void } };
   setShowPathAnalysis: (show: boolean) => void;
@@ -157,20 +156,17 @@ export interface IMenuConfigCallbacks {
 export class MenuConfig {
   private callbacks: IMenuConfigCallbacks;
   private appConfig: AppConfig;
-  private isForceGraphConfigEditorVisible: boolean;
   private sceneGraph: SceneGraph;
   private forceGraphInstance: React.RefObject<ForceGraph3DInstance | null>;
 
   constructor(
     callbacks: IMenuConfigCallbacks,
     appConfig: AppConfig,
-    isForceGraphConfigEditorVisible: boolean,
     sceneGraph: SceneGraph,
     forceGraphInstance: React.RefObject<ForceGraph3DInstance | null>
   ) {
     this.callbacks = callbacks;
     this.appConfig = appConfig;
-    this.isForceGraphConfigEditorVisible = isForceGraphConfigEditorVisible;
     this.sceneGraph = sceneGraph;
     this.forceGraphInstance = forceGraphInstance;
   }
