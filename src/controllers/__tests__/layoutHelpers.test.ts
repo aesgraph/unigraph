@@ -6,7 +6,7 @@ import {
   scalePositions,
 } from "../../core/layouts/layoutHelpers";
 import { Graph as ModelGraph } from "../../core/model/Graph";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 // Mock ModelGraph and SceneGraph
 const graph = new ModelGraph();

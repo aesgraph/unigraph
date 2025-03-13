@@ -1,4 +1,3 @@
-import { RenderingConfig } from "../../controllers/RenderingManager";
 
 import { debounce } from "lodash";
 
@@ -190,40 +189,6 @@ export const enableZoomAndPanOnSvg = (element: HTMLDivElement) => {
       window.removeEventListener("resize", handleResize);
     };
   }
-};
-
-export const saveRenderingConfigToFile = (
-  config: RenderingConfig,
-  filename: string
-) => {
-  const json = JSON.stringify(config, null, 2);
-  const blob = new Blob([json], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-};
-
-export const loadRenderingConfigFromFile = (
-  file: File
-): Promise<RenderingConfig> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const config = JSON.parse(
-          event.target?.result as string
-        ) as RenderingConfig;
-        resolve(config);
-      } catch (error) {
-        reject(error);
-      }
-    };
-    reader.onerror = (error) => reject(error);
-    reader.readAsText(file);
-  });
 };
 
 // Example usage:

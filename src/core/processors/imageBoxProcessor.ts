@@ -4,7 +4,7 @@ import {
 } from "../../components/lumina/imageSegmentation";
 import { demo_SceneGraph_ArtCollection_Images } from "../../components/lumina/images";
 import { Node } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 
 const processImageNodesInSceneGraph = async (
   sceneGraph: SceneGraph,

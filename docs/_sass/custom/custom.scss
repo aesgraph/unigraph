@@ -1,0 +1,50 @@
+// This works.
+
+// .side-bar {
+//   z-index: 0;
+//   display: flex;
+//   flex-wrap: wrap;
+//   background-color: $sidebar-color;
+
+//   @include mq(md) {
+//     flex-flow: column nowrap;
+//     position: fixed;
+//     width: $nav-width-md;
+//     height: 100%;
+//     border-right: $border $border-color;
+//     align-items: flex-end;
+//   }
+
+//   @include mq(lg) {
+//     width: calc((100% - #{$nav-width + $content-width}) / 20 + #{$nav-width});
+//     min-width: $nav-width;
+//   }
+// }
+
+// This is broken
+// // Main content adjustments
+// .main-content {
+//   width: 1000px; // Increase content width
+//   margin-left: -100px !important; // Center content
+// }
+
+// // Adjust main container
+// .main {
+//   max-width: 100%; // Allow more space
+//   display: flex;
+//   justify-content: center; // Center the content horizontally
+// }
+
+// // Responsive adjustments
+// @media (min-width: 66.5rem) {
+//   .main-content {
+//     max-width: 1200px;
+//   }
+// }
+
+// // For smaller screens
+// @media (max-width: 50rem) {
+//   .main-content {
+//     padding-left: 1rem; // Reset padding on mobile
+//   }
+// }

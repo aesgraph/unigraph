@@ -1,6 +1,6 @@
 import { Edge, EdgeId } from "../model/Edge";
 import { NodeId } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 
 export interface EdgesToDegreeResult {
   degreesToEdges: Map<number, Edge[]>;

@@ -3,7 +3,7 @@ import { ForceGraph3DInstance } from "3d-force-graph";
 import { hexToRgba } from "../../../utils/colorUtils";
 import { getEdgesToDegree } from "../../analysis/degree";
 import { NodeId } from "../../model/Node";
-import { SceneGraph } from "../../model/SceneGraphv2";
+import { SceneGraph } from "../../model/SceneGraph";
 
 export const focusOnDegrees = (
   nodeId: NodeId,

@@ -3,7 +3,7 @@ import { ForceGraph3dLayoutMode } from "../../AppConfig";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EdgeId } from "../model/Edge";
 import { NodeId } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
 
 export const extractPositionDataFromForceGraphInstance = (

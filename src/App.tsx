@@ -18,8 +18,6 @@ import {
   DEFAULT_APP_CONFIG,
   ForceGraph3dLayoutMode,
 } from "./AppConfig";
-import { solvay_annotations } from "./assets/imageBoxes/solvay_annotations";
-import NodeEditorWizard from "./components/analysis/NodeEditorWizard";
 import PathAnalysisWizard, {
   IPathArgs,
 } from "./components/analysis/PathAnalysisWizard";
@@ -29,14 +27,10 @@ import EntityJsonEditorDialog from "./components/common/EntityJsonEditorDialog";
 import EntityTabDialog from "./components/common/EntityTabDialog";
 import GraphLayoutToolbar from "./components/common/GraphLayoutToolbar";
 import { GraphEntityType } from "./components/common/GraphSearch";
-import JsonEditor from "./components/common/JsonConfigEditor";
-import ConfigPanel from "./components/common/JsonForms";
 import LayoutManager from "./components/common/LayoutManager";
 import LayoutModeRadio from "./components/common/LayoutModeRadio";
 import Legend from "./components/common/Legend";
 import NodeDisplayCard from "./components/common/NodeDisplayCard";
-import UnifiedForceGraphs from "./components/exampleCode/UnifiedForceGraph";
-import WebGLWithHTML from "./components/exampleCode/webglWithHtml";
 import FilterManager from "./components/filters/FilterManager";
 import {
   FilterPreset,
@@ -49,25 +43,20 @@ import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
 import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
 import ImportSvgFromUrlDialog from "./components/ImportSvgFromUrlDialog";
 import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
-import ImageSection from "./components/lumina/ImageBoxCanvas";
 import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
 import Lumina from "./components/lumina/Lumina";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
+import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/SceneGraphDetailView";
 import SceneGraphTitle from "./components/SceneGraphTitle";
-import AtomicModel from "./components/simulations/AtomicModel";
-import GravitySimulation from "./components/simulations/GravitySimulation";
-import GravitySimulation2 from "./components/simulations/GravitySimulation2";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
-import ParticleStickFigure from "./components/simulations/ParticleStickFigure";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
-import SampleParticleEffect from "./components/simulations/SampleParticleEffect";
-import SimulationLab from "./components/simulations/SimulationLab";
-import SolarSystem from "./components/simulations/solarSystemSimulation";
 import UniAppToolbar from "./components/UniAppToolbar";
-import ImageSegmenter from "./components/visualization/ImageSegmenter";
-import TimelineTestbed from "./components/visualization/TimelineTestbed";
 import { AppContextProvider } from "./context/AppContext";
+import {
+  MousePositionProvider,
+  useMousePosition,
+} from "./context/MousePositionContext";
 import {
   DisplayConfig,
   RenderingConfig,
@@ -86,10 +75,7 @@ import {
 import { songAnnotation247_2_entities } from "./core/force-graph/dynamics/247-2";
 import { syncMissingNodesInForceGraph } from "./core/force-graph/forceGraphHelpers";
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
-import {
-  enableZoomAndPanOnSvg,
-  loadRenderingConfigFromFile,
-} from "./core/graphviz/appHelpers";
+import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
 import { GraphvizLayoutType } from "./core/layouts/GraphvizLayoutEngine";
 import {
   Compute_Layout,
@@ -104,11 +90,12 @@ import { EdgeId } from "./core/model/Edge";
 import { Entity } from "./core/model/entity/abstractEntity";
 import { getGraphStatistics, GraphStastics } from "./core/model/GraphBuilder";
 import { NodeDataArgs, NodeId } from "./core/model/Node";
+import { SceneGraph } from "./core/model/SceneGraph";
 import {
   GetCurrentDisplayConfigOf,
+  loadRenderingConfigFromFile,
   SetCurrentDisplayConfigOf,
-} from "./core/model/SceneGraph";
-import { SceneGraph } from "./core/model/SceneGraphv2";
+} from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
 import { deserializeDotToSceneGraph } from "./core/serializers/fromDot";
 import { deserializeGraphmlToSceneGraph } from "./core/serializers/fromGraphml";
@@ -122,10 +109,6 @@ import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/de
 import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
-import {
-  MousePositionProvider,
-  useMousePosition,
-} from "./MousePositionContext";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 
 export type ObjectOf<T> = { [key: string]: T };
@@ -146,38 +129,43 @@ const imageBox: ImageBoxData = {
   },
 };
 
-const simulations: ObjectOf<React.JSX.Element> = {
-  ImageGalleryV3: (
-    <ImageGalleryV3
-      sceneGraph={demo_SceneGraph_SolvayConference}
-      // Pass initial scene graph but allow changing via dropdown
-    />
-  ),
-  demo3: <ImageGalleryV3 sceneGraph={demo_SceneGraph_StackedImageGallery} />,
-  "ImageBox Creator": <ImageBoxCreator />,
-  ImageGalleryV2: <ImageGalleryV2 />,
-  ParticleStickFigure: <ParticleStickFigure />,
-  SampleParticleEffect: <SampleParticleEffect />,
-  SolarSystem: <SolarSystem />,
-  AtomicModel: <AtomicModel />,
-  GravitySimulation1: <GravitySimulation />,
-  GravitySimulation2: <GravitySimulation2 />,
-  GravitySimulation3: <GravitySimulation3 />,
-  WebGlWithHtml: <WebGLWithHTML />,
-  SimulationLab: <SimulationLab />,
-  // StickFigure3d: <StickFigure3D />,
-  ImageGallery: <ImageGallery />,
-  // ImageGallery3: <ImageGallery3 />, // for navigating about procreate drawings
-  // ImageGallery4: <ImageGallery4 />, // basic shape navigation test
-  Lumina: <Lumina />,
-  ImageSection: <ImageSection imageBoxData={imageBox} />,
-  Unified: <UnifiedForceGraphs />,
-  JsonEditor: <JsonEditor />,
-  JsonForms: <ConfigPanel />,
-  mp3: <AudioAnnotator />,
-  imageSegmenter: <ImageSegmenter />,
-  timelineTestbed: <TimelineTestbed annotations={solvay_annotations} />,
-  // canvasSelection: <CanvasSelection />,
+const getSimulations = (
+  sceneGraph: SceneGraph
+): ObjectOf<React.JSX.Element> => {
+  return {
+    ImageGalleryV3: (
+      <ImageGalleryV3
+        sceneGraph={demo_SceneGraph_SolvayConference()}
+        // Pass initial scene graph but allow changing via dropdown
+      />
+    ),
+    demo3: (
+      <ImageGalleryV3 sceneGraph={demo_SceneGraph_StackedImageGallery()} />
+    ),
+    "ImageBox Creator": <ImageBoxCreator sceneGraph={sceneGraph} />,
+    ImageGalleryV2: <ImageGalleryV2 />,
+    // ParticleStickFigure: <ParticleStickFigure />,
+    // SampleParticleEffect: <SampleParticleEffect />,
+    // SolarSystem: <SolarSystem />,
+    // AtomicModel: <AtomicModel />,
+    // GravitySimulation1: <GravitySimulation />,
+    // GravitySimulation2: <GravitySimulation2 />,
+    AccretionDisk: <GravitySimulation3 />,
+    // WebGlWithHtml: <WebGLWithHTML />,
+    // SimulationLab: <SimulationLab />,
+    // StickFigure3d: <StickFigure3D />,
+    ImageGallery: <ImageGallery />,
+    // ImageGallery3: <ImageGallery3 />, // for navigating about procreate drawings
+    // ImageGallery4: <ImageGallery4 />, // basic shape navigation test
+    Lumina: <Lumina sceneGraph={sceneGraph} />,
+    // Unified: <UnifiedForceGraphs />,
+    // JsonEditor: <JsonEditor />,
+    // JsonForms: <ConfigPanel />,
+    mp3: <AudioAnnotator />,
+    // imageSegmenter: <ImageSegmenter />,
+    // timelineTestbed: <TimelineTestbed annotations={solvay_annotations} />,
+    // canvasSelection: <CanvasSelection />,
+  };
 };
 
 export type AppInteractionConfig = {
@@ -195,7 +183,25 @@ export type RenderingView =
   | "Gallery" // Add new view type
   | "Simulation";
 
-const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defaultGraph, svgUrl }) => {
+const AppContent: React.FC<{
+  defaultGraph?: string;
+  svgUrl?: string;
+  defaultActiveView?: string;
+  defaultActiveLayout?: string;
+  showOptionsPanel?: string;
+  showLegendBars?: string;
+  showGraphLayoutToolbar?: string;
+  showRenderConfigOptions?: string;
+}> = ({
+  defaultGraph,
+  svgUrl,
+  defaultActiveView,
+  defaultActiveLayout,
+  showOptionsPanel,
+  showLegendBars,
+  showGraphLayoutToolbar,
+  showRenderConfigOptions,
+}) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -203,6 +209,23 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
   const { mousePosition, setMousePosition } = useMousePosition();
+
+  const clearUrlOfQueryParams = useCallback(() => {
+    const url = new URL(window.location.href);
+    // url.searchParams.delete('graph');
+    // url.searchParams.delete('svgUrl');
+    // url.searchParams.delete('view');
+    // url.searchParams.delete('layout');
+    url.searchParams.delete("showOptionsPanel");
+    url.searchParams.delete("showLegendBars");
+    url.searchParams.delete("showGraphLayoutToolbar");
+    url.searchParams.delete("showRenderConfig");
+    window.history.pushState({}, "", url.toString());
+  }, []);
+
+  const [simulations, setSimulations] = useState<{
+    [key: string]: JSX.Element;
+  }>({});
 
   const [showFilter, setShowFilter] = useState(false);
   const [showFilterManager, setShowFilterManager] = useState(false);
@@ -219,12 +242,49 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
       selectedNodes: new Set(),
     });
 
-  const [isForceGraphConfigEditorVisible, setIsForceGraphConfigEditorVisible] =
-    useState<boolean>(true);
-
-  const handleToggleForceGraphConfigEditor = useCallback(() => {
-    setIsForceGraphConfigEditorVisible((prev) => !prev);
+  const getAppConfigWithUrlOverrides = useCallback((config: AppConfig) => {
+    const layoutToUse = defaultActiveLayout
+      ? (defaultActiveLayout as LayoutEngineOption)
+      : config.activeLayout;
+    return {
+      ...config,
+      activeView: defaultActiveView ?? config.activeView,
+      activeLayout: layoutToUse,
+      forceGraph3dOptions: {
+        ...config.forceGraph3dOptions,
+        layout: defaultActiveLayout
+          ? "Layout"
+          : config.forceGraph3dOptions.layout,
+        showOptionsPanel:
+          showRenderConfigOptions !== undefined
+            ? showRenderConfigOptions === "true"
+            : config.forceGraph3dOptions.showOptionsPanel,
+      },
+      windows: {
+        ...config.windows,
+        showLegendBars:
+          showLegendBars !== undefined
+            ? showLegendBars === "true"
+            : config.windows.showLegendBars,
+        showGraphLayoutToolbar:
+          showGraphLayoutToolbar !== undefined
+            ? showGraphLayoutToolbar === "true"
+            : config.windows.showGraphLayoutToolbar,
+        showOptionsPanel:
+          showOptionsPanel !== undefined
+            ? showOptionsPanel === "true"
+            : config.forceGraph3dOptions.showOptionsPanel,
+      },
+    };
   }, []);
+
+  const handleSetAppConfig = useCallback(
+    (config: AppConfig) => {
+      setAppConfig(getAppConfigWithUrlOverrides(config));
+      console.log("Set app config!", getAppConfigWithUrlOverrides(config));
+    },
+    [getAppConfigWithUrlOverrides]
+  );
 
   const setSelectedNode = useCallback((nodeId: NodeId | null) => {
     setAppInteractionConfig((prevConfig) => ({
@@ -325,6 +385,10 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   );
 
   useEffect(() => {
+    setSimulations(getSimulations(currentSceneGraph));
+  }, [currentSceneGraph]);
+
+  useEffect(() => {
     if (svgUrl) {
       fetchSvgSceneGraph(svgUrl).then(({ sceneGraph, error }) => {
         if (error) {
@@ -334,11 +398,38 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
         }
       });
     } else if (defaultGraph) {
-      handleSetSceneGraph(defaultGraph);
+      handleSetSceneGraph(defaultGraph, false);
     } else {
       handleSetSceneGraph(appConfig.activeSceneGraph);
     }
-  }, [defaultGraph, svgUrl]);
+
+    if (defaultActiveView) {
+      handleSetActiveView(defaultActiveView as RenderingView);
+    }
+
+    if (defaultActiveLayout) {
+      handleSetActiveLayout(defaultActiveLayout as LayoutEngineOption);
+    }
+
+    console.log(
+      "here",
+      showOptionsPanel,
+      showLegendBars,
+      showGraphLayoutToolbar,
+      showRenderConfigOptions
+    );
+
+    handleSetAppConfig(appConfig);
+  }, [
+    defaultGraph,
+    svgUrl,
+    defaultActiveView,
+    defaultActiveLayout,
+    showOptionsPanel,
+    showLegendBars,
+    showGraphLayoutToolbar,
+    showRenderConfigOptions,
+  ]);
 
   useEffect(() => {
     if (
@@ -607,9 +698,12 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   const [graphModelUpdateTime, setGraphModelUpdateTime] = useState<number>(0);
 
   const handleLoadSceneGraph = useCallback(
-    async (graph: SceneGraph) => {
+    async (graph: SceneGraph, clearQueryParams: boolean = true) => {
       const tick = Date.now();
       console.log("Loading SceneGraph", graph.getMetadata().name, "...");
+      if (clearQueryParams) {
+        clearUrlOfQueryParams();
+      }
       safeComputeLayout(graph, appConfig.activeLayout).then(() => {
         setCurrentSceneGraph(graph);
         if (graph.getData().defaultAppConfig) {
@@ -660,12 +754,16 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   );
 
   const handleSetSceneGraph = useCallback(
-    async (key: string) => {
+    async (key: string, clearUrlOfQueryParams: boolean = true) => {
       // Find graph in any category
       let graph: SceneGraph | undefined;
       for (const category of Object.values(sceneGraphs)) {
         if (key in category.graphs) {
-          graph = category.graphs[key];
+          if (typeof category.graphs[key] === "function") {
+            graph = category.graphs[key]();
+          } else {
+            graph = category.graphs[key];
+          }
           break;
         }
       }
@@ -674,11 +772,13 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
         console.log(`Available graphs are : ${Object.keys(getAllGraphs())}`);
         return;
       }
-      handleLoadSceneGraph(graph);
+
+      handleLoadSceneGraph(graph, clearUrlOfQueryParams);
 
       // Update the URL query parameter
       const url = new URL(window.location.href);
       url.searchParams.set("graph", key);
+      url.searchParams.delete("svgUrl");
       window.history.pushState({}, "", url.toString());
     },
     [handleLoadSceneGraph]
@@ -689,12 +789,15 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
     document.body.style.overflow = "hidden";
   }, []);
 
-  const getSimulation = useCallback((key: string): JSX.Element | undefined => {
-    if (key in simulations) {
-      return simulations[key];
-    }
-    return undefined;
-  }, []);
+  const getSimulation = useCallback(
+    (key: string): JSX.Element | undefined => {
+      if (key in simulations) {
+        return simulations[key];
+      }
+      return undefined;
+    },
+    [simulations]
+  );
 
   const handleSetActiveLayout = useCallback((layout: LayoutEngineOption) => {
     setAppConfig((prevConfig) => ({
@@ -888,6 +991,7 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
 
   const handleSetActiveView = useCallback(
     (key: string) => {
+      console.log("setting active view", key);
       setAppConfig((prevConfig) => ({
         ...prevConfig,
         windows: {
@@ -899,6 +1003,9 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
         activeView: key as any,
       }));
       handleFitToView(key);
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", key);
+      window.history.pushState({}, "", url.toString());
     },
     [handleFitToView]
   );
@@ -1058,13 +1165,13 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   const handleLoadSceneGraphFromUrl = useCallback(
     (sceneGraph: SceneGraph) => {
       handleLoadSceneGraph(sceneGraph);
-      
+
       // Update the URL query parameter
       const url = new URL(window.location.href);
       url.searchParams.delete("graph");
       url.searchParams.set("svgUrl", sceneGraph.getMetadata().source ?? "");
       window.history.pushState({}, "", url.toString());
-      
+
       setShowImportSvgFromUrlDialog(false);
     },
     [handleLoadSceneGraph]
@@ -1087,7 +1194,6 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
       handleImportJson,
       handleImportSvg,
       handleFitToView,
-      handleToggleForceGraphConfigEditor,
       GraphMenuActions,
       SimulationMenuActions,
       applyNewLayout,
@@ -1111,16 +1217,10 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
     return new MenuConfig(
       menuConfigCallbacks,
       appConfig,
-      isForceGraphConfigEditorVisible,
       currentSceneGraph,
       forceGraphInstance
     );
-  }, [
-    appConfig,
-    currentSceneGraph,
-    isForceGraphConfigEditorVisible,
-    forceGraphInstance,
-  ]);
+  }, [appConfig, currentSceneGraph, forceGraphInstance]);
 
   const menuConfig = useMemo(
     () => menuConfigInstance.getConfig(),
@@ -1404,7 +1504,6 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   ]);
 
   useEffect(() => {
-    console.log("activated", appConfig.activeView);
     if (
       layoutResult?.layoutType !== appConfig.activeLayout &&
       (appConfig.activeView === "Graphviz" ||
@@ -1451,6 +1550,9 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
       enableZoomAndPanOnSvg(graphvizRef.current);
       graphvizFitToView(graphvizRef.current);
     }
+    // const url = new URL(window.location.href);
+    // url.searchParams.set("layout", layoutResult?.layoutType as string);
+    // window.history.pushState({}, "", url.toString());
   }, [forceGraphInstance, layoutResult, appConfig.forceGraph3dOptions.layout]);
 
   const handleSearchResult = useCallback((nodeIds: string[]) => {
@@ -1851,7 +1953,7 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
               }
             />
           )}
-        {isForceGraphConfigEditorVisible && (
+        {appConfig.forceGraph3dOptions.showOptionsPanel && (
           <div
             style={{
               zIndex: "3000",
@@ -2017,10 +2119,39 @@ const AppContent: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defa
   );
 };
 
-const App: React.FC<{ defaultGraph?: string; svgUrl?: string }> = ({ defaultGraph, svgUrl }) => {
+interface AppProps {
+  defaultGraph?: string;
+  svgUrl?: string;
+  defaultActiveView?: string;
+  defaultActiveLayout?: string;
+  showOptionsPanel?: string;
+  showLegendBars?: string;
+  showGraphLayoutToolbar?: string;
+  showRenderConfigOptions?: string;
+}
+
+const App: React.FC<AppProps> = ({
+  defaultGraph,
+  svgUrl,
+  defaultActiveView,
+  defaultActiveLayout,
+  showOptionsPanel,
+  showLegendBars,
+  showGraphLayoutToolbar,
+  showRenderConfigOptions,
+}) => {
   return (
     <MousePositionProvider>
-      <AppContent defaultGraph={defaultGraph} svgUrl={svgUrl} />
+      <AppContent
+        defaultGraph={defaultGraph}
+        svgUrl={svgUrl}
+        defaultActiveView={defaultActiveView}
+        defaultActiveLayout={defaultActiveLayout}
+        showOptionsPanel={showOptionsPanel}
+        showLegendBars={showLegendBars}
+        showGraphLayoutToolbar={showGraphLayoutToolbar}
+        showRenderConfigOptions={showRenderConfigOptions}
+      />
     </MousePositionProvider>
   );
 };

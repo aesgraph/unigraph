@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { ImageBoxData } from "../../core/types/ImageBoxData";
-import { convertWorldToScreenCoordinates } from "../../core/webgl/webglHelpers";
-import ImageBoxCanvas from "./ImageBoxCanvas";
-import "./ImageBoxCard.css"; // Import the CSS file
-import { images } from "./images";
+import React, { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { ImageBoxData } from '../../core/types/ImageBoxData';
+import { convertWorldToScreenCoordinates } from '../../core/webgl/webglHelpers';
+import ImageBoxCanvas from './ImageBoxCanvas';
+import './ImageBoxCard.css'; // Import the CSS file
+import { images } from './images';
 
 interface ImageBoxProps {
   data: ImageBoxData;
@@ -73,7 +73,7 @@ const ImageBoxCard: React.FC<ImageBoxProps> = ({
     image.onload = () => {
       const canvas = canvasRef.current;
       if (canvas) {
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         if (ctx) {
           const { topLeft, bottomRight } = data;
           const topLeftScreen = convertWorldToScreenCoordinates(
@@ -129,15 +129,15 @@ const ImageBoxCard: React.FC<ImageBoxProps> = ({
         <strong>Top Left:</strong> {`(${data.topLeft.x}, ${data.topLeft.y})`}
       </div>
       <div>
-        <strong>Bottom Right:</strong>{" "}
+        <strong>Bottom Right:</strong>{' '}
         {`(${data.bottomRight.x}, ${data.bottomRight.y})`}
       </div>
       <div>
-        <strong>Top Left (Canvas):</strong>{" "}
+        <strong>Top Left (Canvas):</strong>{' '}
         {`(${topLeftScreen.x}, ${topLeftScreen.y})`}
       </div>
       <div>
-        <strong>Bottom Right (Canvas):</strong>{" "}
+        <strong>Bottom Right (Canvas):</strong>{' '}
         {`(${bottomRightScreen.x}, ${bottomRightScreen.y})`}
       </div>
     </div>

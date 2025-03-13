@@ -1,6 +1,6 @@
 import { Graph } from "../../core/model/Graph";
 import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 interface SphereNodeMetadata {
   id: string;
@@ -128,9 +128,11 @@ function createSphereMesh(radius: number = 100, segments: number = 12): Graph {
   return graph;
 }
 
-const graph = createSphereMesh();
 
-export const sphereMeshGraph = new SceneGraph({
+
+export const sphereMeshGraph = () => { 
+  const graph = createSphereMesh();
+  return new SceneGraph({
   graph,
   metadata: {
     name: "Sphere Mesh",
@@ -143,3 +145,4 @@ export const sphereMeshGraph = new SceneGraph({
   // ),
   //   },
 });
+}

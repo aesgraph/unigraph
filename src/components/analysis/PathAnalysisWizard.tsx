@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { computePath } from "../../core/analysis/pathSearch";
 import { NodeId } from "../../core/model/Node";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import GraphSearch from "../common/GraphSearch";
 import styles from "./PathAnalysisWizard.module.css";
 

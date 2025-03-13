@@ -1,15 +1,15 @@
-import { demo_SceneGraph_ArtCollection } from "../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection";
-import { Position } from "../layouts/layoutHelpers";
+import { demo_SceneGraph_ArtCollection } from '../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection';
+import { Position } from '../layouts/layoutHelpers';
 import {
   AbstractEntity,
   EntityData,
   EntityDataArgs,
   EntityId,
-} from "../model/entity/abstractEntity";
-import { EntitiesContainer } from "../model/entity/entitiesContainer";
-import { ImageBoxData } from "./ImageBoxData";
+} from '../model/entity/abstractEntity';
+import { EntitiesContainer } from '../model/entity/entitiesContainer';
+import { ImageBoxData } from './ImageBoxData';
 
-export type ImageAnnotationId = EntityId & { readonly kind: "imageAnnotation" };
+export type ImageAnnotationId = EntityId & { readonly kind: 'imageAnnotation' };
 
 type ImageAnnotationData = EntityData & {
   imageUrl: string;
@@ -38,7 +38,7 @@ class ImageAnnotation extends AbstractEntity<
   }
 
   getEntityType(): string {
-    return "imageAnnotation";
+    return 'imageAnnotation';
   }
 
   static create(
@@ -57,7 +57,8 @@ export const IMAGE_ANNOTATION_ENTITIES = (): EntitiesContainer<
     ImageAnnotationId,
     ImageAnnotation
   >();
-  for (const imageBox of demo_SceneGraph_ArtCollection.getNodes()) {
+  const artCollection = demo_SceneGraph_ArtCollection();
+  for (const imageBox of artCollection.getNodes()) {
     const imageAnnotation = new ImageAnnotation(imageBox.getId(), {
       id: imageBox.getId(),
       imageUrl: imageBox.getAllUserData().imageUrl,

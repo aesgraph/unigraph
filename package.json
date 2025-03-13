@@ -5,7 +5,10 @@
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "tsc && webpack --mode production",
-    "test": "npx jest"
+    "test": "npx jest",
+    "doc-server": "cd docs && bundle exec jekyll serve",
+    "doc-server-build": "cd docs && bundle exec jekyll build",
+    "doc-server-clean": "cd docs && bundle exec jekyll clean"
   },
   "keywords": [],
   "author": "",

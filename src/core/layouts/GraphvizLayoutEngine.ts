@@ -3,7 +3,7 @@ import { toDot } from "ts-graphviz";
 import { parseGraphvizPositions } from "../../controllers/graphvisJsonParser";
 import { GraphvizOutput } from "../../controllers/graphvizHelpers";
 import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphviz";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import {
   NodePositionData,
   translateToPositiveCoordinates,

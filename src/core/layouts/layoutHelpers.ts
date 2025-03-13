@@ -1,6 +1,6 @@
 import Graph from "graphology";
 import { ObjectOf } from "../../App";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 
 export type Position = { x: number; y: number; z?: number };
 export type NodePositionData = ObjectOf<Position>;

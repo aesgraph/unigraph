@@ -1,4 +1,4 @@
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { computeCustomLayout, CustomLayoutType } from "./CustomLayoutEngine";
 import {
   GraphologyLayoutEngine,

@@ -1,7 +1,7 @@
 ---
 title: Motivation
 nav_order: 1
-parent: "Overview"
+parent: 'Overview'
 ---
 
 ## Motivation
@@ -14,34 +14,39 @@ _a quickly-made diagram_
 ![Diagram1](../assets/images/diagram1.png)
 
 ### Graph-based Web Libraries
+
 #### Diagramming Tools
-[MermaidJS](<https://mermaid.live/edit>)<br>
-[Graphviz](<https://graphviz.org/>)<br>
+
+[MermaidJS](https://mermaid.live/edit)<br>
+[Graphviz](https://graphviz.org/)<br>
 
 #### Rendering and Interaction Libraries
-[ReactFlow](<https://reactflow.dev/examples>)<br>
-[ForceGraph2d](<https://github.com/vasturiano/react-force-graph>) & [ForceGraph3d](<https://github.com/vasturiano/3d-force-graph>)<br>
-[SigmaJS](<https://www.sigmajs.org/>)<br>
-[Cytoscape](<https://js.cytoscape.org/>)<br>
+
+[ReactFlow](https://reactflow.dev/examples)<br>
+[ForceGraph2d](https://github.com/vasturiano/react-force-graph) & [ForceGraph3d](https://github.com/vasturiano/3d-force-graph)<br>
+[SigmaJS](https://www.sigmajs.org/)<br>
+[Cytoscape](https://js.cytoscape.org/)<br>
 
 ### Graph-based Web Applications: pre-Unigraph
+
 Despite the shared behaviors and functionalities among these tools, they have been developed independently, leading to significant duplication of effort. Moreover, they often lack the flexibility needed for seamless integration into larger systems. Unigraph aims to establish a common framework for the client-side, enabling interoperability across graph-based applications and fostering a more cohesive ecosystem.
 
-_Examples_
+_Existing Example Apps_
 
 <u>Web Apps</u><br>
 _[Graph Based]_<br>
-[MermaidJS](<https://mermaid.live/>)<br>
-[GraphvizOnline.1](<http://www.webgraphviz.com/>)<br>
-[GraphvizOnline.2](<https://dreampuf.github.io/GraphvizOnline/>)<br>
-[CytoscapeJS](<https://web.cytoscape.org/>)<br>
-[Gephi-lite](<https://gephi.org/gephi-lite/>)<br>
+[MermaidJS](https://mermaid.live/)<br>
+[GraphvizOnline.1](https://magjac.com/graphviz-visual-editor/)<br>
+[GraphvizOnline.2](http://www.webgraphviz.com/)<br>
+[GraphvizOnline.3](https://dreampuf.github.io/GraphvizOnline/)<br>
+[CytoscapeJS](https://web.cytoscape.org/)<br>
+[Gephi-lite](https://gephi.org/gephi-lite/)<br>
 
 _[Graph-adjacent]_<br>
-[Excalidraw](<https://excalidraw.com/>)<br>
+[Excalidraw](https://excalidraw.com/)<br>
 
 <u>Services</u><br>
-[Kumu.io](<https://kumu.io/>)<br>
-[Loqseq](<https://logseq.com/>)<br>
-[Neo4j Sandbox](<https://neo4j.com/sandbox/>)
-
+[Kumu.io](https://kumu.io/)<br>
+[Loqseq](https://logseq.com/)<br>
+[Neo4j Sandbox](https://neo4j.com/sandbox/)
+[Obsidian.md](https://obsidian.md/)

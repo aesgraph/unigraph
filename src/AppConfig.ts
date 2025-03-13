@@ -25,7 +25,7 @@ export type AppConfig = {
 export const DEFAULT_APP_CONFIG = (): AppConfig => {
   return {
     activeView: "ForceGraph3d",
-    activeSceneGraph: "E8 Petrie 4.21",
+    activeSceneGraph: "AcademicsKG",
     windows: {
       showLegendBars: true,
       showOptionsPanel: true,
@@ -34,7 +34,7 @@ export const DEFAULT_APP_CONFIG = (): AppConfig => {
     },
     forceGraph3dOptions: {
       layout: "Physics",
-      showOptionsPanel: false,
+      showOptionsPanel: true,
     },
     activeLayout: CustomLayoutType.Random,
   };

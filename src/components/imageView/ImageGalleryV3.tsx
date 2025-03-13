@@ -16,7 +16,7 @@ import {
   loadImageBoxesFromSceneGraph,
   loadImagesFromSceneGraph,
 } from "../../core/layouts/renderImageBox";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { ImageBoxData } from "../../core/types/ImageBoxData";
 import AnnotationsList, { Annotation } from "../lumina/AnnotationsList";
 import ImageBoxList from "../lumina/ImageBoxList";

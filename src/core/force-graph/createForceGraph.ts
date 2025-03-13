@@ -14,7 +14,7 @@ import { ForceGraph3dLayoutMode } from "../../AppConfig";
 import { ILayoutEngineResult } from "../layouts/LayoutEngine";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
 import { flyToNode } from "../webgl/webglHelpers";
 import { updateVisibleEntitiesInForceGraphInstance } from "./forceGraphHelpers";

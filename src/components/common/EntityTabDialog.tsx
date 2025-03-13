@@ -8,8 +8,8 @@ import { Entity } from "../../core/model/entity/abstractEntity";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
 import { EntityCache } from "../../core/model/entity/entityCache";
 import { EdgesContainer, NodesContainer } from "../../core/model/Graph";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import EntityTable from "./EntityTable";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
 
 interface EntityTabDialogProps {
   nodes: NodesContainer;

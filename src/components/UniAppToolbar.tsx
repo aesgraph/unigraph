@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 import GraphSearch from "./common/GraphSearch";
 import "./UniAppToolbar.css";
 

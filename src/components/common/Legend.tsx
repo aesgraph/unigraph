@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DisplayConfig } from "../../controllers/RenderingManager";
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import "./Legend.css";
 
 interface LegendProps {

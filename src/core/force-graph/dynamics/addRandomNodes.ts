@@ -1,7 +1,7 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { v4 as uuidv4 } from "uuid";
 import { getRandomColorFromPalette } from "../../../utils/colorUtils";
-import { SceneGraph } from "../../model/SceneGraphv2";
+import { SceneGraph } from "../../model/SceneGraph";
 
 const NODE_TYPES = [
   "type0",

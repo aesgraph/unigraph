@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 import { ImageBoxData } from "../core/types/ImageBoxData";
 
 interface Annotation {

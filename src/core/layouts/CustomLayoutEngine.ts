@@ -1,5 +1,5 @@
 import { Node } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { NodePositionData } from "./layoutHelpers";
 // import { multiLevel3DLayout } from "./o3-mini-high-layouts/no1";
 // import { multiLevel3DLayout_2 } from "./o3-mini-high-layouts/no2";

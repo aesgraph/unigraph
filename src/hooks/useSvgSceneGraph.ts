@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Graph } from "../core/model/Graph";
-import { SceneGraph } from "../core/model/SceneGraphv2";
+import { SceneGraph } from "../core/model/SceneGraph";
 import { loadSvgFromUrl } from "../utils/svgLoader";
 
 export async function fetchSvgSceneGraph(svgUrl: string): Promise<{

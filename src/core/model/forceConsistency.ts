@@ -1,6 +1,5 @@
 import { Graph } from "./Graph";
 import { Node } from "./Node";
-import { SceneGraph } from "./SceneGraphv2";
 
 interface IForceConsistencyResult {
   nodesAdded: Node[];

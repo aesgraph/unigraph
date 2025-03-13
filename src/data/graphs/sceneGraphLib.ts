@@ -1,4 +1,4 @@
-import { SceneGraph } from "../../core/model/SceneGraphv2";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
 import { blobMeshGraph } from "./blobMesh";
 import { createE8Petrie2DGraph } from "./e8Petrie2d";
@@ -13,7 +13,7 @@ import { demo_SceneGraph_StackedImageGallery } from "./Gallery_Demos/demo_SceneG
 import { demo_SceneGraph_StackedGalleryTransparent } from "./Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
 import { demo_SceneGraph_Thinking } from "./Gallery_Demos/demo_SceneGraph_Thinking";
 import { journalSceneGraph } from "./journal";
-import { mergeGraph } from "./mergeGraph";
+import { demo_sceneGraph_academicsKG } from "./mergeGraph";
 import { randomBigGraph } from "./randomBig";
 import { randomBiggestGraph } from "./randomBiggest";
 import { sphereMeshGraph } from "./sphereMesh";
@@ -25,7 +25,7 @@ import { unigraphGraph } from "./unigraph";
 
 export interface SceneGraphCategory {
   name: string;
-  graphs: { [key: string]: SceneGraph };
+  graphs: { [key: string]: SceneGraph | (() => SceneGraph) };
 }
 
 export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
@@ -48,7 +48,7 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
     graphs: {
       "E8 Petrie 4.21": demo_SceneGraph_e8petrieProjection,
       "E8 4.21 T2 B6": demo_SceneGraph_e8petrieProjection_421t2b6,
-      "E8 Copilot Attempt": createE8Petrie2DGraph(),
+      "E8 Copilot Attempt": createE8Petrie2DGraph,
     },
   },
   "Mesh Graphs": {
@@ -66,7 +66,7 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
       biggest: randomBiggestGraph,
       unigraph: unigraphGraph,
       journal: journalSceneGraph,
-      merged: mergeGraph,
+      AcademicsKG: demo_sceneGraph_academicsKG,
     },
   },
   "Thinker Graphs": {
@@ -90,8 +90,10 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
 };
 
 // Helper function to get all graphs flattened
-export const getAllGraphs = (): { [key: string]: SceneGraph } => {
-  const allGraphs: { [key: string]: SceneGraph } = {};
+export const getAllGraphs = (): {
+  [key: string]: SceneGraph | (() => SceneGraph);
+} => {
+  const allGraphs: { [key: string]: SceneGraph | (() => SceneGraph) } = {};
   Object.values(sceneGraphs).forEach((category) => {
     Object.entries(category.graphs).forEach(([key, graph]) => {
       allGraphs[key] = graph;
@@ -100,7 +102,9 @@ export const getAllGraphs = (): { [key: string]: SceneGraph } => {
   return allGraphs;
 };
 
-export const getSceneGraph = (name: string): SceneGraph => {
+export const getSceneGraph = (
+  name: string
+): SceneGraph | (() => SceneGraph) => {
   for (const [k, graphs] of Object.entries(sceneGraphs)) {
     for (const [key, graph] of Object.entries(graphs.graphs)) {
       if (key === name) {
@@ -109,4 +113,4 @@ export const getSceneGraph = (name: string): SceneGraph => {
     }
   }
   throw new Error(`SceneGraph not found: ${name}`);
-}
+};

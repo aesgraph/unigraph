@@ -3,7 +3,7 @@ import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { AppConfig } from "../../AppConfig";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { createForceGraph, IForceGraphRenderConfig } from "./createForceGraph";
 
 export interface IForceGraphEventHandlers {

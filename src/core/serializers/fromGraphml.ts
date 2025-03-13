@@ -1,7 +1,7 @@
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { forceConsistencyOnGraph } from "../model/forceConsistency";
 import { Graph } from "../model/Graph";
-import { SceneGraph } from "../model/SceneGraphv2";
+import { SceneGraph } from "../model/SceneGraph";
 import { validateSceneGraph } from "../model/validateSceneGraph";
 
 export async function deserializeGraphmlToSceneGraph(

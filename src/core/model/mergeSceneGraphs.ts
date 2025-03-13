@@ -3,7 +3,7 @@ import {
   RenderingConfig,
 } from "../../controllers/RenderingManager";
 import { Graph } from "./Graph";
-import { SceneGraph } from "./SceneGraphv2";
+import { SceneGraph } from "./SceneGraph";
 
 export const mergeIntoSceneGraph = (a: SceneGraph, b: SceneGraph): void => {
   mergeGraph(a.getGraph(), b.getGraph());

@@ -1,6 +1,6 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { SongAnnotationData } from "../../../mp3/SongAnnotation";
-import { SceneGraph } from "../../model/SceneGraphv2";
+import { SceneGraph } from "../../model/SceneGraph";
 
 interface SpawnerConfig {
   maxNodes?: number; // Maximum number of nodes to spawn per annotation
