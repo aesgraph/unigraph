@@ -12,6 +12,8 @@ import { demo_SceneGraph_SolvayConference } from "./Gallery_Demos/demo_SceneGrap
 import { demo_SceneGraph_StackedImageGallery } from "./Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { demo_SceneGraph_StackedGalleryTransparent } from "./Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
 import { demo_SceneGraph_Thinking } from "./Gallery_Demos/demo_SceneGraph_Thinking";
+import { graphManagementWorkflowDiagram } from "./graphManagementWorkflow";
+import { graphManagementWorkflowDiagram2 } from "./graphManagementWorkflow2";
 import { journalSceneGraph } from "./journal";
 import { demo_sceneGraph_academicsKG } from "./mergeGraph";
 import { randomBigGraph } from "./randomBig";
@@ -41,6 +43,8 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
     graphs: {
       "Demo 1": demo_SceneGraph_SolvayConference,
       thoughtDiagram: thoughtDiagram,
+      graphManagementWorkflowDiagram: graphManagementWorkflowDiagram(),
+      graphManagementWorkflowDiagram2: graphManagementWorkflowDiagram2(),
     },
   },
   "Math Graphs": {

@@ -192,6 +192,7 @@ const AppContent: React.FC<{
   showLegendBars?: string;
   showGraphLayoutToolbar?: string;
   showRenderConfigOptions?: string;
+  showToolbar?: string;
 }> = ({
   defaultGraph,
   svgUrl,
@@ -201,6 +202,7 @@ const AppContent: React.FC<{
   showLegendBars,
   showGraphLayoutToolbar,
   showRenderConfigOptions,
+  showToolbar,
 }) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
@@ -1614,6 +1616,9 @@ const AppContent: React.FC<{
   );
 
   const renderUniappToolbar = React.useMemo(() => {
+    if (showToolbar === "false") {
+      return null;
+    }
     return (
       <UniAppToolbar
         config={menuConfig}
@@ -2128,6 +2133,7 @@ interface AppProps {
   showLegendBars?: string;
   showGraphLayoutToolbar?: string;
   showRenderConfigOptions?: string;
+  showToolbar?: string;
 }
 
 const App: React.FC<AppProps> = ({
@@ -2139,6 +2145,7 @@ const App: React.FC<AppProps> = ({
   showLegendBars,
   showGraphLayoutToolbar,
   showRenderConfigOptions,
+  showToolbar,
 }) => {
   return (
     <MousePositionProvider>
@@ -2151,6 +2158,7 @@ const App: React.FC<AppProps> = ({
         showLegendBars={showLegendBars}
         showGraphLayoutToolbar={showGraphLayoutToolbar}
         showRenderConfigOptions={showRenderConfigOptions}
+        showToolbar={showToolbar}
       />
     </MousePositionProvider>
   );

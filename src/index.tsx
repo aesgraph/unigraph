@@ -1,23 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-import './index.css';
+import "./index.css";
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   const urlParams = new URLSearchParams(window.location.search);
-  const graphName = urlParams.get('graph') ?? undefined;
-  const svgUrl = urlParams.get('svgUrl') ?? undefined;
-  const activeView = urlParams.get('view') ?? undefined;
-  const activeLayout = urlParams.get('layout') ?? undefined;
-  const showOptionsPanel = urlParams.get('showOptionsPanel') ?? undefined;
-  const showLegendBars = urlParams.get('showLegendBars') ?? undefined;
+  const graphName = urlParams.get("graph") ?? undefined;
+  const svgUrl = urlParams.get("svgUrl") ?? undefined;
+  const activeView = urlParams.get("view") ?? undefined;
+  const activeLayout = urlParams.get("layout") ?? undefined;
+  const showOptionsPanel = urlParams.get("showOptionsPanel") ?? undefined;
+  const showLegendBars = urlParams.get("showLegendBars") ?? undefined;
   const showGraphLayoutToolbar =
-    urlParams.get('showGraphLayoutToolbar') ?? undefined;
+    urlParams.get("showGraphLayoutToolbar") ?? undefined;
   const showRenderConfigOptions =
-    urlParams.get('showRenderConfig') ?? undefined;
+    urlParams.get("showRenderConfig") ?? undefined;
+  const showToolbar = urlParams.get("showToolbar") ?? undefined;
   root.render(
     <App
       defaultGraph={graphName}
@@ -28,6 +29,7 @@ if (rootElement) {
       showLegendBars={showLegendBars}
       showGraphLayoutToolbar={showGraphLayoutToolbar}
       showRenderConfigOptions={showRenderConfigOptions}
+      showToolbar={showToolbar}
     />
   );
 }
