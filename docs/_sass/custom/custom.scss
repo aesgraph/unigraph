@@ -1,31 +1,31 @@
-.side-bar {
-  z-index: 0;
-  display: flex;
-  flex-wrap: wrap;
-  background-color: $sidebar-color;
+// This works.
 
-  @include mq(md) {
-    flex-flow: column nowrap;
-    position: fixed;
-    width: $nav-width-md;
-    height: 100%;
-    border-right: $border $border-color;
-    align-items: flex-end;
-  }
+// .side-bar {
+//   z-index: 0;
+//   display: flex;
+//   flex-wrap: wrap;
+//   background-color: $sidebar-color;
 
-  @include mq(lg) {
-    width: calc((100% - #{$nav-width + $content-width}) / 20 + #{$nav-width});
-    min-width: $nav-width;
-  }
-}
+//   @include mq(md) {
+//     flex-flow: column nowrap;
+//     position: fixed;
+//     width: $nav-width-md;
+//     height: 100%;
+//     border-right: $border $border-color;
+//     align-items: flex-end;
+//   }
 
+//   @include mq(lg) {
+//     width: calc((100% - #{$nav-width + $content-width}) / 20 + #{$nav-width});
+//     min-width: $nav-width;
+//   }
+// }
+
+// This is broken
 // // Main content adjustments
 // .main-content {
-// width: 1200px !important; // Increase content width
-// max-width: 1200px; // Increase content width
-// margin-left: auto; // Auto margins for centering
-// margin-right: auto;
-// padding-left: 280px; // Add padding instead of margin to account for sidebar
+//   width: 1000px; // Increase content width
+//   margin-left: -100px !important; // Center content
 // }
 
 // // Adjust main container
