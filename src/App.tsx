@@ -1,6 +1,6 @@
-import { ForceGraph3DInstance } from '3d-force-graph';
-import { Graphviz } from '@hpcc-js/wasm';
-import { Position, ReactFlowInstance } from '@xyflow/react';
+import { ForceGraph3DInstance } from "3d-force-graph";
+import { Graphviz } from "@hpcc-js/wasm";
+import { Position, ReactFlowInstance } from "@xyflow/react";
 import React, {
   JSX,
   useCallback,
@@ -8,60 +8,60 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import { FaExpand } from 'react-icons/fa';
-import { toDot } from 'ts-graphviz';
-import { v4 as uuidv4 } from 'uuid';
-import './App.css';
+} from "react";
+import { FaExpand } from "react-icons/fa";
+import { toDot } from "ts-graphviz";
+import { v4 as uuidv4 } from "uuid";
+import "./App.css";
 import {
   AppConfig,
   DEFAULT_APP_CONFIG,
   ForceGraph3dLayoutMode,
-} from './AppConfig';
+} from "./AppConfig";
 import PathAnalysisWizard, {
   IPathArgs,
-} from './components/analysis/PathAnalysisWizard';
-import ContextMenu, { ContextMenuItem } from './components/common/ContextMenu';
-import EntityDataDisplayCard from './components/common/EntityDataDisplayCard';
-import EntityJsonEditorDialog from './components/common/EntityJsonEditorDialog';
-import EntityTabDialog from './components/common/EntityTabDialog';
-import GraphLayoutToolbar from './components/common/GraphLayoutToolbar';
-import { GraphEntityType } from './components/common/GraphSearch';
-import LayoutManager from './components/common/LayoutManager';
-import LayoutModeRadio from './components/common/LayoutModeRadio';
-import Legend from './components/common/Legend';
-import NodeDisplayCard from './components/common/NodeDisplayCard';
-import FilterManager from './components/filters/FilterManager';
+} from "./components/analysis/PathAnalysisWizard";
+import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
+import EntityDataDisplayCard from "./components/common/EntityDataDisplayCard";
+import EntityJsonEditorDialog from "./components/common/EntityJsonEditorDialog";
+import EntityTabDialog from "./components/common/EntityTabDialog";
+import GraphLayoutToolbar from "./components/common/GraphLayoutToolbar";
+import { GraphEntityType } from "./components/common/GraphSearch";
+import LayoutManager from "./components/common/LayoutManager";
+import LayoutModeRadio from "./components/common/LayoutModeRadio";
+import Legend from "./components/common/Legend";
+import NodeDisplayCard from "./components/common/NodeDisplayCard";
+import FilterManager from "./components/filters/FilterManager";
 import {
   FilterPreset,
   FilterRuleDefinition,
-} from './components/filters/FilterRuleDefinition';
-import FilterWindow from './components/filters/FilterWindow';
-import ForceGraphLayoutRadio from './components/force-graph/ForceGraphLayoutRadio';
-import ForceGraphRenderConfigEditor from './components/force-graph/ForceGraphRenderConfigEditor';
-import ImageGalleryV2 from './components/imageView/ImageGalleryV2';
-import ImageGalleryV3 from './components/imageView/ImageGalleryV3';
-import ImportSvgFromUrlDialog from './components/ImportSvgFromUrlDialog';
-import ImageGallery from './components/lumina/galleryTestbed/ImageGallery';
-import ImageBoxCreator from './components/lumina/ImageBoxCreator';
-import Lumina from './components/lumina/Lumina';
-import { IMenuConfigCallbacks, MenuConfig } from './components/MenuConfig';
-import NodeEditorWizard from './components/NodeEditorWizard';
-import SceneGraphDetailView from './components/SceneGraphDetailView';
-import SceneGraphTitle from './components/SceneGraphTitle';
-import GravitySimulation3 from './components/simulations/GravitySimulation3';
-import ReactFlowPanel from './components/simulations/ReactFlowPanel';
-import UniAppToolbar from './components/UniAppToolbar';
-import { AppContextProvider } from './context/AppContext';
+} from "./components/filters/FilterRuleDefinition";
+import FilterWindow from "./components/filters/FilterWindow";
+import ForceGraphLayoutRadio from "./components/force-graph/ForceGraphLayoutRadio";
+import ForceGraphRenderConfigEditor from "./components/force-graph/ForceGraphRenderConfigEditor";
+import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
+import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
+import ImportSvgFromUrlDialog from "./components/ImportSvgFromUrlDialog";
+import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
+import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
+import Lumina from "./components/lumina/Lumina";
+import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
+import NodeEditorWizard from "./components/NodeEditorWizard";
+import SceneGraphDetailView from "./components/SceneGraphDetailView";
+import SceneGraphTitle from "./components/SceneGraphTitle";
+import GravitySimulation3 from "./components/simulations/GravitySimulation3";
+import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
+import UniAppToolbar from "./components/UniAppToolbar";
+import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
   useMousePosition,
-} from './context/MousePositionContext';
+} from "./context/MousePositionContext";
 import {
   DisplayConfig,
   RenderingConfig,
   RenderingManager__DisplayMode,
-} from './controllers/RenderingManager';
+} from "./controllers/RenderingManager";
 import {
   attachRepulsiveForce,
   bindEventsToGraphInstance,
@@ -71,54 +71,54 @@ import {
   refreshForceGraphInstance,
   updateNodePositions,
   zoomToFit,
-} from './core/force-graph/createForceGraph';
-import { songAnnotation247_2_entities } from './core/force-graph/dynamics/247-2';
-import { syncMissingNodesInForceGraph } from './core/force-graph/forceGraphHelpers';
-import { ForceGraphManager } from './core/force-graph/ForceGraphManager';
-import { enableZoomAndPanOnSvg } from './core/graphviz/appHelpers';
-import { GraphvizLayoutType } from './core/layouts/GraphvizLayoutEngine';
+} from "./core/force-graph/createForceGraph";
+import { songAnnotation247_2_entities } from "./core/force-graph/dynamics/247-2";
+import { syncMissingNodesInForceGraph } from "./core/force-graph/forceGraphHelpers";
+import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
+import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
+import { GraphvizLayoutType } from "./core/layouts/GraphvizLayoutEngine";
 import {
   Compute_Layout,
   ILayoutEngineResult,
   LayoutEngineOption,
   PresetLayoutType,
-} from './core/layouts/LayoutEngine';
-import { fitToRect, NodePositionData } from './core/layouts/layoutHelpers';
-import { ConvertSceneGraphToGraphviz } from './core/model/ConvertSceneGraphToGraphviz';
-import { DisplayManager } from './core/model/DisplayManager';
-import { EdgeId } from './core/model/Edge';
-import { Entity } from './core/model/entity/abstractEntity';
-import { getGraphStatistics, GraphStastics } from './core/model/GraphBuilder';
-import { NodeDataArgs, NodeId } from './core/model/Node';
-import { SceneGraph } from './core/model/SceneGraph';
+} from "./core/layouts/LayoutEngine";
+import { fitToRect, NodePositionData } from "./core/layouts/layoutHelpers";
+import { ConvertSceneGraphToGraphviz } from "./core/model/ConvertSceneGraphToGraphviz";
+import { DisplayManager } from "./core/model/DisplayManager";
+import { EdgeId } from "./core/model/Edge";
+import { Entity } from "./core/model/entity/abstractEntity";
+import { getGraphStatistics, GraphStastics } from "./core/model/GraphBuilder";
+import { NodeDataArgs, NodeId } from "./core/model/Node";
+import { SceneGraph } from "./core/model/SceneGraph";
 import {
   GetCurrentDisplayConfigOf,
   loadRenderingConfigFromFile,
   SetCurrentDisplayConfigOf,
-} from './core/model/utils';
-import { exportGraphDataForReactFlow } from './core/react-flow/exportGraphDataForReactFlow';
-import { deserializeDotToSceneGraph } from './core/serializers/fromDot';
-import { deserializeGraphmlToSceneGraph } from './core/serializers/fromGraphml';
-import { deserializeSvgToSceneGraph } from './core/serializers/fromSvg';
-import { deserializeSceneGraphFromJson } from './core/serializers/toFromJson';
-import { IMAGE_ANNOTATION_ENTITIES } from './core/types/ImageAnnotation';
-import { ImageBoxData } from './core/types/ImageBoxData';
-import { flyToNode } from './core/webgl/webglHelpers';
-import { extractPositionsFromNodes } from './data/graphs/blobMesh';
-import { demo_SceneGraph_SolvayConference } from './data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference';
-import { demo_SceneGraph_StackedImageGallery } from './data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery';
-import { getAllGraphs, sceneGraphs } from './data/graphs/sceneGraphLib';
-import { fetchSvgSceneGraph } from './hooks/useSvgSceneGraph';
-import AudioAnnotator from './mp3/AudioAnnotator';
+} from "./core/model/utils";
+import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
+import { deserializeDotToSceneGraph } from "./core/serializers/fromDot";
+import { deserializeGraphmlToSceneGraph } from "./core/serializers/fromGraphml";
+import { deserializeSvgToSceneGraph } from "./core/serializers/fromSvg";
+import { deserializeSceneGraphFromJson } from "./core/serializers/toFromJson";
+import { IMAGE_ANNOTATION_ENTITIES } from "./core/types/ImageAnnotation";
+import { ImageBoxData } from "./core/types/ImageBoxData";
+import { flyToNode } from "./core/webgl/webglHelpers";
+import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
+import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
+import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
+import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
+import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
+import AudioAnnotator from "./mp3/AudioAnnotator";
 
 export type ObjectOf<T> = { [key: string]: T };
 
 const imageBox: ImageBoxData = {
-  id: 'q0jo1k',
-  label: 'q0jo1k',
-  type: 'ImageBox',
-  description: '',
-  imageUrl: './assets/image0.png',
+  id: "q0jo1k",
+  label: "q0jo1k",
+  type: "ImageBox",
+  description: "",
+  imageUrl: "./assets/image0.png",
   topLeft: {
     x: 0.17598908594815815,
     y: 0.6219218963165092,
@@ -142,7 +142,7 @@ const getSimulations = (
     demo3: (
       <ImageGalleryV3 sceneGraph={demo_SceneGraph_StackedImageGallery()} />
     ),
-    'ImageBox Creator': <ImageBoxCreator sceneGraph={sceneGraph} />,
+    "ImageBox Creator": <ImageBoxCreator sceneGraph={sceneGraph} />,
     ImageGalleryV2: <ImageGalleryV2 />,
     // ParticleStickFigure: <ParticleStickFigure />,
     // SampleParticleEffect: <SampleParticleEffect />,
@@ -177,11 +177,11 @@ export type AppInteractionConfig = {
 const initialSceneGraph = new SceneGraph();
 
 export type RenderingView =
-  | 'Graphviz'
-  | 'ForceGraph3d'
-  | 'ReactFlow'
-  | 'Gallery' // Add new view type
-  | 'Simulation';
+  | "Graphviz"
+  | "ForceGraph3d"
+  | "ReactFlow"
+  | "Gallery" // Add new view type
+  | "Simulation";
 
 const AppContent: React.FC<{
   defaultGraph?: string;
@@ -216,11 +216,11 @@ const AppContent: React.FC<{
     // url.searchParams.delete('svgUrl');
     // url.searchParams.delete('view');
     // url.searchParams.delete('layout');
-    url.searchParams.delete('showOptionsPanel');
-    url.searchParams.delete('showLegendBars');
-    url.searchParams.delete('showGraphLayoutToolbar');
-    url.searchParams.delete('showRenderConfig');
-    window.history.pushState({}, '', url.toString());
+    url.searchParams.delete("showOptionsPanel");
+    url.searchParams.delete("showLegendBars");
+    url.searchParams.delete("showGraphLayoutToolbar");
+    url.searchParams.delete("showRenderConfig");
+    window.history.pushState({}, "", url.toString());
   }, []);
 
   const [simulations, setSimulations] = useState<{
@@ -253,26 +253,26 @@ const AppContent: React.FC<{
       forceGraph3dOptions: {
         ...config.forceGraph3dOptions,
         layout: defaultActiveLayout
-          ? 'Layout'
+          ? "Layout"
           : config.forceGraph3dOptions.layout,
         showOptionsPanel:
           showRenderConfigOptions !== undefined
-            ? showRenderConfigOptions === 'true'
+            ? showRenderConfigOptions === "true"
             : config.forceGraph3dOptions.showOptionsPanel,
       },
       windows: {
         ...config.windows,
         showLegendBars:
           showLegendBars !== undefined
-            ? showLegendBars === 'true'
+            ? showLegendBars === "true"
             : config.windows.showLegendBars,
         showGraphLayoutToolbar:
           showGraphLayoutToolbar !== undefined
-            ? showGraphLayoutToolbar === 'true'
+            ? showGraphLayoutToolbar === "true"
             : config.windows.showGraphLayoutToolbar,
         showOptionsPanel:
           showOptionsPanel !== undefined
-            ? showOptionsPanel === 'true'
+            ? showOptionsPanel === "true"
             : config.forceGraph3dOptions.showOptionsPanel,
       },
     };
@@ -281,7 +281,7 @@ const AppContent: React.FC<{
   const handleSetAppConfig = useCallback(
     (config: AppConfig) => {
       setAppConfig(getAppConfigWithUrlOverrides(config));
-      console.log('Set app config!', getAppConfigWithUrlOverrides(config));
+      console.log("Set app config!", getAppConfigWithUrlOverrides(config));
     },
     [getAppConfigWithUrlOverrides]
   );
@@ -336,19 +336,19 @@ const AppContent: React.FC<{
   }, [appConfig]);
 
   const [selectedSimulation, setSelectedSimulation] =
-    useState<string>('Lumina');
+    useState<string>("Lumina");
 
   const [currentSceneGraph, setCurrentSceneGraph] =
     useState<SceneGraph>(initialSceneGraph);
 
   const [nodeConfig, setNodeConfig] = useState<DisplayConfig>(
-    GetCurrentDisplayConfigOf(currentSceneGraph, 'Node')
+    GetCurrentDisplayConfigOf(currentSceneGraph, "Node")
   );
   const [edgeConfig, setEdgeConfig] = useState<DisplayConfig>(
-    GetCurrentDisplayConfigOf(currentSceneGraph, 'Edge')
+    GetCurrentDisplayConfigOf(currentSceneGraph, "Edge")
   );
   const [layoutMode, setLayoutMode] =
-    useState<RenderingManager__DisplayMode>('type');
+    useState<RenderingManager__DisplayMode>("type");
 
   const isLegendVisible = useMemo(() => {
     return appConfig.windows.showLegendBars;
@@ -364,7 +364,7 @@ const AppContent: React.FC<{
 
   const isDarkMode = useMemo(() => {
     return (
-      appConfig.activeView === 'ForceGraph3d' ||
+      appConfig.activeView === "ForceGraph3d" ||
       appConfig.activeView in simulations
     );
   }, [appConfig.activeView]);
@@ -375,7 +375,7 @@ const AppContent: React.FC<{
 
   const handleReactFlowFitView = useCallback(
     (padding: number = 0.1, duration: number = 0) => {
-      if (appConfig.activeView === 'ReactFlow' && reactFlowInstance.current) {
+      if (appConfig.activeView === "ReactFlow" && reactFlowInstance.current) {
         setTimeout(() => {
           reactFlowInstance.current?.fitView({ padding, duration });
         }, 0);
@@ -392,7 +392,7 @@ const AppContent: React.FC<{
     if (svgUrl) {
       fetchSvgSceneGraph(svgUrl).then(({ sceneGraph, error }) => {
         if (error) {
-          console.error('Failed to load SVG from URL:', error);
+          console.error("Failed to load SVG from URL:", error);
         } else {
           handleLoadSceneGraph(sceneGraph);
         }
@@ -412,7 +412,7 @@ const AppContent: React.FC<{
     }
 
     console.log(
-      'here',
+      "here",
       showOptionsPanel,
       showLegendBars,
       showGraphLayoutToolbar,
@@ -433,7 +433,7 @@ const AppContent: React.FC<{
 
   useEffect(() => {
     if (
-      appConfig.activeView === 'ReactFlow' &&
+      appConfig.activeView === "ReactFlow" &&
       currentSceneGraph.getDisplayConfig().nodePositions &&
       reactFlowInstance.current
     ) {
@@ -457,9 +457,9 @@ const AppContent: React.FC<{
   const handleMouseHoverLegendItem = useCallback(
     (type: GraphEntityType) =>
       (key: string): void => {
-        if (type === 'Node') {
+        if (type === "Node") {
           const allNodesOfType =
-            currentSceneGraph.getDisplayConfig().mode === 'type'
+            currentSceneGraph.getDisplayConfig().mode === "type"
               ? currentSceneGraph.getGraph().getNodesByType(key)
               : currentSceneGraph.getGraph().getNodesByTag(key);
           allNodesOfType.forEach((n) => {
@@ -498,11 +498,11 @@ const AppContent: React.FC<{
 
   const handleSetVisibleNodes = useCallback(
     (nodeIds: string[]) => {
-      handleSetActiveFilterPreset('node id selection', [
+      handleSetActiveFilterPreset("node id selection", [
         {
-          id: 'node id selection',
-          operator: 'include',
-          ruleMode: 'entities',
+          id: "node id selection",
+          operator: "include",
+          ruleMode: "entities",
           conditions: {
             nodes: nodeIds,
           },
@@ -516,16 +516,16 @@ const AppContent: React.FC<{
   const safeComputeLayout = useCallback(
     async (sceneGraph: SceneGraph, layout: LayoutEngineOption) => {
       if (isComputing) {
-        console.log('Already computing layout. Skipping.');
+        console.log("Already computing layout. Skipping.");
         return;
       }
       if (layout === PresetLayoutType.Preset) {
         console.log(
-          'Skipping layout computation for preset layout. Preset must be loaded'
+          "Skipping layout computation for preset layout. Preset must be loaded"
         );
         return null;
       } else if (layout === PresetLayoutType.NodePositions) {
-        console.log('Applying positions stored in graph nodes');
+        console.log("Applying positions stored in graph nodes");
         const positions = extractPositionsFromNodes(sceneGraph);
         currentSceneGraph.setNodePositions(positions);
         setLayoutResult({ positions, layoutType: layout });
@@ -539,7 +539,7 @@ const AppContent: React.FC<{
       }
       sceneGraph.getDisplayConfig().nodePositions = output.positions;
       if (!output.svg) {
-        console.log('Generating svg from graphviz');
+        console.log("Generating svg from graphviz");
         const g = ConvertSceneGraphToGraphviz(
           sceneGraph.getGraph(),
           {
@@ -550,9 +550,9 @@ const AppContent: React.FC<{
         );
         const dot = toDot(g);
         const graphviz = await Graphviz.load();
-        console.log('reach');
-        const svg = await graphviz.layout(dot, 'svg');
-        console.log('nope');
+        console.log("reach");
+        const svg = await graphviz.layout(dot, "svg");
+        console.log("nope");
         output.svg = svg;
       }
       sceneGraph.getDisplayConfig().svg = output.svg;
@@ -606,7 +606,7 @@ const AppContent: React.FC<{
       const newNode = currentSceneGraph
         .getGraph()
         .createNode(uuidv4(), newNodeData);
-      console.log('new node created is ', newNode);
+      console.log("new node created is ", newNode);
       currentSceneGraph.notifyGraphChanged();
       setIsNodeEditorOpen(false);
     },
@@ -631,7 +631,7 @@ const AppContent: React.FC<{
 
   const initializeForceGraph = useCallback(() => {
     console.log(
-      'Creating new force graph instance',
+      "Creating new force graph instance",
       forceGraphInstance.current,
       currentSceneGraph.getDisplayConfig().nodePositions,
       appConfig.forceGraph3dOptions.layout
@@ -671,15 +671,15 @@ const AppContent: React.FC<{
   useEffect(() => {
     if (layoutResult?.layoutType === appConfig.activeLayout) {
       console.log(
-        'Skipping layout computation because it has already been computed'
+        "Skipping layout computation because it has already been computed"
       );
       return;
     }
     if (
-      appConfig.activeView === 'Graphviz' ||
-      appConfig.activeView === 'ReactFlow' ||
-      (appConfig.activeView === 'ForceGraph3d' &&
-        appConfig.forceGraph3dOptions.layout === 'Layout') ||
+      appConfig.activeView === "Graphviz" ||
+      appConfig.activeView === "ReactFlow" ||
+      (appConfig.activeView === "ForceGraph3d" &&
+        appConfig.forceGraph3dOptions.layout === "Layout") ||
       appConfig.forceGraph3dOptions.layout in
         new Set(Object.values(GraphvizLayoutType))
     ) {
@@ -700,7 +700,7 @@ const AppContent: React.FC<{
   const handleLoadSceneGraph = useCallback(
     async (graph: SceneGraph, clearQueryParams: boolean = true) => {
       const tick = Date.now();
-      console.log('Loading SceneGraph', graph.getMetadata().name, '...');
+      console.log("Loading SceneGraph", graph.getMetadata().name, "...");
       if (clearQueryParams) {
         clearUrlOfQueryParams();
       }
@@ -711,8 +711,8 @@ const AppContent: React.FC<{
         }
         setLayoutMode(graph.getDisplayConfig().mode);
         setGraphStatistics(getGraphStatistics(graph.getGraph()));
-        setNodeConfig(GetCurrentDisplayConfigOf(graph, 'Node'));
-        setEdgeConfig(GetCurrentDisplayConfigOf(graph, 'Edge'));
+        setNodeConfig(GetCurrentDisplayConfigOf(graph, "Node"));
+        setEdgeConfig(GetCurrentDisplayConfigOf(graph, "Edge"));
 
         graph.bindListeners({
           onDisplayConfigChanged: handleDisplayConfigChanged,
@@ -730,7 +730,7 @@ const AppContent: React.FC<{
         graph.getEntityCache().addEntities(IMAGE_ANNOTATION_ENTITIES());
 
         const tock = Date.now();
-        console.log('TOTAL TIME', tock - tick);
+        console.log("TOTAL TIME", tock - tick);
       });
     },
     [appConfig.activeLayout, safeComputeLayout]
@@ -739,10 +739,10 @@ const AppContent: React.FC<{
   const handleDisplayConfigChanged = useCallback(
     (displayConfig: RenderingConfig) => {
       console.log(
-        'notified changed',
+        "notified changed",
         currentSceneGraph.getGraph().getEdges().getTypes()
       );
-      if (displayConfig.mode === 'tag') {
+      if (displayConfig.mode === "tag") {
         setNodeConfig({ ...displayConfig.nodeConfig.tags });
         setEdgeConfig({ ...displayConfig.edgeConfig.tags });
       } else {
@@ -759,7 +759,7 @@ const AppContent: React.FC<{
       let graph: SceneGraph | undefined;
       for (const category of Object.values(sceneGraphs)) {
         if (key in category.graphs) {
-          if (typeof category.graphs[key] === 'function') {
+          if (typeof category.graphs[key] === "function") {
             graph = category.graphs[key]();
           } else {
             graph = category.graphs[key];
@@ -777,16 +777,16 @@ const AppContent: React.FC<{
 
       // Update the URL query parameter
       const url = new URL(window.location.href);
-      url.searchParams.set('graph', key);
-      url.searchParams.delete('svgUrl');
-      window.history.pushState({}, '', url.toString());
+      url.searchParams.set("graph", key);
+      url.searchParams.delete("svgUrl");
+      window.history.pushState({}, "", url.toString());
     },
     [handleLoadSceneGraph]
   );
 
   useEffect(() => {
     // Hide scrollbar
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   }, []);
 
   const getSimulation = useCallback(
@@ -805,7 +805,7 @@ const AppContent: React.FC<{
       activeLayout: layout,
       forceGraph3dOptions: {
         ...prevConfig.forceGraph3dOptions,
-        layout: 'Layout',
+        layout: "Layout",
       },
     }));
   }, []);
@@ -819,12 +819,12 @@ const AppContent: React.FC<{
 
   const handleFitToView = useCallback(
     (activeView: string, duration: number = 0) => {
-      if (activeView === 'Graphviz' && graphvizRef.current) {
+      if (activeView === "Graphviz" && graphvizRef.current) {
         graphvizFitToView(graphvizRef.current);
-      } else if (activeView === 'ForceGraph3d' && forceGraphInstance.current) {
+      } else if (activeView === "ForceGraph3d" && forceGraphInstance.current) {
         zoomToFit(forceGraphInstance.current!, duration);
-      } else if (activeView === 'ReactFlow' && reactFlowInstance.current) {
-        console.log('fitting');
+      } else if (activeView === "ReactFlow" && reactFlowInstance.current) {
+        console.log("fitting");
         handleReactFlowFitView(0.1, duration);
         // reactFlowInstance.current.fitView({ padding: 0.1, duration: 400 });
       }
@@ -838,7 +838,7 @@ const AppContent: React.FC<{
         ...nodeConfig,
         [key]: { ...nodeConfig[key], color: newColor },
       };
-      SetCurrentDisplayConfigOf(currentSceneGraph, 'Node', newConfig);
+      SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
       setNodeConfig(newConfig);
     },
     [currentSceneGraph, nodeConfig]
@@ -850,7 +850,7 @@ const AppContent: React.FC<{
         ...edgeConfig,
         [key]: { ...edgeConfig[key], color: newColor },
       };
-      SetCurrentDisplayConfigOf(currentSceneGraph, 'Edge', newConfig);
+      SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
       setEdgeConfig(newConfig);
     },
     [currentSceneGraph, edgeConfig]
@@ -862,7 +862,7 @@ const AppContent: React.FC<{
         ...nodeConfig,
         [key]: { ...nodeConfig[key], isVisible: isVisible },
       };
-      SetCurrentDisplayConfigOf(currentSceneGraph, 'Node', newConfig);
+      SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
       setNodeConfig(newConfig);
     },
     [currentSceneGraph, nodeConfig]
@@ -874,7 +874,7 @@ const AppContent: React.FC<{
         ...edgeConfig,
         [key]: { ...edgeConfig[key], isVisible: isVisible },
       };
-      SetCurrentDisplayConfigOf(currentSceneGraph, 'Edge', newConfig);
+      SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
       setEdgeConfig(newConfig);
     },
     [currentSceneGraph, edgeConfig]
@@ -887,12 +887,12 @@ const AppContent: React.FC<{
       //   currentSceneGraph.getGraph(),
       //   currentSceneGraph.getDisplayConfig()
       // );
-      console.log('changing layoutmode to ', mode);
+      console.log("changing layoutmode to ", mode);
       refreshForceGraphInstance(forceGraphInstance.current!, currentSceneGraph);
 
       setLayoutMode(mode);
-      setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, 'Node'));
-      setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, 'Edge'));
+      setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
+      setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
     },
     [currentSceneGraph]
   );
@@ -903,7 +903,7 @@ const AppContent: React.FC<{
       Object.keys(updates).forEach((key) => {
         newConfig[key].isVisible = updates[key];
       });
-      SetCurrentDisplayConfigOf(currentSceneGraph, 'Node', newConfig);
+      SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
       setNodeConfig(newConfig);
     },
     [currentSceneGraph, nodeConfig]
@@ -915,7 +915,7 @@ const AppContent: React.FC<{
       Object.keys(updates).forEach((key) => {
         newConfig[key].isVisible = updates[key];
       });
-      SetCurrentDisplayConfigOf(currentSceneGraph, 'Edge', newConfig);
+      SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
       setEdgeConfig(newConfig);
     },
     [currentSceneGraph, edgeConfig]
@@ -926,7 +926,7 @@ const AppContent: React.FC<{
       return null;
     }
     const statistics =
-      currentSceneGraph.getDisplayConfig().mode === 'type'
+      currentSceneGraph.getDisplayConfig().mode === "type"
         ? graphStatistics?.nodeTypeToCount
         : graphStatistics?.nodeTagsToCount;
     return (
@@ -940,8 +940,8 @@ const AppContent: React.FC<{
         totalCount={graphStatistics?.nodeCount}
         statistics={statistics}
         sceneGraph={currentSceneGraph}
-        onMouseHoverItem={handleMouseHoverLegendItem('Node')}
-        onMouseUnhoverItem={handleMouseUnhoverLegendItem('Node')}
+        onMouseHoverItem={handleMouseHoverLegendItem("Node")}
+        onMouseUnhoverItem={handleMouseUnhoverLegendItem("Node")}
       />
     );
   }, [
@@ -962,7 +962,7 @@ const AppContent: React.FC<{
       return null;
     }
     const statistics =
-      currentSceneGraph.getDisplayConfig().mode === 'type'
+      currentSceneGraph.getDisplayConfig().mode === "type"
         ? graphStatistics?.edgeTypeToCount
         : graphStatistics?.edgeTagsToCount;
     return (
@@ -991,21 +991,21 @@ const AppContent: React.FC<{
 
   const handleSetActiveView = useCallback(
     (key: string) => {
-      console.log('setting active view', key);
+      console.log("setting active view", key);
       setAppConfig((prevConfig) => ({
         ...prevConfig,
         windows: {
           ...prevConfig.windows,
-          showLegendBars: !(key === 'Gallery' || key in simulations), // Update condition
-          showOptionsPanel: !(key === 'Gallery' || key in simulations), // Update condition
-          showGraphLayoutToolbar: !(key === 'Gallery' || key in simulations), // Update condition
+          showLegendBars: !(key === "Gallery" || key in simulations), // Update condition
+          showOptionsPanel: !(key === "Gallery" || key in simulations), // Update condition
+          showGraphLayoutToolbar: !(key === "Gallery" || key in simulations), // Update condition
         },
         activeView: key as any,
       }));
       handleFitToView(key);
       const url = new URL(window.location.href);
-      url.searchParams.set('view', key);
-      window.history.pushState({}, '', url.toString());
+      url.searchParams.set("view", key);
+      window.history.pushState({}, "", url.toString());
     },
     [handleFitToView]
   );
@@ -1039,8 +1039,8 @@ const AppContent: React.FC<{
       if (file) {
         const config = await loadRenderingConfigFromFile(file);
         currentSceneGraph.setDisplayConfig(config);
-        setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, 'Node'));
-        setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, 'Edge'));
+        setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
+        setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
       }
     },
     [currentSceneGraph]
@@ -1087,7 +1087,7 @@ const AppContent: React.FC<{
         reader.onload = async (e) => {
           const jsonContent = e.target?.result as string;
           const sceneGraph = deserializeSceneGraphFromJson(jsonContent);
-          console.log('content', jsonContent, sceneGraph);
+          console.log("content", jsonContent, sceneGraph);
           handleLoadSceneGraph(sceneGraph);
         };
         reader.readAsText(file);
@@ -1134,9 +1134,9 @@ const AppContent: React.FC<{
   }, []);
 
   const [showLayoutManager, setShowLayoutManager] = useState<{
-    mode: 'save' | 'load';
+    mode: "save" | "load";
     show: boolean;
-  }>({ mode: 'save', show: false });
+  }>({ mode: "save", show: false });
 
   const handleLoadLayout = useCallback(
     (positions: NodePositionData) => {
@@ -1149,10 +1149,10 @@ const AppContent: React.FC<{
       setLayoutResult({ positions, layoutType: PresetLayoutType.Preset });
       if (
         forceGraphInstance.current &&
-        appConfig.activeView === 'ForceGraph3d'
+        appConfig.activeView === "ForceGraph3d"
       ) {
         updateNodePositions(forceGraphInstance.current, positions);
-      } else if (appConfig.activeView === 'ReactFlow') {
+      } else if (appConfig.activeView === "ReactFlow") {
         setGraphModelUpdateTime(Date.now()); //hack
       }
     },
@@ -1168,9 +1168,9 @@ const AppContent: React.FC<{
 
       // Update the URL query parameter
       const url = new URL(window.location.href);
-      url.searchParams.delete('graph');
-      url.searchParams.set('svgUrl', sceneGraph.getMetadata().source ?? '');
-      window.history.pushState({}, '', url.toString());
+      url.searchParams.delete("graph");
+      url.searchParams.set("svgUrl", sceneGraph.getMetadata().source ?? "");
+      window.history.pushState({}, "", url.toString());
 
       setShowImportSvgFromUrlDialog(false);
     },
@@ -1200,7 +1200,7 @@ const AppContent: React.FC<{
       setAppConfig,
       setShowNodeTable: handleShowEntityTables,
       setShowEdgeTable: handleShowEntityTables,
-      showLayoutManager: (mode: 'save' | 'load') =>
+      showLayoutManager: (mode: "save" | "load") =>
         setShowLayoutManager({ mode, show: true }),
       showFilterWindow: () => setShowFilter(true),
       showFilterManager: () => setShowFilterManager(true),
@@ -1230,8 +1230,8 @@ const AppContent: React.FC<{
   const renderSceneGraphTitle = useMemo(() => {
     return (
       <SceneGraphTitle
-        title={currentSceneGraph.getMetadata().name ?? ''}
-        description={currentSceneGraph.getMetadata().description ?? ''}
+        title={currentSceneGraph.getMetadata().name ?? ""}
+        description={currentSceneGraph.getMetadata().description ?? ""}
       />
     );
   }, [currentSceneGraph]);
@@ -1257,8 +1257,8 @@ const AppContent: React.FC<{
       <div
         className="options-panel-container"
         style={{
-          backgroundColor: isDarkMode ? 'transparent' : 'transparent',
-          marginTop: '20px',
+          backgroundColor: isDarkMode ? "transparent" : "transparent",
+          marginTop: "20px",
         }}
       >
         {renderLayoutModeRadio()}
@@ -1266,7 +1266,7 @@ const AppContent: React.FC<{
         {renderEdgeLegend}
 
         {/* Update ForceGraph3d layout options to match dark mode */}
-        {appConfig.activeView === 'ForceGraph3d' && (
+        {appConfig.activeView === "ForceGraph3d" && (
           <ForceGraphLayoutRadio
             layout={appConfig.forceGraph3dOptions.layout}
             onLayoutChange={setSelectedForceGraph3dLayoutMode}
@@ -1288,7 +1288,7 @@ const AppContent: React.FC<{
   ]);
 
   const maybeRenderReactFlow = useMemo(() => {
-    if (appConfig.activeView !== 'ReactFlow') {
+    if (appConfig.activeView !== "ReactFlow") {
       return null;
     }
 
@@ -1304,7 +1304,7 @@ const AppContent: React.FC<{
     const nodesWithPositions = data.nodes.map((node) => ({
       ...node,
       position: nodePositions[node.id] || { x: 200, y: 200 },
-      type: 'default',
+      type: "default",
       style: {
         background: renderingManager.getNodeColor(
           currentSceneGraph.getGraph().getNode(node.id as NodeId)
@@ -1319,10 +1319,10 @@ const AppContent: React.FC<{
         id="react-flow"
         ref={reactFlowRef}
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
-          width: '100%',
-          height: '100%',
+          width: "100%",
+          height: "100%",
           zIndex: 10,
         }}
       >
@@ -1330,7 +1330,7 @@ const AppContent: React.FC<{
           nodes={nodesWithPositions}
           edges={data.edges.map((edge) => ({
             ...edge,
-            type: 'default',
+            type: "default",
             style: {
               stroke: renderingManager.getEdgeColor(
                 currentSceneGraph.getGraph().getEdge(edge.id as EdgeId)
@@ -1380,7 +1380,7 @@ const AppContent: React.FC<{
                   z: 0,
                 };
               }
-              console.log('SET!', node);
+              console.log("SET!", node);
             }
           }}
         />
@@ -1420,21 +1420,21 @@ const AppContent: React.FC<{
   // ]);
 
   const maybeRenderGraphviz = useMemo(() => {
-    if (appConfig.activeView !== 'Graphviz') {
+    if (appConfig.activeView !== "Graphviz") {
       return;
     }
 
     return (
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           left: 0,
           right: 0,
           bottom: 0,
-          width: '100%',
-          height: 'calc(100vh)',
-          overflow: 'hidden',
-          backgroundColor: '#ffffff',
+          width: "100%",
+          height: "calc(100vh)",
+          overflow: "hidden",
+          backgroundColor: "#ffffff",
         }}
         ref={graphvizRef}
         id="graphviz"
@@ -1443,18 +1443,18 @@ const AppContent: React.FC<{
   }, [appConfig.activeView]);
 
   const maybeRenderForceGraph3D = useMemo(() => {
-    if (appConfig.activeView === 'ForceGraph3d') {
-      console.log('RENDERING FORCE GRAPH');
+    if (appConfig.activeView === "ForceGraph3d") {
+      console.log("RENDERING FORCE GRAPH");
       return (
         <div
           id="force-graph"
           ref={forceGraphRef}
           style={{
-            width: '100%',
-            height: '100vh',
-            background: 'black',
+            width: "100%",
+            height: "100vh",
+            background: "black",
             zIndex: 5,
-            position: 'absolute',
+            position: "absolute",
             top: 0, // Changed from "50px" to 0
             left: 0,
             right: 0,
@@ -1468,12 +1468,12 @@ const AppContent: React.FC<{
 
   const handleUpdateForceGraphScene = useCallback((sceneGraph: SceneGraph) => {
     if (!forceGraphInstance.current) {
-      throw new Error('ForceGraphInstance is undefined');
+      throw new Error("ForceGraphInstance is undefined");
     }
     if (!sceneGraph.getDisplayConfig().nodePositions) {
-      throw new Error('Node positions are undefined');
+      throw new Error("Node positions are undefined");
     }
-    console.log('Updating existing force graph instance');
+    console.log("Updating existing force graph instance");
     updateNodePositions(
       forceGraphInstance.current,
       sceneGraph.getDisplayConfig().nodePositions!
@@ -1482,10 +1482,10 @@ const AppContent: React.FC<{
   }, []);
 
   useEffect(() => {
-    if (appConfig.activeView === 'ForceGraph3d') {
+    if (appConfig.activeView === "ForceGraph3d") {
       if (forceGraphInstance.current) {
         console.log(
-          'refreshing on layout mode change',
+          "refreshing on layout mode change",
           appConfig.forceGraph3dOptions.layout
         );
         refreshForceGraphInstance(
@@ -1506,14 +1506,14 @@ const AppContent: React.FC<{
   useEffect(() => {
     if (
       layoutResult?.layoutType !== appConfig.activeLayout &&
-      (appConfig.activeView === 'Graphviz' ||
-        appConfig.activeView === 'ReactFlow')
+      (appConfig.activeView === "Graphviz" ||
+        appConfig.activeView === "ReactFlow")
     ) {
       if (currentSceneGraph.getDisplayConfig().nodePositions === undefined) {
         safeComputeLayout(currentSceneGraph, appConfig.activeLayout);
       }
-    } else if (appConfig.activeView === 'ForceGraph3d') {
-      console.log('REinitializing');
+    } else if (appConfig.activeView === "ForceGraph3d") {
+      console.log("REinitializing");
       initializeForceGraph();
     }
 
@@ -1538,7 +1538,7 @@ const AppContent: React.FC<{
     if (
       forceGraphInstance.current &&
       layoutResult &&
-      appConfig.forceGraph3dOptions.layout === 'Layout'
+      appConfig.forceGraph3dOptions.layout === "Layout"
     ) {
       ForceGraphManager.applyFixedNodePositions(
         forceGraphInstance.current,
@@ -1546,17 +1546,17 @@ const AppContent: React.FC<{
       );
       zoomToFit(forceGraphInstance.current);
     } else if (graphvizRef.current && layoutResult) {
-      graphvizRef.current.innerHTML = layoutResult.svg ?? '';
+      graphvizRef.current.innerHTML = layoutResult.svg ?? "";
       enableZoomAndPanOnSvg(graphvizRef.current);
       graphvizFitToView(graphvizRef.current);
     }
-    const url = new URL(window.location.href);
-    url.searchParams.set('layout', layoutResult?.layoutType as string);
-    window.history.pushState({}, '', url.toString());
+    // const url = new URL(window.location.href);
+    // url.searchParams.set("layout", layoutResult?.layoutType as string);
+    // window.history.pushState({}, "", url.toString());
   }, [forceGraphInstance, layoutResult, appConfig.forceGraph3dOptions.layout]);
 
   const handleSearchResult = useCallback((nodeIds: string[]) => {
-    console.log('Search results:', nodeIds);
+    console.log("Search results:", nodeIds);
     // You can use this to update visualization state
   }, []);
 
@@ -1565,7 +1565,7 @@ const AppContent: React.FC<{
       // setHighlightedNode(nodeId);
       // Additional logic for highlighting in different views
       if (
-        appConfig.activeView === 'ForceGraph3d' &&
+        appConfig.activeView === "ForceGraph3d" &&
         forceGraphInstance.current
       ) {
         forceGraphInstance.current.cameraPosition({
@@ -1574,7 +1574,7 @@ const AppContent: React.FC<{
           z: 1000,
         });
         forceGraphInstance.current.nodeColor((node: any) =>
-          node.id === nodeId ? '#ff0000' : node.__baseColor || '#ffffff'
+          node.id === nodeId ? "#ff0000" : node.__baseColor || "#ffffff"
         );
       }
     },
@@ -1586,12 +1586,12 @@ const AppContent: React.FC<{
       if (!forceGraphInstance.current) {
         return;
       }
-      if (appConfig.activeView === 'ForceGraph3d') {
+      if (appConfig.activeView === "ForceGraph3d") {
         const node = forceGraphInstance.current
           .graphData()
           .nodes.find((node) => node.id === nodeId);
         if (node) {
-          console.log('flying to ', node);
+          console.log("flying to ", node);
           flyToNode(forceGraphInstance.current, node);
           handleHighlight(nodeId);
           setSelectedNode(nodeId as NodeId);
@@ -1604,7 +1604,7 @@ const AppContent: React.FC<{
   const handleMouseMove = useCallback(
     (event: React.MouseEvent) => {
       if (
-        appConfig.activeView === 'ForceGraph3d' &&
+        appConfig.activeView === "ForceGraph3d" &&
         forceGraphInstance.current
       ) {
         setMousePosition({ x: event.clientX, y: event.clientY });
@@ -1679,7 +1679,7 @@ const AppContent: React.FC<{
   );
 
   const renderForceGraphRenderConfigEditor = useCallback(() => {
-    if (appConfig.activeView !== 'ForceGraph3d') {
+    if (appConfig.activeView !== "ForceGraph3d") {
       return null;
     }
     if (!appConfig.forceGraph3dOptions.showOptionsPanel) {
@@ -1703,7 +1703,7 @@ const AppContent: React.FC<{
   const getBackgroundRightClickContextMenuItems = useCallback(
     (): ContextMenuItem[] => [
       {
-        label: 'Create Node',
+        label: "Create Node",
         action: handleCreateNode,
       },
     ],
@@ -1713,7 +1713,7 @@ const AppContent: React.FC<{
   const getNodeContextMenuItems = useCallback(
     (nodeId: NodeId): ContextMenuItem[] => [
       {
-        label: 'Focus Node',
+        label: "Focus Node",
         action: () => {
           if (forceGraphInstance.current) {
             const node = forceGraphInstance.current
@@ -1726,7 +1726,7 @@ const AppContent: React.FC<{
         },
       },
       {
-        label: 'Expand around Node',
+        label: "Expand around Node",
         action: () => {
           if (forceGraphInstance.current) {
             attachRepulsiveForce(forceGraphInstance.current, nodeId);
@@ -1734,21 +1734,21 @@ const AppContent: React.FC<{
         },
       },
       {
-        label: 'Select Node',
+        label: "Select Node",
         action: () => setSelectedNode(nodeId),
       },
       {
-        label: 'Hide Node',
+        label: "Hide Node",
         action: () => {
           // Implement hide node functionality
-          console.log('Hide node:', nodeId);
+          console.log("Hide node:", nodeId);
         },
       },
       {
-        label: 'Find path',
+        label: "Find path",
         submenu: [
           {
-            label: 'to...',
+            label: "to...",
             action: () => {
               setPathAnalysisConfig({
                 startNode: nodeId,
@@ -1758,7 +1758,7 @@ const AppContent: React.FC<{
             },
           },
           {
-            label: 'from...',
+            label: "from...",
             action: () => {
               setPathAnalysisConfig({
                 startNode: undefined,
@@ -1770,16 +1770,16 @@ const AppContent: React.FC<{
         ],
       },
       {
-        label: 'Edit',
+        label: "Edit",
         action: () => {
           setEditingNodeId(nodeId);
           setIsNodeEditorOpen(true);
-          console.log('WHAT ABOUT HERE', currentSceneGraph);
+          console.log("WHAT ABOUT HERE", currentSceneGraph);
           const node = currentSceneGraph.getGraph().getNode(nodeId);
         },
       },
       {
-        label: 'Edit JSON',
+        label: "Edit JSON",
         action: () => {
           setJsonEditEntity(currentSceneGraph.getGraph().getNode(nodeId));
         },
@@ -1808,7 +1808,7 @@ const AppContent: React.FC<{
       if (!showPathAnalysis) {
         return null;
       }
-      console.log('recalling');
+      console.log("recalling");
       return (
         <PathAnalysisWizard
           sceneGraph={currentSceneGraph}
@@ -1846,7 +1846,7 @@ const AppContent: React.FC<{
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
       <div
-        className={isDarkMode ? 'dark-mode' : ''}
+        className={isDarkMode ? "dark-mode" : ""}
         style={{ margin: 0, padding: 0 }}
         onMouseMove={handleMouseMove}
       >
@@ -1854,73 +1854,73 @@ const AppContent: React.FC<{
         <input
           type="file"
           id="import-config-input"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleImportConfig}
         />
         <input
           type="file"
           id="import-dot-input"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleImportDot}
         />
         <input
           type="file"
           id="import-graphml-input"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           accept=".graphml"
           onChange={handleImportGraphml}
         />
         <input
           type="file"
           id="import-json-input"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           accept=".json"
           onChange={handleImportJson}
         />
         <input
           type="file"
           id="import-svg-input"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           accept=".svg"
           onChange={handleImportSvg}
         />
         <div
           style={{
-            position: 'fixed',
-            bottom: '1rem',
-            right: '1rem',
+            position: "fixed",
+            bottom: "1rem",
+            right: "1rem",
             zIndex: 1000,
           }}
         >
           <button
             onClick={() => handleFitToView(appConfig.activeView)}
             style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
               padding: 0,
             }}
           >
-            <FaExpand size={'3rem'} color={isDarkMode ? 'white' : 'black'} />
+            <FaExpand size={"3rem"} color={isDarkMode ? "white" : "black"} />
           </button>
         </div>
         <div>
           <div
             style={{
-              position: 'fixed',
-              right: '0px',
+              position: "fixed",
+              right: "0px",
               zIndex: 1000,
-              padding: '10px',
-              borderRadius: '5px',
+              padding: "10px",
+              borderRadius: "5px",
             }}
           >
             {renderOptionsPanel()}
           </div>
           <div
             style={{
-              position: 'relative',
-              width: '100vw', // Changed from 100% to 100vw
-              height: '100vh',
+              position: "relative",
+              width: "100vw", // Changed from 100% to 100vw
+              height: "100vh",
               margin: 0,
               padding: 0,
             }}
@@ -1928,7 +1928,7 @@ const AppContent: React.FC<{
             {maybeRenderGraphviz}
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
-            {appConfig.activeView === 'Gallery' && (
+            {appConfig.activeView === "Gallery" && (
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}
                 addRandomImageBoxes={false}
@@ -1948,18 +1948,18 @@ const AppContent: React.FC<{
               }
               isDarkMode={isDarkMode}
               physicsMode={
-                appConfig.forceGraph3dOptions.layout === 'Physics' &&
-                appConfig.activeView === 'ForceGraph3d'
+                appConfig.forceGraph3dOptions.layout === "Physics" &&
+                appConfig.activeView === "ForceGraph3d"
               }
             />
           )}
         {appConfig.forceGraph3dOptions.showOptionsPanel && (
           <div
             style={{
-              zIndex: '3000',
-              position: 'absolute',
-              top: '5rem',
-              left: '1rem',
+              zIndex: "3000",
+              position: "absolute",
+              top: "5rem",
+              left: "1rem",
             }}
           >
             {renderForceGraphRenderConfigEditor()}
@@ -2030,7 +2030,7 @@ const AppContent: React.FC<{
               setSelectedNode(nodeId as NodeId);
               setShowEntityTables(false);
               if (
-                appConfig.activeView === 'ForceGraph3d' &&
+                appConfig.activeView === "ForceGraph3d" &&
                 forceGraphInstance.current
               ) {
                 const node = forceGraphInstance.current
@@ -2072,7 +2072,7 @@ const AppContent: React.FC<{
         {showLayoutManager.show && (
           <LayoutManager
             sceneGraph={currentSceneGraph}
-            onClose={() => setShowLayoutManager({ mode: 'save', show: false })}
+            onClose={() => setShowLayoutManager({ mode: "save", show: false })}
             onLayoutLoad={handleLoadLayout}
             isDarkMode={isDarkMode}
             mode={showLayoutManager.mode}
