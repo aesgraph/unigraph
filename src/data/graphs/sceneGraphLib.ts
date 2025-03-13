@@ -90,8 +90,10 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
 };
 
 // Helper function to get all graphs flattened
-export const getAllGraphs = (): { [key: string]: (SceneGraph | (() => SceneGraph)) } => {
-  const allGraphs: { [key: string]: (SceneGraph | (() => SceneGraph)) } = {};
+export const getAllGraphs = (): {
+  [key: string]: SceneGraph | (() => SceneGraph);
+} => {
+  const allGraphs: { [key: string]: SceneGraph | (() => SceneGraph) } = {};
   Object.values(sceneGraphs).forEach((category) => {
     Object.entries(category.graphs).forEach(([key, graph]) => {
       allGraphs[key] = graph;
@@ -100,7 +102,9 @@ export const getAllGraphs = (): { [key: string]: (SceneGraph | (() => SceneGraph
   return allGraphs;
 };
 
-export const getSceneGraph = (name: string): (SceneGraph | (() => SceneGraph)) => {
+export const getSceneGraph = (
+  name: string
+): SceneGraph | (() => SceneGraph) => {
   for (const [k, graphs] of Object.entries(sceneGraphs)) {
     for (const [key, graph] of Object.entries(graphs.graphs)) {
       if (key === name) {
@@ -109,4 +113,4 @@ export const getSceneGraph = (name: string): (SceneGraph | (() => SceneGraph)) =
     }
   }
   throw new Error(`SceneGraph not found: ${name}`);
-}
+};
