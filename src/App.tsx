@@ -188,7 +188,20 @@ const AppContent: React.FC<{
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-}> = ({ defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout }) => {
+  showOptionsPanel?: boolean;
+  showLegendBars?: boolean;
+  showGraphLayoutToolbar?: boolean;
+  showRenderConfigOptions?: boolean;
+}> = ({
+  defaultGraph,
+  svgUrl,
+  defaultActiveView,
+  defaultActiveLayout,
+  showOptionsPanel,
+  showLegendBars,
+  showGraphLayoutToolbar,
+  showRenderConfigOptions,
+}) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -347,7 +360,50 @@ const AppContent: React.FC<{
     if (defaultActiveLayout) {
       handleSetActiveLayout(defaultActiveLayout as LayoutEngineOption);
     }
-  }, [defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout]);
+
+    console.log(
+      'here',
+      showOptionsPanel,
+      showLegendBars,
+      showGraphLayoutToolbar,
+      showRenderConfigOptions
+    );
+
+    setAppConfig((prevConfig) => ({
+      ...prevConfig,
+      forceGraph3dOptions: {
+        ...prevConfig.forceGraph3dOptions,
+        showOptionsPanel:
+          showRenderConfigOptions !== undefined
+            ? showRenderConfigOptions
+            : prevConfig.forceGraph3dOptions.showOptionsPanel,
+      },
+      windows: {
+        ...prevConfig.windows,
+        showLegendBars:
+          showLegendBars !== undefined
+            ? showLegendBars
+            : prevConfig.windows.showLegendBars,
+        showGraphLayoutToolbar:
+          showGraphLayoutToolbar !== undefined
+            ? showGraphLayoutToolbar
+            : prevConfig.windows.showGraphLayoutToolbar,
+        showOptionsPanel:
+          showOptionsPanel !== undefined
+            ? showOptionsPanel
+            : prevConfig.forceGraph3dOptions.showOptionsPanel,
+      },
+    }));
+  }, [
+    defaultGraph,
+    svgUrl,
+    defaultActiveView,
+    defaultActiveLayout,
+    showOptionsPanel,
+    showLegendBars,
+    showGraphLayoutToolbar,
+    showRenderConfigOptions,
+  ]);
 
   useEffect(() => {
     if (
@@ -2040,12 +2096,27 @@ const AppContent: React.FC<{
   );
 };
 
-const App: React.FC<{
+interface AppProps {
   defaultGraph?: string;
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-}> = ({ defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout }) => {
+  showOptionsPanel?: boolean | undefined;
+  showLegendBars?: boolean | undefined;
+  showGraphLayoutToolbar?: boolean | undefined;
+  showRenderConfigOptions?: boolean | undefined;
+}
+
+const App: React.FC<AppProps> = ({
+  defaultGraph,
+  svgUrl,
+  defaultActiveView,
+  defaultActiveLayout,
+  showOptionsPanel,
+  showLegendBars,
+  showGraphLayoutToolbar,
+  showRenderConfigOptions,
+}) => {
   return (
     <MousePositionProvider>
       <AppContent
@@ -2053,6 +2124,10 @@ const App: React.FC<{
         svgUrl={svgUrl}
         defaultActiveView={defaultActiveView}
         defaultActiveLayout={defaultActiveLayout}
+        showOptionsPanel={showOptionsPanel}
+        showLegendBars={showLegendBars}
+        showGraphLayoutToolbar={showGraphLayoutToolbar}
+        showRenderConfigOptions={showRenderConfigOptions}
       />
     </MousePositionProvider>
   );

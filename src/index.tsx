@@ -12,12 +12,22 @@ if (rootElement) {
   const svgUrl = urlParams.get('svgUrl') ?? undefined;
   const activeView = urlParams.get('view') ?? undefined;
   const activeLayout = urlParams.get('layout') ?? undefined;
+  const showOptionsPanel = urlParams.get('showOptionsPanel') ?? undefined;
+  const showLegendBars = urlParams.get('showLegendBars') ?? undefined;
+  const showGraphLayoutToolbar =
+    urlParams.get('showGraphLayoutToolbar') ?? undefined;
+  const showRenderConfigOptions =
+    urlParams.get('showRenderConfig') ?? undefined;
   root.render(
     <App
       defaultGraph={graphName}
       svgUrl={svgUrl}
       defaultActiveView={activeView}
       defaultActiveLayout={activeLayout}
+      showOptionsPanel={showOptionsPanel as boolean | undefined}
+      showLegendBars={showLegendBars as boolean | undefined}
+      showGraphLayoutToolbar={showGraphLayoutToolbar as boolean | undefined}
+      showRenderConfigOptions={showRenderConfigOptions as boolean | undefined}
     />
   );
 }

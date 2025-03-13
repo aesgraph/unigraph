@@ -1,81 +1,85 @@
-import { ForceGraph3DInstance } from "3d-force-graph";
-import { saveAs } from "file-saver";
-import { AppConfig } from "../AppConfig";
+import { ForceGraph3DInstance } from '3d-force-graph';
+import { saveAs } from 'file-saver';
+import { AppConfig } from '../AppConfig';
 import {
   attachSimulation,
   updateNodePositions,
-} from "../core/force-graph/createForceGraph";
-import { songAnnotation247_2_entities } from "../core/force-graph/dynamics/247-2";
-import { addCluster } from "../core/force-graph/dynamics/addCluster";
-import { addRandomEdges } from "../core/force-graph/dynamics/addRandomEdges";
-import { addRandomNodes } from "../core/force-graph/dynamics/addRandomNodes";
-import { runManagedAnimation } from "../core/force-graph/dynamics/animationRunner";
-import { generateConfigsFromAnnotations } from "../core/force-graph/dynamics/annotationConfigGenerator";
-import { createAnnotationNodeSpawner } from "../core/force-graph/dynamics/annotationNodeSpawner";
-import { applyRandomEffects } from "../core/force-graph/dynamics/applyRandomEffects";
-import { applyStaggeredEffects } from "../core/force-graph/dynamics/applyStaggeredEffects";
-import { compactify } from "../core/force-graph/dynamics/compactify";
+} from '../core/force-graph/createForceGraph';
+import { songAnnotation247_2_entities } from '../core/force-graph/dynamics/247-2';
+import { addCluster } from '../core/force-graph/dynamics/addCluster';
+import { addRandomEdges } from '../core/force-graph/dynamics/addRandomEdges';
+import { addRandomNodes } from '../core/force-graph/dynamics/addRandomNodes';
+import { runManagedAnimation } from '../core/force-graph/dynamics/animationRunner';
+import { generateConfigsFromAnnotations } from '../core/force-graph/dynamics/annotationConfigGenerator';
+import { createAnnotationNodeSpawner } from '../core/force-graph/dynamics/annotationNodeSpawner';
+import { applyRandomEffects } from '../core/force-graph/dynamics/applyRandomEffects';
+import { applyStaggeredEffects } from '../core/force-graph/dynamics/applyStaggeredEffects';
+import { compactify } from '../core/force-graph/dynamics/compactify';
 import {
   demoConfig,
   playConfigSequence,
-} from "../core/force-graph/dynamics/configSequencePlayer";
-import { focusOnDegrees } from "../core/force-graph/dynamics/focusOnDegrees";
-import { focusWithTransparency } from "../core/force-graph/dynamics/focusWithTransparency";
-import { pulsateNodes } from "../core/force-graph/dynamics/pulsate";
+} from '../core/force-graph/dynamics/configSequencePlayer';
+import { focusOnDegrees } from '../core/force-graph/dynamics/focusOnDegrees';
+import { focusWithTransparency } from '../core/force-graph/dynamics/focusWithTransparency';
+import { pulsateNodes } from '../core/force-graph/dynamics/pulsate';
 import {
   randomizeVisible,
   randomizeVisibleAndPhysics,
-} from "../core/force-graph/dynamics/randomizeVisible";
-import { createSongVisualizationTimeline } from "../core/force-graph/dynamics/songAnnotationTransitions";
-import { transitionToConfig } from "../core/force-graph/dynamics/transition";
-import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
-import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
+} from '../core/force-graph/dynamics/randomizeVisible';
+import { createSongVisualizationTimeline } from '../core/force-graph/dynamics/songAnnotationTransitions';
+import { transitionToConfig } from '../core/force-graph/dynamics/transition';
+import { CustomLayoutType } from '../core/layouts/CustomLayoutEngine';
+import { GraphologyLayoutType } from '../core/layouts/GraphologyLayoutEngine';
+import { GraphvizLayoutType } from '../core/layouts/GraphvizLayoutEngine';
 import {
   Compute_Layout,
   LayoutEngineOption,
-} from "../core/layouts/LayoutEngine";
-import { NodePositionData } from "../core/layouts/layoutHelpers";
-import { DisplayManager } from "../core/model/DisplayManager";
-import { SceneGraph } from "../core/model/SceneGraph";
-import { getRandomNode, GetRandomNodeFromSceneGraph, saveRenderingConfigToFile } from "../core/model/utils";
-import { processImageNodesInSceneGraph } from "../core/processors/imageBoxProcessor";
-import { serializeSceneGraphToDot } from "../core/serializers/toDot";
-import { serializeSceneGraphToJson } from "../core/serializers/toFromJson";
-import { serializeSceneGraphToGraphml } from "../core/serializers/toGraphml";
+} from '../core/layouts/LayoutEngine';
+import { NodePositionData } from '../core/layouts/layoutHelpers';
+import { DisplayManager } from '../core/model/DisplayManager';
+import { SceneGraph } from '../core/model/SceneGraph';
+import {
+  getRandomNode,
+  GetRandomNodeFromSceneGraph,
+  saveRenderingConfigToFile,
+} from '../core/model/utils';
+import { processImageNodesInSceneGraph } from '../core/processors/imageBoxProcessor';
+import { serializeSceneGraphToDot } from '../core/serializers/toDot';
+import { serializeSceneGraphToJson } from '../core/serializers/toFromJson';
+import { serializeSceneGraphToGraphml } from '../core/serializers/toGraphml';
 import {
   extractPositionsFromNodes,
   extractPositionsFromUserData,
-} from "../data/graphs/blobMesh";
-import { SceneGraphCategory, sceneGraphs } from "../data/graphs/sceneGraphLib";
-import { demoSongAnnotations } from "../mp3/data";
-import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
-import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
+} from '../data/graphs/blobMesh';
+import { SceneGraphCategory, sceneGraphs } from '../data/graphs/sceneGraphLib';
+import { demoSongAnnotations } from '../mp3/data';
+import { demoSongAnnotations2 } from '../mp3/demoSongAnnotations247';
+import { IMenuConfig, IMenuConfig as MenuConfigType } from './UniAppToolbar';
 
 const handleExportDot = (sceneGraph: SceneGraph) => {
   const dotContent = serializeSceneGraphToDot(sceneGraph);
-  const blob = new Blob([dotContent], { type: "text/plain;charset=utf-8" });
-  saveAs(blob, "graph.dot");
+  const blob = new Blob([dotContent], { type: 'text/plain;charset=utf-8' });
+  saveAs(blob, 'graph.dot');
 };
 
 const handleExportGraphml = (sceneGraph: SceneGraph) => {
   const graphmlContent = serializeSceneGraphToGraphml(sceneGraph);
   const blob = new Blob([graphmlContent], {
-    type: "application/xml;charset=utf-8",
+    type: 'application/xml;charset=utf-8',
   });
-  saveAs(blob, "graph.graphml");
+  saveAs(blob, 'graph.graphml');
 };
 
 const handleExportJson = (sceneGraph: SceneGraph) => {
   const jsonContent = serializeSceneGraphToJson(sceneGraph);
   const blob = new Blob([jsonContent], {
-    type: "application/json;charset=utf-8",
+    type: 'application/json;charset=utf-8',
   });
-  saveAs(blob, "graph.json");
+  saveAs(blob, 'graph.json');
 };
 
 const handleExportConfig = (sceneGraph: SceneGraph) => {
-  saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), "renderConfig.json");
+  saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), 'renderConfig.json');
 };
 
 const graphVizMenuActions = (
@@ -141,7 +145,7 @@ export interface IMenuConfigCallbacks {
   setShowNodeTable: (show: boolean) => void;
   setShowEdgeTable: (show: boolean) => void;
   handleImportSvg: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  showLayoutManager: (mode: "save" | "load") => void;
+  showLayoutManager: (mode: 'save' | 'load') => void;
   showFilterWindow: () => void;
   showFilterManager: () => void;
   clearFilters: () => void;
@@ -210,7 +214,7 @@ export class MenuConfig {
                   },
                 },
               },
-              "Display Config": {
+              'Display Config': {
                 action: () => handleExportConfig(this.sceneGraph),
               },
             },
@@ -221,30 +225,30 @@ export class MenuConfig {
                 submenu: {
                   Dot: {
                     action: () =>
-                      document.getElementById("import-dot-input")?.click(),
+                      document.getElementById('import-dot-input')?.click(),
                   },
                   Graphml: {
                     action: () =>
-                      document.getElementById("import-graphml-input")?.click(),
+                      document.getElementById('import-graphml-input')?.click(),
                   },
                   JSON: {
                     action: () =>
-                      document.getElementById("import-json-input")?.click(),
+                      document.getElementById('import-json-input')?.click(),
                   },
                   SVG: {
                     action: () =>
-                      document.getElementById("import-svg-input")?.click(),
+                      document.getElementById('import-svg-input')?.click(),
                   },
-                  "SVG From URL": {
+                  'SVG From URL': {
                     action: () => {
                       this.callbacks.showImportSvgFromUrlDialog();
                     },
                   },
                 },
               },
-              "Import Config": {
+              'Import Config': {
                 action: () =>
-                  document.getElementById("import-config-input")?.click(),
+                  document.getElementById('import-config-input')?.click(),
               },
             },
           },
@@ -252,14 +256,14 @@ export class MenuConfig {
       },
       View: {
         submenu: {
-          "Fit to View": {
+          'Fit to View': {
             action: () =>
               this.callbacks.handleFitToView(this.appConfig.activeView),
           },
           Entities: {
             action: () => this.callbacks.setShowNodeTable(true),
           },
-          "SceneGraph Details": {
+          'SceneGraph Details': {
             action: () => this.callbacks.showSceneGraphDetailView(false),
           },
         },
@@ -295,7 +299,7 @@ export class MenuConfig {
               }));
             },
           },
-          "Layout Panel": {
+          'Layout Panel': {
             checked: this.appConfig.windows.showGraphLayoutToolbar,
             onChange: () => {
               this.callbacks.setAppConfig((prev) => ({
@@ -307,8 +311,8 @@ export class MenuConfig {
               }));
             },
           },
-          "Force Graph Config Editor": {
-            checked: this.appConfig.windows.showGraphLayoutToolbar,
+          'Force Graph Config Editor': {
+            checked: this.appConfig.forceGraph3dOptions.showOptionsPanel,
             onChange: () => {
               this.callbacks.setAppConfig((prev) => ({
                 ...prev,
@@ -323,14 +327,14 @@ export class MenuConfig {
       },
       Layout: {
         submenu: {
-          "Save Current Layout": {
+          'Save Current Layout': {
             action: () => {
-              this.callbacks.showLayoutManager("save");
+              this.callbacks.showLayoutManager('save');
             },
           },
-          "Load Layout": {
+          'Load Layout': {
             action: () => {
-              this.callbacks.showLayoutManager("load");
+              this.callbacks.showLayoutManager('load');
               // Finish Implementation
             },
           },
@@ -371,13 +375,13 @@ export class MenuConfig {
       },
       Filters: {
         submenu: {
-          "New Filters": {
+          'New Filters': {
             action: () => this.callbacks.showFilterWindow(),
           },
-          "Load Filters": {
+          'Load Filters': {
             action: () => this.callbacks.showFilterManager(),
           },
-          "Clear Filters": {
+          'Clear Filters': {
             action: () => this.callbacks.clearFilters(),
           },
         },
@@ -386,19 +390,19 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Analysis: {
         submenu: {
-          "Path Analysis": {
+          'Path Analysis': {
             action: () => this.callbacks.setShowPathAnalysis(true),
           },
         },
       },
       Dev: {
         submenu: {
-          "Print SceneGraph": {
+          'Print SceneGraph': {
             action: () => {
               console.log(this.sceneGraph);
             },
           },
-          "Show Entity Data Card": {
+          'Show Entity Data Card': {
             checked: this.appConfig.windows.showEntityDataCard,
             onChange: () => {
               this.callbacks.setAppConfig((prev) => ({
@@ -410,7 +414,7 @@ export class MenuConfig {
               }));
             },
           },
-          "Run animation": {
+          'Run animation': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 Compute_Layout(
@@ -426,7 +430,7 @@ export class MenuConfig {
               }
             },
           },
-          "Add cluster": {
+          'Add cluster': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 addCluster(
@@ -438,14 +442,14 @@ export class MenuConfig {
               }
             },
           },
-          "Randomize visible": {
+          'Randomize visible': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 randomizeVisible(this.forceGraphInstance.current, 0.2);
               }
             },
           },
-          "Randomize visible and physics": {
+          'Randomize visible and physics': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 randomizeVisibleAndPhysics(
@@ -463,7 +467,7 @@ export class MenuConfig {
               }
             },
           },
-          "Focus with transparency": {
+          'Focus with transparency': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 focusWithTransparency(
@@ -474,7 +478,7 @@ export class MenuConfig {
               }
             },
           },
-          "Focus on degrees": {
+          'Focus on degrees': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 focusOnDegrees(
@@ -509,13 +513,13 @@ export class MenuConfig {
                   },
                   {
                     duration: 1000,
-                    onComplete: () => console.log("Transition complete"),
+                    onComplete: () => console.log('Transition complete'),
                   }
                 );
               }
             },
           },
-          "Song Timeline": {
+          'Song Timeline': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 const timeline = createSongVisualizationTimeline(
@@ -526,7 +530,7 @@ export class MenuConfig {
               }
             },
           },
-          "Random effects": {
+          'Random effects': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 applyRandomEffects(
@@ -536,7 +540,7 @@ export class MenuConfig {
               }
             },
           },
-          "Staggered effects": {
+          'Staggered effects': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 applyStaggeredEffects(
@@ -558,7 +562,7 @@ export class MenuConfig {
               }
             },
           },
-          "Demo 2": {
+          'Demo 2': {
             action: () => {
               if (this.forceGraphInstance.current) {
                 applyStaggeredEffects(
@@ -589,21 +593,21 @@ export class MenuConfig {
                   {
                     maxNodes: 5,
                     spawnRadius: 50,
-                    nodeColor: "#ff88cc",
+                    nodeColor: '#ff88cc',
                     nodeSize: 8,
                     fadeOutDuration: 3000,
-                    linkColor: "#ff88cc44",
+                    linkColor: '#ff88cc44',
                   },
                   this.sceneGraph
                 );
 
                 // Start spawning
-                console.log("starting spawner");
+                console.log('starting spawner');
                 spawner.start();
               }
             },
           },
-          "Random Edge Spawner": {
+          'Random Edge Spawner': {
             action: () => {
               if (!this.forceGraphInstance.current) return;
 
@@ -618,13 +622,13 @@ export class MenuConfig {
                 {
                   duration: 30000, // 30 seconds
                   interval: 1000, // Add edge every second
-                  onComplete: () => console.log("Finished adding random edges"),
-                  onError: (error) => console.error("Animation failed:", error),
+                  onComplete: () => console.log('Finished adding random edges'),
+                  onError: (error) => console.error('Animation failed:', error),
                 }
               );
             },
           },
-          "Random Edge Spawner Burst": {
+          'Random Edge Spawner Burst': {
             action: () => {
               if (!this.forceGraphInstance.current) return;
 
@@ -639,13 +643,13 @@ export class MenuConfig {
                 {
                   duration: 30000, // 30 seconds
                   interval: 100, // Add edge every 100 milliseconds
-                  onComplete: () => console.log("Finished adding random edges"),
-                  onError: (error) => console.error("Animation failed:", error),
+                  onComplete: () => console.log('Finished adding random edges'),
+                  onError: (error) => console.error('Animation failed:', error),
                 }
               );
             },
           },
-          "Random Node Spawner Burst": {
+          'Random Node Spawner Burst': {
             action: () => {
               if (!this.forceGraphInstance.current) return;
 
@@ -662,9 +666,9 @@ export class MenuConfig {
                   interval: 100, // Add node every 100 milliseconds
                   onComplete: () => {
                     this.sceneGraph.notifyGraphChanged();
-                    console.log("Finished adding random nodes");
+                    console.log('Finished adding random nodes');
                   },
-                  onError: (error) => console.error("Animation failed:", error),
+                  onError: (error) => console.error('Animation failed:', error),
                 }
               );
             },
@@ -684,7 +688,7 @@ export class MenuConfig {
                         Math.random() * 2
                       );
                       this.forceGraphInstance.current
-                        ?.d3Force("charge")
+                        ?.d3Force('charge')
                         ?.strength(Math.random() * 200 - 100);
                       this.forceGraphInstance.current?.d3ReheatSimulation();
                       console.log(`Frame ${frame}: ${elapsedTime}ms elapsed`);
@@ -692,9 +696,9 @@ export class MenuConfig {
                     {
                       duration: 5000,
                       interval: 50,
-                      onComplete: () => console.log("Animation complete"),
+                      onComplete: () => console.log('Animation complete'),
                       onError: (error) =>
-                        console.error("Animation failed:", error),
+                        console.error('Animation failed:', error),
                     }
                   );
                 },
@@ -727,7 +731,7 @@ export class MenuConfig {
       },
       Funcs: {
         submenu: {
-          "Update scenegraph entities display": {
+          'Update scenegraph entities display': {
             action: () => {
               DisplayManager.applyRenderingConfigToGraph(
                 this.sceneGraph.getGraph(),
@@ -735,7 +739,7 @@ export class MenuConfig {
               );
             },
           },
-          "Load image annotations": {
+          'Load image annotations': {
             action: () => {
               processImageNodesInSceneGraph(this.sceneGraph);
             },
