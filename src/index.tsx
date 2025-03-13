@@ -10,12 +10,14 @@ if (rootElement) {
   const urlParams = new URLSearchParams(window.location.search);
   const graphName = urlParams.get('graph') ?? undefined;
   const svgUrl = urlParams.get('svgUrl') ?? undefined;
-  const activeView = urlParams.get('activeView') ?? undefined;
+  const activeView = urlParams.get('view') ?? undefined;
+  const activeLayout = urlParams.get('layout') ?? undefined;
   root.render(
     <App
       defaultGraph={graphName}
       svgUrl={svgUrl}
       defaultActiveView={activeView}
+      defaultActiveLayout={activeLayout}
     />
   );
 }

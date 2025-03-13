@@ -187,7 +187,8 @@ const AppContent: React.FC<{
   defaultGraph?: string;
   svgUrl?: string;
   defaultActiveView?: string;
-}> = ({ defaultGraph, svgUrl, defaultActiveView }) => {
+  defaultActiveLayout?: string;
+}> = ({ defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout }) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -342,7 +343,11 @@ const AppContent: React.FC<{
     if (defaultActiveView) {
       handleSetActiveView(defaultActiveView as RenderingView);
     }
-  }, [defaultGraph, svgUrl, defaultActiveView]);
+
+    if (defaultActiveLayout) {
+      handleSetActiveLayout(defaultActiveLayout as LayoutEngineOption);
+    }
+  }, [defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout]);
 
   useEffect(() => {
     if (
@@ -913,7 +918,7 @@ const AppContent: React.FC<{
       }));
       handleFitToView(key);
       const url = new URL(window.location.href);
-      url.searchParams.set('activeView', key);
+      url.searchParams.set('view', key);
       window.history.pushState({}, '', url.toString());
     },
     [handleFitToView]
@@ -1466,6 +1471,9 @@ const AppContent: React.FC<{
       enableZoomAndPanOnSvg(graphvizRef.current);
       graphvizFitToView(graphvizRef.current);
     }
+    const url = new URL(window.location.href);
+    url.searchParams.set('layout', layoutResult?.layoutType as string);
+    window.history.pushState({}, '', url.toString());
   }, [forceGraphInstance, layoutResult, appConfig.forceGraph3dOptions.layout]);
 
   const handleSearchResult = useCallback((nodeIds: string[]) => {
@@ -2036,13 +2044,15 @@ const App: React.FC<{
   defaultGraph?: string;
   svgUrl?: string;
   defaultActiveView?: string;
-}> = ({ defaultGraph, svgUrl, defaultActiveView }) => {
+  defaultActiveLayout?: string;
+}> = ({ defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout }) => {
   return (
     <MousePositionProvider>
       <AppContent
         defaultGraph={defaultGraph}
         svgUrl={svgUrl}
         defaultActiveView={defaultActiveView}
+        defaultActiveLayout={defaultActiveLayout}
       />
     </MousePositionProvider>
   );
