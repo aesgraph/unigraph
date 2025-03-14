@@ -275,6 +275,9 @@ export class RenderingManager {
       return false;
     }
     const displayConfig = this.getDisplayConfig("Edge", "tag");
+    if (Object.keys(displayConfig).length === 0) {
+      return true;
+    }
     for (const tag of edge.getTags()) {
       if (tag in displayConfig) {
         return displayConfig[tag].isVisible;
@@ -295,6 +298,10 @@ export class RenderingManager {
         this.getNodeIsVisible(graph.getNode(edge.getSource())) &&
         this.getNodeIsVisible(graph.getNode(edge.getTarget()))
       );
+    }
+    const displayConfig = this.getDisplayConfig("Edge", "type");
+    if (Object.keys(displayConfig).length === 0) {
+      return true;
     }
     return false;
   }

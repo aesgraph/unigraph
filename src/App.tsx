@@ -1875,10 +1875,10 @@ const AppContent: React.FC<{
           zIndex: 10,
         }}
       >
-        <YasguiPanel />
+        <YasguiPanel sceneGraph={currentSceneGraph} />
       </div>
     );
-  }, [appConfig.activeView]);
+  }, [appConfig.activeView, currentSceneGraph]);
 
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
