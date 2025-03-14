@@ -199,7 +199,3 @@ compress_html:
   profile: false
   # ignore:
   #   envs: all
-
-# Custom includes
-include:
-  - _includes/head_custom.html
