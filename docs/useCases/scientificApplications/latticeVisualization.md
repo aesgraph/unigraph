@@ -1,9 +1,7 @@
 ---
-title: "Lattice Visualization"
+title: "Lattice Interface"
 nav_order: 12
 parent: "Scientific Applications"
 ---
 
-## 3d Lattice Visualization
-
-
+## Lattice Interface
