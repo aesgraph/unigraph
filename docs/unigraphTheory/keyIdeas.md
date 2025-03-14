@@ -1,7 +1,7 @@
 ---
-title: Scientific Basis
+title: Key Ideas
 nav_order: 4
-parent: "Unigraph: The Theory"
+parent: "Theory"
 ---
 
 A Field-theoretical framework to build field-theoretical frameworks
@@ -13,7 +13,3 @@ Local and Global Context
 The Uncanny Valley of Analytics
 
 The Challengings in Semantic Technology
-
-
-
-

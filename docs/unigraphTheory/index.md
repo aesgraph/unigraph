@@ -1,9 +1,9 @@
 ---
-title: "Unigraph: The Theory"
+title: "Theory"
 nav_order: 6
 ---
 
-## Unigraph: The Theory
+## Theory
 
 ### Particulation and Recombination
 
