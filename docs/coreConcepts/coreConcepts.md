@@ -32,3 +32,5 @@ Unigraph is a graph engine that decouples graph structure from its presentation,
 This separation allows for configurable presets that simplify complex system diagrams, ensuring they remain human-interpretable and adaptable. Users can define custom configurations to highlight specific aspects of a graph, enhancing clarity and usability across diverse applications.
 
 ### Materialized Views
+
+### Applets

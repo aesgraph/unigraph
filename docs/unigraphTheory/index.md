@@ -9,7 +9,7 @@ nav_order: 6
 
 ### Organizational Complexity and Graph Engines
 
-### Organizational Bridging via Dynamic and Strongly Typed Models
+### An API for APIs
 
 **Unigraph is a solution to eliminate the multiplicative redundancy in building message translation layers across organizational scopes.**
 
