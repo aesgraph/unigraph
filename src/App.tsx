@@ -52,6 +52,7 @@ import SceneGraphTitle from "./components/SceneGraphTitle";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
 import UniAppToolbar from "./components/UniAppToolbar";
+import YasguiPanel from "./components/YasguiPanel";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -181,7 +182,8 @@ export type RenderingView =
   | "ForceGraph3d"
   | "ReactFlow"
   | "Gallery" // Add new view type
-  | "Simulation";
+  | "Simulation"
+  | "Yasgui"; // Add new view type
 
 const AppContent: React.FC<{
   defaultGraph?: string;
@@ -361,6 +363,9 @@ const AppContent: React.FC<{
   }, [appConfig]);
 
   const isGraphLayoutPanelVisible = useMemo(() => {
+    if (appConfig.activeView === "Yasgui") {
+      return false;
+    }
     return appConfig.windows.showGraphLayoutToolbar;
   }, [appConfig]);
 
@@ -1255,6 +1260,12 @@ const AppContent: React.FC<{
     if (!isLegendVisible && !isOptionsPanelVisible) {
       return undefined;
     }
+    if (
+      appConfig.activeView === "Yasgui" ||
+      appConfig.activeView === "Copilot"
+    ) {
+      return undefined;
+    }
     return (
       <div
         className="options-panel-container"
@@ -1848,6 +1859,27 @@ const AppContent: React.FC<{
     [currentSceneGraph]
   );
 
+  const maybeRenderYasgui = useMemo(() => {
+    if (appConfig.activeView !== "Yasgui") {
+      return null;
+    }
+
+    return (
+      <div
+        id="yasgui"
+        style={{
+          position: "absolute",
+          top: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 10,
+        }}
+      >
+        <YasguiPanel />
+      </div>
+    );
+  }, [appConfig.activeView]);
+
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
       <div
@@ -1933,6 +1965,7 @@ const AppContent: React.FC<{
             {maybeRenderGraphviz}
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
+            {maybeRenderYasgui}
             {appConfig.activeView === "Gallery" && (
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}
