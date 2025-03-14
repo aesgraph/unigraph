@@ -117,8 +117,10 @@ aux_links_new_tab: false
 # Nav menu can also be selectively enabled or disabled using page variables or the minimal layout
 nav_enabled: true
 
+# Control whether navigation sections expand/collapse on their own
+nav_fold: false  # Set to false to prevent auto-collapsing of nav sections
+
 # Sort order for navigation links
-# nav_sort: case_insensitive # default, equivalent to nil
 nav_sort: case_sensitive # Capital letters sorted before lowercase
 
 # Show navigation error report
@@ -152,6 +154,7 @@ gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into t
 
 # Color scheme currently only supports "dark", "light"/nil (default), or a custom scheme that you define
 color_scheme: nil
+
 
 callouts_level: quiet # or loud
 callouts:

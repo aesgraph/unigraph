@@ -39,16 +39,24 @@ graph LR;
 
 <iframe src="http://localhost:3000/?graph=graphManagementWorkflowDiagram&view=ReactFlow&layout=dot&showOptionsPanel=false&showGraphLayoutToolbar=false&showLegendBars=false&showRenderConfig=false&showToolbar=false" width="100%" height="600px" style="border: none;"></iframe>
 
+[Full Screen](http://localhost:3000/?graph=graphManagementWorkflowDiagram&view=ReactFlow&layout=dot&showOptionsPanel=false&showGraphLayoutToolbar=false&showLegendBars=false&showRenderConfig=false&showToolbar=false)
+
 **Export edited graphs to various file extensions or SVGs**
 Graphviz View
 
 <iframe src="http://localhost:3000/?graph=graphManagementWorkflowDiagram&view=Graphviz&layout=dot&showOptionsPanel=false&showGraphLayoutToolbar=false&showLegendBars=false&showRenderConfig=false&showToolbar=false" width="100%" height="600px" style="border: none;"></iframe>
 
+[Full Screen](http://localhost:3000/?graph=graphManagementWorkflowDiagram&view=Graphviz&layout=dot&showOptionsPanel=false&showGraphLayoutToolbar=false&showLegendBars=false&showRenderConfig=false&showToolbar=false)
+
 The diagram shown above could be a display preset of a much larger graph that is fully navigable and configurable.
 **Unigraph supports building and visualizing arbitrarily complex graphs.**<br>
 Here is a collection of various diagrams (partially AI-generated) regarding Unigraph loaded into the same scene. In the future, Unigraph could be a mechansim to merge many complicated system descriptions together, with strong typing and built-in display and navigation features.
 
+<iframe src="http://localhost:3000/?graph=graphManagementWorkflowDiagram2&view=ReactFlow&layout=dot" width="100%" height="600px" style="border: none;"></iframe>
+[Full Screen](http://localhost:3000/?graph=graphManagementWorkflowDiagram2&view=ReactFlow&layout=dot)
+
 <iframe src="http://localhost:3000/?graph=graphManagementWorkflowDiagram2" width="100%" height="600px" style="border: none;"></iframe>
+[Full Screen](http://localhost:3000/?graph=graphManagementWorkflowDiagram2)
 
 **A future experiment: Use Unigraph with Copilot to self-describe and extend itself**
 
