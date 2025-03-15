@@ -1328,6 +1328,11 @@ const AppContent: React.FC<{
           .getGraph()
           .getNode(node.id as NodeId)
           .getLabel(),
+        onResizeEnd: (width: number, height: number) => {
+          currentSceneGraph
+            .getNode(node.id as NodeId)
+            .setDimensions({ width, height });
+        },
       },
       style: {
         background: renderingManager.getNodeColor(
