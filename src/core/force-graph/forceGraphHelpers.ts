@@ -77,28 +77,33 @@ export const updateVisibleEntitiesInForceGraphInstance = (
   });
 };
 
-export const syncMissingNodesInForceGraph = (
+export const syncMissingNodesAndEdgesInForceGraph = (
   instance: ForceGraph3DInstance,
   sceneGraph: SceneGraph
 ): void => {
   // Get current ReactFlow compatible data
-  const { nodes: reactFlowNodes } = exportGraphDataForReactFlow(sceneGraph);
+  const { nodes: reactFlowNodes, edges } =
+    exportGraphDataForReactFlow(sceneGraph);
 
   // Get current ForceGraph data
   const forceGraphData = instance.graphData();
   const existingNodeIds = new Set(forceGraphData.nodes.map((n) => n.id));
+  const existingEdgeIds = new Set(
+    forceGraphData.links.map((l) => (l as any).id)
+  );
 
   // Find nodes that exist in ReactFlow but not in ForceGraph
   const missingNodes = reactFlowNodes.filter((n) => !existingNodeIds.has(n.id));
+  const missingEdges = edges.filter((e) => !existingEdgeIds.has(e.id));
 
-  if (missingNodes.length === 0) {
+  if (missingNodes.length === 0 && missingEdges.length === 0) {
     return;
   }
 
   // Update ForceGraph with combined nodes
   instance.graphData({
     nodes: [...forceGraphData.nodes, ...missingNodes],
-    links: forceGraphData.links,
+    links: [...forceGraphData.links, ...missingEdges],
   });
 
   // Refresh the visualization

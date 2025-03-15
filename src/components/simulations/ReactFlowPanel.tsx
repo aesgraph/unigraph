@@ -86,7 +86,9 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
             instance.fitView({ padding: 0.1 });
           }}
           onNodeContextMenu={onNodeContextMenu}
-          onContextMenu={onBackgroundContextMenu}
+          onPaneContextMenu={(event: any) =>
+            onBackgroundContextMenu?.(event as React.MouseEvent)
+          }
           fitView={true}
           minZoom={0.1}
           maxZoom={200}

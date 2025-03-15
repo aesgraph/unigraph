@@ -74,7 +74,7 @@ import {
   zoomToFit,
 } from "./core/force-graph/createForceGraph";
 import { songAnnotation247_2_entities } from "./core/force-graph/dynamics/247-2";
-import { syncMissingNodesInForceGraph } from "./core/force-graph/forceGraphHelpers";
+import { syncMissingNodesAndEdgesInForceGraph } from "./core/force-graph/forceGraphHelpers";
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
 import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
 import { GraphvizLayoutType } from "./core/layouts/GraphvizLayoutEngine";
@@ -109,6 +109,7 @@ import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
 import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
+import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 
@@ -726,8 +727,12 @@ const AppContent: React.FC<{
           onGraphChanged: (g) => {
             setGraphStatistics(getGraphStatistics(g));
             if (forceGraphInstance.current) {
-              syncMissingNodesInForceGraph(forceGraphInstance.current, graph);
+              syncMissingNodesAndEdgesInForceGraph(
+                forceGraphInstance.current,
+                graph
+              );
             }
+            handleDisplayConfigChanged(graph.getDisplayConfig());
             setGraphModelUpdateTime(Date.now());
           },
         });
@@ -1798,6 +1803,14 @@ const AppContent: React.FC<{
         label: "Edit JSON",
         action: () => {
           setJsonEditEntity(currentSceneGraph.getGraph().getNode(nodeId));
+        },
+      },
+      {
+        label: "Query dbpedia",
+        action: () => {
+          bfsQuery(nodeId.replace(" ", "_"), 200, 150, 500).then((results) =>
+            processYasguiResults(results, currentSceneGraph)
+          );
         },
       },
     ],
