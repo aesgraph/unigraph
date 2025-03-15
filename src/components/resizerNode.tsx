@@ -5,7 +5,7 @@ import {
   ResizeDragEvent,
   ResizeParams,
 } from "@xyflow/react";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { NodeData } from "../core/model/Node";
 
 export type ResizerNodeDataArgs = NodeData & {
@@ -18,12 +18,27 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
     height: data.dimensions?.height || 50,
   });
 
-  useEffect(() => {
-    setDimensions({
-      width: data.dimensions?.width || 100,
-      height: data.dimensions?.height || 50,
-    });
-  }, [data.dimensions]);
+  // useEffect(() => {
+  //   setDimensions({
+  //     width: data.dimensions?.width || 100,
+  //     height: data.dimensions?.height || 50,
+  //   });
+  // }, [data.dimensions]);
+
+  // useEffect(() => {
+  //   const resizeObserverError = (event: ErrorEvent) => {
+  //     if (
+  //       event.message ===
+  //       "ResizeObserver loop completed with undelivered notifications."
+  //     ) {
+  //       event.stopImmediatePropagation();
+  //     }
+  //   };
+  //   window.addEventListener("error", resizeObserverError);
+  //   return () => {
+  //     window.removeEventListener("error", resizeObserverError);
+  //   };
+  // }, []);
 
   return (
     <div
