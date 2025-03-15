@@ -1337,7 +1337,20 @@ const AppContent: React.FC<{
               z: currentSceneGraph.getNode(node.id as NodeId).getPosition().z,
             })
             .setDimensions({ width, height });
+          currentSceneGraph.getDisplayConfig().nodePositions![node.id] = {
+            x,
+            y,
+            z: 0,
+          };
+          if (layoutResult) {
+            layoutResult.positions[node.id] = {
+              x,
+              y,
+              z: 0,
+            };
+          }
         },
+        dimensions: node.data.dimensions,
       },
       style: {
         background: renderingManager.getNodeColor(

@@ -29,7 +29,11 @@ export const exportGraphDataForReactFlow = (
           ? positions[node.getId()]
           : { x: 0, y: 0 }
         : { x: 0, y: 0 },
-      data: { label: node.getId(), color: renderingManager.getNodeColor(node) },
+      data: {
+        label: node.getId(),
+        color: renderingManager.getNodeColor(node),
+        dimensions: node.getDimensions(),
+      },
       style: { border: `2px solid ${renderingManager.getNodeColor(node)}` },
       label: node.getLabel(),
       type: "resizerNode",

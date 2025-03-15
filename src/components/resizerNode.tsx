@@ -5,7 +5,7 @@ import {
   ResizeDragEvent,
   ResizeParams,
 } from "@xyflow/react";
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { NodeData } from "../core/model/Node";
 
 export type ResizerNodeDataArgs = NodeData & {
@@ -13,21 +13,42 @@ export type ResizerNodeDataArgs = NodeData & {
 };
 
 function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
-  const { width = 200, height = 100 } = data.dimensions || {};
+  const [dimensions, setDimensions] = useState({
+    width: data.dimensions?.width || 200,
+    height: data.dimensions?.height || 100,
+  });
+
+  useEffect(() => {
+    setDimensions({
+      width: data.dimensions?.width || 200,
+      height: data.dimensions?.height || 100,
+    });
+  }, [data.dimensions]);
 
   return (
-    <div style={{ width, height, position: "relative" }}>
+    <div
+      style={{
+        width: dimensions.width,
+        height: dimensions.height,
+        position: "relative",
+      }}
+    >
       <NodeResizer
         minWidth={50}
         minHeight={50}
-        onResizeEnd={(event: ResizeDragEvent, params: ResizeParams) =>
+        onResizeEnd={(event: ResizeDragEvent, params: ResizeParams) => {
+          const newDimensions = {
+            width: params.width as number,
+            height: params.height as number,
+          };
+          setDimensions(newDimensions);
           data.onResizeEnd?.(
             params.x as number,
             params.y as number,
-            params.width as number,
-            params.height as number
-          )
-        }
+            newDimensions.width,
+            newDimensions.height
+          );
+        }}
       />
       <Handle type="target" position={Position.Left} />
       <div>{data.label}</div>
