@@ -43,8 +43,9 @@ class Node extends AbstractEntity<NodeId, NodeData> {
     return this.data.dimensions;
   }
 
-  setDimensions(dimensions: Dimensions): void {
+  setDimensions(dimensions: Dimensions): Node {
     this.data.dimensions = dimensions;
+    return this;
   }
 
   getData(): NodeData {
@@ -55,8 +56,9 @@ class Node extends AbstractEntity<NodeId, NodeData> {
     return this.data.position;
   }
 
-  setPosition(position: Position): void {
+  setPosition(position: Position): Node {
     this.data.position = position;
+    return this;
   }
 
   isVisible(): boolean {

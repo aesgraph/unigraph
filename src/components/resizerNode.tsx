@@ -9,17 +9,24 @@ import React, { memo } from "react";
 import { NodeData } from "../core/model/Node";
 
 export type ResizerNodeDataArgs = NodeData & {
-  onResizeEnd?: (width: number, height: number) => void;
+  onResizeEnd?: (x: number, y: number, width: number, height: number) => void;
 };
 
 function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
+  const { width = 200, height = 100 } = data.dimensions || {};
+
   return (
-    <div>
+    <div style={{ width, height, position: "relative" }}>
       <NodeResizer
         minWidth={50}
         minHeight={50}
         onResizeEnd={(event: ResizeDragEvent, params: ResizeParams) =>
-          data.onResizeEnd?.(params.width as number, params.height as number)
+          data.onResizeEnd?.(
+            params.x as number,
+            params.y as number,
+            params.width as number,
+            params.height as number
+          )
         }
       />
       <Handle type="target" position={Position.Left} />

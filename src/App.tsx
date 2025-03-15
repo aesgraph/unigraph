@@ -1328,9 +1328,14 @@ const AppContent: React.FC<{
           .getGraph()
           .getNode(node.id as NodeId)
           .getLabel(),
-        onResizeEnd: (width: number, height: number) => {
+        onResizeEnd: (x: number, y: number, width: number, height: number) => {
           currentSceneGraph
             .getNode(node.id as NodeId)
+            .setPosition({
+              x,
+              y,
+              z: currentSceneGraph.getNode(node.id as NodeId).getPosition().z,
+            })
             .setDimensions({ width, height });
         },
       },
