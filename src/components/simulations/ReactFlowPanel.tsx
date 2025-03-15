@@ -16,6 +16,7 @@ import { SelectionMode } from "reactflow";
 import CustomNode from "../CustomNode"; // Import the custom node component
 
 import "@xyflow/react/dist/style.css";
+import ResizerNode from "../resizerNode";
 
 interface ReactFlowPanelProps {
   nodes: Node[];
@@ -29,6 +30,7 @@ interface ReactFlowPanelProps {
 
 const nodeTypes = {
   customNode: CustomNode, // Register the custom node component
+  resizerNode: ResizerNode,
 };
 
 const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({

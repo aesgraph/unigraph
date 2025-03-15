@@ -1322,7 +1322,7 @@ const AppContent: React.FC<{
     const nodesWithPositions = data.nodes.map((node) => ({
       ...node,
       position: nodePositions[node.id] || { x: 200, y: 200 },
-      type: "customNode", // Use the custom node type
+      type: "resizerNode", // Use the custom node type
       data: {
         label: currentSceneGraph
           .getGraph()
