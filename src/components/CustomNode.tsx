@@ -7,9 +7,9 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
   console.log("RENDERING CUSTOM NODE");
   return (
     <div style={{ padding: 10, border: "1px solid #ddd", borderRadius: 5 }}>
-      <Handle type="target" position={Position.Top} />
+      <Handle type="target" position={Position.Left} />
       <div>{nodeData.label}</div>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle type="source" position={Position.Right} />
     </div>
   );
 };
