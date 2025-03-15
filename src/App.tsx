@@ -1447,27 +1447,6 @@ const AppContent: React.FC<{
     edgeConfig,
   ]);
 
-  // useEffect(() => {
-  //   if (
-  //     activeView === "Graphviz" ||
-  //     activeView === "ReactFlow" ||
-  //     (activeView === "ForceGraph3d" &&
-  //       appConfig.forceGraph3dOptions.layout === "Layout") ||
-  //     appConfig.forceGraph3dOptions.layout in
-  //       new Set(Object.values(GraphvizLayoutType))
-  //   ) {
-  //     safeComputeLayout(currentSceneGraph, appConfig.activeLayout);
-  //   }
-  // }, [
-  //   currentSceneGraph,
-  //   nodeConfig,
-  //   edgeConfig,
-  //   appConfig.forceGraph3dOptions.layout,
-  //   appConfig.activeLayout,
-  //   safeComputeLayout,
-  //   activeView,
-  // ]);
-
   const maybeRenderGraphviz = useMemo(() => {
     if (appConfig.activeView !== "Graphviz") {
       return;
