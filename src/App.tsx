@@ -1322,7 +1322,13 @@ const AppContent: React.FC<{
     const nodesWithPositions = data.nodes.map((node) => ({
       ...node,
       position: nodePositions[node.id] || { x: 200, y: 200 },
-      type: "default",
+      type: "customNode", // Use the custom node type
+      data: {
+        label: currentSceneGraph
+          .getGraph()
+          .getNode(node.id as NodeId)
+          .getLabel(),
+      },
       style: {
         background: renderingManager.getNodeColor(
           currentSceneGraph.getGraph().getNode(node.id as NodeId)

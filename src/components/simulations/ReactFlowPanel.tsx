@@ -13,6 +13,7 @@ import {
 } from "@xyflow/react";
 import React, { useEffect, useRef } from "react";
 import { SelectionMode } from "reactflow";
+import CustomNode from "../CustomNode"; // Import the custom node component
 
 import "@xyflow/react/dist/style.css";
 
@@ -25,6 +26,10 @@ interface ReactFlowPanelProps {
   onNodeDragStop?: (event: React.MouseEvent, node: Node, nodes: Node[]) => void;
   // sceneGraph: SceneGraph;
 }
+
+const nodeTypes = {
+  customNode: CustomNode, // Register the custom node component
+};
 
 const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   nodes: initialNodes,
@@ -96,6 +101,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
             type: "smoothstep",
             animated: false,
           }}
+          nodeTypes={nodeTypes} // Use the custom node types
           style={{
             width: "100%",
             height: "100%",
