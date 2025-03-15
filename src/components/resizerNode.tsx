@@ -14,14 +14,14 @@ export type ResizerNodeDataArgs = NodeData & {
 
 function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
   const [dimensions, setDimensions] = useState({
-    width: data.dimensions?.width || 200,
-    height: data.dimensions?.height || 100,
+    width: data.dimensions?.width || 100,
+    height: data.dimensions?.height || 50,
   });
 
   useEffect(() => {
     setDimensions({
-      width: data.dimensions?.width || 200,
-      height: data.dimensions?.height || 100,
+      width: data.dimensions?.width || 100,
+      height: data.dimensions?.height || 50,
     });
   }, [data.dimensions]);
 

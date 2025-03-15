@@ -1443,6 +1443,8 @@ const AppContent: React.FC<{
     layoutResult,
     graphModelUpdateTime,
     activeFilterPreset,
+    nodeConfig,
+    edgeConfig,
   ]);
 
   // useEffect(() => {
