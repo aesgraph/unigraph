@@ -31,6 +31,7 @@ export const exportGraphDataForReactFlow = (
         : { x: 0, y: 0 },
       data: { label: node.getId(), color: renderingManager.getNodeColor(node) },
       style: { border: `2px solid ${renderingManager.getNodeColor(node)}` },
+      label: node.getLabel(),
     }));
 
   const initialVisibleEdges = sceneGraph

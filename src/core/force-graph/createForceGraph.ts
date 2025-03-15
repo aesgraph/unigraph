@@ -112,7 +112,7 @@ export const createForceGraph = (
     extraRenderers: [new CSS2DRenderer()],
   })
     .graphData({ nodes: data.nodes, links: data.edges })
-    .nodeLabel("id")
+    .nodeLabel("label")
     .nodeColor((node) => {
       if (sceneGraph.getAppState().hoveredNodes.has(node.id as string)) {
         return "rgb(242, 254, 9)";

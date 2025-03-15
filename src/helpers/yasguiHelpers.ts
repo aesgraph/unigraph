@@ -16,7 +16,7 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
 
     if (!nodes[sourceId]) {
       nodes[sourceId] = {
-        label: sourceId,
+        label: getLabelFromUri(sourceId),
         type: "dbpedia Node",
         tags: [],
         description: "",
@@ -25,7 +25,7 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
 
     if (!nodes[targetId]) {
       nodes[targetId] = {
-        label: targetId,
+        label: getLabelFromUri(targetId),
         type: "dbpedia Node",
         tags: [],
         description: "",
@@ -33,13 +33,17 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
     }
 
     const edgeId: EdgeId = `${sourceId}-${targetId}` as EdgeId;
-    edges[edgeId] = { source: sourceId, target: targetId, label: predId };
+    edges[edgeId] = {
+      source: sourceId,
+      target: targetId,
+      label: getLabelFromUri(predId),
+    };
   });
 
   console.log("generated node and edge count is ", nodes, edges);
 
-  Object.values(nodes).forEach((nodeData) => {
-    sceneGraph.getGraph().createNode(nodeData.label as NodeId, nodeData);
+  Object.entries(nodes).forEach(([nodeId, nodeData]) => {
+    sceneGraph.getGraph().createNode(nodeId as NodeId, nodeData);
   });
 
   Object.entries(edges).forEach(([edgeId, edgeData]) => {
@@ -147,3 +151,7 @@ export async function bfsQuery(
 // bfsQuery("Albert_Einstein", 200, 150, 500).then((results) =>
 //   console.log(results)
 // );
+
+const getLabelFromUri = (uri: string) => {
+  return uri.split("/").pop()!;
+};

@@ -106,7 +106,7 @@ export class ForceGraphManager {
       // Default node rendering
       const nodeEl = document.createElement("div");
       if (config.nodeTextLabels) {
-        nodeEl.textContent = `${node.id}` as string;
+        nodeEl.textContent = `${n.getLabel()}` as string;
         nodeEl.className = "node-label";
       }
       nodeEl.style.color = renderingManager.getNodeColor(n);
