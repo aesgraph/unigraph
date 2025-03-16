@@ -1,3 +1,4 @@
+import { Edge } from "../../core/model/Edge";
 import { Graph } from "../../core/model/Graph";
 import { SceneGraph } from "../../core/model/SceneGraph";
 
@@ -17,7 +18,9 @@ export const randomBiggestGraph = () => {
   for (let i = 0; i < numEdges; i++) {
     const source = `node${Math.floor(Math.random() * numNodes)}`;
     const target = `node${Math.floor(Math.random() * numNodes)}`;
-    graph.createEdge(source, target, { tags: [tags[i % numTags]] });
+    if (!graph.containsEdge(Edge.id(source, target))) {
+      graph.createEdge(source, target, { tags: [tags[i % numTags]] });
+    }
   }
 
   return new SceneGraph({

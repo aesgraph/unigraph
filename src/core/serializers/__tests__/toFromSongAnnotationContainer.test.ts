@@ -1,110 +1,115 @@
-// import { SongAnnotation, SongAnnotationId } from "../../../mp3/SongAnnotation";
-// import { EntitiesContainer } from "../../model/entity/entitiesContainer";
-// import {
-//   deserializeSongAnnotationContainerFromJson,
-//   serializeSongAnnotationContainerToJson,
-// } from "../toFromSongAnnotationContainer";
+import { SongAnnotation, SongAnnotationId } from "../../../mp3/SongAnnotation";
+import { EntitiesContainer } from "../../model/entity/entitiesContainer";
+import {
+  deserializeSongAnnotationContainerFromJson,
+  serializeSongAnnotationContainerToJson,
+} from "../toFromSongAnnotationContainer";
 
-// describe("SongAnnotation Container Serialization", () => {
-//   let container: EntitiesContainer<SongAnnotationId, SongAnnotation>;
+describe("SongAnnotation Container Serialization", () => {
+  let container: EntitiesContainer<SongAnnotationId, SongAnnotation>;
 
-//   beforeEach(() => {
-//     container = new EntitiesContainer();
+  beforeEach(() => {
+    container = new EntitiesContainer();
 
-//     const songAnnotation1 = new SongAnnotation("anno1", {
-//       time: 1.5,
-//       text: "First mark",
-//       description: "Beginning of verse",
-//       tags: new Set(["verse", "start"]),
-//       type: "annotation",
-//       container.addEntity(songAnnotation1);
-//       container.addEntity(songAnnotation2);
-//     });
+    const songAnnotation1 = new SongAnnotation("anno1", {
+      id: "anno1",
+      time: 1.5,
+      text: "First mark",
+      description: "Beginning of verse",
+      tags: new Set(["verse", "start"]),
+      type: "annotation",
+    });
 
-//     const songAnnotation2 = new SongAnnotation("anno2", {
-//       time: 4.2,
-//       text: "Second mark",
-//       description: "Chorus starts",
-//       tags: new Set(["chorus", "hook"]),
-//       type: "annotation",
-//     });
-//   });
+    const songAnnotation2 = new SongAnnotation("anno2", {
+      id: "anno2",
+      time: 4.2,
+      text: "Second mark",
+      description: "Chorus starts",
+      tags: new Set(["chorus", "hook"]),
+      type: "annotation",
+    });
 
-//   test("should correctly serialize and deserialize annotations", () => {
-//     // Serialize
-//     const json = serializeSongAnnotationContainerToJson(container);
+    container.addEntity(songAnnotation1);
+    container.addEntity(songAnnotation2);
+  });
 
-//     // Deserialize
-//     const deserializedContainer =
-//       deserializeSongAnnotationContainerFromJson(json);
+  test("should correctly serialize and deserialize annotations", () => {
+    // Serialize
+    const json = serializeSongAnnotationContainerToJson(container);
 
-//     // Get arrays of both containers for comparison
-//     const originalAnnotations = container.toArray();
-//     const deserializedAnnotations = deserializedContainer.toArray();
+    // Deserialize
+    const deserializedContainer =
+      deserializeSongAnnotationContainerFromJson(json);
 
-//     // Test container size
-//     expect(deserializedContainer.size()).toBe(container.size());
+    // Get arrays of both containers for comparison
+    const originalAnnotations = container.toArray();
+    const deserializedAnnotations = deserializedContainer.toArray();
 
-//     // Compare each annotation
-//     originalAnnotations.forEach((original, index) => {
-//       const deserialized = deserializedAnnotations[index];
+    // Test container size
+    expect(deserializedContainer.size()).toBe(container.size());
 
-//       // Compare basic properties
-//       expect(deserialized.getId()).toBe(original.getId());
-//       expect(deserialized.getTime()).toBe(original.getTime());
-//       expect(deserialized.getText()).toBe(original.getText());
-//       expect(deserialized.getDescription()).toBe(original.getDescription());
+    // Compare each annotation
+    originalAnnotations.forEach((original, index) => {
+      const deserialized = deserializedAnnotations[index];
 
-//       // Compare tags as arrays (since Set comparison can be tricky)
-//       expect(Array.from(deserialized.getTags()).sort()).toEqual(
-//         Array.from(original.getTags()).sort()
-//       );
-//     });
-//   });
+      // Compare basic properties
+      expect(deserialized.getId()).toBe(original.getId());
+      expect(deserialized.getTime()).toBe(original.getTime());
+      expect(deserialized.getText()).toBe(original.getText());
+      expect(deserialized.getDescription()).toBe(original.getDescription());
 
-//   test("should handle empty container", () => {
-//     const emptyContainer = new EntitiesContainer<
-//       SongAnnotationId,
-//       SongAnnotation
-//     >();
-//     const json = serializeSongAnnotationContainerToJson(emptyContainer);
-//     const deserialized = deserializeSongAnnotationContainerFromJson(json);
+      // Compare tags as arrays (since Set comparison can be tricky)
+      expect(Array.from(deserialized.getTags()).sort()).toEqual(
+        Array.from(original.getTags()).sort()
+      );
+    });
+  });
 
-//     expect(deserialized.size()).toBe(0);
-//     expect(deserialized.toArray()).toEqual([]);
-//   });
+  test("should handle empty container", () => {
+    const emptyContainer = new EntitiesContainer<
+      SongAnnotationId,
+      SongAnnotation
+    >();
+    const json = serializeSongAnnotationContainerToJson(emptyContainer);
+    const deserialized = deserializeSongAnnotationContainerFromJson(json);
 
-//   test("should preserve time precision", () => {
-//     container.addEntity(
-//       new SongAnnotation("precise", {
-//         time: 3.14159265359,
-//         text: "Precise timestamp",
-//         type: "annotation",
-//       })
-//     );
+    expect(deserialized.size()).toBe(0);
+    expect(deserialized.toArray()).toEqual([]);
+  });
 
-//     const json = serializeSongAnnotationContainerToJson(container);
-//     const deserialized = deserializeSongAnnotationContainerFromJson(json);
+  test("should preserve time precision", () => {
+    container.addEntity(
+      new SongAnnotation("precise", {
+        id: "precise",
+        time: 3.14159265359,
+        text: "Precise timestamp",
+        type: "annotation",
+      })
+    );
 
-//     const original = container.get("precise" as SongAnnotationId);
-//     const restored = deserialized.get("precise" as SongAnnotationId);
+    const json = serializeSongAnnotationContainerToJson(container);
+    const deserialized = deserializeSongAnnotationContainerFromJson(json);
 
-//     expect(restored.getTime()).toBe(original.getTime());
-//   });
+    const original = container.get("precise" as SongAnnotationId);
+    const restored = deserialized.get("precise" as SongAnnotationId);
 
-//   test("should handle annotations with no tags", () => {
-//     container.addEntity(
-//       new SongAnnotation("notags", {
-//         time: 5.0,
-//         text: "No tags here",
-//         type: "annotation",
-//       })
-//     );
+    expect(restored.getTime()).toBe(original.getTime());
+  });
 
-//     const json = serializeSongAnnotationContainerToJson(container);
-//     const deserialized = deserializeSongAnnotationContainerFromJson(json);
+  test("should handle annotations with no tags", () => {
+    container.addEntity(
+      new SongAnnotation("notags", {
+        id: "notags",
+        time: 5.0,
+        text: "No tags here",
+        type: "annotation",
+      })
+    );
 
-//     const restored = deserialized.get("notags" as SongAnnotationId);
-//     expect(Array.from(restored.getTags())).toEqual([]);
-//   });
-// });
+    const json = serializeSongAnnotationContainerToJson(container);
+    const deserialized = deserializeSongAnnotationContainerFromJson(json);
+
+    const restored = deserialized.get("notags" as SongAnnotationId);
+    expect(Array.from(restored.getTags())).toEqual([]);
+  });
+});

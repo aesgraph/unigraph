@@ -5,3 +5,4 @@ dist/
 docs/_site/
 docs/.jeckyll-cache
 Gemfile.lock
+coverage/

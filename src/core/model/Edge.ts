@@ -38,6 +38,10 @@ class Edge extends AbstractEntity<EdgeId, EdgeData> {
     super(id as EdgeId, { ...DEFAULT_DISPLAY_EDGE_DATA, ...args });
   }
 
+  public static id(source: NodeId | string, target: NodeId | string): EdgeId {
+    return `${source}:::${target}` as EdgeId;
+  }
+
   getEntityType(): string {
     return "edge";
   }

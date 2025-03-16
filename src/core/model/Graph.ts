@@ -56,7 +56,13 @@ export class Graph {
         );
       }
     }
-    const edge = new Edge(`${fromNode}:::${toNode}`, {
+    const newEdgeId = `${fromNode}:::${toNode}`;
+    if (this.containsEdge(newEdgeId as EdgeId)) {
+      throw new Error(
+        `Cannot create edge that already exists: ${fromNode} -> ${toNode}`
+      );
+    }
+    const edge = new Edge(newEdgeId, {
       source: fromNode,
       target: toNode,
       ...args,
@@ -127,6 +133,9 @@ export class Graph {
   }
 
   getEdge(id: EdgeId): Edge {
+    if (!this.edges.has(id)) {
+      throw Error("Unable to find edge with id: " + id);
+    }
     return this.edges.get(id);
   }
 

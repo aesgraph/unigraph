@@ -41,9 +41,9 @@ export const demo_SceneGraph_ImageGallery_images: { [key: string]: any } = {
   "/public/images/aesgraph/slide1.png": aesgraph_slide1,
 };
 
-import thinking from "/public/images/art/Untitled_Artwork 288.png";
+import thinking from "/public/images/art/Untitled_Artwork 258.png";
 export const demo_SceneGraph_Thinking_images: { [key: string]: any } = {
-  "/public/images/art/Untitled_Artwork 288.png": thinking,
+  "/public/images/art/Untitled_Artwork 258.png": thinking,
 };
 
 // Variable pointing to the app/public/images path

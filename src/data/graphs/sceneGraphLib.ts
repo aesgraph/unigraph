@@ -14,7 +14,6 @@ import { demo_SceneGraph_StackedGalleryTransparent } from "./Gallery_Demos/demo_
 import { demo_SceneGraph_Thinking } from "./Gallery_Demos/demo_SceneGraph_Thinking";
 import { graphManagementWorkflowDiagram } from "./graphManagementWorkflow";
 import { graphManagementWorkflowDiagram2 } from "./graphManagementWorkflow2";
-import { journalSceneGraph } from "./journal";
 import { demo_sceneGraph_academicsKG } from "./mergeGraph";
 import { randomBigGraph } from "./randomBig";
 import { randomBiggestGraph } from "./randomBiggest";
@@ -24,6 +23,7 @@ import { thinkers1 } from "./thinkers1Graph";
 import { thinkers2 } from "./thinkers2Graph";
 import { thoughtDiagram } from "./thoughtDiagram";
 import { unigraphGraph } from "./unigraph";
+import { unigraphGraph2 } from "./unigraph2";
 
 export interface SceneGraphCategory {
   name: string;
@@ -43,7 +43,7 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
     graphs: {
       thoughtDiagram: thoughtDiagram,
       unigraph: unigraphGraph,
-      journal: journalSceneGraph,
+      unigraph2: unigraphGraph2,
       graphManagementWorkflowDiagram: graphManagementWorkflowDiagram(),
       graphManagementWorkflowDiagram2: graphManagementWorkflowDiagram2(),
     },
