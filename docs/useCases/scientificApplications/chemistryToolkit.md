@@ -1,7 +1,7 @@
 ---
-title: "Lattice Interface"
+title: "Chemistry Toolkit"
 nav_order: 12
 parent: "Scientific Applications"
 ---
 
-## Lattice Interface
+## Chemistry Toolkit

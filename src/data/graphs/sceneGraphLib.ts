@@ -41,8 +41,9 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
   "Demo Graphs": {
     name: "Demo Graphs",
     graphs: {
-      "Demo 1": demo_SceneGraph_SolvayConference,
       thoughtDiagram: thoughtDiagram,
+      unigraph: unigraphGraph,
+      journal: journalSceneGraph,
       graphManagementWorkflowDiagram: graphManagementWorkflowDiagram(),
       graphManagementWorkflowDiagram2: graphManagementWorkflowDiagram2(),
     },
@@ -68,8 +69,6 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
     graphs: {
       big: randomBigGraph,
       biggest: randomBiggestGraph,
-      unigraph: unigraphGraph,
-      journal: journalSceneGraph,
       AcademicsKG: demo_sceneGraph_academicsKG,
     },
   },

@@ -84,18 +84,6 @@ const Legend: React.FC<LegendProps> = ({
     onMouseUnhoverItem?.(key);
   };
 
-  const handleDoubleClick = (key: string) => {
-    const newCheckedItems = Object.keys(checkedItems).reduce(
-      (acc, itemKey) => ({
-        ...acc,
-        [itemKey]: itemKey === key,
-      }),
-      {}
-    );
-    setCheckedItems(newCheckedItems);
-    onCheckBulk(newCheckedItems);
-  };
-
   const theme = isDarkMode ? "dark" : "light";
 
   const keys = Object.keys(displayConfig).sort((a, b) => {
@@ -118,7 +106,6 @@ const Legend: React.FC<LegendProps> = ({
             className={`legend-item ${theme}`}
             onMouseEnter={() => handleMouseEnter(key)}
             onMouseLeave={() => handleMouseLeave(key)}
-            onDoubleClick={() => handleDoubleClick(key)}
           >
             <div className="legend-item-label">
               <input

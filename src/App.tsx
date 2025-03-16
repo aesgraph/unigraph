@@ -52,6 +52,7 @@ import SceneGraphTitle from "./components/SceneGraphTitle";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
 import UniAppToolbar from "./components/UniAppToolbar";
+import YasguiPanel from "./components/YasguiPanel";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -73,7 +74,7 @@ import {
   zoomToFit,
 } from "./core/force-graph/createForceGraph";
 import { songAnnotation247_2_entities } from "./core/force-graph/dynamics/247-2";
-import { syncMissingNodesInForceGraph } from "./core/force-graph/forceGraphHelpers";
+import { syncMissingNodesAndEdgesInForceGraph } from "./core/force-graph/forceGraphHelpers";
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
 import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
 import { GraphvizLayoutType } from "./core/layouts/GraphvizLayoutEngine";
@@ -108,6 +109,7 @@ import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
 import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
+import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 
@@ -181,7 +183,8 @@ export type RenderingView =
   | "ForceGraph3d"
   | "ReactFlow"
   | "Gallery" // Add new view type
-  | "Simulation";
+  | "Simulation"
+  | "Yasgui"; // Add new view type
 
 const AppContent: React.FC<{
   defaultGraph?: string;
@@ -361,6 +364,9 @@ const AppContent: React.FC<{
   }, [appConfig]);
 
   const isGraphLayoutPanelVisible = useMemo(() => {
+    if (appConfig.activeView === "Yasgui") {
+      return false;
+    }
     return appConfig.windows.showGraphLayoutToolbar;
   }, [appConfig]);
 
@@ -721,8 +727,12 @@ const AppContent: React.FC<{
           onGraphChanged: (g) => {
             setGraphStatistics(getGraphStatistics(g));
             if (forceGraphInstance.current) {
-              syncMissingNodesInForceGraph(forceGraphInstance.current, graph);
+              syncMissingNodesAndEdgesInForceGraph(
+                forceGraphInstance.current,
+                graph
+              );
             }
+            handleDisplayConfigChanged(graph.getDisplayConfig());
             setGraphModelUpdateTime(Date.now());
           },
         });
@@ -1035,6 +1045,54 @@ const AppContent: React.FC<{
     return actions;
   }, [handleSetActiveView]);
 
+  const handleImportFileToSceneGraph = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      const reader = new FileReader();
+
+      reader.onload = async (e) => {
+        const content = e.target?.result as string;
+        let sceneGraph: SceneGraph | undefined;
+
+        try {
+          switch (fileExtension) {
+            case "json":
+              sceneGraph = deserializeSceneGraphFromJson(content);
+              break;
+            case "graphml":
+              sceneGraph = await deserializeGraphmlToSceneGraph(content);
+              break;
+            case "svg":
+              sceneGraph = deserializeSvgToSceneGraph(content);
+              break;
+            case "dot":
+              sceneGraph = deserializeDotToSceneGraph(content);
+              break;
+            default:
+              console.error(
+                `Unsupported file type: ${fileExtension || file.type}`
+              );
+              return; //@todo: add banner error message
+          }
+
+          if (sceneGraph) {
+            handleLoadSceneGraph(sceneGraph);
+          } else {
+            throw new Error("Unable to load file to SceneGraph");
+          }
+        } catch (error) {
+          console.error(`Error importing file: ${error}`);
+        }
+      };
+
+      reader.readAsText(file);
+    },
+    [currentSceneGraph, handleLoadSceneGraph]
+  );
+
   const handleImportConfig = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
@@ -1046,72 +1104,6 @@ const AppContent: React.FC<{
       }
     },
     [currentSceneGraph]
-  );
-
-  const handleImportDot = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const dotContent = e.target?.result as string;
-          const sceneGraph = deserializeDotToSceneGraph(dotContent);
-          handleLoadSceneGraph(sceneGraph);
-        };
-        reader.readAsText(file);
-      }
-    },
-    []
-  );
-
-  const handleImportGraphml = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const graphmlContent = e.target?.result as string;
-          const sceneGraph =
-            await deserializeGraphmlToSceneGraph(graphmlContent);
-          handleLoadSceneGraph(sceneGraph);
-        };
-        reader.readAsText(file);
-      }
-    },
-    []
-  );
-
-  const handleImportJson = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const jsonContent = e.target?.result as string;
-          const sceneGraph = deserializeSceneGraphFromJson(jsonContent);
-          console.log("content", jsonContent, sceneGraph);
-          handleLoadSceneGraph(sceneGraph);
-        };
-        reader.readAsText(file);
-      }
-    },
-    []
-  );
-
-  const handleImportSvg = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const svgContent = e.target?.result as string;
-          const sceneGraph = deserializeSvgToSceneGraph(svgContent);
-          handleLoadSceneGraph(sceneGraph);
-        };
-        reader.readAsText(file);
-      }
-    },
-    [handleLoadSceneGraph]
   );
 
   const applyNewLayout = useCallback(
@@ -1191,10 +1183,7 @@ const AppContent: React.FC<{
     const menuConfigCallbacks: IMenuConfigCallbacks = {
       setShowPathAnalysis,
       handleImportConfig,
-      handleImportDot,
-      handleImportGraphml,
-      handleImportJson,
-      handleImportSvg,
+      handleImportFileToSceneGraph,
       handleFitToView,
       GraphMenuActions,
       SimulationMenuActions,
@@ -1255,6 +1244,12 @@ const AppContent: React.FC<{
     if (!isLegendVisible && !isOptionsPanelVisible) {
       return undefined;
     }
+    if (
+      appConfig.activeView === "Yasgui" ||
+      appConfig.activeView === "Copilot"
+    ) {
+      return undefined;
+    }
     return (
       <div
         className="options-panel-container"
@@ -1306,7 +1301,36 @@ const AppContent: React.FC<{
     const nodesWithPositions = data.nodes.map((node) => ({
       ...node,
       position: nodePositions[node.id] || { x: 200, y: 200 },
-      type: "default",
+      type: "resizerNode", // Use the custom node type
+      data: {
+        label: currentSceneGraph
+          .getGraph()
+          .getNode(node.id as NodeId)
+          .getLabel(),
+        onResizeEnd: (x: number, y: number, width: number, height: number) => {
+          currentSceneGraph
+            .getNode(node.id as NodeId)
+            .setPosition({
+              x,
+              y,
+              z: currentSceneGraph.getNode(node.id as NodeId).getPosition().z,
+            })
+            .setDimensions({ width, height });
+          currentSceneGraph.getDisplayConfig().nodePositions![node.id] = {
+            x,
+            y,
+            z: 0,
+          };
+          if (layoutResult) {
+            layoutResult.positions[node.id] = {
+              x,
+              y,
+              z: 0,
+            };
+          }
+        },
+        dimensions: node.data.dimensions,
+      },
       style: {
         background: renderingManager.getNodeColor(
           currentSceneGraph.getGraph().getNode(node.id as NodeId)
@@ -1398,28 +1422,9 @@ const AppContent: React.FC<{
     layoutResult,
     graphModelUpdateTime,
     activeFilterPreset,
+    nodeConfig,
+    edgeConfig,
   ]);
-
-  // useEffect(() => {
-  //   if (
-  //     activeView === "Graphviz" ||
-  //     activeView === "ReactFlow" ||
-  //     (activeView === "ForceGraph3d" &&
-  //       appConfig.forceGraph3dOptions.layout === "Layout") ||
-  //     appConfig.forceGraph3dOptions.layout in
-  //       new Set(Object.values(GraphvizLayoutType))
-  //   ) {
-  //     safeComputeLayout(currentSceneGraph, appConfig.activeLayout);
-  //   }
-  // }, [
-  //   currentSceneGraph,
-  //   nodeConfig,
-  //   edgeConfig,
-  //   appConfig.forceGraph3dOptions.layout,
-  //   appConfig.activeLayout,
-  //   safeComputeLayout,
-  //   activeView,
-  // ]);
 
   const maybeRenderGraphviz = useMemo(() => {
     if (appConfig.activeView !== "Graphviz") {
@@ -1789,6 +1794,14 @@ const AppContent: React.FC<{
           setJsonEditEntity(currentSceneGraph.getGraph().getNode(nodeId));
         },
       },
+      {
+        label: "Query dbpedia",
+        action: () => {
+          bfsQuery(nodeId.replace(" ", "_"), 200, 150, 500).then((results) =>
+            processYasguiResults(results, currentSceneGraph)
+          );
+        },
+      },
     ],
     [currentSceneGraph, setSelectedNode]
   );
@@ -1848,6 +1861,27 @@ const AppContent: React.FC<{
     [currentSceneGraph]
   );
 
+  const maybeRenderYasgui = useMemo(() => {
+    if (appConfig.activeView !== "Yasgui") {
+      return null;
+    }
+
+    return (
+      <div
+        id="yasgui"
+        style={{
+          position: "absolute",
+          top: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 10,
+        }}
+      >
+        <YasguiPanel sceneGraph={currentSceneGraph} />
+      </div>
+    );
+  }, [appConfig.activeView, currentSceneGraph]);
+
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
       <div
@@ -1864,30 +1898,10 @@ const AppContent: React.FC<{
         />
         <input
           type="file"
-          id="import-dot-input"
+          id="import-file-to-scenegraph-input"
           style={{ display: "none" }}
-          onChange={handleImportDot}
-        />
-        <input
-          type="file"
-          id="import-graphml-input"
-          style={{ display: "none" }}
-          accept=".graphml"
-          onChange={handleImportGraphml}
-        />
-        <input
-          type="file"
-          id="import-json-input"
-          style={{ display: "none" }}
-          accept=".json"
-          onChange={handleImportJson}
-        />
-        <input
-          type="file"
-          id="import-svg-input"
-          style={{ display: "none" }}
-          accept=".svg"
-          onChange={handleImportSvg}
+          onChange={handleImportFileToSceneGraph}
+          accept=".json,.graphml,.svg,.dot"
         />
         <div
           style={{
@@ -1933,6 +1947,7 @@ const AppContent: React.FC<{
             {maybeRenderGraphviz}
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
+            {maybeRenderYasgui}
             {appConfig.activeView === "Gallery" && (
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}

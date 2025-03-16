@@ -1,4 +1,4 @@
-import { Position } from "../layouts/layoutHelpers";
+import { Dimensions, Position } from "../layouts/layoutHelpers";
 import {
   AbstractEntity,
   EntityData,
@@ -14,6 +14,7 @@ export const createNodeId = (id: string): NodeId => {
 
 export interface DisplayNodeData {
   position: Position;
+  dimensions?: { width: number; height: number };
   isVisible: boolean;
   color: string;
   size: number;
@@ -38,6 +39,15 @@ class Node extends AbstractEntity<NodeId, NodeData> {
     super(id as NodeId, { ...DEFAULT_DISPLAY_NODE_DATA, ...args });
   }
 
+  getDimensions(): Dimensions | undefined {
+    return this.data.dimensions;
+  }
+
+  setDimensions(dimensions: Dimensions): Node {
+    this.data.dimensions = dimensions;
+    return this;
+  }
+
   getData(): NodeData {
     return this.data;
   }
@@ -46,8 +56,9 @@ class Node extends AbstractEntity<NodeId, NodeData> {
     return this.data.position;
   }
 
-  setPosition(position: Position): void {
+  setPosition(position: Position): Node {
     this.data.position = position;
+    return this;
   }
 
   isVisible(): boolean {

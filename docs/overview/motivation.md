@@ -1,7 +1,7 @@
 ---
 title: Motivation
-nav_order: 1
-parent: 'Overview'
+nav_order: 0
+parent: "Overview"
 ---
 
 ## Motivation

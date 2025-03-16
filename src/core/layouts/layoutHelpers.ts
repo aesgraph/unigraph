@@ -3,6 +3,7 @@ import { ObjectOf } from "../../App";
 import { SceneGraph } from "../model/SceneGraph";
 
 export type Position = { x: number; y: number; z?: number };
+export type Dimensions = { width: number; height: number }; //for now this is 2d only
 export type NodePositionData = ObjectOf<Position>;
 
 export const translateToPositiveCoordinates = (

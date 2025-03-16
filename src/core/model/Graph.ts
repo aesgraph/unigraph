@@ -20,6 +20,10 @@ export class Graph {
     this.strict = strict;
   }
 
+  setStrictMode(strict: boolean): void {
+    this.strict = strict;
+  }
+
   static createNode(id: NodeId, args: NodeDataArgs): Node {
     return new Node(id, args);
   }
