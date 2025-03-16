@@ -1,15 +1,36 @@
-# .github/workflows/test.yml
-name: Tests
+name: Run tests and upload coverage
+
 on: [push, pull_request]
+
 jobs:
   test:
+    name: Run tests and collect coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm test
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: JEST_JUNIT_CLASSNAME="{filepath}" npx jest --coverage --reporters=jest-junit
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/*.xml
+          flags: unigraph
+          name: codecov-umbrella
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

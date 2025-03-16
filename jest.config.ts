@@ -13,6 +13,16 @@ const config: Config = {
     "!**/dist/**",
     "!**/__tests__/**",
   ],
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      {
+        outputDirectory: "./coverage",
+        outputName: "junit.xml",
+      },
+    ],
+  ],
 };
 
 export default config;
