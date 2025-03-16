@@ -62,7 +62,7 @@ export function generateConfigsFromAnnotations(
   // Generate a config for each annotation
   return sortedAnnotations.map((annotation) => {
     // Generate different configs based on annotation tags
-    let config = generateRandomConfig(finalOptions);
+    const config = generateRandomConfig(finalOptions);
 
     // Optional: Modify config based on specific tags
     if (annotation.tags.has("tag1")) {

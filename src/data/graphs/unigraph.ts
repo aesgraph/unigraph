@@ -1,42 +1,42 @@
-import { digraph, RootGraphModel } from 'ts-graphviz';
+import { digraph, RootGraphModel } from "ts-graphviz";
 import {
   GET_DEFAULT_RENDERING_CONFIG,
   RenderingConfig,
   RenderingManager,
-} from '../../controllers/RenderingManager';
-import { requireCluster } from '../../controllers/graphvizHelpers';
-import { Graph } from '../../core/model/Graph';
-import { SceneGraph } from '../../core/model/SceneGraph';
-import { Tag } from '../../core/model/entity/abstractEntity';
+} from "../../controllers/RenderingManager";
+import { requireCluster } from "../../controllers/graphvizHelpers";
+import { Graph } from "../../core/model/Graph";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { Tag } from "../../core/model/entity/abstractEntity";
 import {
   addFeatureSetsToGraph,
   GRAPH_SOFTWARE_FEATURES,
   SubFeature,
-} from './Feature';
+} from "./Feature";
 
 export const unigraphGraph = () => {
   const graph = new Graph();
 
-  const graph_software = 'graph software' as Tag;
-  const software_feature = 'graph software feature' as Tag;
+  const graph_software = "graph software" as Tag;
+  const _software_feature = "graph software feature" as Tag;
 
-  enum ObviousFeatures {
-    Extensible = 'extensible',
-    OpenSource = 'open source',
+  enum _ObviousFeatures {
+    Extensible = "extensible",
+    OpenSource = "open source",
   }
 
-  enum CriticalFeaturesThatComeLater {
-    HighPerformance = 'high performance',
-    HighScale = 'high scale',
+  enum _CriticalFeaturesThatComeLater {
+    HighPerformance = "high performance",
+    HighScale = "high scale",
   }
 
   enum Features {
-    Interactive = 'interactive',
-    Visualization = 'visualization',
-    StandaloneApp = 'standalone app',
-    Analytics = 'analytics',
-    WebNative = 'web native',
-    Library = 'library',
+    Interactive = "interactive",
+    Visualization = "visualization",
+    StandaloneApp = "standalone app",
+    Analytics = "analytics",
+    WebNative = "web native",
+    Library = "library",
   }
 
   // enum UnigraphUniqueFeatures {
@@ -56,13 +56,13 @@ export const unigraphGraph = () => {
         type: graph_software,
         tags: [software.name],
       });
-      graph.createEdge(software.name, feature, { type: 'hasFeature' });
+      graph.createEdge(software.name, feature, { type: "hasFeature" });
     });
     return node;
   };
 
   createGraphSoftwareNode({
-    name: 'unigraph',
+    name: "unigraph",
     features: [
       GRAPH_SOFTWARE_FEATURES.modelling.subFeatures.tags,
       GRAPH_SOFTWARE_FEATURES.modelling.subFeatures.entityEngine,
@@ -78,7 +78,7 @@ export const unigraphGraph = () => {
   });
 
   createGraphSoftwareNode({
-    name: 'cytoscape',
+    name: "cytoscape",
     features: [
       GRAPH_SOFTWARE_FEATURES.modelling.subFeatures.tags,
       GRAPH_SOFTWARE_FEATURES.interactive.subFeatures.filtering,
@@ -137,30 +137,30 @@ export const unigraphGraph = () => {
   //   ],
   // });
 
-  graph.createNode('lumina', { type: 'sub application' });
-  graph.createEdge('lumina', 'unigraph', { type: 'subcomponent of' });
+  graph.createNode("lumina", { type: "sub application" });
+  graph.createEdge("lumina", "unigraph", { type: "subcomponent of" });
 
-  graph.createNode('reactflow', { type: 'graph software' });
-  graph.createNode('graphiz', { type: 'graph software' });
-  graph.createEdge('unigraph', 'reactflow', { type: 'adaptor for' });
-  graph.createEdge('unigraph', 'graphiz', { type: 'adaptor for' });
+  graph.createNode("reactflow", { type: "graph software" });
+  graph.createNode("graphiz", { type: "graph software" });
+  graph.createEdge("unigraph", "reactflow", { type: "adaptor for" });
+  graph.createEdge("unigraph", "graphiz", { type: "adaptor for" });
 
-  const buildGraph = (
+  const _buildGraph = (
     graph: Graph,
     renderConfig: RenderingConfig
   ): RootGraphModel => {
     const renderingManager = new RenderingManager(renderConfig);
-    const g = digraph('G', (g) => {
-      g.set('rankdir', 'LR');
+    const g = digraph("G", (g) => {
+      g.set("rankdir", "LR");
       for (const node of graph.getNodes()) {
         if (!renderingManager.getNodeIsVisible(node)) {
           continue;
         }
         const cluster = requireCluster(g, `cluster_${node.getType()}`);
-        cluster.set('label', node.getType());
+        cluster.set("label", node.getType());
         cluster.node(node.getId(), {
           label: node.getId(),
-          shape: 'box',
+          shape: "box",
           color: renderingManager.getNodeColor(node),
         });
       }
@@ -173,7 +173,7 @@ export const unigraphGraph = () => {
         });
       }
     });
-    console.log('g is ', g);
+    console.log("g is ", g);
     return g;
   };
 

@@ -13,7 +13,7 @@ export class EntitiesContainer<
   public constructor(entities?: Array<V>) {
     this.entities = [];
     this._map = new Map<T, number>();
-    entities?.forEach((entity, index) => {
+    entities?.forEach((entity, _index) => {
       this.addEntitySafe(entity);
     });
   }

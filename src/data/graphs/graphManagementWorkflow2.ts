@@ -1,6 +1,5 @@
 import { CustomLayoutType } from "../../core/layouts/CustomLayoutEngine";
 import { Graph } from "../../core/model/Graph";
-import { GraphBuilder } from "../../core/model/GraphBuilder";
 import { mergeIntoSceneGraph } from "../../core/model/mergeSceneGraphs";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { unigraphArchitectureDiagram } from "./graphmanagementworkflow3";
@@ -157,8 +156,6 @@ export const graphManagementWorkflowDiagram2 = () => {
   graph.createEdge("Unigraph", "ZeroKnowledgeProofs", {
     type: "enables security for",
   });
-
-  const builder = new GraphBuilder(graph);
 
   const main = new SceneGraph({
     graph,

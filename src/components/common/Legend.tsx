@@ -22,10 +22,12 @@ const Legend: React.FC<LegendProps> = ({
   displayConfig,
   onChange,
   onCheck,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   onCheckBulk,
   isDarkMode = false,
   statistics = {},
   totalCount = undefined,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   sceneGraph,
   onMouseHoverItem,
   onMouseUnhoverItem,

@@ -1,5 +1,4 @@
 import { Graph } from "../../core/model/Graph";
-import { GraphBuilder } from "../../core/model/GraphBuilder";
 import { SceneGraph } from "../../core/model/SceneGraph";
 
 export const semanticWebTechnologiesDiagram = () => {
@@ -367,8 +366,6 @@ export const semanticWebTechnologiesDiagram = () => {
   graph.createEdge("AIKnowledgeGraphs", "MachineLearning", {
     type: "powered by",
   });
-
-  const builder = new GraphBuilder(graph);
 
   return new SceneGraph({ graph });
 };

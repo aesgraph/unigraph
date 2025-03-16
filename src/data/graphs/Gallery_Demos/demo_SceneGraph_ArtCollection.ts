@@ -1,9 +1,9 @@
-import { imageBoxes256 } from '../../../assets/imageBoxes/imageBoxes256';
-import { demo_SceneGraph_ArtCollection_Images } from '../../../components/lumina/images';
-import { GET_DEFAULT_RENDERING_CONFIG } from '../../../controllers/RenderingManager';
-import { Graph } from '../../../core/model/Graph';
-import { SceneGraph } from '../../../core/model/SceneGraph';
-import { ImageBoxData } from '../../../core/types/ImageBoxData';
+import { imageBoxes256 } from "../../../assets/imageBoxes/imageBoxes256";
+import { demo_SceneGraph_ArtCollection_Images } from "../../../components/lumina/images";
+import { GET_DEFAULT_RENDERING_CONFIG } from "../../../controllers/RenderingManager";
+import { Graph } from "../../../core/model/Graph";
+import { SceneGraph } from "../../../core/model/SceneGraph";
+import { ImageBoxData } from "../../../core/types/ImageBoxData";
 
 export const demo_SceneGraph_ArtCollection = () => {
   const imageGraph = new Graph();
@@ -12,7 +12,7 @@ export const demo_SceneGraph_ArtCollection = () => {
     demo_SceneGraph_ArtCollection_Images
   )) {
     imageGraph.createNode(key, {
-      type: 'image',
+      type: "image",
       userData: {
         imageUrl: value,
       },
@@ -25,7 +25,7 @@ export const demo_SceneGraph_ArtCollection = () => {
   for (const imageBoxes of imageBoxesToInclude) {
     for (const imageBox of imageBoxes) {
       imageGraph.createNode(imageBox.id, {
-        type: 'imageBox',
+        type: "imageBox",
         userData: {
           imageUrl: imageBox.imageUrl,
           topLeft: imageBox.topLeft,
@@ -53,10 +53,11 @@ export const onSubmitImage = (sceneGraph: SceneGraph, data: ImageBoxData) => {
     topLeft,
     bottomRight,
     label,
+    // eslint-disable-next-line unused-imports/no-unused-vars
     imageSource,
   } = data;
   sceneGraph.getGraph().createNode(id, {
-    type: 'ImageBox',
+    type: "ImageBox",
     description,
     tags,
     userData: {
@@ -74,9 +75,9 @@ export const onSubmitImage = (sceneGraph: SceneGraph, data: ImageBoxData) => {
   });
 
   if (imageUrl) {
-    sceneGraph.getGraph().createNodeIfMissing(imageUrl, { type: 'image' });
+    sceneGraph.getGraph().createNodeIfMissing(imageUrl, { type: "image" });
     sceneGraph.getGraph().createEdge(id, imageUrl, {
-      type: 'maps to',
+      type: "maps to",
     });
   }
   sceneGraph.setDisplayConfig(

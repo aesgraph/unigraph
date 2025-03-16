@@ -1,8 +1,8 @@
-import { demo_SceneGraph_ImageGallery_ImageBoxes } from '../../../assets/imageBoxes/demo_SceneGraph_ImageGallery_ImageBoxes';
-import { demo_SceneGraph_ImageGallery_images } from '../../../components/lumina/images';
-import { Graph } from '../../../core/model/Graph';
-import { SceneGraph } from '../../../core/model/SceneGraph';
-import { ImageBoxData } from '../../../core/types/ImageBoxData';
+import { demo_SceneGraph_ImageGallery_ImageBoxes } from "../../../assets/imageBoxes/demo_SceneGraph_ImageGallery_ImageBoxes";
+import { demo_SceneGraph_ImageGallery_images } from "../../../components/lumina/images";
+import { Graph } from "../../../core/model/Graph";
+import { SceneGraph } from "../../../core/model/SceneGraph";
+import { ImageBoxData } from "../../../core/types/ImageBoxData";
 
 export const demo_SceneGraph_ImageGallery = () => {
   const graph = new Graph();
@@ -11,7 +11,7 @@ export const demo_SceneGraph_ImageGallery = () => {
     demo_SceneGraph_ImageGallery_images
   )) {
     graph.createNode(key, {
-      type: 'image',
+      type: "image",
       userData: {
         imageUrl: value,
       },
@@ -25,7 +25,7 @@ export const demo_SceneGraph_ImageGallery = () => {
   for (const imageBoxList of imageBoxLists) {
     for (const imageBox of imageBoxList) {
       graph.createNode(imageBox.id, {
-        type: 'imageBox',
+        type: "imageBox",
         userData: {
           imageUrl: imageBox.imageUrl,
           topLeft: imageBox.topLeft,
@@ -42,9 +42,9 @@ export const demo_SceneGraph_ImageGallery = () => {
   return new SceneGraph({
     graph,
     metadata: {
-      name: 'Image Gallery Demo 1',
+      name: "Image Gallery Demo 1",
       description:
-        'A simple demo of a simple single image with some image boxes.',
+        "A simple demo of a simple single image with some image boxes.",
     },
   });
 };

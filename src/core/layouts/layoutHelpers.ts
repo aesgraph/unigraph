@@ -79,7 +79,7 @@ export function normalizePositions(
   let maxX = -Infinity,
     maxY = -Infinity;
   let minZ = -Infinity,
-    maxZ = Infinity;
+    _maxZ = Infinity;
 
   Object.values(positions).forEach((pos) => {
     minX = Math.min(minX, pos.x);
@@ -87,7 +87,7 @@ export function normalizePositions(
     maxX = Math.max(maxX, pos.x);
     maxY = Math.max(maxY, pos.y);
     minZ = Math.min(minX, pos?.z ?? 0);
-    maxZ = Math.max(maxX, pos?.z ?? 0);
+    _maxZ = Math.max(maxX, pos?.z ?? 0);
   });
 
   // // Scale factor for normalization (keeping aspect ratio)

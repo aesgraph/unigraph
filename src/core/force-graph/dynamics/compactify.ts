@@ -47,10 +47,10 @@ const compactifyForce = () => {
 
 export const compactify = (
   forceGraph3dInstance: ForceGraph3DInstance,
-  duration: number = 2000
+  _duration: number = 2000
 ) => {
   // Store original forces
-  const originalForces = {
+  const _originalForces = {
     link: forceGraph3dInstance.d3Force("link"),
     charge: forceGraph3dInstance.d3Force("charge"),
     center: forceGraph3dInstance.d3Force("center"),

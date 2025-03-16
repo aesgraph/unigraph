@@ -1,7 +1,4 @@
-![Discord](https://img.shields.io/discord/1347095524737679380?color=9cf) ![V0 Progress](https://img.shields.io/github/milestones/progress/aesgraph/unigraph/1?label=V0%3A%20full%20product%20demo&color=blue)
-
-
-# Unigraph
+## Unigraph
 
 Unigraph is a human-centric graph model engine, application library, and information exchange platform.
 
@@ -10,10 +7,9 @@ Unigraph is a general solution for web-based client-side interaction with Graphs
 Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph
 model, allowing for highly flexible and interactive representations of complex structured data.
 
-### [Live Demo](<https://unigraph.vercel.app/>) <br>
-#### [Notes and documentation](<https://aesgraph.github.io/unigraph/>)
-
-#
+### Links
+**Live Demo**: https://unigraph.vercel.app/ <br>
+Notes and documentation: https://aesgraph.github.io/unigraph/
 
 ### Getting started
 

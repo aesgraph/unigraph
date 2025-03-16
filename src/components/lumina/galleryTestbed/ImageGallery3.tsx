@@ -1,14 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { FlyControls } from "three/examples/jsm/controls/FlyControls";
-import { images } from "../images";
 import { CameraHelper } from "../../../core/webgl/CameraHelper";
-import {
-  calculateOpacity,
-  createPlaneWithBorder,
-  loadImages,
-} from "../../../core/webgl/webglHelpers";
+import { calculateOpacity, loadImages } from "../../../core/webgl/webglHelpers";
+import { images } from "../images";
 
 const ImageGallery3: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,6 +53,7 @@ const ImageGallery3: React.FC = () => {
     // flyControls.autoForward = false;
     // flyControls.dragToLook = true;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     cameraHelper = new CameraHelper(camera, scene, orbitControls);
 
     // Load images
@@ -155,6 +151,7 @@ const ImageGallery3: React.FC = () => {
       window.removeEventListener("click", handleMouseClick);
       window.removeEventListener("resize", handleResize);
       if (containerRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         containerRef.current.removeChild(renderer.domElement);
       }
     };

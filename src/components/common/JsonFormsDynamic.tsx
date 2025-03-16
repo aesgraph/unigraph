@@ -1,10 +1,10 @@
-import React from "react";
-import { JsonForms } from "@jsonforms/react";
 import { JsonSchema } from "@jsonforms/core";
 import {
-  materialRenderers,
   materialCells,
+  materialRenderers,
 } from "@jsonforms/material-renderers";
+import { JsonForms } from "@jsonforms/react";
+import React from "react";
 import { DEFAULT_FORCE_GRAPH_RENDER_CONFIG } from "../../core/force-graph/createForceGraph";
 
 // Helper function to determine JSON schema type from TypeScript type
@@ -55,7 +55,7 @@ function generateJsonFormsSchema(defaultConfig: any): JsonSchema {
 }
 
 // Example usage:
-interface ServerConfig {
+interface _ServerConfig {
   port: number;
   host: string;
   debug: boolean;

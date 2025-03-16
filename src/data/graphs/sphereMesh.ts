@@ -128,21 +128,19 @@ function createSphereMesh(radius: number = 100, segments: number = 12): Graph {
   return graph;
 }
 
-
-
-export const sphereMeshGraph = () => { 
+export const sphereMeshGraph = () => {
   const graph = createSphereMesh();
   return new SceneGraph({
-  graph,
-  metadata: {
-    name: "Sphere Mesh",
-    description: "A true spherical mesh with poles and no holes.",
-  },
-  //   displayConfig: {
-  // mode: "type",
-  // nodePositions: Object.fromEntries(
-  //   graph.getNodes().map((node) => [node.getId(), node.getData().userData])
-  // ),
-  //   },
-});
-}
+    graph,
+    metadata: {
+      name: "Sphere Mesh",
+      description: "A true spherical mesh with poles and no holes.",
+    },
+    //   displayConfig: {
+    // mode: "type",
+    // nodePositions: Object.fromEntries(
+    //   graph.getNodes().map((node) => [node.getId(), node.getData().userData])
+    // ),
+    //   },
+  });
+};

@@ -21,26 +21,26 @@ export const getDiff = (a: Graph, b: Graph): IGraphDiffResult => {
   const bEdges = b.getEdges();
 
   // Find additional and missing nodes
-  aNodes.forEach((node, idx) => {
+  aNodes.forEach((node, _idx) => {
     if (!bNodes.has(node.getId())) {
       missingNodes.push(node);
     }
   });
 
-  bNodes.forEach((node, idx) => {
+  bNodes.forEach((node, _idx) => {
     if (!aNodes.has(node.getId())) {
       additionalNodes.push(node);
     }
   });
 
   // Find additional and missing edges
-  aEdges.forEach((edge, idx) => {
+  aEdges.forEach((edge, _idx) => {
     if (!bEdges.has(edge.getId())) {
       missingEdges.push(edge);
     }
   });
 
-  bEdges.forEach((edge, idx) => {
+  bEdges.forEach((edge, _idx) => {
     if (!aEdges.has(edge.getId())) {
       additionalEdges.push(edge);
     }

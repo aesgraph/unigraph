@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import "./Magnifier.css";
 
@@ -11,7 +11,9 @@ interface MagnifierProps {
 }
 
 const Magnifier: React.FC<MagnifierProps> = ({
+  // eslint-disable-next-line unused-imports/no-unused-vars
   scene,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   camera,
   renderer,
   zoom,
@@ -20,14 +22,14 @@ const Magnifier: React.FC<MagnifierProps> = ({
   const magnifierRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (event: MouseEvent) => {
-    const rect = renderer.domElement.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    setPosition({ x, y });
-  };
-
   useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      setPosition({ x, y });
+    };
+
     const domElement = renderer.domElement;
     domElement.addEventListener("mousemove", handleMouseMove);
     return () => {

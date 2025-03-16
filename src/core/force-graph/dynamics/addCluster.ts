@@ -38,7 +38,7 @@ export const addCluster = (
   }));
 
   const nodes: Node[] = [];
-  clusterNodes.forEach((node, i) => {
+  clusterNodes.forEach((node, _i) => {
     const n = sceneGraph.getGraph().createNode(node.id, {
       type: "clusterNode",
       tags: [node.cluster],

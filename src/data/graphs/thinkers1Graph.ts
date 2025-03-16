@@ -1,18 +1,18 @@
-import { Color, digraph } from 'ts-graphviz';
+import { Color, digraph } from "ts-graphviz";
 import {
   RenderingConfig,
   RenderingManager,
-} from '../../controllers/RenderingManager';
-import { Graph } from '../../core/model/Graph';
-import { SceneGraph } from '../../core/model/SceneGraph';
+} from "../../controllers/RenderingManager";
+import { Graph } from "../../core/model/Graph";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import {
   DEFAULT_RENDERING_CONFIG_AcademicDataset,
   Field,
   fields,
   people,
   Person,
-} from '../datasets/academic-works';
-import { thinkers2 } from './thinkers2Graph';
+} from "../datasets/academic-works";
+import { thinkers2 } from "./thinkers2Graph";
 
 class KnowledgeGraphBuilder {
   private graph: Graph;
@@ -26,49 +26,49 @@ class KnowledgeGraphBuilder {
   addPerson(person: Person) {
     this.graph.createNodeIfMissing(person.name, { type: person.type });
     person.majorWorks.forEach((work) => {
-      this.graph.createNodeIfMissing(work.name, { type: 'major work' });
-      this.graph.createNodeIfMissing(work.field, { type: 'field' });
+      this.graph.createNodeIfMissing(work.name, { type: "major work" });
+      this.graph.createNodeIfMissing(work.field, { type: "field" });
       this.graph.createEdgeIfMissing(person.name, work.name, {
-        type: 'contributed',
+        type: "contributed",
       });
       this.graph.createEdgeIfMissing(work.name, work.field, {
-        type: 'within the field of',
+        type: "within the field of",
       });
       if (work.year) {
-        this.graph.createNodeIfMissing(work.year.toString(), { type: 'year' });
+        this.graph.createNodeIfMissing(work.year.toString(), { type: "year" });
         this.graph.createEdgeIfMissing(work.name, work.year.toString(), {
-          type: 'published in',
+          type: "published in",
         });
       }
       if (work.description) {
         this.graph.createNodeIfMissing(work.description, {
-          type: 'description',
+          type: "description",
         });
         this.graph.createEdgeIfMissing(work.name, work.description, {
-          type: 'described as',
+          type: "described as",
         });
       }
     });
   }
 
   addField(field: Field) {
-    this.graph.createNodeIfMissing(field.name, { type: 'field' });
+    this.graph.createNodeIfMissing(field.name, { type: "field" });
     if (field.parentField) {
       this.graph.createEdgeIfMissing(field.name, field.parentField, {
-        type: 'subcategory of',
+        type: "subcategory of",
       });
     }
   }
 
   addInitialNodes() {
     const initialNodes = [
-      'Graphviz',
-      'ReactFlow',
-      'Unigraph',
-      'A technology for communication',
-      'Use it to tell a story',
-      'Diagramming tool',
-      'Describes itself',
+      "Graphviz",
+      "ReactFlow",
+      "Unigraph",
+      "A technology for communication",
+      "Use it to tell a story",
+      "Diagramming tool",
+      "Describes itself",
     ];
     initialNodes.forEach((node) => this.graph.createNodeIfMissing(node));
     this.thinkers2
@@ -100,15 +100,15 @@ export const constructModel = () => {
 
 export const buildGraph = (graph: Graph, renderConfig: RenderingConfig) => {
   const renderingManager = new RenderingManager(renderConfig);
-  const g = digraph('G', (g) => {
-    g.set('rankdir', 'LR');
+  const g = digraph("G", (g) => {
+    g.set("rankdir", "LR");
     for (const node of graph.getNodes()) {
       if (!renderingManager.getNodeIsVisible(node)) {
         continue;
       }
       g.node(node.getId(), {
         label: node.getId(),
-        shape: 'box',
+        shape: "box",
         color: renderingManager.getNodeColor(node),
       });
     }
@@ -131,9 +131,9 @@ export const thinkers1 = () => {
     graph: constructModel(),
     displayConfig: DEFAULT_RENDERING_CONFIG_AcademicDataset,
     metadata: {
-      name: 'Great Minds',
+      name: "Great Minds",
       description:
-        'A graph of some of the greatest minds and contributors in history',
+        "A graph of some of the greatest minds and contributors in history",
     },
   });
 };

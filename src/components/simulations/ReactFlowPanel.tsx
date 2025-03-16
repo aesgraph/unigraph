@@ -56,7 +56,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
       setNodes([]);
       setEdges([]);
     };
-  }, [initialNodes, initialEdges]);
+  }, [initialNodes, initialEdges, setNodes, setEdges]);
 
   return (
     <div

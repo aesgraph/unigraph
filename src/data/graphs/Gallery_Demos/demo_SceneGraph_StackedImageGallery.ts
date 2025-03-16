@@ -1,7 +1,7 @@
-import { demo_SceneGraph_StackedImageGallery_images } from '../../../components/lumina/images';
-import { Graph } from '../../../core/model/Graph';
-import { SceneGraph } from '../../../core/model/SceneGraph';
-import { ImageBoxData } from '../../../core/types/ImageBoxData';
+import { demo_SceneGraph_StackedImageGallery_images } from "../../../components/lumina/images";
+import { Graph } from "../../../core/model/Graph";
+import { SceneGraph } from "../../../core/model/SceneGraph";
+import { ImageBoxData } from "../../../core/types/ImageBoxData";
 
 export const demo_SceneGraph_StackedImageGallery = () => {
   const graph = new Graph();
@@ -10,7 +10,7 @@ export const demo_SceneGraph_StackedImageGallery = () => {
     demo_SceneGraph_StackedImageGallery_images
   )) {
     graph.createNode(key, {
-      type: 'image',
+      type: "image",
       userData: {
         imageUrl: value,
       },
@@ -22,7 +22,7 @@ export const demo_SceneGraph_StackedImageGallery = () => {
   for (const imageBoxList of imageBoxLists) {
     for (const imageBox of imageBoxList) {
       graph.createNode(imageBox.id, {
-        type: 'imageBox',
+        type: "imageBox",
         userData: {
           imageUrl: imageBox.imageUrl,
           topLeft: imageBox.topLeft,
@@ -39,8 +39,8 @@ export const demo_SceneGraph_StackedImageGallery = () => {
   return new SceneGraph({
     graph,
     metadata: {
-      name: 'Aesgraph Diagram 1',
-      description: 'Illustration 1',
+      name: "Aesgraph Diagram 1",
+      description: "Illustration 1",
     },
   });
 };

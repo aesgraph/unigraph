@@ -1,11 +1,14 @@
 {
-  "name": "typescript-react-graphviz",
+  "name": "unigraph",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "tsc && webpack --mode production",
     "test": "npx jest",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
+    "lint-fix": "eslint --ext .js,.jsx,.ts,.tsx src/ --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "doc-server": "cd docs && bundle exec jekyll serve --livereload",
     "doc-server-build": "cd docs && bundle exec jekyll build",
     "doc-server-clean": "cd docs && bundle exec jekyll clean"
@@ -72,10 +75,11 @@
     "@types/three": "^0.172.0",
     "@types/uuid": "^10.0.0",
     "css-loader": "^7.1.2",
-    "eslint": "^9.19.0",
+    "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-unused-imports": "^4.1.4",
+    "eslint-webpack-plugin": "^5.0.0",
     "globals": "^15.14.0",
     "html-webpack-plugin": "^5.6.3",
     "jest": "^29.7.0",

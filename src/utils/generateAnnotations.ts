@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import { SceneGraph } from "../core/model/SceneGraph";
 import { ImageBoxData } from "../core/types/ImageBoxData";
 
 interface Annotation {
@@ -27,8 +26,7 @@ const randomDescriptions = [
 ];
 
 export const generateRandomAnnotations = (
-  imageBoxes: ImageBoxData[],
-  sceneGraph?: SceneGraph
+  imageBoxes: ImageBoxData[]
 ): Annotation[] => {
   const annotations: Annotation[] = [];
 

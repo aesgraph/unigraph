@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { createPlaneWithBorder } from "../webgl/webglHelpers";
 import { ImageData } from "./renderImageBox";
 
 interface ImageLayoutOptions {
@@ -45,7 +44,7 @@ export const applyImageLayout = (
       spacing: 0.5,
     },
   },
-  drawLinks: boolean = true
+  _drawLinks: boolean = true
 ) => {
   // Clear existing links
   links.forEach((link) => scene.remove(link));
@@ -89,54 +88,4 @@ export const applyImageLayout = (
       image.group.updateMatrixWorld(true);
     });
   }
-
-  // Only create links for grid and random layouts
-  if (drawLinks && options.type !== "stack") {
-    createRandomLinks(scene, images, links);
-  }
 };
-
-export const createRandomLinks = (
-  scene: THREE.Scene,
-  images: ImageData[],
-  links: (THREE.Mesh | THREE.Line)[]
-) => {
-  // ... existing createRandomLinks code ...
-};
-
-const loadImageToScene = (
-  scene: THREE.Scene,
-  id: string,
-  url: string,
-  renderer: THREE.WebGLRenderer,
-  index: number
-): Promise<ImageData> => {
-  return new Promise((resolve) => {
-    const loader = new THREE.TextureLoader();
-    loader.load(url, (texture) => {
-      const group = createPlaneWithBorder(texture, index, id, renderer);
-      scene.add(group);
-
-      //   const boxes = createRandomBoxesForImage(group, id);
-
-      //   resolve({
-      //     id,
-      //     url,
-      //     group,
-      //     boxes,
-      //   });
-    });
-  });
-};
-
-// export const loadImagesAndBoxes = async (
-//   scene: THREE.Scene,
-//   renderer: THREE.WebGLRenderer
-//   images:
-// ): Promise<ImageData[]> => {
-//   const imagePromises = Object.entries(collection).map(([id, url], index) =>
-//     loadImageToScene(scene, id, url, renderer, index)
-//   );
-
-//   return Promise.all(imagePromises);
-// };

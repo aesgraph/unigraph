@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ChevronDown, ChevronRight } from "lucide-react";
+import React, { useCallback, useState } from "react";
 
 interface MenuItemData {
   color: string;

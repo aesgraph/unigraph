@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Search, ChevronDown, X } from "lucide-react";
-import styles from "./SelectDropdown.module.css";
-import { getTextColorBasedOnBackground } from "../../utils/colorUtils";
 import { Input } from "antd";
+import { ChevronDown, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import styles from "./SelectDropdown.module.css";
 
 interface Option {
   value: string;
@@ -70,7 +69,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
           className={styles.selectdropdownSearchInput}
           value={isOpen ? searchTerm : value ? value.label : ""}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onClick={(e) => setSearchTerm("")}
+          onClick={(_e) => setSearchTerm("")}
           placeholder={placeholder}
           readOnly={!isOpen}
           autoFocus={isOpen}

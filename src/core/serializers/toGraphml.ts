@@ -13,7 +13,7 @@ export function serializeSceneGraphToGraphml(sceneGraph: SceneGraph): string {
          http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
   <graph id="G" edgedefault="directed">`;
 
-  nodes.forEach((node, idx) => {
+  nodes.forEach((node, _idx) => {
     const position = nodePositions[node.getId()] || { x: 0, y: 0 };
     const color = sceneGraph.getColor(node);
     const tags = Array.from(node.getTags()).join(", ");
@@ -33,7 +33,7 @@ export function serializeSceneGraphToGraphml(sceneGraph: SceneGraph): string {
     </node>`;
   });
 
-  edges.forEach((edge, idx) => {
+  edges.forEach((edge, _idx) => {
     const [source, target] = edge.getId().split(":::");
     const color = sceneGraph.getColor(edge);
     const tags = Array.from(edge.getTags()).join(", ");

@@ -1,10 +1,10 @@
-import { SceneGraph } from '../../../core/model/SceneGraph';
+import { SceneGraph } from "../../../core/model/SceneGraph";
 
 // Import the SVG as a raw string
-import petrie421t2b6SvgUrl from '!!raw-loader!/public/svgs/e8_4_21_t2-B6.svg';
-import petriesvgUrl from '!!raw-loader!/public/svgs/e8petrie.svg';
-import { PresetLayoutType } from '../../../core/layouts/LayoutEngine';
-import { loadSvgToSceneGraph } from '../../../utils/svgLoader';
+import petrie421t2b6SvgUrl from "!!raw-loader!/public/svgs/e8_4_21_t2-B6.svg";
+import petriesvgUrl from "!!raw-loader!/public/svgs/e8petrie.svg";
+import { PresetLayoutType } from "../../../core/layouts/LayoutEngine";
+import { loadSvgToSceneGraph } from "../../../utils/svgLoader";
 
 /**
  * Creates a SceneGraph from the E8 Petrie projection SVG
@@ -16,8 +16,8 @@ export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
     // console.log("svg content is ", svgContent);
     return loadSvgToSceneGraph(svgContent, {
       appConfig: {
-        activeView: 'ForceGraph3d',
-        activeSceneGraph: 'attempt2',
+        activeView: "ForceGraph3d",
+        activeSceneGraph: "attempt2",
         windows: {
           showLegendBars: true,
           showOptionsPanel: true,
@@ -25,7 +25,7 @@ export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
           showEntityDataCard: false,
         },
         forceGraph3dOptions: {
-          layout: 'Layout',
+          layout: "Layout",
           showOptionsPanel: false,
         },
         activeLayout: PresetLayoutType.NodePositions,

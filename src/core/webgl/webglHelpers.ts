@@ -1,9 +1,6 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import * as THREE from "three";
 import { ObjectOf } from "../../App";
-import { SelectionBox } from "three/examples/jsm/interactive/SelectionBox";
-import { get } from "lodash";
-import { ImageBoxData } from "../types/ImageBoxData";
 
 export const createHoverableRectangle = (
   scene: THREE.Scene,

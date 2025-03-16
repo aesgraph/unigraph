@@ -115,6 +115,7 @@ const StickFigure3D = () => {
     // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       containerRef.current?.removeChild(renderer.domElement);
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh || object instanceof THREE.Line) {

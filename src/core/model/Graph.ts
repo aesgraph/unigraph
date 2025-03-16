@@ -178,7 +178,7 @@ export class Graph {
       visited.add(node.getId());
       island.push(node);
       for (const edge of this.getEdgesOf(node)) {
-        const [source, target] = this.getNodesOf(edge);
+        const [_source, target] = this.getNodesOf(edge);
         if (!visited.has(target.getId())) {
           dfs(target, island);
         }

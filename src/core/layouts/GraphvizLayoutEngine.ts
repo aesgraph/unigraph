@@ -92,7 +92,7 @@ export class GraphvizLayoutEngine {
 
   private convertToDot(graph: any): string {
     let dot = "digraph G {\n";
-    graph.forEachNode((node: any, attributes: any) => {
+    graph.forEachNode((node: any, _attributes: any) => {
       dot += `  ${node} [label="${node}"];\n`;
     });
     graph.forEachEdge(

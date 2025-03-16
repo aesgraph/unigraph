@@ -17,6 +17,7 @@ export function pulsateNodes(
     minOpacity = 0.3,
     maxOpacity = 1.0,
     duration = 1500,
+    // eslint-disable-next-line unused-imports/no-unused-vars
     nodeFilter = () => true,
   } = options;
 

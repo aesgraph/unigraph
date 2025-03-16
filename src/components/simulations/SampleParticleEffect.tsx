@@ -23,8 +23,9 @@ const SampleParticleEffect: React.FC = () => {
       });
       renderer.setClearColor(0x000000, 0); // Set background to transparent
       renderer.setSize(window.innerWidth, window.innerHeight);
-      containerRef.current &&
+      if (containerRef.current) {
         containerRef.current.appendChild(renderer.domElement);
+      }
 
       // // Load SVG directly into the scene
       const scene = new THREE.Scene();

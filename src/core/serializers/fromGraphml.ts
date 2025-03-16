@@ -32,7 +32,7 @@ export async function deserializeGraphmlToSceneGraph(
     const z = parseFloat(
       nodeElement.querySelector("data[key='z']")?.textContent || "0"
     );
-    const color =
+    const _color =
       nodeElement.querySelector("data[key='color']")?.textContent || "#000000";
     const type =
       nodeElement.querySelector("data[key='type']")?.textContent || "default";
@@ -58,7 +58,7 @@ export async function deserializeGraphmlToSceneGraph(
     const target = edgeElement.getAttribute("target");
     const label =
       edgeElement.querySelector("data[key='label']")?.textContent || "";
-    const color =
+    const _color =
       edgeElement.querySelector("data[key='color']")?.textContent || "#000000";
     const type =
       edgeElement.querySelector("data[key='type']")?.textContent || "default";

@@ -280,6 +280,7 @@ const SimulationLab = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
       if (containerRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         containerRef.current.removeChild(renderer.domElement);
       }
     };

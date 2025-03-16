@@ -46,7 +46,7 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
     sceneGraph.getGraph().createNode(nodeId as NodeId, nodeData);
   });
 
-  Object.entries(edges).forEach(([edgeId, edgeData]) => {
+  Object.entries(edges).forEach(([_edgeId, edgeData]) => {
     console.log("creating edge", edgeData);
     // sceneGraph.getGraph().setStrictMode(true);
     sceneGraph.getGraph().createEdge(edgeData.source, edgeData.target, {

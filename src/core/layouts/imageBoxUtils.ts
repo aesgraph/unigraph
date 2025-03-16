@@ -45,7 +45,7 @@ export const createRandomBoxesForImage = (
   return boxesForImage;
 };
 
-const createRandomLinks = (
+export const createRandomLinks = (
   scene: THREE.Scene,
   images: ImageData[],
   links: (THREE.Mesh | THREE.Line)[]

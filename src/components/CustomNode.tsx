@@ -1,5 +1,5 @@
 import { Handle, NodeProps, Position } from "@xyflow/react";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { NodeData } from "../core/model/Node";
 
 const CustomNode: React.FC<NodeProps> = ({ data }) => {
@@ -12,18 +12,21 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
     setIsResizing(true);
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isResizing) {
-      setDimensions({
-        width:
-          e.clientX -
-          (e.currentTarget as HTMLElement)?.getBoundingClientRect().left,
-        height:
-          e.clientY -
-          (e.currentTarget as HTMLElement)?.getBoundingClientRect().top,
-      });
-    }
-  };
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isResizing) {
+        setDimensions({
+          width:
+            e.clientX -
+            (e.currentTarget as HTMLElement)?.getBoundingClientRect().left,
+          height:
+            e.clientY -
+            (e.currentTarget as HTMLElement)?.getBoundingClientRect().top,
+        });
+      }
+    },
+    [isResizing]
+  );
 
   const handleMouseUp = () => {
     setIsResizing(false);
@@ -41,7 +44,7 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isResizing]);
+  }, [handleMouseMove, isResizing]);
 
   console.log("RENDERING CUSTOM NODE");
   return (

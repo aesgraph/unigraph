@@ -158,5 +158,5 @@ export const constructModel = () => {
 // export const thoughtDiagram = new SceneGraph({ graph: constructModel() });
 
 export const thoughtDiagram = () => {
-  return new SceneGraph({graph: constructModel()})
-}
+  return new SceneGraph({ graph: constructModel() });
+};

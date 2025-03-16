@@ -3,6 +3,8 @@ const webpack = require("webpack");
 const dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+const ESLintPlugin = require("eslint-webpack-plugin");
+
 module.exports = {
   entry: "./src/index.tsx",
   output: {
@@ -76,6 +78,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env": JSON.stringify(dotenv.config().parsed),
+    }),
+    new ESLintPlugin({
+      extensions: ["js", "jsx", "ts", "tsx"],
     }),
   ],
   devServer: {

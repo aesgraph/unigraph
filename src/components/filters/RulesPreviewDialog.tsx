@@ -24,7 +24,7 @@ const RulesPreviewDialog: React.FC<RulesPreviewDialogProps> = ({
           </button>
         </div>
         <div className="preview-content">
-          {preset.rules.map((rule, index) => (
+          {preset.rules.map((rule, _index) => (
             <div key={rule.id} className="preview-rule-item">
               <span className={`rule-operator ${rule.operator}`}>
                 {rule.operator}

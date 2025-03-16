@@ -21,7 +21,7 @@ const adjustCameraToFitParticles = (
     boundingBox.expandByPoint(particle.position);
   });
 
-  const center = boundingBox.getCenter(new THREE.Vector3());
+  const _center = boundingBox.getCenter(new THREE.Vector3());
   const size = boundingBox.getSize(new THREE.Vector3());
 
   const maxDim = Math.max(size.x, size.y, size.z);

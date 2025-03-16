@@ -9,7 +9,7 @@ import {
   TableRow,
   TableSortLabel,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import { Entity } from "../../core/model/entity/abstractEntity";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
@@ -33,10 +33,12 @@ type SortConfig = {
 
 const EntityTable: React.FC<EntityTableProps> = ({
   container,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   sceneGraph,
   onEntityClick,
   renderActions,
   isDarkMode = false,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   maxHeight = 400,
 }) => {
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -108,11 +110,11 @@ const EntityTable: React.FC<EntityTableProps> = ({
 
   const theme = isDarkMode ? THEME.dark : THEME.light;
 
-  // Define fixed column order
-  const COLUMN_ORDER = ["id", "type", "tags", "userData"];
-
   // Get columns maintaining the fixed order
   const columns = useMemo(() => {
+    // Define fixed column order
+    const COLUMN_ORDER = ["id", "type", "tags", "userData"];
+
     const allColumns = new Set<string>();
     container.forEach((entity) => {
       Object.keys(entity.getData()).forEach((key) => allColumns.add(key));
@@ -129,31 +131,38 @@ const EntityTable: React.FC<EntityTableProps> = ({
     return [...orderedColumns, ...remainingColumns];
   }, [container]);
 
-  const searchInValue = (value: any, searchText: string): boolean => {
-    const searchLower = searchText.toLowerCase();
+  const searchInValue = useCallback(
+    (value: any, searchText: string): boolean => {
+      const searchLower = searchText.toLowerCase();
 
-    if (value === null || value === undefined) {
-      return false;
-    }
+      if (value === null || value === undefined) {
+        return false;
+      }
 
-    // Handle Sets
-    if (value instanceof Set) {
-      return Array.from(value).some((item) => searchInValue(item, searchText));
-    }
+      // Handle Sets
+      if (value instanceof Set) {
+        return Array.from(value).some((item) =>
+          searchInValue(item, searchText)
+        );
+      }
 
-    // Handle Arrays
-    if (Array.isArray(value)) {
-      return value.some((item) => searchInValue(item, searchText));
-    }
+      // Handle Arrays
+      if (Array.isArray(value)) {
+        return value.some((item) => searchInValue(item, searchText));
+      }
 
-    // Handle Objects (including userData)
-    if (typeof value === "object") {
-      return Object.values(value).some((val) => searchInValue(val, searchText));
-    }
+      // Handle Objects (including userData)
+      if (typeof value === "object") {
+        return Object.values(value).some((val) =>
+          searchInValue(val, searchText)
+        );
+      }
 
-    // Handle primitive values
-    return String(value).toLowerCase().includes(searchLower);
-  };
+      // Handle primitive values
+      return String(value).toLowerCase().includes(searchLower);
+    },
+    []
+  );
 
   // Sort and filter entities
   const sortedAndFilteredEntities = useMemo(() => {
@@ -162,7 +171,7 @@ const EntityTable: React.FC<EntityTableProps> = ({
     // Filter with deep search
     if (filterText) {
       entities = entities.filter((entity) =>
-        Object.entries(entity.getData()).some(([key, value]) =>
+        Object.entries(entity.getData()).some(([_key, value]) =>
           searchInValue(value, filterText)
         )
       );
@@ -189,7 +198,14 @@ const EntityTable: React.FC<EntityTableProps> = ({
       const comparison = aValue < bValue ? -1 : 1;
       return sortConfig.direction === "asc" ? comparison : -comparison;
     });
-  }, [container, sortConfig, filterText, columnFilters]);
+  }, [
+    container,
+    filterText,
+    columnFilters,
+    searchInValue,
+    sortConfig.key,
+    sortConfig.direction,
+  ]);
 
   const handleSort = (column: string) => {
     setSortConfig((current) => ({
@@ -237,7 +253,7 @@ const EntityTable: React.FC<EntityTableProps> = ({
         // Pretty print for larger objects
         return JSON.stringify(value, getCircularReplacer(), 2);
       } catch (e) {
-        return "[Complex Object]";
+        return `[Complex Object] ${e}`;
       }
     }
 
