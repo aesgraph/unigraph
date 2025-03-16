@@ -1,4 +1,6 @@
-![Discord](https://img.shields.io/discord/1347095524737679380?color=9cf) ![V0 Progress](https://img.shields.io/github/milestones/progress/aesgraph/unigraph/1?label=V0%3A%20full%20product%20demo&color=blue)
+![V0 Progress](https://img.shields.io/github/milestones/progress/aesgraph/unigraph/1?label=V0%3A%20full%20product%20demo&color=blue)
+[![codecov](https://codecov.io/gh/aesgraph/unigraph/branch/main/graph/badge.svg)](https://codecov.io/gh/aesgraph/unigraph)
+![Discord](https://img.shields.io/discord/1347095524737679380?color=9cf) 
 
 
 # Unigraph
