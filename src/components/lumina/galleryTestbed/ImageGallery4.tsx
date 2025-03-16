@@ -1,12 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { CameraHelper } from "../../../core/webgl/CameraHelper";
 
 const ImageGallery4: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  let currentlyAnimating = false;
+  const currentlyAnimating = false;
   let camera: THREE.PerspectiveCamera,
     scene: THREE.Scene,
     renderer: THREE.WebGLRenderer;

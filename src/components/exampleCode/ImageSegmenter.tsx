@@ -54,7 +54,7 @@ interface Color {
   b: number;
 }
 
-interface ColorCluster {
+interface _ColorCluster {
   center: Color;
   points: Point[];
 }
@@ -158,6 +158,7 @@ const ZoomableCanvas: React.FC<ZoomableCanvasProps> = ({
     width,
     maxHeight,
     dominantColors,
+    canvasRef,
   ]);
 
   const drawSegment = (ctx: CanvasRenderingContext2D, segment: Segment) => {
@@ -187,7 +188,7 @@ const ZoomableCanvas: React.FC<ZoomableCanvasProps> = ({
         drawSegment(ctx, segment);
       }
     });
-  }, [segments]);
+  }, [canvasRef, segments, visibleSegments]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -202,7 +203,7 @@ const ZoomableCanvas: React.FC<ZoomableCanvasProps> = ({
         clearSegment(ctx, segment);
       }
     });
-  }, [visibleSegments]);
+  }, [canvasRef, segments, visibleSegments]);
 
   return (
     <div style={{ marginBottom: "20px" }}>
@@ -278,6 +279,72 @@ const ImageSegmenter: React.FC = () => {
     img.src = URL.createObjectURL(file);
   };
 
+  const findDominantColors = useCallback(
+    (imageData: ImageData, maxColors: number = 8): Color[] => {
+      const _colors: Color[] = [];
+      const pixelCount = new Map<string, number>();
+
+      // Sample every 4th pixel for performance
+      for (let y = 0; y < imageData.height; y += 2) {
+        for (let x = 0; x < imageData.width; x += 2) {
+          const color = getPixelColor(imageData, x, y);
+          // Quantize colors slightly to reduce noise
+          const key = `${Math.round(color.r / 5) * 5},${Math.round(color.g / 5) * 5},${Math.round(color.b / 5) * 5}`;
+          pixelCount.set(key, (pixelCount.get(key) || 0) + 1);
+        }
+      }
+
+      console.log("Pixel count map", pixelCount);
+
+      // Sort by frequency and get top colors
+      const sortedColors = Array.from(pixelCount.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, maxColors)
+        .map(([key]) => {
+          const [r, g, b] = key.split(",").map(Number);
+          return { r, g, b };
+        });
+
+      console.log("Sorted colors", sortedColors);
+      return sortedColors;
+    },
+    []
+  );
+
+  const colorsAreSimilar = useCallback(
+    (color1: Color, color2: Color): boolean => {
+      return colorDistance(color1, color2) <= threshold;
+    },
+    [threshold]
+  );
+
+  const segmentImage = useCallback(
+    (imageData: ImageData, colors: Color[]): Segment[] => {
+      const width = imageData.width;
+      const height = imageData.height;
+      const segments: Segment[] = [];
+
+      colors.forEach((color) => {
+        const points: Point[] = [];
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const pixelColor = getPixelColor(imageData, x, y);
+            if (colorsAreSimilar(pixelColor, color)) {
+              points.push({ x, y });
+            }
+          }
+        }
+        segments.push({
+          points,
+          color: `rgb(${color.r}, ${color.g}, ${color.b})`,
+        });
+      });
+
+      return segments;
+    },
+    [colorsAreSimilar]
+  );
+
   const findDominantColorsAndVisualize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -297,67 +364,7 @@ const ImageSegmenter: React.FC = () => {
     const newSegments = segmentImage(imageData, colors);
     setSegments(newSegments);
     setVisibleSegments(new Array(newSegments.length).fill(true));
-  }, [threshold]);
-
-  const findDominantColors = (
-    imageData: ImageData,
-    maxColors: number = 8
-  ): Color[] => {
-    const colors: Color[] = [];
-    const pixelCount = new Map<string, number>();
-
-    // Sample every 4th pixel for performance
-    for (let y = 0; y < imageData.height; y += 2) {
-      for (let x = 0; x < imageData.width; x += 2) {
-        const color = getPixelColor(imageData, x, y);
-        // Quantize colors slightly to reduce noise
-        const key = `${Math.round(color.r / 5) * 5},${Math.round(color.g / 5) * 5},${Math.round(color.b / 5) * 5}`;
-        pixelCount.set(key, (pixelCount.get(key) || 0) + 1);
-      }
-    }
-
-    console.log("Pixel count map", pixelCount);
-
-    // Sort by frequency and get top colors
-    const sortedColors = Array.from(pixelCount.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, maxColors)
-      .map(([key]) => {
-        const [r, g, b] = key.split(",").map(Number);
-        return { r, g, b };
-      });
-
-    console.log("Sorted colors", sortedColors);
-    return sortedColors;
-  };
-
-  const segmentImage = (imageData: ImageData, colors: Color[]): Segment[] => {
-    const width = imageData.width;
-    const height = imageData.height;
-    const segments: Segment[] = [];
-
-    colors.forEach((color) => {
-      const points: Point[] = [];
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const pixelColor = getPixelColor(imageData, x, y);
-          if (colorsAreSimilar(pixelColor, color)) {
-            points.push({ x, y });
-          }
-        }
-      }
-      segments.push({
-        points,
-        color: `rgb(${color.r}, ${color.g}, ${color.b})`,
-      });
-    });
-
-    return segments;
-  };
-
-  const colorsAreSimilar = (color1: Color, color2: Color): boolean => {
-    return colorDistance(color1, color2) <= threshold;
-  };
+  }, [findDominantColors, segmentImage]);
 
   const colorDistance = (c1: Color, c2: Color): number => {
     return Math.sqrt(

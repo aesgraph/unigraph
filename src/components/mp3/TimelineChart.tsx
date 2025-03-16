@@ -13,6 +13,7 @@ interface TimelineChartProps {
 const TimelineChart: React.FC<TimelineChartProps> = ({
   annotations,
   duration,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   width = 800,
   height = 100,
   onClickAnnotation,

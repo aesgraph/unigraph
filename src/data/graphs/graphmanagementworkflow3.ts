@@ -1,5 +1,4 @@
 import { Graph } from "../../core/model/Graph";
-import { GraphBuilder } from "../../core/model/GraphBuilder";
 import { SceneGraph } from "../../core/model/SceneGraph";
 
 export const unigraphArchitectureDiagram = () => {
@@ -565,8 +564,6 @@ export const unigraphArchitectureDiagram = () => {
   });
   graph.createEdge("PluginSystem", "CustomLayout", { type: "extends through" });
   graph.createEdge("MachineLearning", "ResearchMapping", { type: "enhances" });
-
-  const builder = new GraphBuilder(graph);
 
   return new SceneGraph({ graph });
 };

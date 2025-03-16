@@ -69,7 +69,7 @@ export const loadSvgToSceneGraph = (
       const circleId = circle.getAttribute("id") || `${id}_node_${circleIndex}`;
       const cx = parseFloat(circle.getAttribute("cx") || "0");
       const cy = parseFloat(circle.getAttribute("cy") || "0");
-      const r = parseFloat(circle.getAttribute("r") || "1");
+      const _r = parseFloat(circle.getAttribute("r") || "1");
 
       // Create node in graph
       graph.createNode(circleId, {
@@ -107,7 +107,7 @@ export const loadSvgToSceneGraph = (
       const targetNode = findClosestNode(nodes, x2, y2);
 
       if (sourceNode && targetNode && sourceNode !== targetNode) {
-        const edgeId = `edge_${index}`;
+        const _edgeId = `edge_${index}`;
         graph.createEdge(sourceNode, targetNode, {
           type: stroke,
         });

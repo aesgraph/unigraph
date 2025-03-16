@@ -1,6 +1,5 @@
 import React from "react";
 import "./ForceGraphLayoutRadio.css";
-import { GraphologyLayoutType } from "../../core/layouts/GraphologyLayoutEngine";
 import { ForceGraph3dLayoutMode } from "../../AppConfig";
 
 interface ForceGraphLayoutRadioProps {

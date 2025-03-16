@@ -32,15 +32,6 @@ export type RenderingConfig = {
   svg?: string;
 };
 
-const getRandomColor = (): string => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
-
 export type RenderingManager__DisplayMode = "tag" | "type";
 
 export const GET_DEFAULT_RENDERING_CONFIG = (
@@ -211,7 +202,7 @@ export class RenderingManager {
     entityType: GraphEntityType,
     mode?: RenderingManager__DisplayMode
   ): DisplayConfig {
-    let retMode = mode ?? this.config.mode;
+    const retMode = mode ?? this.config.mode;
     if (entityType === "Node") {
       return retMode === "type"
         ? this.config.nodeConfig.types

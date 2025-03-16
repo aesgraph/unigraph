@@ -5,23 +5,23 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material';
-import React, { useCallback, useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { ObjectOf } from '../../App';
-import { SceneGraph } from '../../core/model/SceneGraph';
-import { ImageBoxData } from '../../core/types/ImageBoxData';
-import { reconstructImageSource } from '../../core/utils/imageProcessing';
-import { onSubmitImage } from '../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection'; // Add this import at the top
-import CanvasSelection from './CanvasSelection';
-import ImageBoxList from './ImageBoxList';
-import SegmentationPanel from './SegmentationPanel';
-import SelectionWizard from './SelectionWizard';
+} from "@mui/material";
+import React, { useCallback, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { ObjectOf } from "../../App";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { ImageBoxData } from "../../core/types/ImageBoxData";
+import { reconstructImageSource } from "../../core/utils/imageProcessing";
+import { onSubmitImage } from "../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection"; // Add this import at the top
+import CanvasSelection from "./CanvasSelection";
+import ImageBoxList from "./ImageBoxList";
+import SegmentationPanel from "./SegmentationPanel";
+import SelectionWizard from "./SelectionWizard";
 import {
   createImageBoxesFromSegments,
   findColorIslands,
-} from './imageSegmentation';
-import { demo_SceneGraph_ArtCollection_Images } from './images'; // Add this import at the top
+} from "./imageSegmentation";
+import { demo_SceneGraph_ArtCollection_Images } from "./images"; // Add this import at the top
 
 const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 600;
@@ -38,7 +38,7 @@ interface Color {
   b: number;
 }
 
-interface ConnectedComponent {
+interface _ConnectedComponent {
   points: Point[];
   color: Color;
   boundingBox: {
@@ -57,7 +57,7 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | undefined>(
     undefined
   );
-  const [sourceImageUrl, setSourceImageUrl] = useState<string>('');
+  const [sourceImageUrl, setSourceImageUrl] = useState<string>("");
   const [showWizard, setShowWizard] = useState(false);
   const [selectionImage, setSelectionImage] = useState<ImageData | null>(null);
   const [selectedArea, setSelectedArea] = useState<{
@@ -90,8 +90,8 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
 
   const handleSegmentByIslands = () => {
     if (!sourceImage) return;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     // Set canvas to source image size
@@ -169,7 +169,7 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
       selectionArea.height < MIN_SELECTION_SIZE
     ) {
       console.warn(
-        'Selection area too small, minimum size is ${MIN_SELECTION_SIZE}px'
+        "Selection area too small, minimum size is ${MIN_SELECTION_SIZE}px"
       );
       return;
     }
@@ -208,7 +208,7 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
         const newImageBox: ImageBoxData = {
           id: uuidv4(),
           label: data.name,
-          type: 'ImageBox',
+          type: "ImageBox",
           description: data.description,
           imageUrl: sourceImageUrl,
           topLeft: selectedArea.topLeft,
@@ -229,7 +229,7 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
 
   const handleBoxHover = useCallback(
     (box: ImageBoxData) => {
-      console.log('hovered box is ', box);
+      console.log("hovered box is ", box);
       setHoveredImageBoxId(box.id);
       if (highlightHandlerRef.current) {
         highlightHandlerRef.current([
@@ -305,17 +305,18 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
 
   const handleExportImageBoxes = useCallback(() => {
     const boxes = Object.values(idsToImageBoxes).map(
+      // eslint-disable-next-line unused-imports/no-unused-vars
       ({ imageSource, ...rest }) => ({
         ...rest,
         imageUrl: sourceImageUrl, // Use the stored original image URL
       })
     );
     const json = JSON.stringify(boxes, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
+    const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'imageBoxes.json';
+    a.download = "imageBoxes.json";
     a.click();
     URL.revokeObjectURL(url);
   }, [idsToImageBoxes, sourceImageUrl]);
@@ -330,7 +331,7 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
         const text = e.target?.result as string;
         try {
           const imageBoxes: ImageBoxData[] = JSON.parse(text);
-          console.log('Loaded ', imageBoxes);
+          console.log("Loaded ", imageBoxes);
 
           // Process each box sequentially
           for (const box of imageBoxes) {
@@ -345,7 +346,7 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
             }
           }
         } catch (error) {
-          console.error('Error importing image boxes:', error);
+          console.error("Error importing image boxes:", error);
         }
       };
       reader.readAsText(file);
@@ -362,10 +363,10 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
   const renderImportExportButtons = () => (
     <div
       style={{
-        display: 'flex',
-        gap: '8px',
-        marginBottom: '16px',
-        width: '100%',
+        display: "flex",
+        gap: "8px",
+        marginBottom: "16px",
+        width: "100%",
       }}
     >
       <input
@@ -373,11 +374,11 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
         id="import-boxes-input"
         accept="application/json"
         onChange={handleImportImageBoxes}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
       <Button
         variant="contained"
-        onClick={() => document.getElementById('import-boxes-input')?.click()}
+        onClick={() => document.getElementById("import-boxes-input")?.click()}
         fullWidth
         size="small"
       >
@@ -409,14 +410,14 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
     <div className="h-screen w-screen bg-gray-100">
       <div
         style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
           width: `${DEFAULT_WIDTH}px`,
           height: `${DEFAULT_HEIGHT}px`,
-          backgroundColor: 'white',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          backgroundColor: "white",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
         }}
       >
         <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 flex gap-2">
@@ -473,22 +474,22 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
       />
       <div
         style={{
-          position: 'absolute',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          right: '20px',
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%)",
+          right: "20px",
           zIndex: 1000,
-          backgroundColor: 'white',
-          padding: '12px',
-          height: '70vh',
-          width: '22rem',
-          overflow: 'hidden',
-          overflowY: 'auto',
-          scrollbarColor: '#ccc #f9f9f9',
-          scrollbarWidth: 'thin',
-          borderRadius: '8px',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-          pointerEvents: 'auto',
+          backgroundColor: "white",
+          padding: "12px",
+          height: "70vh",
+          width: "22rem",
+          overflow: "hidden",
+          overflowY: "auto",
+          scrollbarColor: "#ccc #f9f9f9",
+          scrollbarWidth: "thin",
+          borderRadius: "8px",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+          pointerEvents: "auto",
         }}
       >
         {renderImportExportButtons()}
@@ -532,17 +533,17 @@ const ImageBoxCreator: React.FC<ImageBoxCreatorProps> = ({ sceneGraph }) => {
       </Dialog>
       <div
         style={{
-          position: 'fixed', // Changed from absolute to fixed
-          bottom: '20px',
-          left: '20px',
+          position: "fixed", // Changed from absolute to fixed
+          bottom: "20px",
+          left: "20px",
           //   backgroundColor: "white", // Added background
           //   padding: "8px 12px", // Added padding
-          borderRadius: '6px', // Added rounded corners
+          borderRadius: "6px", // Added rounded corners
           //   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // Added shadow
-          color: '#666', // Changed color
-          fontSize: '14px',
+          color: "#666", // Changed color
+          fontSize: "14px",
           //   zIndex: 2000, // Increased z-index
-          fontWeight: '500', // Made text slightly bolder
+          fontWeight: "500", // Made text slightly bolder
         }}
       >
         Total Image Boxes: {Object.values(idsToImageBoxes).length}

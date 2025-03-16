@@ -1,4 +1,3 @@
-
 import { debounce } from "lodash";
 
 export const enableZoomAndPanOnSvg = (element: HTMLDivElement) => {
@@ -84,7 +83,7 @@ export const enableZoomAndPanOnSvg = (element: HTMLDivElement) => {
       const relativeY = (mouseY - translateY) / scale;
 
       // Update scale with bounds
-      const oldScale = scale;
+      const _oldScale = scale;
       scale *= event.deltaY < 0 ? 1.1 : 0.9;
       scale = Math.min(Math.max(0.1, scale), 10);
 

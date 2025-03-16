@@ -74,7 +74,7 @@ export class GraphologyLayoutEngine {
       //   circular.assign(graph);
       //   break;
 
-      case GraphologyLayoutType.Graphology_grid:
+      case GraphologyLayoutType.Graphology_grid: {
         // Start with random layout then normalize to grid
         random.assign(graph);
         const positions = extractPositions(graph);
@@ -88,6 +88,7 @@ export class GraphologyLayoutEngine {
           graph.setNodeAttribute(node, "y", row * 100);
         });
         break;
+      }
 
       default:
         // Default to random layout

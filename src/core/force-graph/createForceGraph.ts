@@ -302,7 +302,7 @@ export const bindEventsToGraphInstance = (
     updateHighlight(graph);
   });
 
-  graph.onNodeDrag((node) => {});
+  graph.onNodeDrag((_node) => {});
   graph.onEngineTick(() => {
     // zoomToFit(graph, 100, 1.2);
   });

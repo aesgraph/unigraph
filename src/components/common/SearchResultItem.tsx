@@ -1,10 +1,7 @@
 import React from "react";
-import "./SearchResultItem.css";
-import {
-  DisplayConfig,
-  RenderingManager,
-} from "../../controllers/RenderingManager";
+import { RenderingManager } from "../../controllers/RenderingManager";
 import { getTextColorBasedOnBackground } from "../../utils/colorUtils";
+import "./SearchResultItem.css";
 
 interface SearchResultItemProps {
   id: string;
@@ -48,6 +45,7 @@ const highlightText = (text: string, highlight: string, isDarkMode = false) => {
 };
 
 const SearchResultItem: React.FC<SearchResultItemProps> = ({
+  // eslint-disable-next-line unused-imports/no-unused-vars
   id,
   label,
   type,

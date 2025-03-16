@@ -194,7 +194,7 @@ const FilterWindow: React.FC<FilterWindowProps> = ({
       tags: [],
     },
   });
-  const [showRuleResults, setShowRuleResults] = useState(false);
+
   const [showPreview, setShowPreview] = useState(false);
   const [showNodeSelection, setShowNodeSelection] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);

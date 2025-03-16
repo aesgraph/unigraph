@@ -89,7 +89,7 @@ const graphVizMenuActions = (
   ) => void,
   sceneGraph: SceneGraph
 ): IMenuConfig => {
-  return Object.entries(GraphvizLayoutType).reduce((acc, [key, label]) => {
+  return Object.entries(GraphvizLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
       action: () => applyNewLayout(label as GraphvizLayoutType, sceneGraph),
     };
@@ -104,7 +104,7 @@ const graphologyMenuActions = (
   ) => void,
   sceneGraph: SceneGraph
 ): IMenuConfig => {
-  return Object.entries(GraphologyLayoutType).reduce((acc, [key, label]) => {
+  return Object.entries(GraphologyLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
       action: () => applyNewLayout(label as GraphologyLayoutType, sceneGraph),
     };
@@ -119,7 +119,7 @@ const customLayoutMenuActions = (
   ) => void,
   sceneGraph: SceneGraph
 ): IMenuConfig => {
-  return Object.entries(CustomLayoutType).reduce((acc, [key, label]) => {
+  return Object.entries(CustomLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
       action: () => applyNewLayout(label as CustomLayoutType, sceneGraph),
     };
@@ -172,7 +172,7 @@ export class MenuConfig {
 
   private createGraphSubmenu(category: SceneGraphCategory): IMenuConfig {
     const submenu: IMenuConfig = {};
-    Object.entries(category.graphs).forEach(([key, graph]) => {
+    Object.keys(category.graphs).forEach((key) => {
       submenu[key] = {
         action: () => this.callbacks.GraphMenuActions()[key].action(),
       };
@@ -182,7 +182,7 @@ export class MenuConfig {
 
   private buildGraphMenu(): IMenuConfig {
     const graphMenu: IMenuConfig = {};
-    Object.entries(sceneGraphs).forEach(([categoryKey, category]) => {
+    Object.entries(sceneGraphs).forEach(([_categoryKey, category]) => {
       graphMenu[category.name] = {
         submenu: this.createGraphSubmenu(category),
       };
@@ -485,6 +485,7 @@ export class MenuConfig {
           Transition: {
             action: () => {
               if (this.forceGraphInstance.current) {
+                // eslint-disable-next-line unused-imports/no-unused-vars
                 const cleanup = transitionToConfig(
                   this.forceGraphInstance.current,
                   {
@@ -596,6 +597,7 @@ export class MenuConfig {
             action: () => {
               if (!this.forceGraphInstance.current) return;
 
+              // eslint-disable-next-line unused-imports/no-unused-vars
               const cleanup = runManagedAnimation(
                 this.forceGraphInstance.current,
                 () => {
@@ -617,6 +619,7 @@ export class MenuConfig {
             action: () => {
               if (!this.forceGraphInstance.current) return;
 
+              // eslint-disable-next-line unused-imports/no-unused-vars
               const cleanup = runManagedAnimation(
                 this.forceGraphInstance.current,
                 () => {
@@ -638,6 +641,7 @@ export class MenuConfig {
             action: () => {
               if (!this.forceGraphInstance.current) return;
 
+              // eslint-disable-next-line unused-imports/no-unused-vars
               const cleanup = runManagedAnimation(
                 this.forceGraphInstance.current,
                 () => {
@@ -665,6 +669,7 @@ export class MenuConfig {
                   if (!this.forceGraphInstance.current) {
                     return;
                   }
+                  // eslint-disable-next-line unused-imports/no-unused-vars
                   const cleanup = runManagedAnimation(
                     this.forceGraphInstance.current,
                     (elapsedTime, frame) => {

@@ -69,13 +69,10 @@ function createCylindricalMesh(
   return graph;
 }
 
-
-
-export const cylindricalMeshGraph = () => { 
-
+export const cylindricalMeshGraph = () => {
   const graph = createCylindricalMesh();
-  
-  return  new SceneGraph({
+
+  return new SceneGraph({
     graph,
     metadata: {
       name: "Cylindrical Mesh",
@@ -92,4 +89,4 @@ export const cylindricalMeshGraph = () => {
     //     ),
     //   },
   });
-}
+};

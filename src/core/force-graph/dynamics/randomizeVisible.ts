@@ -8,10 +8,10 @@ export const randomizeVisible = (
   forceGraph3dInstance: ForceGraph3DInstance,
   percentDecimalVisible: number
 ) => {
-  forceGraph3dInstance.nodeVisibility((node) => {
+  forceGraph3dInstance.nodeVisibility((_node) => {
     return Math.random() < percentDecimalVisible;
   });
-  forceGraph3dInstance.linkVisibility((link) => {
+  forceGraph3dInstance.linkVisibility((_link) => {
     return Math.random() < percentDecimalVisible;
   });
 };
@@ -24,7 +24,7 @@ export const randomizeVisibleAndPhysics = (
   const visibleNodeIds = sceneGraph
     .getGraph()
     .getNodes()
-    .filter((node) => {
+    .filter((_node) => {
       return Math.random() < percentDecimalVisible;
     })
     .map((node) => node.getId());

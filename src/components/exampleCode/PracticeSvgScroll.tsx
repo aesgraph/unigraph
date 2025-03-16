@@ -14,17 +14,6 @@ export const SvgBase64Component = (svgString: string) => {
   );
 };
 
-const PracticeSvg: React.FC = () => {
-  console.log("hmm", practiceSvg);
-
-  return (
-    <div className="w-full h-96 bg-gray-100">
-      <h2 className="text-xl font-bold mb-4 mt-8">Base64 SVG Rendering</h2>
-      {SvgBase64Component(practiceSvg)}
-    </div>
-  );
-};
-
 const PracticeSvgScroll: React.FC = () => {
   return (
     <div style={{ height: "200vh", padding: "20px" }}>

@@ -37,7 +37,7 @@ export function createAnnotationNodeSpawner(
   const graphData = graph.graphData();
   const existingNodes = new Set(graphData.nodes.map((node) => node.id));
 
-  function getRandomExistingNode() {
+  function _getRandomExistingNode() {
     const nodes = graphData.nodes.filter((node) => existingNodes.has(node.id));
     return nodes[Math.floor(Math.random() * nodes.length)];
   }

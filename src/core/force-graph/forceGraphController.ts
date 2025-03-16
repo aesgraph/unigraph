@@ -45,7 +45,7 @@ export class ForceGraphInstanceController
   private sceneGraph: SceneGraph;
   private forceGraphInstance: ForceGraph3DInstance | null = null;
 
-  constructor(sceneGraph: SceneGraph, dom?: HTMLElement) {
+  constructor(sceneGraph: SceneGraph, _dom?: HTMLElement) {
     this.sceneGraph = sceneGraph;
   }
 
@@ -135,7 +135,6 @@ export class ForceGraphInstanceController
     this.getInstance().linkWidth(config.linkWidth);
     this.getInstance().nodeOpacity(config.nodeOpacity);
     this.getInstance().linkOpacity(config.linkOpacity);
-    const renderingManager = this.sceneGraph.getRenderingManager();
 
     // Update nodeColor configuration to respect the current rendering mode
     this.getInstance().nodeColor((node) => {
@@ -162,7 +161,6 @@ export class ForceGraphInstanceController
   }
 
   setHighlightedNodes(nodeIds: NodeId[]): void {
-    const renderingManager = this.sceneGraph.getRenderingManager();
     this.getInstance().nodeColor((node) => {
       if (nodeIds.includes(node.id as NodeId)) {
         return "rgb(242, 254, 9)";

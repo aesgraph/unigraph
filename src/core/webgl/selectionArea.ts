@@ -169,7 +169,7 @@ export const GetBottomRight = (group: SelectionBoxGroup) => {
   );
 };
 
-const GetDimensions = (group: SelectionBoxGroup) => {
+export const GetDimensions = (group: SelectionBoxGroup) => {
   const box = group.userData.box;
   const center = box.position;
   return {

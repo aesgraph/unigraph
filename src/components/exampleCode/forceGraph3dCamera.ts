@@ -1,4 +1,4 @@
-import ForceGraph3D, { ForceGraph3DInstance } from "3d-force-graph";
+import { ForceGraph3DInstance } from "3d-force-graph";
 import { Vector3 } from "three";
 
 interface Node {
@@ -58,6 +58,7 @@ export function setupDynamicCamera(graph: ForceGraph3DInstance) {
   // Minimum distance to maintain from graph center
   const MIN_DISTANCE = 1000;
 
+  // eslint-disable-next-line unused-imports/no-unused-vars
   let currentZoom = 1;
   let isFirstRender = true;
 
@@ -120,7 +121,7 @@ export function setupDynamicCamera(graph: ForceGraph3DInstance) {
       if (!node) return;
 
       // Get current camera position
-      const curCameraPos = graph.cameraPosition();
+      const _curCameraPos = graph.cameraPosition();
 
       // Calculate target position
       const distance = 100; // Base distance from node
@@ -170,7 +171,7 @@ export const focusOnNode = (
   if (!node) return;
 
   // Get current camera position
-  const curCameraPos = forceGraphInstance.cameraPosition();
+  const _curCameraPos = forceGraphInstance.cameraPosition();
 
   // Calculate target position
   const distance = 100; // Base distance from node

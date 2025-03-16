@@ -1,9 +1,7 @@
 import { Graph } from "../../core/model/Graph";
 import { SceneGraph } from "../../core/model/SceneGraph";
 
-
 export const randomBigGraph = () => {
-
   const graph = new Graph();
 
   const numTags = 10;
@@ -22,11 +20,11 @@ export const randomBigGraph = () => {
     graph.createEdge(source, target, { tags: [tags[i % numTags]] });
   }
 
-  return  new SceneGraph({
+  return new SceneGraph({
     graph,
     metadata: {
       name: "Random hundred",
       description: "A randomly generated graph with 100 nodes and 200 edges.",
     },
   });
-}
+};

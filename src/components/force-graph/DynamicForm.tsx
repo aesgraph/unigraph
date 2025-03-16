@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import React, { useState } from "react";
 
 // Form schema defines fields, validation rules, and error messages
 interface FormSchemaField {
@@ -98,9 +98,7 @@ const DynamicForm = () => {
     return validator(value);
   };
 
-  interface HandleChangeEvent extends React.ChangeEvent<HTMLInputElement> {}
-
-  const handleChange = (e: HandleChangeEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
@@ -110,9 +108,7 @@ const DynamicForm = () => {
     }
   };
 
-  interface HandleSubmitEvent extends React.FormEvent<HTMLFormElement> {}
-
-  const handleSubmit = (e: HandleSubmitEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate all fields

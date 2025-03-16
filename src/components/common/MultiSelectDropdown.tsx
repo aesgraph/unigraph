@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Search, ChevronDown, X } from "lucide-react";
-import styles from "./MultiSelectDropdown.module.css";
+import { ChevronDown, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { getTextColorBasedOnBackground } from "../../utils/colorUtils";
+import styles from "./MultiSelectDropdown.module.css";
 
 interface Option {
   value: string;
@@ -96,7 +96,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
           className={styles.multiselectSearchInput}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onClick={(e) => setSearchTerm("")}
+          onClick={(_e) => setSearchTerm("")}
           placeholder={values.length === 0 ? placeholder : ""}
           readOnly={!isOpen}
           autoFocus={isOpen}

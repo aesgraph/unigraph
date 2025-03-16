@@ -22,7 +22,7 @@ export const mergeDisplayConfig = (a: DisplayConfig, b: DisplayConfig) => {
   const mergedConfig = a;
 
   for (const key in b) {
-    if (b.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(b, key)) {
       if (mergedConfig[key]) {
         // Merge visibility and color if both configs have the same key
         mergedConfig[key].isVisible =

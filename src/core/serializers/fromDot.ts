@@ -17,7 +17,7 @@ export function deserializeDotToSceneGraph(dotContent: string): SceneGraph {
     const pos = element.attributes.get("pos")?.toString() || "0,0";
     const [x, y] = pos.split(",").map(parseFloat);
 
-    const node = graph.createNode(id, { label });
+    const _node = graph.createNode(id, { label });
     positions[id] = { x, y };
   });
   parsedGraph.edges.forEach((element) => {

@@ -232,7 +232,7 @@ const TimelineTestbed: React.FC<TimelineTestbedProps> = ({
     });
 
     // Add image box labels perpendicular to timeline
-    imageBoxLabels.forEach((data, imageBoxId) => {
+    imageBoxLabels.forEach((data, _imageBoxId) => {
       // Create vertical line
       const lineGeometry = new THREE.BufferGeometry();
       const linePoints = [
@@ -325,6 +325,7 @@ const TimelineTestbed: React.FC<TimelineTestbedProps> = ({
       window.removeEventListener("mousemove", handleMouseMove);
       renderer.dispose();
       containerRef.current?.removeChild(renderer.domElement);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       containerRef.current?.removeChild(labelRenderer.domElement);
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh) {

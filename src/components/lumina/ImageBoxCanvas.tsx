@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { Vector3 } from "three";
+import { scaleDeviceCoordinatesToImagePosition } from "../../core/geometry/convertCoordinates";
 import { ImageBoxData } from "../../core/types/ImageBoxData";
 import { images } from "./images";
-import { scaleDeviceCoordinatesToImagePosition } from "../../core/geometry/convertCoordinates";
-import { Vector3 } from "three";
 
 interface ImageBoxCanvasProps {
   imageBoxData: ImageBoxData;
@@ -83,7 +83,7 @@ const ImageBoxCanvas: React.FC<ImageBoxCanvasProps> = ({
       image.src = images[imageBoxData.imageUrl];
       image.onload = () => drawCanvas(image);
     }
-  }, [imageBoxData, canvasSize, sourceImage]);
+  }, [imageBoxData, canvasSize, sourceImage, maxCanvasSize]);
 
   return (
     <canvas

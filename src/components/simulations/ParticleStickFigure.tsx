@@ -17,8 +17,9 @@ const ParticleStickFigure: React.FC = () => {
     // Setup renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    containerRef.current &&
+    if (containerRef.current) {
       containerRef.current.appendChild(renderer.domElement);
+    }
 
     // Helper functions
     const createLinePoints = (
@@ -180,6 +181,7 @@ const ParticleStickFigure: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
       if (containerRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         containerRef.current.removeChild(renderer.domElement);
       }
     };

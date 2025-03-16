@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface Position {
   x: number;
@@ -32,6 +32,7 @@ interface CanvasSelectionProps {
 }
 
 const CanvasSelection: React.FC<CanvasSelectionProps> = ({
+  // eslint-disable-next-line unused-imports/no-unused-vars
   onImageLoad,
   sourceImage,
   width = 800,
@@ -209,67 +210,73 @@ const CanvasSelection: React.FC<CanvasSelectionProps> = ({
     }
   };
 
-  const drawHighlightPath = (
-    ctx: CanvasRenderingContext2D,
-    area: { x: number; y: number; width: number; height: number }
-  ) => {
-    const cornerX = width;
-    const cornerY = 0;
-    const targetX = area.x + area.width;
-    const targetY = area.y;
+  const drawHighlightPath = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      area: { x: number; y: number; width: number; height: number }
+    ) => {
+      const cornerX = width;
+      const cornerY = 0;
+      const targetX = area.x + area.width;
+      const targetY = area.y;
 
-    // Draw curved path from corner to highlight area
-    ctx.beginPath();
-    ctx.moveTo(cornerX, cornerY);
-    ctx.strokeStyle = "rgba(255, 0, 204, 0.5)";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5, 5]); // Create dashed line
+      // Draw curved path from corner to highlight area
+      ctx.beginPath();
+      ctx.moveTo(cornerX, cornerY);
+      ctx.strokeStyle = "rgba(255, 0, 204, 0.5)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]); // Create dashed line
 
-    // Calculate control point for curve
-    const controlX = cornerX;
-    const controlY = targetY;
+      // Calculate control point for curve
+      const controlX = cornerX;
+      const controlY = targetY;
 
-    ctx.bezierCurveTo(
-      controlX,
-      controlY, // Control point 1
-      targetX + 50,
-      targetY, // Control point 2
-      targetX,
-      targetY // End point
-    );
-    ctx.stroke();
-    ctx.setLineDash([]); // Reset line style
-  };
+      ctx.bezierCurveTo(
+        controlX,
+        controlY, // Control point 1
+        targetX + 50,
+        targetY, // Control point 2
+        targetX,
+        targetY // End point
+      );
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset line style
+    },
+    [width]
+  );
 
-  const highlightArea = useCallback((areas: Area[] | null) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const highlightArea = useCallback(
+    (areas: Area[] | null) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    drawCanvasRef.current?.();
+      drawCanvasRef.current?.();
 
-    if (areas) {
-      areas.forEach((area) => {
-        // Draw highlight rectangle
-        ctx.strokeStyle = "rgba(255, 0, 204, 0.49)";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(area.x, area.y, area.width, area.height);
-        ctx.fillStyle = "rgba(255, 0, 204, 0.1)";
-        ctx.fillRect(area.x, area.y, area.width, area.height);
+      if (areas) {
+        areas.forEach((area) => {
+          // Draw highlight rectangle
+          ctx.strokeStyle = "rgba(255, 0, 204, 0.49)";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(area.x, area.y, area.width, area.height);
+          ctx.fillStyle = "rgba(255, 0, 204, 0.1)";
+          ctx.fillRect(area.x, area.y, area.width, area.height);
 
-        // Draw connection path
-        drawHighlightPath(ctx, area);
-      });
-    }
-  }, []);
+          // Draw connection path
+          drawHighlightPath(ctx, area);
+        });
+      }
+    },
+    [drawHighlightPath]
+  );
 
   // Register highlight handler once
   useEffect(() => {
     if (onHighlightArea) {
       onHighlightArea(highlightArea);
     }
-  }, []); // Empty deps since highlightArea never changes
+  }, [highlightArea, onHighlightArea]); // Empty deps since highlightArea never changes
 
   return (
     <div className="relative w-full h-full">

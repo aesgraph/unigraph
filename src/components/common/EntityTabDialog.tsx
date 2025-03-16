@@ -80,7 +80,7 @@ const EntityTabDialog: React.FC<EntityTabDialogProps> = ({
           />
         </div>
       )),
-    [tabs, activeTab, onNodeClick, isDarkMode]
+    [tabs, activeTab, sceneGraph, isDarkMode, onNodeClick]
   );
 
   return (
@@ -136,7 +136,7 @@ const EntityTabDialog: React.FC<EntityTabDialogProps> = ({
           },
         }}
       >
-        {tabs.map((tab, index) => (
+        {tabs.map((tab, _index) => (
           <Tab
             key={tab.label}
             label={`${tab.label} (${tab.count})`}

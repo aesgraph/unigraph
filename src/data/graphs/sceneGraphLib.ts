@@ -98,8 +98,8 @@ export const getAllGraphs = (): {
 } => {
   const allGraphs: { [key: string]: SceneGraph | (() => SceneGraph) } = {};
   Object.values(sceneGraphs).forEach((category) => {
-    Object.entries(category.graphs).forEach(([key, graph]) => {
-      allGraphs[key] = graph;
+    Object.keys(category.graphs).forEach((key) => {
+      allGraphs[key] = category.graphs[key];
     });
   });
   return allGraphs;
@@ -108,10 +108,10 @@ export const getAllGraphs = (): {
 export const getSceneGraph = (
   name: string
 ): SceneGraph | (() => SceneGraph) => {
-  for (const [k, graphs] of Object.entries(sceneGraphs)) {
-    for (const [key, graph] of Object.entries(graphs.graphs)) {
+  for (const [_, graphs] of Object.entries(sceneGraphs)) {
+    for (const key of Object.keys(graphs.graphs)) {
       if (key === name) {
-        return graph;
+        return graphs.graphs[key];
       }
     }
   }

@@ -5,8 +5,10 @@
   "path-intellisense.mappings": {},
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
-    "source.removeUnusedImports": "explicit"
+    "source.removeUnusedImports": "explicit",
+    "source.fixAll.eslint": "always"
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "prettier.configPath": ".prettierrc"
+  "prettier.configPath": ".prettierrc",
+  "eslint.useFlatConfig": true
 }

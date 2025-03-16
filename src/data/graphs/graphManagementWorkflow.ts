@@ -1,5 +1,4 @@
 import { Graph } from "../../core/model/Graph";
-import { GraphBuilder } from "../../core/model/GraphBuilder";
 import { SceneGraph } from "../../core/model/SceneGraph";
 
 export const graphManagementWorkflowDiagram = () => {
@@ -80,8 +79,6 @@ export const graphManagementWorkflowDiagram = () => {
   graph.createEdge("UpdateColors", "UnigraphModelGraph", { type: "modifies" });
   graph.createEdge("UnigraphModelGraph", "Export", { type: "outputs to" });
   graph.createEdge("Export", "TextDefinedGraph", { type: "creates" });
-
-  const builder = new GraphBuilder(graph);
 
   // console.log("journal", graphManagementWorkflowDiagram);
   return new SceneGraph({ graph });

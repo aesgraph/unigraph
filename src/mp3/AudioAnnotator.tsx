@@ -166,7 +166,7 @@ const AudioAnnotator: React.FC = () => {
   const wavesurferRef = useRef<WaveSurfer | null>(null);
   const [annotations, setAnnotations] = useState<SongAnnotationData[]>([]);
   const [annotationText, setAnnotationText] = useState<string>("");
-  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [_audioFile, setAudioFile] = useState<File | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [editingAnnotation, setEditingAnnotation] =

@@ -28,7 +28,7 @@ export function runManagedAnimation(
 ) {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
   let isRunning = true;
-  let startTime = Date.now();
+  const startTime = Date.now();
   let frameCount = 0;
   let timeoutId: NodeJS.Timeout;
 
