@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { codecovWebpackPlugin } = require("@codecov/webpack-plugin");
 
 const ESLintPlugin = require("eslint-webpack-plugin");
 
@@ -81,6 +82,11 @@ module.exports = {
     }),
     new ESLintPlugin({
       extensions: ["js", "jsx", "ts", "tsx"],
+    }),
+    codecovWebpackPlugin({
+      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+      bundleName: "example-webpack-bundle",
+      uploadToken: process.env.CODECOV_TOKEN,
     }),
   ],
   devServer: {
