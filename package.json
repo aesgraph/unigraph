@@ -63,6 +63,7 @@
     "wavesurfer.js": "^7.9.0"
   },
   "devDependencies": {
+    "@codecov/webpack-plugin": "^1.9.0",
     "@eslint/js": "^9.19.0",
     "@types/cytoscape-dagre": "^2.3.3",
     "@types/cytoscape-fcose": "^2.2.4",
@@ -74,6 +75,7 @@
     "@types/react-dom": "^19.0.2",
     "@types/three": "^0.172.0",
     "@types/uuid": "^10.0.0",
+    "codecov": "^3.8.2",
     "css-loader": "^7.1.2",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.4",

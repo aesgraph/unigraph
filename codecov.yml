@@ -1,0 +1,16 @@
+coverage:
+  status:
+    project: yes
+    patch: yes
+
+codecov:
+  require_ci_to_pass: yes
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+
+# Enable bundle analysis
+bundle_analysis:
+  enabled: true

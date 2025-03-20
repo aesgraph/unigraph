@@ -21,6 +21,9 @@ jobs:
       - name: Run tests
         run: JEST_JUNIT_CLASSNAME="{filepath}" npx jest --coverage --reporters=jest-junit
 
+      - name: Generate webpack bundle stats
+        run: npx webpack --profile --json > webpack-stats.json
+
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -34,3 +37,10 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload bundle analysis to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./webpack-stats.json
+          flags: bundle-analysis
