@@ -1,0 +1,285 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 80vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dark .dialog {
+  background: #1f2937;
+  color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.dark .closeButton {
+  color: #999;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tabButton {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  border-radius: 4px;
+}
+
+.tabButton:hover:not(.activeTab) {
+  background: rgba(0, 123, 255, 0.1);
+  color: #666;
+}
+
+.activeTab {
+  font-weight: bold;
+  background: #007bff;
+  color: white;
+}
+
+.textTab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.textInput {
+  width: 80%;
+  height: 200px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: none;
+}
+
+.submitButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background: #0056b3;
+}
+
+.fileTab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.fileInput {
+  padding: 8px;
+  font-size: 16px;
+}
+
+.demosTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.searchBar {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.dark .searchBar {
+  background: #2d3748;
+  color: white;
+  border: 1px solid #4a5568;
+}
+
+.toolbarIconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.toolbarIconButton:hover {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.dark .toolbarIconButton {
+  color: #4a90e2;
+}
+
+.dark .toolbarIconButton:hover {
+  background: rgba(74, 144, 226, 0.1);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.treeNode {
+  display: flex;
+  flex-direction: column;
+}
+
+.treeNodeHeader {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.treeNodeHeader.light {
+  background: #f5f5f5;
+}
+
+.treeNodeHeader.dark {
+  background: #2d3748;
+}
+
+.treeNodeHeader:hover {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.dark .expandButton {
+  color: #999;
+}
+
+.categoryName {
+  font-weight: 500;
+  color: #333;
+}
+
+.dark .categoryName {
+  color: white;
+}
+
+.treeNodeChildren {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  gap: 4px;
+}
+
+.graphButton {
+  padding: 4px 8px;
+  text-align: left;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  color: inherit;
+}
+
+.graphButton:hover {
+  background: #e0e0e0;
+}
+
+.dark .graphButton:hover {
+  background: #374151;
+}
+
+.highlight {
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.svgUrlTab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.svgUrlInput {
+  width: 80%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

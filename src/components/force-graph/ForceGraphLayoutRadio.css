@@ -5,16 +5,6 @@
   backdrop-filter: blur(10px);
 }
 
-.force-graph-layout-radio.light {
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.force-graph-layout-radio.dark {
-  background-color: rgba(30, 30, 30, 0.8);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
 .radio-label {
   cursor: pointer;
   margin-right: 1.25rem;

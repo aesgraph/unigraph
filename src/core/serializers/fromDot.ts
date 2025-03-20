@@ -26,6 +26,12 @@ export function deserializeDotToSceneGraph(dotContent: string): SceneGraph {
     const target = (element.targets[1] as any).id;
     const label = element.attributes.get("label")?.toString() || "";
     if (source && target) {
+      if (!graph.containsNode(source)) {
+        graph.createNode(source, { label: source });
+      }
+      if (!graph.containsNode(target)) {
+        graph.createNode(target, { label: target });
+      }
       graph.createEdge(source, target, { label, type: label });
     }
   });

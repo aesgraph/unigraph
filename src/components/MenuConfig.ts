@@ -1,5 +1,4 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { saveAs } from "file-saver";
 import { AppConfig } from "../AppConfig";
 import {
   attachSimulation,
@@ -41,12 +40,8 @@ import { SceneGraph } from "../core/model/SceneGraph";
 import {
   getRandomNode,
   GetRandomNodeFromSceneGraph,
-  saveRenderingConfigToFile,
 } from "../core/model/utils";
 import { processImageNodesInSceneGraph } from "../core/processors/imageBoxProcessor";
-import { serializeSceneGraphToDot } from "../core/serializers/toDot";
-import { serializeSceneGraphToJson } from "../core/serializers/toFromJson";
-import { serializeSceneGraphToGraphml } from "../core/serializers/toGraphml";
 import {
   extractPositionsFromNodes,
   extractPositionsFromUserData,
@@ -56,31 +51,9 @@ import { demoSongAnnotations } from "../mp3/data";
 import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
 import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 
-const handleExportDot = (sceneGraph: SceneGraph) => {
-  const dotContent = serializeSceneGraphToDot(sceneGraph);
-  const blob = new Blob([dotContent], { type: "text/plain;charset=utf-8" });
-  saveAs(blob, "graph.dot");
-};
-
-const handleExportGraphml = (sceneGraph: SceneGraph) => {
-  const graphmlContent = serializeSceneGraphToGraphml(sceneGraph);
-  const blob = new Blob([graphmlContent], {
-    type: "application/xml;charset=utf-8",
-  });
-  saveAs(blob, "graph.graphml");
-};
-
-const handleExportJson = (sceneGraph: SceneGraph) => {
-  const jsonContent = serializeSceneGraphToJson(sceneGraph);
-  const blob = new Blob([jsonContent], {
-    type: "application/json;charset=utf-8",
-  });
-  saveAs(blob, "graph.json");
-};
-
-const handleExportConfig = (sceneGraph: SceneGraph) => {
-  saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), "renderConfig.json");
-};
+// const handleExportConfig = (sceneGraph: SceneGraph) => {
+//   saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), "renderConfig.json");
+// };
 
 const graphVizMenuActions = (
   applyNewLayout: (
@@ -129,13 +102,9 @@ const customLayoutMenuActions = (
 
 export interface IMenuConfigCallbacks {
   handleImportConfig: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleImportFileToSceneGraph: (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => void;
   handleFitToView: (activeView: string) => void;
   GraphMenuActions: () => { [key: string]: { action: () => void } };
   SimulationMenuActions: () => { [key: string]: { action: () => void } };
-  setShowPathAnalysis: (show: boolean) => void;
   applyNewLayout: (
     layoutType: LayoutEngineOption,
     sceneGraph: SceneGraph
@@ -145,8 +114,6 @@ export interface IMenuConfigCallbacks {
   setShowEdgeTable: (show: boolean) => void;
   showLayoutManager: (mode: "save" | "load") => void;
   showFilterWindow: () => void;
-  showFilterManager: () => void;
-  clearFilters: () => void;
   handleLoadLayout: (positions: NodePositionData) => void;
   showImportSvgFromUrlDialog: () => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
@@ -192,53 +159,6 @@ export class MenuConfig {
 
   getConfig(): MenuConfigType {
     return {
-      File: {
-        submenu: {
-          Export: {
-            submenu: {
-              Graph: {
-                submenu: {
-                  Dot: {
-                    action: () => handleExportDot(this.sceneGraph),
-                  },
-                  Graphml: {
-                    action: () => handleExportGraphml(this.sceneGraph),
-                  },
-                  JSON: {
-                    action: () => handleExportJson(this.sceneGraph),
-                  },
-                },
-              },
-              "Display Config": {
-                action: () => handleExportConfig(this.sceneGraph),
-              },
-            },
-          },
-          Import: {
-            submenu: {
-              Graph: {
-                submenu: {
-                  File: {
-                    action: () =>
-                      document
-                        .getElementById("import-file-to-scenegraph-input")
-                        ?.click(),
-                  },
-                  "SVG From URL": {
-                    action: () => {
-                      this.callbacks.showImportSvgFromUrlDialog();
-                    },
-                  },
-                },
-              },
-              "Import Config": {
-                action: () =>
-                  document.getElementById("import-config-input")?.click(),
-              },
-            },
-          },
-        },
-      },
       View: {
         submenu: {
           "Fit to View": {
@@ -250,63 +170,6 @@ export class MenuConfig {
           },
           "SceneGraph Details": {
             action: () => this.callbacks.showSceneGraphDetailView(false),
-          },
-        },
-      },
-      Window: {
-        submenu: {
-          Filters: {
-            action: () => {
-              this.callbacks.showFilterWindow();
-            },
-          },
-          OptionsPanel: {
-            checked: this.appConfig.windows.showOptionsPanel,
-            onChange: () => {
-              this.callbacks.setAppConfig((prev) => ({
-                ...prev,
-                windows: {
-                  ...prev.windows,
-                  showOptionsPanel: !prev.windows.showOptionsPanel,
-                },
-              }));
-            },
-          },
-          Legend: {
-            checked: this.appConfig.windows.showLegendBars,
-            onChange: () => {
-              this.callbacks.setAppConfig((prev) => ({
-                ...prev,
-                windows: {
-                  ...prev.windows,
-                  showLegendBars: !prev.windows.showLegendBars,
-                },
-              }));
-            },
-          },
-          "Layout Panel": {
-            checked: this.appConfig.windows.showGraphLayoutToolbar,
-            onChange: () => {
-              this.callbacks.setAppConfig((prev) => ({
-                ...prev,
-                windows: {
-                  ...prev.windows,
-                  showGraphLayoutToolbar: !prev.windows.showGraphLayoutToolbar,
-                },
-              }));
-            },
-          },
-          "Force Graph Config Editor": {
-            checked: this.appConfig.forceGraph3dOptions.showOptionsPanel,
-            onChange: () => {
-              this.callbacks.setAppConfig((prev) => ({
-                ...prev,
-                forceGraph3dOptions: {
-                  ...prev.forceGraph3dOptions,
-                  showOptionsPanel: !prev.forceGraph3dOptions.showOptionsPanel,
-                },
-              }));
-            },
           },
         },
       },
@@ -358,28 +221,7 @@ export class MenuConfig {
           },
         },
       },
-      Filters: {
-        submenu: {
-          "New Filters": {
-            action: () => this.callbacks.showFilterWindow(),
-          },
-          "Load Filters": {
-            action: () => this.callbacks.showFilterManager(),
-          },
-          "Clear Filters": {
-            action: () => this.callbacks.clearFilters(),
-          },
-        },
-      },
-      Graph: { submenu: this.buildGraphMenu() },
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
-      Analysis: {
-        submenu: {
-          "Path Analysis": {
-            action: () => this.callbacks.setShowPathAnalysis(true),
-          },
-        },
-      },
       Dev: {
         submenu: {
           "Print SceneGraph": {

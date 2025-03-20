@@ -6,24 +6,10 @@
   backdrop-filter: blur(10px);
 }
 
-.layout-mode-radio.light {
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.layout-mode-radio.dark {
-  background-color: rgba(30, 30, 30, 0.8);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
 .layout-mode-radio .radio-label {
   cursor: pointer;
   margin-right: 1.25rem;
   font-size: 1rem;
-}
-
-.layout-mode-radio.light .radio-label {
-  color: #333;
 }
 
 .layout-mode-radio.dark .radio-label {
@@ -43,4 +29,8 @@
 
 .layout-mode-radio.dark .radio-input {
   accent-color: #4a4a4a;
+}
+
+.layout-mode-radio.light .radio-input {
+  accent-color: #666; /* Same as ForceGraphLayoutRadio light mode */
 }

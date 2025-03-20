@@ -3,7 +3,7 @@ import { IconButton, Tab, Tabs } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Entity } from "../../core/model/entity/abstractEntity";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
 import { EntityCache } from "../../core/model/entity/entityCache";
@@ -60,28 +60,28 @@ const EntityTabDialog: React.FC<EntityTabDialogProps> = ({
     return result;
   }, [nodes, edges, entityCache]);
 
-  // Pre-render all tables but keep them hidden
-  const tableComponents = useMemo(
-    () =>
-      tabs.map((tab, index) => (
-        <div
-          key={tab.label}
-          style={{ display: activeTab === index ? "block" : "none" }}
-        >
-          <EntityTable
-            container={tab.container}
-            sceneGraph={sceneGraph}
-            onEntityClick={
-              tab.label === "Nodes"
-                ? (node: Entity) => onNodeClick(node.getId())
-                : undefined
-            }
-            isDarkMode={isDarkMode}
-          />
-        </div>
-      )),
-    [tabs, activeTab, sceneGraph, isDarkMode, onNodeClick]
+  // Memoize the node click handler to prevent recreation on every render
+  const handleNodeClick = useCallback(
+    (node: Entity) => {
+      onNodeClick(node.getId());
+    },
+    [onNodeClick]
   );
+
+  // Render only the active tab to prevent mounting hidden tables
+  const activeTabContent = useMemo(() => {
+    if (!tabs[activeTab]) return null;
+
+    const tab = tabs[activeTab];
+    return (
+      <EntityTable
+        container={tab.container}
+        sceneGraph={sceneGraph}
+        onEntityClick={tab.label === "Nodes" ? handleNodeClick : undefined}
+        maxHeight="70vh"
+      />
+    );
+  }, [activeTab, tabs, sceneGraph, handleNodeClick]);
 
   return (
     <Dialog
@@ -144,7 +144,7 @@ const EntityTabDialog: React.FC<EntityTabDialogProps> = ({
           />
         ))}
       </Tabs>
-      <DialogContent>{tableComponents}</DialogContent>
+      <DialogContent>{activeTabContent}</DialogContent>
     </Dialog>
   );
 };

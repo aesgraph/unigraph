@@ -9,7 +9,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FaExpand } from "react-icons/fa";
 import { toDot } from "ts-graphviz";
 import { v4 as uuidv4 } from "uuid";
 import "./App.css";
@@ -25,7 +24,6 @@ import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
 import EntityDataDisplayCard from "./components/common/EntityDataDisplayCard";
 import EntityJsonEditorDialog from "./components/common/EntityJsonEditorDialog";
 import EntityTabDialog from "./components/common/EntityTabDialog";
-import GraphLayoutToolbar from "./components/common/GraphLayoutToolbar";
 import { GraphEntityType } from "./components/common/GraphSearch";
 import LayoutManager from "./components/common/LayoutManager";
 import LayoutModeRadio from "./components/common/LayoutModeRadio";
@@ -37,11 +35,10 @@ import {
   FilterRuleDefinition,
 } from "./components/filters/FilterRuleDefinition";
 import FilterWindow from "./components/filters/FilterWindow";
-import ForceGraphLayoutRadio from "./components/force-graph/ForceGraphLayoutRadio";
-import ForceGraphRenderConfigEditor from "./components/force-graph/ForceGraphRenderConfigEditor";
 import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
 import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
 import ImportSvgFromUrlDialog from "./components/ImportSvgFromUrlDialog";
+import Workspace from "./components/layout/Workspace";
 import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
 import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
 import Lumina from "./components/lumina/Lumina";
@@ -52,8 +49,10 @@ import SceneGraphTitle from "./components/SceneGraphTitle";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
 import SolarSystem from "./components/simulations/solarSystemSimulation";
-import UniAppToolbar from "./components/UniAppToolbar";
 import YasguiPanel from "./components/YasguiPanel";
+
+import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
+import SaveSceneGraphDialog from "./components/common/SaveSceneGraphDialog";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -99,10 +98,6 @@ import {
   SetCurrentDisplayConfigOf,
 } from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
-import { deserializeDotToSceneGraph } from "./core/serializers/fromDot";
-import { deserializeGraphmlToSceneGraph } from "./core/serializers/fromGraphml";
-import { deserializeSvgToSceneGraph } from "./core/serializers/fromSvg";
-import { deserializeSceneGraphFromJson } from "./core/serializers/toFromJson";
 import { IMAGE_ANNOTATION_ENTITIES } from "./core/types/ImageAnnotation";
 import { flyToNode } from "./core/webgl/webglHelpers";
 import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
@@ -175,21 +170,17 @@ const AppContent: React.FC<{
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-  showOptionsPanel?: string;
-  showLegendBars?: string;
-  showGraphLayoutToolbar?: string;
-  showRenderConfigOptions?: string;
-  showToolbar?: string;
+  showToolbar?: boolean;
+  showLeftSidebar?: boolean;
+  showRightSidebar?: boolean;
 }> = ({
   defaultGraph,
   svgUrl,
   defaultActiveView,
   defaultActiveLayout,
-  showOptionsPanel,
-  showLegendBars,
-  showGraphLayoutToolbar,
-  showRenderConfigOptions,
   showToolbar,
+  showLeftSidebar,
+  showRightSidebar,
 }) => {
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
@@ -246,36 +237,13 @@ const AppContent: React.FC<{
           layout: defaultActiveLayout
             ? "Layout"
             : config.forceGraph3dOptions.layout,
-          showOptionsPanel:
-            showRenderConfigOptions !== undefined
-              ? showRenderConfigOptions === "true"
-              : config.forceGraph3dOptions.showOptionsPanel,
         },
         windows: {
           ...config.windows,
-          showLegendBars:
-            showLegendBars !== undefined
-              ? showLegendBars === "true"
-              : config.windows.showLegendBars,
-          showGraphLayoutToolbar:
-            showGraphLayoutToolbar !== undefined
-              ? showGraphLayoutToolbar === "true"
-              : config.windows.showGraphLayoutToolbar,
-          showOptionsPanel:
-            showOptionsPanel !== undefined
-              ? showOptionsPanel === "true"
-              : config.forceGraph3dOptions.showOptionsPanel,
         },
       };
     },
-    [
-      defaultActiveLayout,
-      defaultActiveView,
-      showGraphLayoutToolbar,
-      showLegendBars,
-      showOptionsPanel,
-      showRenderConfigOptions,
-    ]
+    [defaultActiveLayout, defaultActiveView]
   );
 
   const handleSetAppConfig = useCallback(
@@ -320,6 +288,12 @@ const AppContent: React.FC<{
     []
   );
 
+  const [showLoadSceneGraphWindow, setShowLoadSceneGraphWindow] =
+    useState(false);
+
+  const [showSaveSceneGraphDialog, setShowSaveSceneGraphDialog] =
+    useState(false);
+
   const selectedNode = useMemo(() => {
     return appInteractionConfig.clickedNode;
   }, [appInteractionConfig]);
@@ -330,10 +304,6 @@ const AppContent: React.FC<{
   const [appConfig, setAppConfig] = useState<AppConfig>({
     ...DEFAULT_APP_CONFIG(),
   });
-
-  const activeLayout = useMemo(() => {
-    return appConfig.activeLayout;
-  }, [appConfig]);
 
   const [selectedSimulation, setSelectedSimulation] =
     useState<string>("Lumina");
@@ -349,21 +319,6 @@ const AppContent: React.FC<{
   );
   const [layoutMode, setLayoutMode] =
     useState<RenderingManager__DisplayMode>("type");
-
-  const isLegendVisible = useMemo(() => {
-    return appConfig.windows.showLegendBars;
-  }, [appConfig]);
-
-  const isOptionsPanelVisible = useMemo(() => {
-    return appConfig.windows.showOptionsPanel;
-  }, [appConfig]);
-
-  const isGraphLayoutPanelVisible = useMemo(() => {
-    if (appConfig.activeView === "Yasgui") {
-      return false;
-    }
-    return appConfig.windows.showGraphLayoutToolbar;
-  }, [appConfig]);
 
   const isDarkMode = useMemo(() => {
     return (
@@ -414,14 +369,6 @@ const AppContent: React.FC<{
       handleSetActiveLayout(defaultActiveLayout as LayoutEngineOption);
     }
 
-    console.log(
-      "here",
-      showOptionsPanel,
-      showLegendBars,
-      showGraphLayoutToolbar,
-      showRenderConfigOptions
-    );
-
     handleSetAppConfig(appConfig);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -429,10 +376,6 @@ const AppContent: React.FC<{
     svgUrl,
     defaultActiveView,
     defaultActiveLayout,
-    showOptionsPanel,
-    showLegendBars,
-    showGraphLayoutToolbar,
-    showRenderConfigOptions,
     // appConfig // we don't want to trigger this effect when appConfig changes, this is an initialization function for url query params. need to fix
   ]);
 
@@ -927,9 +870,6 @@ const AppContent: React.FC<{
   );
 
   const renderNodeLegend = useMemo(() => {
-    if (!isLegendVisible) {
-      return null;
-    }
     const statistics =
       currentSceneGraph.getDisplayConfig().mode === "type"
         ? graphStatistics?.nodeTypeToCount
@@ -951,7 +891,6 @@ const AppContent: React.FC<{
     );
   }, [
     nodeConfig,
-    isLegendVisible,
     isDarkMode,
     graphStatistics,
     currentSceneGraph,
@@ -963,9 +902,6 @@ const AppContent: React.FC<{
   ]);
 
   const renderEdgeLegend = useMemo(() => {
-    if (!isLegendVisible) {
-      return null;
-    }
     const statistics =
       currentSceneGraph.getDisplayConfig().mode === "type"
         ? graphStatistics?.edgeTypeToCount
@@ -985,7 +921,6 @@ const AppContent: React.FC<{
     );
   }, [
     edgeConfig,
-    isLegendVisible,
     isDarkMode,
     graphStatistics,
     handleEdgeColorChange,
@@ -1037,54 +972,6 @@ const AppContent: React.FC<{
     }
     return actions;
   }, [handleSetActiveView, simulations]);
-
-  const handleImportFileToSceneGraph = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      const reader = new FileReader();
-
-      reader.onload = async (e) => {
-        const content = e.target?.result as string;
-        let sceneGraph: SceneGraph | undefined;
-
-        try {
-          switch (fileExtension) {
-            case "json":
-              sceneGraph = deserializeSceneGraphFromJson(content);
-              break;
-            case "graphml":
-              sceneGraph = await deserializeGraphmlToSceneGraph(content);
-              break;
-            case "svg":
-              sceneGraph = deserializeSvgToSceneGraph(content);
-              break;
-            case "dot":
-              sceneGraph = deserializeDotToSceneGraph(content);
-              break;
-            default:
-              console.error(
-                `Unsupported file type: ${fileExtension || file.type}`
-              );
-              return; //@todo: add banner error message
-          }
-
-          if (sceneGraph) {
-            handleLoadSceneGraph(sceneGraph);
-          } else {
-            throw new Error("Unable to load file to SceneGraph");
-          }
-        } catch (error) {
-          console.error(`Error importing file: ${error}`);
-        }
-      };
-
-      reader.readAsText(file);
-    },
-    [handleLoadSceneGraph]
-  );
 
   const handleImportConfig = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1171,9 +1058,7 @@ const AppContent: React.FC<{
 
   const menuConfigInstance = useMemo(() => {
     const menuConfigCallbacks: IMenuConfigCallbacks = {
-      setShowPathAnalysis,
       handleImportConfig,
-      handleImportFileToSceneGraph,
       handleFitToView,
       GraphMenuActions,
       SimulationMenuActions,
@@ -1184,11 +1069,6 @@ const AppContent: React.FC<{
       showLayoutManager: (mode: "save" | "load") =>
         setShowLayoutManager({ mode, show: true }),
       showFilterWindow: () => setShowFilter(true),
-      showFilterManager: () => setShowFilterManager(true),
-      clearFilters: () => {
-        DisplayManager.setAllVisible(currentSceneGraph.getGraph());
-        setActiveFilterPreset(null);
-      },
       handleLoadLayout: handleLoadLayout,
       showImportSvgFromUrlDialog: () => setShowImportSvgFromUrlDialog(true),
       showSceneGraphDetailView: (readOnly: boolean) => {
@@ -1209,7 +1089,6 @@ const AppContent: React.FC<{
     currentSceneGraph,
     handleFitToView,
     handleImportConfig,
-    handleImportFileToSceneGraph,
     handleLoadLayout,
     handleShowEntityTables,
   ]);
@@ -1219,7 +1098,7 @@ const AppContent: React.FC<{
     [menuConfigInstance]
   );
 
-  const renderSceneGraphTitle = useMemo(() => {
+  const _renderSceneGraphTitle = useMemo(() => {
     return (
       <SceneGraphTitle
         title={currentSceneGraph.getMetadata().name ?? ""}
@@ -1229,63 +1108,13 @@ const AppContent: React.FC<{
   }, [currentSceneGraph]);
 
   const renderLayoutModeRadio = useCallback(() => {
-    if (!isOptionsPanelVisible) {
-      return undefined;
-    }
     return (
       <LayoutModeRadio
         layoutMode={layoutMode}
         onLayoutModeChange={handleLayoutModeChange}
-        isDarkMode={isDarkMode}
       />
     );
-  }, [isOptionsPanelVisible, layoutMode, handleLayoutModeChange, isDarkMode]);
-
-  const renderOptionsPanel = useCallback(() => {
-    if (!isLegendVisible && !isOptionsPanelVisible) {
-      return undefined;
-    }
-    if (
-      appConfig.activeView === "Yasgui" ||
-      appConfig.activeView === "Copilot"
-    ) {
-      return undefined;
-    }
-    return (
-      <div
-        className="options-panel-container"
-        style={{
-          backgroundColor: isDarkMode ? "transparent" : "transparent",
-          marginTop: "20px",
-        }}
-      >
-        {renderLayoutModeRadio()}
-        {renderNodeLegend}
-        {renderEdgeLegend}
-
-        {/* Update ForceGraph3d layout options to match dark mode */}
-        {appConfig.activeView === "ForceGraph3d" && (
-          <ForceGraphLayoutRadio
-            layout={appConfig.forceGraph3dOptions.layout}
-            onLayoutChange={setSelectedForceGraph3dLayoutMode}
-            isDarkMode={isDarkMode}
-          />
-        )}
-        {renderSceneGraphTitle}
-      </div>
-    );
-  }, [
-    isLegendVisible,
-    isOptionsPanelVisible,
-    appConfig.activeView,
-    appConfig.forceGraph3dOptions.layout,
-    isDarkMode,
-    renderLayoutModeRadio,
-    renderNodeLegend,
-    renderEdgeLegend,
-    setSelectedForceGraph3dLayoutMode,
-    renderSceneGraphTitle,
-  ]);
+  }, [layoutMode, handleLayoutModeChange]);
 
   const maybeRenderReactFlow = useMemo(() => {
     if (appConfig.activeView !== "ReactFlow") {
@@ -1455,27 +1284,24 @@ const AppContent: React.FC<{
 
   const maybeRenderForceGraph3D = useMemo(() => {
     if (appConfig.activeView === "ForceGraph3d") {
-      console.log("RENDERING FORCE GRAPH");
       return (
         <div
           id="force-graph"
           ref={forceGraphRef}
           style={{
-            width: "100%",
-            height: "100vh",
-            background: "black",
-            zIndex: 5,
-            position: "absolute",
-            top: 0, // Changed from "50px" to 0
+            position: "fixed",
+            top: showToolbar ? "var(--toolbar-height, 40px)" : 0,
             left: 0,
             right: 0,
             bottom: 0,
+            background: "black",
+            zIndex: 1,
           }}
         />
       );
     }
     return null;
-  }, [appConfig.activeView, forceGraphRef]);
+  }, [appConfig.activeView, showToolbar]);
 
   const _handleUpdateForceGraphScene = useCallback((sceneGraph: SceneGraph) => {
     if (!forceGraphInstance.current) {
@@ -1629,38 +1455,6 @@ const AppContent: React.FC<{
     [appConfig.activeView, setMousePosition]
   );
 
-  const renderUniappToolbar = React.useMemo(() => {
-    if (showToolbar === "false") {
-      return null;
-    }
-    return (
-      <UniAppToolbar
-        config={menuConfig}
-        sceneGraph={currentSceneGraph}
-        activeView={appConfig.activeView}
-        onViewChange={handleSetActiveView}
-        simulationList={Object.keys(simulations)}
-        selectedSimulation={selectedSimulation}
-        isDarkMode={isDarkMode}
-        onSelectResult={handleSelectResult}
-        onSearchResult={handleSearchResult}
-        onHighlight={handleHighlight}
-      />
-    );
-  }, [
-    showToolbar,
-    menuConfig,
-    currentSceneGraph,
-    appConfig.activeView,
-    handleSetActiveView,
-    simulations,
-    selectedSimulation,
-    isDarkMode,
-    handleSelectResult,
-    handleSearchResult,
-    handleHighlight,
-  ]);
-
   const _handleNodeMouseEnter = useCallback(
     (event: React.MouseEvent, nodeId: string) => {
       setHoveredNode(nodeId);
@@ -1698,28 +1492,6 @@ const AppContent: React.FC<{
     },
     []
   );
-
-  const renderForceGraphRenderConfigEditor = useCallback(() => {
-    if (appConfig.activeView !== "ForceGraph3d") {
-      return null;
-    }
-    if (!appConfig.forceGraph3dOptions.showOptionsPanel) {
-      return null;
-    }
-    return (
-      <ForceGraphRenderConfigEditor
-        onApply={handleApplyForceGraphConfig}
-        isDarkMode={isDarkMode}
-        initialConfig={currentSceneGraph.getForceGraphRenderConfig()}
-      />
-    );
-  }, [
-    handleApplyForceGraphConfig,
-    isDarkMode,
-    currentSceneGraph,
-    appConfig.activeView,
-    appConfig.forceGraph3dOptions.showOptionsPanel,
-  ]);
 
   const getBackgroundRightClickContextMenuItems = useCallback(
     (): ContextMenuItem[] => [
@@ -1866,6 +1638,31 @@ const AppContent: React.FC<{
     [currentSceneGraph]
   );
 
+  const maybeRenderLoadSceneGraphWindow = useMemo(() => {
+    if (showLoadSceneGraphWindow) {
+      return (
+        <LoadSceneGraphDialog
+          onClose={() => setShowLoadSceneGraphWindow(false)}
+          onSelect={handleSetSceneGraph}
+          handleLoadSceneGraph={handleLoadSceneGraph}
+        />
+      );
+    }
+    return null;
+  }, [handleLoadSceneGraph, handleSetSceneGraph, showLoadSceneGraphWindow]);
+
+  const maybeRenderSaveSceneGraphWindow = useMemo(() => {
+    if (showSaveSceneGraphDialog) {
+      return (
+        <SaveSceneGraphDialog
+          sceneGraph={currentSceneGraph}
+          onClose={() => setShowSaveSceneGraphDialog(false)} // Ensure this closes the dialog
+        />
+      );
+    }
+    return null;
+  }, [currentSceneGraph, showSaveSceneGraphDialog]);
+
   const maybeRenderYasgui = useMemo(() => {
     if (appConfig.activeView !== "Yasgui") {
       return null;
@@ -1894,61 +1691,44 @@ const AppContent: React.FC<{
         style={{ margin: 0, padding: 0 }}
         onMouseMove={handleMouseMove}
       >
-        {renderUniappToolbar}
-        <input
-          type="file"
-          id="import-config-input"
-          style={{ display: "none" }}
-          onChange={handleImportConfig}
-        />
-        <input
-          type="file"
-          id="import-file-to-scenegraph-input"
-          style={{ display: "none" }}
-          onChange={handleImportFileToSceneGraph}
-          accept=".json,.graphml,.svg,.dot"
-        />
-        <div
-          style={{
-            position: "fixed",
-            bottom: "1rem",
-            right: "1rem",
-            zIndex: 1000,
+        <Workspace
+          menuConfig={menuConfig}
+          currentSceneGraph={currentSceneGraph}
+          appConfig={appConfig}
+          isDarkMode={isDarkMode}
+          selectedSimulation={selectedSimulation}
+          simulations={simulations}
+          onViewChange={handleSetActiveView}
+          onSelectResult={handleSelectResult}
+          onSearchResult={handleSearchResult}
+          onHighlight={handleHighlight}
+          onApplyForceGraphConfig={handleApplyForceGraphConfig}
+          setSelectedForceGraph3dLayoutMode={setSelectedForceGraph3dLayoutMode}
+          applyNewLayout={applyNewLayout}
+          renderLayoutModeRadio={renderLayoutModeRadio}
+          showFilterWindow={() => setShowFilter(true)}
+          showFilterManager={() => setShowFilterManager(true)}
+          clearFilters={() => {
+            DisplayManager.setAllVisible(currentSceneGraph.getGraph());
+            setActiveFilterPreset(null);
           }}
+          showPathAnalysis={() => setShowPathAnalysis(true)}
+          renderNodeLegend={renderNodeLegend}
+          renderEdgeLegend={renderEdgeLegend}
+          showToolbar={showToolbar}
+          showLeftSidebar={showLeftSidebar}
+          showRightSidebar={showRightSidebar}
+          showLoadSceneGraphWindow={() => setShowLoadSceneGraphWindow(true)}
+          showSaveSceneGraphDialog={() => setShowSaveSceneGraphDialog(true)} // Pass the correct handler
+          showLayoutManager={(mode: "save" | "load") =>
+            setShowLayoutManager({ mode, show: true })
+          }
+          handleLoadLayout={handleLoadLayout}
+          handleFitToView={handleFitToView}
+          handleShowEntityTables={handleShowEntityTables}
         >
-          <button
-            onClick={() => handleFitToView(appConfig.activeView)}
-            style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <FaExpand size={"3rem"} color={isDarkMode ? "white" : "black"} />
-          </button>
-        </div>
-        <div>
-          <div
-            style={{
-              position: "fixed",
-              right: "0px",
-              zIndex: 1000,
-              padding: "10px",
-              borderRadius: "5px",
-            }}
-          >
-            {renderOptionsPanel()}
-          </div>
-          <div
-            style={{
-              position: "relative",
-              width: "100vw", // Changed from 100% to 100vw
-              height: "100vh",
-              margin: 0,
-              padding: 0,
-            }}
-          >
+          {/* Main content */}
+          <div style={{ height: "100%", position: "relative" }}>
             {maybeRenderGraphviz}
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
@@ -1963,33 +1743,8 @@ const AppContent: React.FC<{
             {appConfig.activeView in simulations &&
               getSimulation(appConfig.activeView)}
           </div>
-        </div>
-        {isGraphLayoutPanelVisible &&
-          !(appConfig.activeView in simulations) && (
-            <GraphLayoutToolbar
-              activeLayout={activeLayout}
-              onLayoutChange={(layoutType: LayoutEngineOption) =>
-                applyNewLayout(layoutType)
-              }
-              isDarkMode={isDarkMode}
-              physicsMode={
-                appConfig.forceGraph3dOptions.layout === "Physics" &&
-                appConfig.activeView === "ForceGraph3d"
-              }
-            />
-          )}
-        {appConfig.forceGraph3dOptions.showOptionsPanel && (
-          <div
-            style={{
-              zIndex: "3000",
-              position: "absolute",
-              top: "5rem",
-              left: "1rem",
-            }}
-          >
-            {renderForceGraphRenderConfigEditor()}
-          </div>
-        )}
+        </Workspace>
+        {maybeRenderSaveSceneGraphWindow}
         {appConfig.windows.showEntityDataCard &&
           currentSceneGraph.getAppState().hoveredNodes.size > 0 && (
             <EntityDataDisplayCard
@@ -2043,6 +1798,7 @@ const AppContent: React.FC<{
             }}
           />
         )}
+        {maybeRenderLoadSceneGraphWindow}
         {pathAnalysisWizard}
         {showEntityTables && (
           <EntityTabDialog
@@ -2149,11 +1905,9 @@ interface AppProps {
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-  showOptionsPanel?: string;
-  showLegendBars?: string;
-  showGraphLayoutToolbar?: string;
-  showRenderConfigOptions?: string;
-  showToolbar?: string;
+  showToolbar?: boolean;
+  showLeftSidebar?: boolean;
+  showRightSidebar?: boolean;
 }
 
 const App: React.FC<AppProps> = ({
@@ -2161,11 +1915,9 @@ const App: React.FC<AppProps> = ({
   svgUrl,
   defaultActiveView,
   defaultActiveLayout,
-  showOptionsPanel,
-  showLegendBars,
-  showGraphLayoutToolbar,
-  showRenderConfigOptions,
   showToolbar,
+  showLeftSidebar,
+  showRightSidebar,
 }) => {
   return (
     <MousePositionProvider>
@@ -2174,11 +1926,9 @@ const App: React.FC<AppProps> = ({
         svgUrl={svgUrl}
         defaultActiveView={defaultActiveView}
         defaultActiveLayout={defaultActiveLayout}
-        showOptionsPanel={showOptionsPanel}
-        showLegendBars={showLegendBars}
-        showGraphLayoutToolbar={showGraphLayoutToolbar}
-        showRenderConfigOptions={showRenderConfigOptions}
         showToolbar={showToolbar}
+        showLeftSidebar={showLeftSidebar}
+        showRightSidebar={showRightSidebar}
       />
     </MousePositionProvider>
   );

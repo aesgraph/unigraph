@@ -10,14 +10,10 @@ export type AppConfig = {
 
   activeSceneGraph: string;
   windows: {
-    showLegendBars: boolean;
-    showOptionsPanel: boolean;
-    showGraphLayoutToolbar: boolean;
     showEntityDataCard: boolean; //dev tool
   };
   forceGraph3dOptions: {
     layout: ForceGraph3dLayoutMode;
-    showOptionsPanel: boolean;
   };
   activeLayout: LayoutEngineOption;
 };
@@ -27,14 +23,10 @@ export const DEFAULT_APP_CONFIG = (): AppConfig => {
     activeView: "ForceGraph3d",
     activeSceneGraph: "AcademicsKG",
     windows: {
-      showLegendBars: true,
-      showOptionsPanel: true,
-      showGraphLayoutToolbar: true,
       showEntityDataCard: false,
     },
     forceGraph3dOptions: {
       layout: "Physics",
-      showOptionsPanel: true,
     },
     activeLayout: CustomLayoutType.Random,
   };

@@ -25,6 +25,7 @@ interface UniAppToolbarProps {
   onViewChange: (view: string) => void;
   selectedSimulation: string;
   simulationList: string[];
+  style?: React.CSSProperties;
 }
 
 const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
@@ -38,6 +39,7 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
   onViewChange,
   selectedSimulation,
   simulationList,
+  style,
 }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
@@ -174,7 +176,7 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
   };
 
   return (
-    <nav className="uni-app-toolbar">
+    <nav className="uni-app-toolbar" style={style}>
       <div className="menu-left">{renderMenu(config)}</div>
       <div className="search-center">{renderGraphSearch()}</div>
       <div className="menu-right">{renderGraphViewButtons()}</div>

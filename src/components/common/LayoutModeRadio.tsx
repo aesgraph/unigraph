@@ -5,17 +5,19 @@ import "./LayoutModeRadio.css";
 interface LayoutModeRadioProps {
   layoutMode: RenderingManager__DisplayMode;
   onLayoutModeChange: (mode: RenderingManager__DisplayMode) => void;
-  isDarkMode: boolean;
+  isDarkMode?: boolean;
 }
 
 const LayoutModeRadio: React.FC<LayoutModeRadioProps> = ({
   layoutMode,
   onLayoutModeChange,
-  isDarkMode,
+  isDarkMode = true,
 }) => {
   return (
     <div className={`layout-mode-radio ${isDarkMode ? "dark" : "light"}`}>
-      <label className="radio-label">
+      <label
+        className={`radio-label ${layoutMode === "type" ? "selected" : ""}`}
+      >
         <input
           type="radio"
           value="type"
@@ -25,7 +27,9 @@ const LayoutModeRadio: React.FC<LayoutModeRadioProps> = ({
         />
         Type
       </label>
-      <label className="radio-label">
+      <label
+        className={`radio-label ${layoutMode === "tag" ? "selected" : ""}`}
+      >
         <input
           type="radio"
           value="tag"

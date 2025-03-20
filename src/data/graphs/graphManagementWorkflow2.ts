@@ -163,14 +163,10 @@ export const graphManagementWorkflowDiagram2 = () => {
       activeView: "ForceGraph3d",
       activeSceneGraph: "graphManagementWorkflow2",
       windows: {
-        showLegendBars: true,
-        showOptionsPanel: true,
-        showGraphLayoutToolbar: true,
         showEntityDataCard: false,
       },
       forceGraph3dOptions: {
         layout: "Physics",
-        showOptionsPanel: true,
       },
       activeLayout: CustomLayoutType.Random,
     },

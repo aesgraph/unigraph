@@ -19,14 +19,10 @@ export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
         activeView: "ForceGraph3d",
         activeSceneGraph: "attempt2",
         windows: {
-          showLegendBars: true,
-          showOptionsPanel: true,
-          showGraphLayoutToolbar: true,
           showEntityDataCard: false,
         },
         forceGraph3dOptions: {
           layout: "Layout",
-          showOptionsPanel: false,
         },
         activeLayout: PresetLayoutType.NodePositions,
       },

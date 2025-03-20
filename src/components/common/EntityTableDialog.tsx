@@ -50,7 +50,6 @@ const EntityTableDialog: React.FC<EntityTableDialogProps> = ({
             onEntityClick={
               onNodeClick && ((entity) => onNodeClick(entity.getId() as NodeId))
             }
-            isDarkMode={isDarkMode}
           />
         </div>
       </div>

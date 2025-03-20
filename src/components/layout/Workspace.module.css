@@ -1,0 +1,46 @@
+.workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.toolbar {
+  height: 40px;
+  z-index: 1100;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  height: calc(100vh - var(--toolbar-height, 0px));
+}
+
+.main {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate; /* Create stacking context */
+}
+
+.graphContainer {
+  position: fixed;
+  top: var(--toolbar-height, 40px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.sidebarLayer {
+  position: relative;
+  z-index: 2;
+  pointer-events: none; /* Allow clicking through to graph */
+}
+
+.sidebarLayer > * {
+  pointer-events: auto; /* Re-enable pointer events for sidebar content */
+}
