@@ -1,0 +1,46 @@
+name: Test Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: npm run build
+
+      - name: Start app in the background and wait for readiness
+        run: |
+          npm start > app.log 2>&1 &  # Start app and redirect logs to a file
+          echo "Waiting for app to start..."
+
+          for i in {1..30}; do  # Retry up to 30 times (60 seconds total)
+            if curl -s -f http://localhost:3000 > /dev/null; then
+              echo "✅ App is up and running!"
+              exit 0
+            fi
+            echo "⏳ Retry $i failed. Waiting 2 seconds..."
+            sleep 2
+          done
+
+          echo "❌ App did not start in time. Dumping app logs:"
+          cat app.log
+          exit 1
