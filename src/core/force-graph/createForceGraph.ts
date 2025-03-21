@@ -11,8 +11,20 @@ import {
   CSS2DRenderer,
 } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { ForceGraph3dLayoutMode } from "../../AppConfig";
+import {
+  DEFAULT_FORCE_GRAPH_RENDER_CONFIG,
+  IForceGraphRenderConfig,
+} from "../../store/forceGraphConfigStore";
+import {
+  getHoveredEdgeIds,
+  getHoveredNodeIds,
+  setHoveredEdgeId,
+  setHoveredNodeId,
+  setSelectedNodeId,
+} from "../../store/graphInteractionStore";
 import { ILayoutEngineResult } from "../layouts/LayoutEngine";
 import { NodePositionData } from "../layouts/layoutHelpers";
+import { EdgeId } from "../model/Edge";
 import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
@@ -33,7 +45,7 @@ export const refreshForceGraphInstance = (
   updateVisibleEntitiesInForceGraphInstance(forceGraphInstance, sceneGraph);
 
   forceGraphInstance.nodeColor((node) => {
-    if (sceneGraph.getAppState().hoveredNodes.has(node.id as string)) {
+    if (getHoveredNodeIds().has(node.id as NodeId)) {
       return "rgb(242, 254, 9)";
     }
     return renderingManager.getNodeColor(
@@ -43,17 +55,12 @@ export const refreshForceGraphInstance = (
 
   forceGraphInstance.linkColor((link) => {
     if (
-      sceneGraph
-        .getAppState()
-        .hoveredNodes.has((link.source as any).id as string)
+      getHoveredNodeIds().has((link.source as any).id) ||
+      getHoveredNodeIds().has((link.target as any).id)
     ) {
       return "yellow";
     }
-    if (
-      sceneGraph
-        .getAppState()
-        .hoveredNodes.has((link.target as any).id as string)
-    ) {
+    if (getHoveredEdgeIds().has((link as any).id)) {
       return "white";
     }
     return renderingManager.getEdgeColor(
@@ -75,27 +82,6 @@ export const refreshForceGraphInstance = (
   }
 };
 
-export interface IForceGraphRenderConfig {
-  nodeTextLabels: boolean;
-  linkWidth: number;
-  nodeSize: number;
-  linkTextLabels: boolean;
-  nodeOpacity: number;
-  linkOpacity: number;
-  chargeStrength: number;
-}
-
-export const DEFAULT_FORCE_GRAPH_RENDER_CONFIG: IForceGraphRenderConfig = {
-  nodeTextLabels: false,
-  linkWidth: 2,
-  nodeSize: 6,
-  linkTextLabels: true,
-  nodeOpacity: 1,
-  linkOpacity: 1,
-  //phyics
-  chargeStrength: -30, // default.
-};
-
 export const createForceGraph = (
   sceneGraph: SceneGraph,
   dom: HTMLElement,
@@ -114,7 +100,7 @@ export const createForceGraph = (
     .graphData({ nodes: data.nodes, links: data.edges })
     .nodeLabel("label")
     .nodeColor((node) => {
-      if (sceneGraph.getAppState().hoveredNodes.has(node.id as string)) {
+      if (getHoveredNodeIds().has(node.id as NodeId)) {
         return "rgb(242, 254, 9)";
       }
       return renderingManager.getNodeColor(
@@ -123,17 +109,12 @@ export const createForceGraph = (
     })
     .linkColor((link) => {
       if (
-        sceneGraph
-          .getAppState()
-          .hoveredNodes.has((link.source as any).id as string)
+        getHoveredNodeIds().has((link.source as any).id) ||
+        getHoveredNodeIds().has((link.target as any).id)
       ) {
         return "yellow";
       }
-      if (
-        sceneGraph
-          .getAppState()
-          .hoveredNodes.has((link.target as any).id as string)
-      ) {
+      if (getHoveredEdgeIds().has((link as any).id)) {
         return "white";
       }
       const x = renderingManager.getEdgeColor(
@@ -242,10 +223,8 @@ export const createForceGraph = (
         const nodeEl = document.createElement("div");
 
         nodeEl.textContent = `${node.id}` as string;
-        if (sceneGraph.getAppState()) {
-          if (sceneGraph.getAppState().hoveredNodes.has(n.getId())) {
-            nodeEl.style.color = "yellow";
-          }
+        if (getHoveredNodeIds().has(node.id as NodeId)) {
+          nodeEl.style.color = "yellow";
         }
 
         nodeEl.style.color = renderingManager.getNodeColor(n);
@@ -272,22 +251,20 @@ export const createForceGraph = (
 export const bindEventsToGraphInstance = (
   graph: ForceGraph3DInstance,
   sceneGraph: SceneGraph,
-  onNodeHovered: (node: NodeId | null) => void,
-  onNodeClicked: (node: NodeId | null) => void,
   onNodeRightClick?: (event: MouseEvent, nodeId: string | null) => void,
   onBackgroundRightClick?: (event: MouseEvent) => void
 ) => {
-  graph.onNodeClick((node) => onNodeClicked(node?.id as NodeId));
+  graph.onNodeClick((node) => setSelectedNodeId(node?.id as NodeId));
   graph.onNodeHover((node) => {
     // no state change
     // if (!node && !sceneGraph.getAppState().hoveredNodes.has(node.id as string)) {
     //   return;
     // }
-    sceneGraph.getAppState().hoveredNodes.clear();
+    setHoveredNodeId(null);
     if (node) {
-      sceneGraph.getAppState().hoveredNodes.add(node.id as string);
+      setHoveredNodeId(node.id as NodeId);
     }
-    onNodeHovered(node?.id as NodeId);
+    setHoveredNodeId(node?.id as NodeId);
 
     // highlightNodes.clear();
     // highlightLinks.clear();
@@ -299,6 +276,11 @@ export const bindEventsToGraphInstance = (
 
     // hoverNode = node || null;
 
+    updateHighlight(graph);
+  });
+
+  graph.onLinkHover((link) => {
+    setHoveredEdgeId((link as any)?.id as EdgeId);
     updateHighlight(graph);
   });
 

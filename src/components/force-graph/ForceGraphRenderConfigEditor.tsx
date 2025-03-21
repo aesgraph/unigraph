@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IForceGraphRenderConfig } from "../../core/force-graph/createForceGraph";
+import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import "./ForceGraphRenderConfigEditor.css";
 
 interface FormSchemaField {

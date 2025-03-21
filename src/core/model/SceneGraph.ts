@@ -6,7 +6,7 @@ import {
   RenderingConfig,
   RenderingManager,
 } from "../../controllers/RenderingManager";
-import { IForceGraphRenderConfig } from "../force-graph/createForceGraph";
+import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { NodePositionData, Position } from "../layouts/layoutHelpers";
 import { EdgeId } from "./Edge";
 import { IEntity } from "./entity/abstractEntity";
@@ -38,10 +38,6 @@ export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
   return {
     graph: new Graph(),
     displayConfig: GET_DEFAULT_RENDERING_CONFIG(new Graph()),
-    appState: {
-      // this will be moved under app config
-      hoveredNodes: new Set(),
-    },
     forceGraphDisplayConfig: {
       nodeTextLabels: false,
       nodeSize: 3,
@@ -63,9 +59,6 @@ export type SceneGraphData = {
   displayConfig: RenderingConfig;
   filterPresets?: ObjectOf<FilterPreset>;
   displayConfigPresets?: ObjectOf<RenderingConfig>;
-  appState: {
-    hoveredNodes: Set<string>;
-  };
   forceGraphDisplayConfig: IForceGraphRenderConfig;
   metadata: ISceneGraphMetadata;
   entityCache: EntityCache; // for storing additional non-graph entities
@@ -101,10 +94,6 @@ export class SceneGraph {
 
   notifyGraphChanged() {
     this.listeners?.onGraphChanged?.(this.data.graph);
-  }
-
-  getAppState() {
-    return this.data.appState;
   }
 
   getData() {

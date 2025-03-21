@@ -15,12 +15,12 @@ interface SidebarProps {
   position: "left" | "right";
   title?: string;
   menuItems: MenuItem[];
-  defaultIsOpen?: boolean;
   onToggle?: () => void;
   isDarkMode?: boolean;
   content?: React.ReactNode;
   footer?: React.ReactNode | ((isOpen: boolean) => React.ReactNode);
   minimal?: boolean;
+  mode: "collapsed" | "full";
   style?: React.CSSProperties;
 }
 
@@ -38,15 +38,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   position,
   title = "Unigraph",
   menuItems,
-  defaultIsOpen = true,
   onToggle,
   isDarkMode,
   content,
   footer,
   minimal = false,
   style = {},
+  mode = "full",
 }) => {
-  const [isOpen, setIsOpen] = useState(defaultIsOpen);
+  const [isOpen, setIsOpen] = useState(mode === "full");
+
+  useEffect(() => {
+    setIsOpen(mode === "full");
+  }, [mode]);
+
   const [expandedMenus, setExpandedMenus] = useState<{
     [key: string]: boolean;
   }>({});

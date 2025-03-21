@@ -1,14 +1,14 @@
-import React from "react";
-import { JsonForms } from "@jsonforms/react";
-import {
-  materialRenderers,
-  materialCells,
-} from "@jsonforms/material-renderers";
 import { JsonSchema } from "@jsonforms/core";
 import {
-  IForceGraphRenderConfig,
+  materialCells,
+  materialRenderers,
+} from "@jsonforms/material-renderers";
+import { JsonForms } from "@jsonforms/react";
+import React from "react";
+import {
   DEFAULT_FORCE_GRAPH_RENDER_CONFIG,
-} from "../../core/force-graph/createForceGraph";
+  IForceGraphRenderConfig,
+} from "../../store/forceGraphConfigStore";
 
 const schema: JsonSchema = {
   type: "object",

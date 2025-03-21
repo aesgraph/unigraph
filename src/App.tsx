@@ -12,11 +12,7 @@ import React, {
 import { toDot } from "ts-graphviz";
 import { v4 as uuidv4 } from "uuid";
 import "./App.css";
-import {
-  AppConfig,
-  DEFAULT_APP_CONFIG,
-  ForceGraph3dLayoutMode,
-} from "./AppConfig";
+import { AppConfig } from "./AppConfig";
 import PathAnalysisWizard, {
   IPathArgs,
 } from "./components/analysis/PathAnalysisWizard";
@@ -37,7 +33,6 @@ import {
 import FilterWindow from "./components/filters/FilterWindow";
 import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
 import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
-import ImportSvgFromUrlDialog from "./components/ImportSvgFromUrlDialog";
 import Workspace from "./components/layout/Workspace";
 import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
 import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
@@ -68,7 +63,6 @@ import {
   bindEventsToGraphInstance,
   createForceGraph,
   getNodeMousePosition,
-  IForceGraphRenderConfig,
   refreshForceGraphInstance,
   updateNodePositions,
   zoomToFit,
@@ -107,6 +101,22 @@ import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
 import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
+import useAppConfigStore, {
+  setActiveLayout,
+  setAppConfig,
+} from "./store/appConfigStore";
+import useDialogStore from "./store/dialogStore";
+import { IForceGraphRenderConfig } from "./store/forceGraphConfigStore";
+import {
+  clearSelections,
+  getHoveredNodeIds,
+  getSelectedNodeId,
+  setHoveredEdgeIds,
+  setHoveredNodeId,
+  setHoveredNodeIds,
+  setSelectedNodeId,
+} from "./store/graphInteractionStore";
+import useWorkspaceConfigStore from "./store/workspaceConfigStore";
 
 export type ObjectOf<T> = { [key: string]: T };
 
@@ -149,11 +159,11 @@ const getSimulations = (
   };
 };
 
-export type AppInteractionConfig = {
-  clickedNode: NodeId | null; // For display card
-  mouseHoveredNode: string | null; // For highlighting
-  selectedNodes: Set<string>; // For highlighting
-};
+// export type AppInteractionConfig = {
+//   clickedNode: NodeId | null; // For display card
+//   mouseHoveredNode: string | null; // For highlighting
+//   selectedNodes: Set<string>; // For highlighting
+// };
 
 const initialSceneGraph = new SceneGraph();
 
@@ -170,18 +180,35 @@ const AppContent: React.FC<{
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-  showToolbar?: boolean;
-  showLeftSidebar?: boolean;
-  showRightSidebar?: boolean;
-}> = ({
-  defaultGraph,
-  svgUrl,
-  defaultActiveView,
-  defaultActiveLayout,
-  showToolbar,
-  showLeftSidebar,
-  showRightSidebar,
-}) => {
+}> = ({ defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout }) => {
+  const {
+    showPathAnalysis,
+    setShowEntityTables,
+    setShowLayoutManager,
+    setShowSceneGraphDetailView,
+    setShowPathAnalysis,
+    showLoadSceneGraphWindow,
+    setShowLoadSceneGraphWindow,
+    showSaveSceneGraphDialog,
+    setShowSaveSceneGraphDialog,
+    showEntityTables,
+    showLayoutManager,
+    showSceneGraphDetailView,
+  } = useDialogStore();
+
+  const {
+    forceGraph3dOptions,
+    activeView,
+    setActiveView,
+    activeLayout,
+    getShowEntityDataCard,
+    activeSceneGraph,
+    legendMode,
+    setLegendMode,
+  } = useAppConfigStore();
+
+  const { showToolbar } = useWorkspaceConfigStore();
+
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -216,14 +243,7 @@ const AppContent: React.FC<{
     filterRules: FilterRuleDefinition[];
   } | null>(null);
 
-  const [appInteractionConfig, setAppInteractionConfig] =
-    useState<AppInteractionConfig>({
-      clickedNode: null,
-      mouseHoveredNode: null,
-      selectedNodes: new Set(),
-    });
-
-  const getAppConfigWithUrlOverrides = useCallback(
+  const _getAppConfigWithUrlOverrides = useCallback(
     (config: AppConfig) => {
       const layoutToUse = defaultActiveLayout
         ? (defaultActiveLayout as LayoutEngineOption)
@@ -246,64 +266,12 @@ const AppContent: React.FC<{
     [defaultActiveLayout, defaultActiveView]
   );
 
-  const handleSetAppConfig = useCallback(
-    (config: AppConfig) => {
-      setAppConfig(getAppConfigWithUrlOverrides(config));
-      console.log("Set app config!", getAppConfigWithUrlOverrides(config));
-    },
-    [getAppConfigWithUrlOverrides]
-  );
-
-  const setSelectedNode = useCallback((nodeId: NodeId | null) => {
-    setAppInteractionConfig((prevConfig) => ({
-      ...prevConfig,
-      clickedNode: nodeId,
-    }));
-  }, []);
-
-  const setHoveredNode = useCallback((nodeId: string | null) => {
-    setAppInteractionConfig((prevConfig) => ({
-      ...prevConfig,
-      mouseHoveredNode: nodeId,
-    }));
-  }, []);
-
-  const _setSelectedNodes = useCallback((nodeIds: string[]) => {
-    setAppInteractionConfig((prevConfig) => ({
-      ...prevConfig,
-      selectedNodes: new Set(nodeIds),
-    }));
-  }, []);
-
-  const setSelectedForceGraph3dLayoutMode = useCallback(
-    (layout: ForceGraph3dLayoutMode) => {
-      setAppConfig((prevConfig) => ({
-        ...prevConfig,
-        forceGraph3dOptions: {
-          ...prevConfig.forceGraph3dOptions,
-          layout: layout,
-        },
-      }));
-    },
-    []
-  );
-
-  const [showLoadSceneGraphWindow, setShowLoadSceneGraphWindow] =
-    useState(false);
-
-  const [showSaveSceneGraphDialog, setShowSaveSceneGraphDialog] =
-    useState(false);
-
-  const selectedNode = useMemo(() => {
-    return appInteractionConfig.clickedNode;
-  }, [appInteractionConfig]);
+  // const selectedNode = useMemo(() => {
+  //   return appInteractionConfig.clickedNode;
+  // }, [appInteractionConfig]);
 
   const [layoutResult, setLayoutResult] =
     useState<ILayoutEngineResult | null>();
-
-  const [appConfig, setAppConfig] = useState<AppConfig>({
-    ...DEFAULT_APP_CONFIG(),
-  });
 
   const [selectedSimulation, setSelectedSimulation] =
     useState<string>("Lumina");
@@ -317,15 +285,14 @@ const AppContent: React.FC<{
   const [edgeConfig, setEdgeConfig] = useState<DisplayConfig>(
     GetCurrentDisplayConfigOf(currentSceneGraph, "Edge")
   );
-  const [layoutMode, setLayoutMode] =
-    useState<RenderingManager__DisplayMode>("type");
 
   const isDarkMode = useMemo(() => {
-    return (
-      appConfig.activeView === "ForceGraph3d" ||
-      appConfig.activeView in simulations
-    );
-  }, [appConfig.activeView, simulations]);
+    return activeView === "ForceGraph3d" || activeView in simulations;
+  }, [activeView, simulations]);
+
+  // useEffect(() => {
+  //   setIsDarkMode(activeView === "ForceGraph3d" || );
+  // });
 
   const [graphStatistics, setGraphStatistics] = useState<
     GraphStastics | undefined
@@ -333,13 +300,13 @@ const AppContent: React.FC<{
 
   const handleReactFlowFitView = useCallback(
     (padding: number = 0.1, duration: number = 0) => {
-      if (appConfig.activeView === "ReactFlow" && reactFlowInstance.current) {
+      if (activeView === "ReactFlow" && reactFlowInstance.current) {
         setTimeout(() => {
           reactFlowInstance.current?.fitView({ padding, duration });
         }, 0);
       }
     },
-    [appConfig.activeView]
+    [activeView]
   );
 
   useEffect(() => {
@@ -358,7 +325,7 @@ const AppContent: React.FC<{
     } else if (defaultGraph) {
       handleSetSceneGraph(defaultGraph, false);
     } else {
-      handleSetSceneGraph(appConfig.activeSceneGraph);
+      handleSetSceneGraph(activeSceneGraph);
     }
 
     if (defaultActiveView) {
@@ -368,35 +335,27 @@ const AppContent: React.FC<{
     if (defaultActiveLayout) {
       handleSetActiveLayout(defaultActiveLayout as LayoutEngineOption);
     }
-
-    handleSetAppConfig(appConfig);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    defaultGraph,
-    svgUrl,
-    defaultActiveView,
-    defaultActiveLayout,
-    // appConfig // we don't want to trigger this effect when appConfig changes, this is an initialization function for url query params. need to fix
-  ]);
+  }, [defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout]);
 
   useEffect(() => {
-    if (appConfig.activeView === "ReactFlow" && reactFlowInstance.current) {
+    if (activeView === "ReactFlow" && reactFlowInstance.current) {
       handleReactFlowFitView();
     }
   }, [
     nodeConfig,
     edgeConfig,
-    appConfig.activeView,
+    activeView,
     handleReactFlowFitView,
     layoutResult,
   ]);
 
   const selectedGraphNode = useMemo(() => {
-    if (selectedNode) {
-      return currentSceneGraph.getGraph().getNode(selectedNode);
+    if (getSelectedNodeId()) {
+      return currentSceneGraph.getGraph().getNode(getSelectedNodeId()!);
     }
     return null;
-  }, [selectedNode, currentSceneGraph]);
+  }, [currentSceneGraph]);
 
   const handleMouseHoverLegendItem = useCallback(
     (type: GraphEntityType) =>
@@ -404,11 +363,15 @@ const AppContent: React.FC<{
         if (type === "Node") {
           const allNodesOfType =
             currentSceneGraph.getDisplayConfig().mode === "type"
-              ? currentSceneGraph.getGraph().getNodesByType(key)
-              : currentSceneGraph.getGraph().getNodesByTag(key);
-          allNodesOfType.forEach((n) => {
-            currentSceneGraph.getAppState().hoveredNodes.add(n.getId());
-          });
+              ? currentSceneGraph
+                  .getGraph()
+                  .getNodesByType(key)
+                  .map((n) => n.getId())
+              : currentSceneGraph
+                  .getGraph()
+                  .getNodesByTag(key)
+                  .map((node) => node.getId());
+          setHoveredNodeIds(allNodesOfType);
           if (forceGraphInstance.current) {
             forceGraphInstance.current.nodeColor(
               forceGraphInstance.current.nodeColor()
@@ -424,9 +387,10 @@ const AppContent: React.FC<{
   const handleMouseUnhoverLegendItem = useCallback(
     (_type: GraphEntityType) =>
       (_key: string): void => {
-        currentSceneGraph.getAppState().hoveredNodes.clear();
+        setHoveredNodeIds([]);
+        setHoveredEdgeIds([]);
       },
-    [currentSceneGraph]
+    []
   );
 
   const handleSetActiveFilterPreset = useCallback(
@@ -577,20 +541,18 @@ const AppContent: React.FC<{
       "Creating new force graph instance",
       forceGraphInstance.current,
       currentSceneGraph.getDisplayConfig().nodePositions,
-      appConfig.forceGraph3dOptions.layout
+      forceGraph3dOptions.layout
     );
     forceGraphInstance.current = createForceGraph(
       currentSceneGraph,
       forceGraphRef.current!,
       currentSceneGraph.getDisplayConfig().nodePositions,
       currentSceneGraph.getForceGraphRenderConfig(),
-      appConfig.forceGraph3dOptions.layout
+      forceGraph3dOptions.layout
     );
     bindEventsToGraphInstance(
       forceGraphInstance.current,
       currentSceneGraph,
-      setHoveredNode,
-      setSelectedNode,
       handleNodeRightClick,
       handleBackgroundRightClick
     );
@@ -604,36 +566,33 @@ const AppContent: React.FC<{
     }, 800);
   }, [
     currentSceneGraph,
-    appConfig.forceGraph3dOptions.layout,
+    forceGraph3dOptions.layout,
     handleNodeRightClick,
     handleBackgroundRightClick,
-    setHoveredNode,
-    setSelectedNode,
   ]);
 
   useEffect(() => {
-    if (layoutResult?.layoutType === appConfig.activeLayout) {
+    if (layoutResult?.layoutType === activeLayout) {
       console.log(
         "Skipping layout computation because it has already been computed"
       );
       return;
     }
     if (
-      appConfig.activeView === "Graphviz" ||
-      appConfig.activeView === "ReactFlow" ||
-      (appConfig.activeView === "ForceGraph3d" &&
-        appConfig.forceGraph3dOptions.layout === "Layout") ||
-      appConfig.forceGraph3dOptions.layout in
-        new Set(Object.values(GraphvizLayoutType))
+      activeView === "Graphviz" ||
+      activeView === "ReactFlow" ||
+      (activeView === "ForceGraph3d" &&
+        forceGraph3dOptions.layout === "Layout") ||
+      forceGraph3dOptions.layout in new Set(Object.values(GraphvizLayoutType))
     ) {
-      safeComputeLayout(currentSceneGraph, appConfig.activeLayout);
+      safeComputeLayout(currentSceneGraph, activeLayout);
     }
   }, [
     currentSceneGraph,
-    appConfig.forceGraph3dOptions.layout,
-    appConfig.activeLayout,
+    forceGraph3dOptions.layout,
+    activeLayout,
     safeComputeLayout,
-    appConfig.activeView,
+    activeView,
     layoutResult?.layoutType,
   ]);
 
@@ -663,12 +622,13 @@ const AppContent: React.FC<{
       if (clearQueryParams) {
         clearUrlOfQueryParams();
       }
-      safeComputeLayout(graph, appConfig.activeLayout).then(() => {
+      clearSelections();
+      safeComputeLayout(graph, activeLayout).then(() => {
         setCurrentSceneGraph(graph);
         if (graph.getData().defaultAppConfig) {
           setAppConfig(graph.getData().defaultAppConfig!);
         }
-        setLayoutMode(graph.getDisplayConfig().mode);
+        setLegendMode(graph.getDisplayConfig().mode);
         setGraphStatistics(getGraphStatistics(graph.getGraph()));
         setNodeConfig(GetCurrentDisplayConfigOf(graph, "Node"));
         setEdgeConfig(GetCurrentDisplayConfigOf(graph, "Edge"));
@@ -697,10 +657,11 @@ const AppContent: React.FC<{
       });
     },
     [
-      appConfig.activeLayout,
+      activeLayout,
       clearUrlOfQueryParams,
       handleDisplayConfigChanged,
       safeComputeLayout,
+      setLegendMode,
     ]
   );
 
@@ -751,14 +712,7 @@ const AppContent: React.FC<{
   );
 
   const handleSetActiveLayout = useCallback((layout: LayoutEngineOption) => {
-    setAppConfig((prevConfig) => ({
-      ...prevConfig,
-      activeLayout: layout,
-      forceGraph3dOptions: {
-        ...prevConfig.forceGraph3dOptions,
-        layout: "Layout",
-      },
-    }));
+    setActiveLayout(layout);
   }, []);
 
   const graphvizFitToView = useCallback((element: HTMLDivElement) => {
@@ -828,7 +782,7 @@ const AppContent: React.FC<{
     [currentSceneGraph, edgeConfig]
   );
 
-  const handleLayoutModeChange = useCallback(
+  const handleLegendModeChange = useCallback(
     (mode: RenderingManager__DisplayMode) => {
       currentSceneGraph.getDisplayConfig().mode = mode;
       // DisplayManager.applyRenderingConfigToGraph(
@@ -838,11 +792,11 @@ const AppContent: React.FC<{
       console.log("changing layoutmode to ", mode);
       refreshForceGraphInstance(forceGraphInstance.current!, currentSceneGraph);
 
-      setLayoutMode(mode);
+      setLegendMode(mode);
       setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
       setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
     },
-    [currentSceneGraph]
+    [currentSceneGraph, setLegendMode]
   );
 
   const handleNodeCheckBulk = useCallback(
@@ -932,22 +886,13 @@ const AppContent: React.FC<{
   const handleSetActiveView = useCallback(
     (key: string) => {
       console.log("setting active view", key);
-      setAppConfig((prevConfig) => ({
-        ...prevConfig,
-        windows: {
-          ...prevConfig.windows,
-          showLegendBars: !(key === "Gallery" || key in simulations), // Update condition
-          showOptionsPanel: !(key === "Gallery" || key in simulations), // Update condition
-          showGraphLayoutToolbar: !(key === "Gallery" || key in simulations), // Update condition
-        },
-        activeView: key as any,
-      }));
+      setActiveView(key);
       handleFitToView(key);
       const url = new URL(window.location.href);
       url.searchParams.set("view", key);
       window.history.pushState({}, "", url.toString());
     },
-    [handleFitToView, simulations]
+    [handleFitToView, setActiveView]
   );
 
   const GraphMenuActions = useCallback(() => {
@@ -993,21 +938,10 @@ const AppContent: React.FC<{
     [handleSetActiveLayout]
   );
 
-  const [showPathAnalysis, setShowPathAnalysis] = useState(false);
   const [pathAnalysisConfig, setPathAnalysisConfig] = useState<
     IPathArgs | undefined
   >(undefined);
   const [editingNodeId, setEditingNodeId] = useState<NodeId | null>(null);
-  const [showEntityTables, setShowEntityTables] = useState(false);
-
-  const handleShowEntityTables = useCallback(() => {
-    setShowEntityTables(true);
-  }, []);
-
-  const [showLayoutManager, setShowLayoutManager] = useState<{
-    mode: "save" | "load";
-    show: boolean;
-  }>({ mode: "save", show: false });
 
   const handleLoadLayout = useCallback(
     (positions: NodePositionData) => {
@@ -1018,43 +952,29 @@ const AppContent: React.FC<{
       );
       handleSetActiveLayout(PresetLayoutType.Preset);
       setLayoutResult({ positions, layoutType: PresetLayoutType.Preset });
-      if (
-        forceGraphInstance.current &&
-        appConfig.activeView === "ForceGraph3d"
-      ) {
+      if (forceGraphInstance.current && activeView === "ForceGraph3d") {
         updateNodePositions(forceGraphInstance.current, positions);
-      } else if (appConfig.activeView === "ReactFlow") {
+      } else if (activeView === "ReactFlow") {
         setGraphModelUpdateTime(Date.now()); //hack
       }
     },
-    [currentSceneGraph, handleSetActiveLayout, appConfig.activeView]
+    [currentSceneGraph, handleSetActiveLayout, activeView]
   );
 
-  const [showImportSvgFromUrlDialog, setShowImportSvgFromUrlDialog] =
-    useState(false);
+  // const handleLoadSceneGraphFromUrl = useCallback(
+  //   (sceneGraph: SceneGraph) => {
+  //     handleLoadSceneGraph(sceneGraph);
 
-  const handleLoadSceneGraphFromUrl = useCallback(
-    (sceneGraph: SceneGraph) => {
-      handleLoadSceneGraph(sceneGraph);
+  //     // Update the URL query parameter
+  //     const url = new URL(window.location.href);
+  //     url.searchParams.delete("graph");
+  //     url.searchParams.set("svgUrl", sceneGraph.getMetadata().source ?? "");
+  //     window.history.pushState({}, "", url.toString());
 
-      // Update the URL query parameter
-      const url = new URL(window.location.href);
-      url.searchParams.delete("graph");
-      url.searchParams.set("svgUrl", sceneGraph.getMetadata().source ?? "");
-      window.history.pushState({}, "", url.toString());
-
-      setShowImportSvgFromUrlDialog(false);
-    },
-    [handleLoadSceneGraph]
-  );
-
-  const [showSceneGraphDetailView, setShowSceneGraphDetailView] = useState<{
-    show: boolean;
-    readOnly: boolean;
-  }>({
-    show: false,
-    readOnly: true,
-  });
+  //     setShowImportSvgFromUrlDialog(false);
+  //   },
+  //   [handleLoadSceneGraph]
+  // );
 
   const menuConfigInstance = useMemo(() => {
     const menuConfigCallbacks: IMenuConfigCallbacks = {
@@ -1063,34 +983,32 @@ const AppContent: React.FC<{
       GraphMenuActions,
       SimulationMenuActions,
       applyNewLayout,
-      setAppConfig,
-      setShowNodeTable: handleShowEntityTables,
-      setShowEdgeTable: handleShowEntityTables,
+      setShowNodeTable: setShowEntityTables,
+      setShowEdgeTable: setShowEntityTables,
       showLayoutManager: (mode: "save" | "load") =>
         setShowLayoutManager({ mode, show: true }),
       showFilterWindow: () => setShowFilter(true),
       handleLoadLayout: handleLoadLayout,
-      showImportSvgFromUrlDialog: () => setShowImportSvgFromUrlDialog(true),
       showSceneGraphDetailView: (readOnly: boolean) => {
         setShowSceneGraphDetailView({ show: true, readOnly });
       },
     };
     return new MenuConfig(
       menuConfigCallbacks,
-      appConfig,
       currentSceneGraph,
       forceGraphInstance
     );
   }, [
     GraphMenuActions,
     SimulationMenuActions,
-    appConfig,
     applyNewLayout,
     currentSceneGraph,
     handleFitToView,
     handleImportConfig,
     handleLoadLayout,
-    handleShowEntityTables,
+    setShowEntityTables,
+    setShowLayoutManager,
+    setShowSceneGraphDetailView,
   ]);
 
   const menuConfig = useMemo(
@@ -1110,19 +1028,19 @@ const AppContent: React.FC<{
   const renderLayoutModeRadio = useCallback(() => {
     return (
       <LayoutModeRadio
-        layoutMode={layoutMode}
-        onLayoutModeChange={handleLayoutModeChange}
+        layoutMode={legendMode}
+        onLayoutModeChange={handleLegendModeChange}
       />
     );
-  }, [layoutMode, handleLayoutModeChange]);
+  }, [legendMode, handleLegendModeChange]);
 
   const maybeRenderReactFlow = useMemo(() => {
-    if (appConfig.activeView !== "ReactFlow") {
+    if (activeView !== "ReactFlow") {
       return null;
     }
 
     if (currentSceneGraph.getDisplayConfig().nodePositions === undefined) {
-      safeComputeLayout(currentSceneGraph, appConfig.activeLayout);
+      safeComputeLayout(currentSceneGraph, activeLayout);
       return;
     }
 
@@ -1246,8 +1164,8 @@ const AppContent: React.FC<{
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    appConfig.activeView,
-    appConfig.activeLayout,
+    activeView,
+    activeLayout,
     currentSceneGraph,
     layoutResult,
     nodeConfig,
@@ -1260,7 +1178,7 @@ const AppContent: React.FC<{
   ]);
 
   const maybeRenderGraphviz = useMemo(() => {
-    if (appConfig.activeView !== "Graphviz") {
+    if (activeView !== "Graphviz") {
       return;
     }
 
@@ -1280,10 +1198,10 @@ const AppContent: React.FC<{
         id="graphviz"
       />
     );
-  }, [appConfig.activeView]);
+  }, [activeView]);
 
   const maybeRenderForceGraph3D = useMemo(() => {
-    if (appConfig.activeView === "ForceGraph3d") {
+    if (activeView === "ForceGraph3d") {
       return (
         <div
           id="force-graph"
@@ -1301,7 +1219,7 @@ const AppContent: React.FC<{
       );
     }
     return null;
-  }, [appConfig.activeView, showToolbar]);
+  }, [activeView, showToolbar]);
 
   const _handleUpdateForceGraphScene = useCallback((sceneGraph: SceneGraph) => {
     if (!forceGraphInstance.current) {
@@ -1319,38 +1237,37 @@ const AppContent: React.FC<{
   }, []);
 
   useEffect(() => {
-    if (appConfig.activeView === "ForceGraph3d") {
+    if (activeView === "ForceGraph3d") {
       if (forceGraphInstance.current) {
         console.log(
           "refreshing on layout mode change",
-          appConfig.forceGraph3dOptions.layout
+          forceGraph3dOptions.layout
         );
         refreshForceGraphInstance(
           forceGraphInstance.current,
           currentSceneGraph,
-          appConfig.forceGraph3dOptions.layout
+          forceGraph3dOptions.layout
         );
       }
     }
   }, [
     nodeConfig,
     edgeConfig,
-    appConfig.activeView,
-    appConfig.forceGraph3dOptions.layout,
+    activeView,
+    forceGraph3dOptions.layout,
     activeFilterPreset,
     currentSceneGraph,
   ]);
 
   useEffect(() => {
     if (
-      layoutResult?.layoutType !== appConfig.activeLayout &&
-      (appConfig.activeView === "Graphviz" ||
-        appConfig.activeView === "ReactFlow")
+      layoutResult?.layoutType !== activeLayout &&
+      (activeView === "Graphviz" || activeView === "ReactFlow")
     ) {
       if (currentSceneGraph.getDisplayConfig().nodePositions === undefined) {
-        safeComputeLayout(currentSceneGraph, appConfig.activeLayout);
+        safeComputeLayout(currentSceneGraph, activeLayout);
       }
-    } else if (appConfig.activeView === "ForceGraph3d") {
+    } else if (activeView === "ForceGraph3d") {
       console.log("Reinitializing");
       initializeForceGraph();
     }
@@ -1363,9 +1280,9 @@ const AppContent: React.FC<{
     };
   }, [
     currentSceneGraph,
-    appConfig.activeView,
-    appConfig.forceGraph3dOptions.layout,
-    appConfig.activeLayout,
+    activeView,
+    forceGraph3dOptions.layout,
+    activeLayout,
     initializeForceGraph,
     safeComputeLayout,
     layoutResult?.layoutType,
@@ -1375,7 +1292,7 @@ const AppContent: React.FC<{
     if (
       forceGraphInstance.current &&
       layoutResult &&
-      appConfig.forceGraph3dOptions.layout === "Layout"
+      forceGraph3dOptions.layout === "Layout"
     ) {
       ForceGraphManager.applyFixedNodePositions(
         forceGraphInstance.current,
@@ -1393,7 +1310,7 @@ const AppContent: React.FC<{
   }, [
     forceGraphInstance,
     layoutResult,
-    appConfig.forceGraph3dOptions.layout,
+    forceGraph3dOptions.layout,
     graphvizFitToView,
   ]);
 
@@ -1406,10 +1323,7 @@ const AppContent: React.FC<{
     (nodeId: string) => {
       // setHighlightedNode(nodeId);
       // Additional logic for highlighting in different views
-      if (
-        appConfig.activeView === "ForceGraph3d" &&
-        forceGraphInstance.current
-      ) {
+      if (activeView === "ForceGraph3d" && forceGraphInstance.current) {
         forceGraphInstance.current.cameraPosition({
           x: forceGraphInstance.current.getGraphBbox().x[0],
           y: forceGraphInstance.current.getGraphBbox().y[0],
@@ -1420,7 +1334,7 @@ const AppContent: React.FC<{
         );
       }
     },
-    [appConfig.activeView, forceGraphInstance]
+    [activeView, forceGraphInstance]
   );
 
   const handleSelectResult = useCallback(
@@ -1428,7 +1342,7 @@ const AppContent: React.FC<{
       if (!forceGraphInstance.current) {
         return;
       }
-      if (appConfig.activeView === "ForceGraph3d") {
+      if (activeView === "ForceGraph3d") {
         const node = forceGraphInstance.current
           .graphData()
           .nodes.find((node) => node.id === nodeId);
@@ -1436,36 +1350,33 @@ const AppContent: React.FC<{
           console.log("flying to ", node);
           flyToNode(forceGraphInstance.current, node);
           handleHighlight(nodeId);
-          setSelectedNode(nodeId as NodeId);
+          setSelectedNodeId(nodeId as NodeId);
         }
       }
     },
-    [appConfig.activeView, handleHighlight, setSelectedNode]
+    [activeView, handleHighlight]
   );
 
   const handleMouseMove = useCallback(
     (event: React.MouseEvent) => {
-      if (
-        appConfig.activeView === "ForceGraph3d" &&
-        forceGraphInstance.current
-      ) {
+      if (activeView === "ForceGraph3d" && forceGraphInstance.current) {
         setMousePosition({ x: event.clientX, y: event.clientY });
       }
     },
-    [appConfig.activeView, setMousePosition]
+    [activeView, setMousePosition]
   );
 
   const _handleNodeMouseEnter = useCallback(
     (event: React.MouseEvent, nodeId: string) => {
-      setHoveredNode(nodeId);
+      setHoveredNodeId(nodeId as NodeId);
       setMousePosition({ x: event.clientX, y: event.clientY });
     },
-    [setHoveredNode, setMousePosition]
+    [setMousePosition]
   );
 
   const _handleNodeMouseLeave = useCallback(() => {
-    setHoveredNode(null);
-  }, [setHoveredNode]);
+    setHoveredNodeId(null);
+  }, []);
 
   const handleApplyForceGraphConfig = useCallback(
     (config: IForceGraphRenderConfig) => {
@@ -1528,7 +1439,7 @@ const AppContent: React.FC<{
       },
       {
         label: "Select Node",
-        action: () => setSelectedNode(nodeId),
+        action: () => setSelectedNodeId(nodeId),
       },
       {
         label: "Hide Node",
@@ -1584,7 +1495,7 @@ const AppContent: React.FC<{
         },
       },
     ],
-    [currentSceneGraph, setSelectedNode]
+    [currentSceneGraph, setShowPathAnalysis]
   );
 
   const getContextMenuItems = useCallback(
@@ -1613,7 +1524,13 @@ const AppContent: React.FC<{
         />
       );
     }
-  }, [showPathAnalysis, pathAnalysisConfig, currentSceneGraph, isDarkMode]);
+  }, [
+    showPathAnalysis,
+    currentSceneGraph,
+    isDarkMode,
+    pathAnalysisConfig,
+    setShowPathAnalysis,
+  ]);
 
   const [editingEntity, setEditingEntity] = useState<Entity | null>(null);
   const [jsonEditEntity, setJsonEditEntity] = useState<Entity | null>(null);
@@ -1649,7 +1566,12 @@ const AppContent: React.FC<{
       );
     }
     return null;
-  }, [handleLoadSceneGraph, handleSetSceneGraph, showLoadSceneGraphWindow]);
+  }, [
+    handleLoadSceneGraph,
+    handleSetSceneGraph,
+    setShowLoadSceneGraphWindow,
+    showLoadSceneGraphWindow,
+  ]);
 
   const maybeRenderSaveSceneGraphWindow = useMemo(() => {
     if (showSaveSceneGraphDialog) {
@@ -1661,10 +1583,14 @@ const AppContent: React.FC<{
       );
     }
     return null;
-  }, [currentSceneGraph, showSaveSceneGraphDialog]);
+  }, [
+    currentSceneGraph,
+    setShowSaveSceneGraphDialog,
+    showSaveSceneGraphDialog,
+  ]);
 
   const maybeRenderYasgui = useMemo(() => {
-    if (appConfig.activeView !== "Yasgui") {
+    if (activeView !== "Yasgui") {
       return null;
     }
 
@@ -1682,7 +1608,7 @@ const AppContent: React.FC<{
         <YasguiPanel sceneGraph={currentSceneGraph} />
       </div>
     );
-  }, [appConfig.activeView, currentSceneGraph]);
+  }, [activeView, currentSceneGraph]);
 
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
@@ -1694,7 +1620,6 @@ const AppContent: React.FC<{
         <Workspace
           menuConfig={menuConfig}
           currentSceneGraph={currentSceneGraph}
-          appConfig={appConfig}
           isDarkMode={isDarkMode}
           selectedSimulation={selectedSimulation}
           simulations={simulations}
@@ -1703,7 +1628,6 @@ const AppContent: React.FC<{
           onSearchResult={handleSearchResult}
           onHighlight={handleHighlight}
           onApplyForceGraphConfig={handleApplyForceGraphConfig}
-          setSelectedForceGraph3dLayoutMode={setSelectedForceGraph3dLayoutMode}
           applyNewLayout={applyNewLayout}
           renderLayoutModeRadio={renderLayoutModeRadio}
           showFilterWindow={() => setShowFilter(true)}
@@ -1715,9 +1639,6 @@ const AppContent: React.FC<{
           showPathAnalysis={() => setShowPathAnalysis(true)}
           renderNodeLegend={renderNodeLegend}
           renderEdgeLegend={renderEdgeLegend}
-          showToolbar={showToolbar}
-          showLeftSidebar={showLeftSidebar}
-          showRightSidebar={showRightSidebar}
           showLoadSceneGraphWindow={() => setShowLoadSceneGraphWindow(true)}
           showSaveSceneGraphDialog={() => setShowSaveSceneGraphDialog(true)} // Pass the correct handler
           showLayoutManager={(mode: "save" | "load") =>
@@ -1725,7 +1646,7 @@ const AppContent: React.FC<{
           }
           handleLoadLayout={handleLoadLayout}
           handleFitToView={handleFitToView}
-          handleShowEntityTables={handleShowEntityTables}
+          handleShowEntityTables={() => setShowEntityTables(true)}
         >
           {/* Main content */}
           <div style={{ height: "100%", position: "relative" }}>
@@ -1733,33 +1654,27 @@ const AppContent: React.FC<{
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
             {maybeRenderYasgui}
-            {appConfig.activeView === "Gallery" && (
+            {activeView === "Gallery" && (
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}
                 addRandomImageBoxes={false}
                 defaultLinksEnabled={false}
               />
             )}
-            {appConfig.activeView in simulations &&
-              getSimulation(appConfig.activeView)}
+            {activeView in simulations && getSimulation(activeView)}
           </div>
         </Workspace>
         {maybeRenderSaveSceneGraphWindow}
-        {appConfig.windows.showEntityDataCard &&
-          currentSceneGraph.getAppState().hoveredNodes.size > 0 && (
-            <EntityDataDisplayCard
-              entityData={currentSceneGraph
-                .getGraph()
-                .getNode(
-                  Array.from(
-                    currentSceneGraph.getAppState().hoveredNodes
-                  )[0] as NodeId
-                )}
-            />
-          )}
-        {selectedNode && forceGraphInstance.current && (
+        {getShowEntityDataCard() && getHoveredNodeIds().size > 0 && (
+          <EntityDataDisplayCard
+            entityData={currentSceneGraph
+              .getGraph()
+              .getNode(Array.from(getHoveredNodeIds())[0] as NodeId)}
+          />
+        )}
+        {getSelectedNodeId() && forceGraphInstance.current && (
           <NodeDisplayCard
-            nodeId={selectedNode}
+            nodeId={getSelectedNodeId()!}
             sceneGraph={currentSceneGraph}
             position={
               getNodeMousePosition(
@@ -1768,7 +1683,7 @@ const AppContent: React.FC<{
               )!
             }
             onNodeSelect={handleSelectResult}
-            onClose={() => setSelectedNode(null)}
+            onClose={() => setSelectedNodeId(null)}
           />
         )}
         {contextMenu && (
@@ -1808,12 +1723,9 @@ const AppContent: React.FC<{
             entityCache={currentSceneGraph.getEntityCache()}
             onClose={() => setShowEntityTables(false)}
             onNodeClick={(nodeId) => {
-              setSelectedNode(nodeId as NodeId);
+              setSelectedNodeId(nodeId as NodeId);
               setShowEntityTables(false);
-              if (
-                appConfig.activeView === "ForceGraph3d" &&
-                forceGraphInstance.current
-              ) {
+              if (activeView === "ForceGraph3d" && forceGraphInstance.current) {
                 const node = forceGraphInstance.current
                   .graphData()
                   .nodes.find((n) => n.id === nodeId);
@@ -1878,13 +1790,6 @@ const AppContent: React.FC<{
             isDarkMode={isDarkMode}
           />
         )}
-        {showImportSvgFromUrlDialog && (
-          <ImportSvgFromUrlDialog
-            onClose={() => setShowImportSvgFromUrlDialog(false)}
-            onLoad={handleLoadSceneGraphFromUrl}
-            isDarkMode={isDarkMode}
-          />
-        )}
         {showSceneGraphDetailView.show && (
           <SceneGraphDetailView
             sceneGraph={currentSceneGraph}
@@ -1905,9 +1810,6 @@ interface AppProps {
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
-  showToolbar?: boolean;
-  showLeftSidebar?: boolean;
-  showRightSidebar?: boolean;
 }
 
 const App: React.FC<AppProps> = ({
@@ -1915,9 +1817,6 @@ const App: React.FC<AppProps> = ({
   svgUrl,
   defaultActiveView,
   defaultActiveLayout,
-  showToolbar,
-  showLeftSidebar,
-  showRightSidebar,
 }) => {
   return (
     <MousePositionProvider>
@@ -1926,9 +1825,6 @@ const App: React.FC<AppProps> = ({
         svgUrl={svgUrl}
         defaultActiveView={defaultActiveView}
         defaultActiveLayout={defaultActiveLayout}
-        showToolbar={showToolbar}
-        showLeftSidebar={showLeftSidebar}
-        showRightSidebar={showRightSidebar}
       />
     </MousePositionProvider>
   );

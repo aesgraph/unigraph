@@ -1,10 +1,12 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { AppConfig } from "../../AppConfig";
+import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
+import { getHoveredNodeIds } from "../../store/graphInteractionStore";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
-import { createForceGraph, IForceGraphRenderConfig } from "./createForceGraph";
+import { createForceGraph } from "./createForceGraph";
 
 export interface IForceGraphEventHandlers {
   onNodeHovered?: (node: NodeId | null) => void;
@@ -138,7 +140,7 @@ export class ForceGraphInstanceController
 
     // Update nodeColor configuration to respect the current rendering mode
     this.getInstance().nodeColor((node) => {
-      if (this.sceneGraph.getAppState().hoveredNodes.has(node.id as string)) {
+      if (getHoveredNodeIds().has(node.id as NodeId)) {
         return "rgb(242, 254, 9)";
       }
       return this.sceneGraph.getNodeColorById(node.id as NodeId);

@@ -1,7 +1,7 @@
 import { AbstractEntity, EntityId } from "./abstractEntity";
 import { EntitiesContainer } from "./entitiesContainer";
 export class EntityIds<T extends EntityId> extends Set<T> {
-  constructor(ids?: Array<T>) {
+  constructor(ids?: Array<T> | EntityIds<T>) {
     super();
     ids?.forEach((id) => this.add(id));
   }

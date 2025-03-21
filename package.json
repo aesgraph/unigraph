@@ -46,6 +46,7 @@
     "graphology-layout-forceatlas2": "^0.10.1",
     "graphology-layout-noverlap": "^0.4.2",
     "lucide-react": "^0.473.0",
+    "material-react-table": "^3.2.1",
     "monaco-editor": "^0.52.2",
     "openai": "^4.80.1",
     "path-browserify": "^1.0.1",
@@ -60,7 +61,8 @@
     "source-map-support": "^0.5.21",
     "three": "^0.172.0",
     "ts-graphviz": "^2.1.5",
-    "wavesurfer.js": "^7.9.0"
+    "wavesurfer.js": "^7.9.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

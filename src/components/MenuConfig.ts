@@ -1,5 +1,4 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { AppConfig } from "../AppConfig";
 import {
   attachSimulation,
   updateNodePositions,
@@ -49,6 +48,17 @@ import {
 import { SceneGraphCategory, sceneGraphs } from "../data/graphs/sceneGraphLib";
 import { demoSongAnnotations } from "../mp3/data";
 import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
+import {
+  getActiveView,
+  getShowEntityDataCard,
+  setShowEntityDataCard,
+} from "../store/appConfigStore";
+import {
+  getLeftSidebarConfig,
+  getRightSidebarConfig,
+  setLeftSidebarConfig,
+  setRightSidebarConfig,
+} from "../store/workspaceConfigStore";
 import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 
 // const handleExportConfig = (sceneGraph: SceneGraph) => {
@@ -109,30 +119,25 @@ export interface IMenuConfigCallbacks {
     layoutType: LayoutEngineOption,
     sceneGraph: SceneGraph
   ) => void;
-  setAppConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
   setShowNodeTable: (show: boolean) => void;
   setShowEdgeTable: (show: boolean) => void;
   showLayoutManager: (mode: "save" | "load") => void;
   showFilterWindow: () => void;
   handleLoadLayout: (positions: NodePositionData) => void;
-  showImportSvgFromUrlDialog: () => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
 }
 
 export class MenuConfig {
   private callbacks: IMenuConfigCallbacks;
-  private appConfig: AppConfig;
   private sceneGraph: SceneGraph;
   private forceGraphInstance: React.RefObject<ForceGraph3DInstance | null>;
 
   constructor(
     callbacks: IMenuConfigCallbacks,
-    appConfig: AppConfig,
     sceneGraph: SceneGraph,
     forceGraphInstance: React.RefObject<ForceGraph3DInstance | null>
   ) {
     this.callbacks = callbacks;
-    this.appConfig = appConfig;
     this.sceneGraph = sceneGraph;
     this.forceGraphInstance = forceGraphInstance;
   }
@@ -162,8 +167,7 @@ export class MenuConfig {
       View: {
         submenu: {
           "Fit to View": {
-            action: () =>
-              this.callbacks.handleFitToView(this.appConfig.activeView),
+            action: () => this.callbacks.handleFitToView(getActiveView()),
           },
           Entities: {
             action: () => this.callbacks.setShowNodeTable(true),
@@ -229,16 +233,26 @@ export class MenuConfig {
               console.log(this.sceneGraph);
             },
           },
+          "Toggle sidebar expansion": {
+            action: () => {
+              const leftConfig = getLeftSidebarConfig();
+              setLeftSidebarConfig({
+                mode: leftConfig.mode === "collapsed" ? "full" : "collapsed",
+                isVisible: true,
+                minimal: false,
+              });
+              const rightConfig = getRightSidebarConfig();
+              setRightSidebarConfig({
+                mode: rightConfig.mode === "collapsed" ? "full" : "collapsed",
+                isVisible: true,
+                minimal: true,
+              });
+            },
+          },
           "Show Entity Data Card": {
-            checked: this.appConfig.windows.showEntityDataCard,
+            checked: getShowEntityDataCard(),
             onChange: () => {
-              this.callbacks.setAppConfig((prev) => ({
-                ...prev,
-                windows: {
-                  ...prev.windows,
-                  showEntityDataCard: !prev.windows.showEntityDataCard,
-                },
-              }));
+              setShowEntityDataCard(!getShowEntityDataCard());
             },
           },
           "Run animation": {

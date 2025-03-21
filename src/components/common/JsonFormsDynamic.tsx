@@ -5,7 +5,7 @@ import {
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
 import React from "react";
-import { DEFAULT_FORCE_GRAPH_RENDER_CONFIG } from "../../core/force-graph/createForceGraph";
+import { DEFAULT_FORCE_GRAPH_RENDER_CONFIG } from "../../store/forceGraphConfigStore";
 
 // Helper function to determine JSON schema type from TypeScript type
 function getJsonSchemaType(value: any): string {

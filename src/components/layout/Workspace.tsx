@@ -10,6 +10,8 @@ import {
 import { LayoutEngineOption } from "../../core/layouts/LayoutEngine";
 import { NodePositionData } from "../../core/layouts/layoutHelpers";
 import Sidebar from "../../Sidebar";
+import useAppConfigStore from "../../store/appConfigStore";
+import useWorkspaceConfigStore from "../../store/workspaceConfigStore";
 import UniAppToolbar, { IMenuConfig } from "../UniAppToolbar";
 import styles from "./Workspace.module.css";
 
@@ -18,7 +20,6 @@ const sidebarDisabledViews = ["Yasgui", "Gallery", "Simulation"];
 interface WorkspaceProps {
   menuConfig: IMenuConfig;
   currentSceneGraph: any;
-  appConfig: any;
   isDarkMode: boolean;
   selectedSimulation: string;
   simulations: any;
@@ -28,7 +29,6 @@ interface WorkspaceProps {
   onSearchResult: (nodeIds: string[]) => void;
   onHighlight: (nodeId: string) => void;
   onApplyForceGraphConfig: (config: any) => void;
-  setSelectedForceGraph3dLayoutMode: (mode: any) => void;
   applyNewLayout: (layout: LayoutEngineOption) => void;
   renderLayoutModeRadio: () => React.ReactNode;
   showFilterWindow: () => void;
@@ -36,9 +36,6 @@ interface WorkspaceProps {
   clearFilters: () => void;
   renderNodeLegend: React.ReactNode;
   renderEdgeLegend: React.ReactNode;
-  showToolbar?: boolean;
-  showLeftSidebar?: boolean;
-  showRightSidebar?: boolean;
   showPathAnalysis: () => void;
   showLoadSceneGraphWindow: () => void;
   showSaveSceneGraphDialog: () => void; // Add the prop
@@ -51,7 +48,6 @@ interface WorkspaceProps {
 const Workspace: React.FC<WorkspaceProps> = ({
   menuConfig,
   currentSceneGraph,
-  appConfig,
   isDarkMode,
   selectedSimulation,
   simulations,
@@ -61,7 +57,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   onSearchResult,
   onHighlight,
   onApplyForceGraphConfig,
-  setSelectedForceGraph3dLayoutMode,
   applyNewLayout,
   renderLayoutModeRadio,
   showFilterWindow,
@@ -69,9 +64,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   clearFilters,
   renderNodeLegend,
   renderEdgeLegend,
-  showToolbar = true,
-  showLeftSidebar = true,
-  showRightSidebar = true,
   showPathAnalysis,
   showLoadSceneGraphWindow,
   showSaveSceneGraphDialog,
@@ -80,6 +72,11 @@ const Workspace: React.FC<WorkspaceProps> = ({
   handleFitToView,
   handleShowEntityTables,
 }) => {
+  const { showToolbar, leftSidebarConfig, rightSidebarConfig } =
+    useWorkspaceConfigStore();
+
+  const { activeView, activeLayout, forceGraph3dOptions } = useAppConfigStore();
+
   const renderUniappToolbar = useMemo(() => {
     if (!showToolbar) {
       return null;
@@ -89,7 +86,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
         <UniAppToolbar
           config={menuConfig}
           sceneGraph={currentSceneGraph}
-          activeView={appConfig.activeView}
+          activeView={activeView}
           onViewChange={onViewChange}
           simulationList={Object.keys(simulations)}
           selectedSimulation={selectedSimulation}
@@ -101,7 +98,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
       </div>
     );
   }, [
-    appConfig.activeView,
+    activeView,
     currentSceneGraph,
     isDarkMode,
     menuConfig,
@@ -115,12 +112,13 @@ const Workspace: React.FC<WorkspaceProps> = ({
   ]);
 
   const renderLeftSideBar = useMemo(() => {
-    if (!showLeftSidebar) {
+    if (!leftSidebarConfig.isVisible) {
       return null;
     }
-    if (sidebarDisabledViews.includes(appConfig.activeView)) {
+    if (sidebarDisabledViews.includes(activeView)) {
       return null;
     }
+    console.log("mode became", leftSidebarConfig.mode);
     return (
       <Sidebar
         position="left"
@@ -131,10 +129,10 @@ const Workspace: React.FC<WorkspaceProps> = ({
         menuItems={createDefaultLeftMenus({
           onLayoutChange: (layout: LayoutEngineOption) =>
             applyNewLayout(layout),
-          activeLayout: appConfig.activeLayout,
+          activeLayout: activeLayout,
           physicsMode:
-            appConfig.forceGraph3dOptions.layout === "Physics" &&
-            appConfig.activeView === "ForceGraph3d",
+            forceGraph3dOptions.layout === "Physics" &&
+            activeView === "ForceGraph3d",
           isDarkMode,
           onApplyForceGraphConfig: onApplyForceGraphConfig,
           initialForceGraphConfig:
@@ -149,16 +147,19 @@ const Workspace: React.FC<WorkspaceProps> = ({
           showLayoutManager: (mode: "save" | "load") => showLayoutManager(mode),
           handleLoadLayout: handleLoadLayout,
         })}
-        defaultIsOpen={true}
         isDarkMode={isDarkMode}
         footer={leftFooterContent}
+        minimal={leftSidebarConfig.minimal}
+        mode={leftSidebarConfig.mode}
       />
     );
   }, [
-    showLeftSidebar,
-    appConfig.activeView,
-    appConfig.activeLayout,
-    appConfig.forceGraph3dOptions.layout,
+    leftSidebarConfig.isVisible,
+    leftSidebarConfig.minimal,
+    leftSidebarConfig.mode,
+    activeView,
+    activeLayout,
+    forceGraph3dOptions.layout,
     isDarkMode,
     onApplyForceGraphConfig,
     currentSceneGraph,
@@ -175,8 +176,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
 
   const renderRightSideBar = useMemo(() => {
     if (
-      !showRightSidebar ||
-      sidebarDisabledViews.includes(appConfig.activeView)
+      !rightSidebarConfig.isVisible ||
+      sidebarDisabledViews.includes(activeView)
     ) {
       return null;
     }
@@ -197,22 +198,20 @@ const Workspace: React.FC<WorkspaceProps> = ({
               {renderEdgeLegend}
             </>
           ),
-          appConfig.activeView === "ForceGraph3d",
-          appConfig.forceGraph3dOptions.layout,
-          setSelectedForceGraph3dLayoutMode,
+          activeView === "ForceGraph3d",
           isDarkMode
         )}
-        defaultIsOpen={true}
         isDarkMode={isDarkMode}
-        minimal={true}
+        mode={rightSidebarConfig.mode}
+        minimal={rightSidebarConfig.minimal}
         footer={(isOpen) =>
           rightFooterContent(isOpen, {
-            onFitToView: () => handleFitToView(appConfig.activeView),
+            onFitToView: () => handleFitToView(activeView),
             onViewEntities: () => handleShowEntityTables(),
             details: {
               sceneGraphName:
                 currentSceneGraph.getMetadata().name ?? "Untitled",
-              activeLayout: appConfig.activeLayout,
+              activeLayout: activeLayout,
               activeFilters: null,
             },
           })
@@ -220,11 +219,11 @@ const Workspace: React.FC<WorkspaceProps> = ({
       />
     );
   }, [
-    showRightSidebar,
-    appConfig.activeView,
-    appConfig.forceGraph3dOptions.layout,
-    appConfig.activeLayout,
-    setSelectedForceGraph3dLayoutMode,
+    rightSidebarConfig.isVisible,
+    rightSidebarConfig.mode,
+    rightSidebarConfig.minimal,
+    activeView,
+    activeLayout,
     isDarkMode,
     renderLayoutModeRadio,
     renderNodeLegend,

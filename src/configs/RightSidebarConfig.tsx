@@ -1,8 +1,12 @@
 import { List, Settings2 } from "lucide-react";
 import React from "react";
-import { ForceGraph3dLayoutMode } from "../AppConfig";
 import ForceGraphLayoutRadio from "../components/force-graph/ForceGraphLayoutRadio";
 import styles from "../Sidebar.module.css";
+import {
+  getForceGraph3dLayoutMode,
+  setForceGraph3dLayoutMode,
+} from "../store/appConfigStore";
+import { setShowSceneGraphDetailView } from "../store/dialogStore";
 
 export interface SubMenuItem {
   label: string;
@@ -22,8 +26,6 @@ export interface MenuItem {
 export const createDefaultRightMenus = (
   renderLegends: () => React.ReactNode,
   isForceGraph3dActive: boolean,
-  forceGraphLayout: string,
-  onForceGraphLayoutChange: (layout: string) => void,
   isDarkMode: boolean
 ) => [
   {
@@ -44,8 +46,8 @@ export const createDefaultRightMenus = (
       <div className={styles.optionsPanelContainer}>
         {isForceGraph3dActive && (
           <ForceGraphLayoutRadio
-            layout={forceGraphLayout as ForceGraph3dLayoutMode}
-            onLayoutChange={onForceGraphLayoutChange}
+            layout={getForceGraph3dLayoutMode()}
+            onLayoutChange={setForceGraph3dLayoutMode}
             isDarkMode={isDarkMode}
           />
         )}
@@ -71,7 +73,11 @@ export const rightFooterContent = (
   return (
     <div className={`${styles.footerButtonGroup} ${styles.footerButtonColumn}`}>
       {actions.details && (
-        <div className={styles.footerDetailsCard}>
+        <div
+          className={styles.footerDetailsCard}
+          onClick={setShowSceneGraphDetailView}
+          style={{ cursor: "pointer" }} // Add pointer cursor for better UX
+        >
           <div className={styles.footerDetailsRow}>
             <span className={styles.footerDetailsLabel}>SceneGraph:</span>
             <span className={styles.footerDetailsValue}>

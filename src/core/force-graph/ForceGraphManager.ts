@@ -1,12 +1,12 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { Sprite, SpriteMaterial, SRGBColorSpace, TextureLoader } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { ImageBoxData } from "../types/ImageBoxData";
 import { reconstructImageSource } from "../utils/imageProcessing";
-import { IForceGraphRenderConfig } from "./createForceGraph";
 
 export class ForceGraphManager {
   /** Assign fx, fy, fz from a layout result */

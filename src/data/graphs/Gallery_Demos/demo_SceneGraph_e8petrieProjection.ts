@@ -25,6 +25,7 @@ export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
           layout: "Layout",
         },
         activeLayout: PresetLayoutType.NodePositions,
+        legendMode: "type",
       },
     });
   } catch (error) {

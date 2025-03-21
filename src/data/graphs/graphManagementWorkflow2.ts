@@ -169,6 +169,7 @@ export const graphManagementWorkflowDiagram2 = () => {
         layout: "Physics",
       },
       activeLayout: CustomLayoutType.Random,
+      legendMode: "type",
     },
   });
 

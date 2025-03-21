@@ -1,5 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { IForceGraphRenderConfig } from "../createForceGraph";
+import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
 
 interface TransitionOptions {
   duration?: number;
