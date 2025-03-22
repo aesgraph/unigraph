@@ -9,7 +9,10 @@ import {
 } from "../../configs/RightSidebarConfig";
 import { LayoutEngineOption } from "../../core/layouts/LayoutEngine";
 import { NodePositionData } from "../../core/layouts/layoutHelpers";
+import { DisplayManager } from "../../core/model/DisplayManager";
 import Sidebar from "../../Sidebar";
+import useActiveFilterStore from "../../store/activeFilterStore";
+import { ResetNodeAndEdgeLegends } from "../../store/activeLegendConfigStore";
 import useAppConfigStore from "../../store/appConfigStore";
 import useWorkspaceConfigStore from "../../store/workspaceConfigStore";
 import UniAppToolbar, { IMenuConfig } from "../UniAppToolbar";
@@ -33,7 +36,6 @@ interface WorkspaceProps {
   renderLayoutModeRadio: () => React.ReactNode;
   showFilterWindow: () => void;
   showFilterManager: () => void;
-  clearFilters: () => void;
   renderNodeLegend: React.ReactNode;
   renderEdgeLegend: React.ReactNode;
   showPathAnalysis: () => void;
@@ -61,7 +63,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   renderLayoutModeRadio,
   showFilterWindow,
   showFilterManager,
-  clearFilters,
   renderNodeLegend,
   renderEdgeLegend,
   showPathAnalysis,
@@ -76,6 +77,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
     useWorkspaceConfigStore();
 
   const { activeView, activeLayout, forceGraph3dOptions } = useAppConfigStore();
+
+  const { activeFilter, setActiveFilter } = useActiveFilterStore();
 
   const renderUniappToolbar = useMemo(() => {
     if (!showToolbar) {
@@ -110,6 +113,13 @@ const Workspace: React.FC<WorkspaceProps> = ({
     showToolbar,
     simulations,
   ]);
+
+  const clearFilters = React.useCallback(() => {
+    DisplayManager.setAllVisible(currentSceneGraph.getGraph());
+    console.log("calling");
+    ResetNodeAndEdgeLegends(currentSceneGraph);
+    setActiveFilter(null);
+  }, [currentSceneGraph, setActiveFilter]);
 
   const renderLeftSideBar = useMemo(() => {
     if (!leftSidebarConfig.isVisible) {
@@ -212,7 +222,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
               sceneGraphName:
                 currentSceneGraph.getMetadata().name ?? "Untitled",
               activeLayout: activeLayout,
-              activeFilters: null,
+              activeFilter: activeFilter?.name, // Pass activeFilters name here
             },
           })
         }
@@ -223,12 +233,13 @@ const Workspace: React.FC<WorkspaceProps> = ({
     rightSidebarConfig.mode,
     rightSidebarConfig.minimal,
     activeView,
-    activeLayout,
     isDarkMode,
     renderLayoutModeRadio,
     renderNodeLegend,
     renderEdgeLegend,
     currentSceneGraph,
+    activeLayout,
+    activeFilter?.name,
     handleFitToView,
     handleShowEntityTables,
   ]);

@@ -101,7 +101,7 @@ const NodeDisplayCard: React.FC<NodeDisplayCardProps> = ({
   onNodeSelect,
   onClose, // Add this prop
 }) => {
-  const renderingManager = sceneGraph.getRenderingManager();
+  const renderingManager = new RenderingManager(sceneGraph.getDisplayConfig());
   const node = sceneGraph.getGraph().getNode(nodeId);
   const edgesTo = sceneGraph.getGraph().getEdgesTo(nodeId);
   const edgesFrom = sceneGraph.getGraph().getEdgesFrom(nodeId);

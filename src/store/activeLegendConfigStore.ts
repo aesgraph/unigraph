@@ -1,11 +1,17 @@
 import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { FilterRuleDefinition } from "../components/filters/FilterRuleDefinition";
 import {
   DisplayConfig,
   RenderingManager,
+  RenderingManager__DisplayMode,
 } from "../controllers/RenderingManager";
+import { DisplayManager } from "../core/model/DisplayManager";
 import { EdgeId } from "../core/model/Edge";
 import { IEntity } from "../core/model/entity/abstractEntity";
 import { NodeId } from "../core/model/Node";
+import { SceneGraph } from "../core/model/SceneGraph";
+import { GetCurrentDisplayConfigOf } from "../core/model/utils";
 import { getRandomColor } from "../utils/colorUtils";
 import { getLegendMode } from "./appConfigStore";
 
@@ -28,114 +34,83 @@ export type ActiveLegendConfigState = {
   getEdgeKeyColor: (key: EdgeId) => string;
 };
 
-const useActiveLegendConfigStore = create<ActiveLegendConfigState>((set) => ({
-  nodeLegendConfig: {},
-  edgeLegendConfig: {},
+const useActiveLegendConfigStore = create(
+  immer<ActiveLegendConfigState>((set, get) => ({
+    nodeLegendConfig: {},
+    edgeLegendConfig: {},
+    nodeLegendUpdateTime: Date.now(),
+    edgeLegendUpdateTime: Date.now(),
 
-  nodeLegendUpdateTime: Date.now(),
-  edgeLegendUpdateTime: Date.now(),
-  _setNodeLegendUpdateTime: () => set({ nodeLegendUpdateTime: Date.now() }),
-  _setEdgeLegendUpdateTime: () => set({ edgeLegendUpdateTime: Date.now() }),
-
-  setNodeLegendConfig: (config: DisplayConfig) =>
-    set({ nodeLegendConfig: config, nodeLegendUpdateTime: Date.now() }),
-  setEdgeLegendConfig: (config: DisplayConfig) =>
-    set({ edgeLegendConfig: config, edgeLegendUpdateTime: Date.now() }),
-  setNodeKeyVisibility: (key, isVisible) =>
-    set((state) => {
-      if (state.nodeLegendConfig[key]?.isVisible === isVisible) {
-        return state; // No change needed
-      }
-      return {
-        nodeLegendConfig: {
-          ...state.nodeLegendConfig,
-          [key]: {
+    setNodeLegendConfig: (config: DisplayConfig) =>
+      set((state) => {
+        state.nodeLegendConfig = config;
+        state.nodeLegendUpdateTime = Date.now();
+      }),
+    setEdgeLegendConfig: (config: DisplayConfig) =>
+      set((state) => {
+        state.edgeLegendConfig = config;
+        state.edgeLegendUpdateTime = Date.now();
+      }),
+    setNodeKeyVisibility: (key, isVisible) =>
+      set((state) => {
+        if (state.nodeLegendConfig[key]?.isVisible !== isVisible) {
+          state.nodeLegendConfig[key] = {
             ...state.nodeLegendConfig[key],
             isVisible,
-          },
-        },
-        nodeLegendUpdateTime: Date.now(),
-      };
-    }),
-  getNodeKeyVisibility: (key: NodeId): boolean => {
-    return (
-      useActiveLegendConfigStore.getState().nodeLegendConfig[key]?.isVisible ??
-      true
-    );
-  },
-  getEdgeKeyVisibility: (key: EdgeId): boolean => {
-    return (
-      useActiveLegendConfigStore.getState().edgeLegendConfig[key]?.isVisible ??
-      true
-    );
-  },
-  getEdgeLegendConfig: (): DisplayConfig => {
-    return useActiveLegendConfigStore.getState().edgeLegendConfig;
-  },
-  getNodeLegendConfig: (): DisplayConfig => {
-    return useActiveLegendConfigStore.getState().nodeLegendConfig;
-  },
-  setEdgeKeyVisibility: (key, isVisible) =>
-    set((state) => {
-      if (state.edgeLegendConfig[key]?.isVisible === isVisible) {
-        return state; // No change needed
-      }
-      return {
-        edgeLegendConfig: {
-          ...state.edgeLegendConfig,
-          [key]: {
+          };
+          state.nodeLegendUpdateTime = Date.now();
+        }
+      }),
+    getNodeKeyVisibility: (key: NodeId): boolean => {
+      return get().nodeLegendConfig[key]?.isVisible ?? true;
+    },
+    setEdgeKeyVisibility: (key, isVisible) =>
+      set((state) => {
+        if (state.edgeLegendConfig[key]?.isVisible !== isVisible) {
+          state.edgeLegendConfig[key] = {
             ...state.edgeLegendConfig[key],
             isVisible,
-          },
-        },
-        edgeLegendUpdateTime: Date.now(),
-      };
-    }),
-  setNodeKeyColor: (key, color) =>
-    set((state) => {
-      if (state.nodeLegendConfig[key]?.color === color) {
-        return state; // No change needed
-      }
-      return {
-        nodeLegendConfig: {
-          ...state.nodeLegendConfig,
-          [key]: {
+          };
+          state.edgeLegendUpdateTime = Date.now();
+        }
+      }),
+    getEdgeKeyVisibility: (key: EdgeId): boolean => {
+      return get().edgeLegendConfig[key]?.isVisible ?? true;
+    },
+    setNodeKeyColor: (key, color) =>
+      set((state) => {
+        if (state.nodeLegendConfig[key]?.color !== color) {
+          state.nodeLegendConfig[key] = {
             ...state.nodeLegendConfig[key],
             color,
-          },
-        },
-        nodeLegendUpdateTime: Date.now(),
-      };
-    }),
-  setEdgeKeyColor: (key, color) =>
-    set((state) => {
-      if (state.edgeLegendConfig[key]?.color === color) {
-        return state; // No change needed
-      }
-      return {
-        edgeLegendConfig: {
-          ...state.edgeLegendConfig,
-          [key]: {
+          };
+          state.nodeLegendUpdateTime = Date.now();
+        }
+      }),
+    setEdgeKeyColor: (key, color) =>
+      set((state) => {
+        if (state.edgeLegendConfig[key]?.color !== color) {
+          state.edgeLegendConfig[key] = {
             ...state.edgeLegendConfig[key],
             color,
-          },
-        },
-        edgeLegendUpdateTime: Date.now(),
-      };
-    }),
-  getNodeKeyColor: (key: NodeId): string => {
-    return (
-      useActiveLegendConfigStore.getState().nodeLegendConfig[key]?.color ??
-      getRandomColor()
-    );
-  },
-  getEdgeKeyColor: (key: EdgeId): string => {
-    return (
-      useActiveLegendConfigStore.getState().edgeLegendConfig[key]?.color ??
-      getRandomColor()
-    );
-  },
-}));
+          };
+          state.edgeLegendUpdateTime = Date.now();
+        }
+      }),
+    getNodeKeyColor: (key: NodeId): string => {
+      return get().nodeLegendConfig[key]?.color ?? getRandomColor();
+    },
+    getEdgeKeyColor: (key: EdgeId): string => {
+      return get().edgeLegendConfig[key]?.color ?? getRandomColor();
+    },
+    getNodeLegendConfig: (): DisplayConfig => {
+      return get().nodeLegendConfig;
+    },
+    getEdgeLegendConfig: (): DisplayConfig => {
+      return get().edgeLegendConfig;
+    },
+  }))
+);
 
 export const setNodeLegendConfig = (config: DisplayConfig) => {
   useActiveLegendConfigStore.getState().setNodeLegendConfig(config);
@@ -185,6 +160,14 @@ export const getEdgeKeyColor = (key: EdgeId) => {
   return useActiveLegendConfigStore.getState().getEdgeKeyColor(key);
 };
 
+export const getActiveNodeLegendConfig = () => {
+  return useActiveLegendConfigStore.getState().nodeLegendConfig;
+};
+
+export const getActiveEdgeLegendConfig = () => {
+  return useActiveLegendConfigStore.getState().edgeLegendConfig;
+};
+
 export const getNodeIsVisible = (node: IEntity): boolean =>
   RenderingManager.getVisibility(node, getNodeLegendConfig(), getLegendMode());
 
@@ -196,5 +179,40 @@ export const getEdgeIsVisible = (edge: IEntity): boolean =>
 
 export const getEdgeColor = (edge: IEntity): string =>
   RenderingManager.getColor(edge, getEdgeLegendConfig(), getLegendMode());
+
+export const SetNodeAndEdgeLegendsForOnlyVisibleEntities = (
+  sceneGraph: SceneGraph,
+  mode: RenderingManager__DisplayMode,
+  filterRules?: FilterRuleDefinition[]
+) => {
+  console.log("enter");
+  const nodeLegend = DisplayManager.getDisplayConfigForOnlyVisibleEntities(
+    sceneGraph,
+    "Node",
+    mode,
+    filterRules
+  );
+  setNodeLegendConfig(nodeLegend);
+  const edgeLegend = DisplayManager.getDisplayConfigForOnlyVisibleEntities(
+    sceneGraph,
+    "Edge",
+    mode,
+    filterRules
+  );
+  setEdgeLegendConfig(edgeLegend);
+};
+
+export const ResetNodeAndEdgeLegends = (sceneGraph: SceneGraph) => {
+  const nodeLegend = GetCurrentDisplayConfigOf(
+    sceneGraph.getCommittedDisplayConfig(),
+    "Node"
+  );
+  setNodeLegendConfig(nodeLegend);
+  const edgeLegend = GetCurrentDisplayConfigOf(
+    sceneGraph.getCommittedDisplayConfig(),
+    "Edge"
+  );
+  setEdgeLegendConfig(edgeLegend);
+};
 
 export default useActiveLegendConfigStore;

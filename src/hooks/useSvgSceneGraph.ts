@@ -92,8 +92,9 @@ export function useSvgSceneGraph(svgUrl: string): {
   return { sceneGraph, loading, error };
 }
 
-export const urlSceneGraph = await fetchSvgSceneGraph(
-  "https://upload.wikimedia.org/wikipedia/commons/b/b3/1_42_t01_A5.svg"
-);
+// export const urlSceneGraph = await fetchSvgSceneGraph(
+//   "https://upload.wikimedia.org/wikipedia/commons/b/b3/1_42_t01_A5.svg"
+// );
 
-console.log("WOAH", urlSceneGraph);
+// console.log("WOAH", urlSceneGraph);
+// do not commit uncommented version

@@ -52,9 +52,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
   const [showNoResults, setShowNoResults] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
-  const [renderingManager, setRenderingManager] = useState<RenderingManager>(
-    sceneGraph.getRenderingManager()
-  );
+  const [renderingManager, setRenderingManager] = useState<RenderingManager>();
   const [, setSelectedValue] = useState<string | undefined>();
 
   useEffect(() => {
@@ -63,7 +61,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
   }, []);
 
   useEffect(() => {
-    setRenderingManager(sceneGraph.getRenderingManager());
+    setRenderingManager(new RenderingManager(sceneGraph.getDisplayConfig()));
   }, [sceneGraph]);
 
   const performSearch = useCallback(
@@ -277,7 +275,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
                           onHighlight?.(result.id);
                           setIsVisible(false);
                         }}
-                        renderingManager={renderingManager}
+                        renderingManager={renderingManager!}
                       />
                     ))}
                 </>
@@ -301,7 +299,7 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
                             onHighlight?.(result.id);
                             setIsVisible(false);
                           }}
-                          renderingManager={renderingManager}
+                          renderingManager={renderingManager!}
                         />
                       ))}
                   </>

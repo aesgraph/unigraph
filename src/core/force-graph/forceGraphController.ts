@@ -1,6 +1,7 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { AppConfig } from "../../AppConfig";
+import { getNodeColor } from "../../store/activeLegendConfigStore";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { getHoveredNodeIds } from "../../store/graphInteractionStore";
 import { NodePositionData } from "../layouts/layoutHelpers";
@@ -143,7 +144,7 @@ export class ForceGraphInstanceController
       if (getHoveredNodeIds().has(node.id as NodeId)) {
         return "rgb(242, 254, 9)";
       }
-      return this.sceneGraph.getNodeColorById(node.id as NodeId);
+      return getNodeColor(this.sceneGraph.getNode(node.id as NodeId));
     });
 
     this.getInstance().nodeThreeObject((node) => {
@@ -152,7 +153,9 @@ export class ForceGraphInstanceController
         nodeEl.textContent = `${node.id}` as string;
         nodeEl.className = "node-label";
       }
-      nodeEl.style.color = this.sceneGraph.getNodeColorById(node.id as NodeId);
+      nodeEl.style.color = getNodeColor(
+        this.sceneGraph.getNode(node.id as NodeId)
+      );
       return new CSS2DObject(nodeEl);
     });
     this.getInstance().nodeThreeObjectExtend(true);
@@ -167,7 +170,7 @@ export class ForceGraphInstanceController
       if (nodeIds.includes(node.id as NodeId)) {
         return "rgb(242, 254, 9)";
       }
-      return this.sceneGraph.getNodeColorById(node.id as NodeId);
+      return getNodeColor(this.sceneGraph.getNode(node.id as NodeId));
     });
   }
 }

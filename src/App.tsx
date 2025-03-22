@@ -22,8 +22,8 @@ import EntityJsonEditorDialog from "./components/common/EntityJsonEditorDialog";
 import EntityTabDialog from "./components/common/EntityTabDialog";
 import { GraphEntityType } from "./components/common/GraphSearch";
 import LayoutManager from "./components/common/LayoutManager";
-import LayoutModeRadio from "./components/common/LayoutModeRadio";
 import Legend from "./components/common/Legend";
+import LegendModeRadio from "./components/common/LegendModeRadio";
 import NodeDisplayCard from "./components/common/NodeDisplayCard";
 import FilterManager from "./components/filters/FilterManager";
 import {
@@ -101,10 +101,12 @@ import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
 import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
+import useActiveFilterStore from "./store/activeFilterStore";
 import useActiveLegendConfigStore, {
   setEdgeKeyColor,
   setEdgeKeyVisibility,
   setEdgeLegendConfig,
+  SetNodeAndEdgeLegendsForOnlyVisibleEntities,
   setNodeKeyColor,
   setNodeKeyVisibility,
   setNodeLegendConfig,
@@ -218,6 +220,8 @@ const AppContent: React.FC<{
     edgeLegendUpdateTime,
   } = useActiveLegendConfigStore();
 
+  const { activeFilter, setActiveFilter } = useActiveFilterStore();
+
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
@@ -246,11 +250,6 @@ const AppContent: React.FC<{
 
   const [showFilter, setShowFilter] = useState(false);
   const [showFilterManager, setShowFilterManager] = useState(false);
-
-  const [activeFilterPreset, setActiveFilterPreset] = useState<{
-    preset: string | null;
-    filterRules: FilterRuleDefinition[];
-  } | null>(null);
 
   const _getAppConfigWithUrlOverrides = useCallback(
     (config: AppConfig) => {
@@ -388,14 +387,19 @@ const AppContent: React.FC<{
   );
 
   const handleSetActiveFilterPreset = useCallback(
-    (preset: string | null, filterRules: FilterRuleDefinition[]) => {
+    (preset: string | undefined, filterRules: FilterRuleDefinition[]) => {
       DisplayManager.applyVisibilityFromFilterRulesToGraph(
         currentSceneGraph.getGraph(),
         filterRules
       );
-      setActiveFilterPreset({ preset, filterRules });
+      SetNodeAndEdgeLegendsForOnlyVisibleEntities(
+        currentSceneGraph,
+        legendMode,
+        filterRules
+      );
+      setActiveFilter({ name: preset, filterRules });
     },
-    [currentSceneGraph]
+    [currentSceneGraph, legendMode, setActiveFilter]
   );
 
   const handleSetVisibleNodes = useCallback(
@@ -599,12 +603,12 @@ const AppContent: React.FC<{
         currentSceneGraph.getGraph().getEdges().getTypes()
       );
       SetCurrentDisplayConfigOf(
-        currentSceneGraph,
+        currentSceneGraph.getDisplayConfig(),
         "Node",
         displayConfig.nodeConfig
       );
       SetCurrentDisplayConfigOf(
-        currentSceneGraph,
+        currentSceneGraph.getDisplayConfig(),
         "Edge",
         displayConfig.edgeConfig
       );
@@ -633,8 +637,12 @@ const AppContent: React.FC<{
           setAppConfig(graph.getData().defaultAppConfig!);
         }
         setLegendMode(graph.getDisplayConfig().mode);
-        setNodeLegendConfig(GetCurrentDisplayConfigOf(graph, "Node"));
-        setEdgeLegendConfig(GetCurrentDisplayConfigOf(graph, "Edge"));
+        setNodeLegendConfig(
+          GetCurrentDisplayConfigOf(graph.getDisplayConfig(), "Node")
+        );
+        setEdgeLegendConfig(
+          GetCurrentDisplayConfigOf(graph.getDisplayConfig(), "Edge")
+        );
         setGraphStatistics(getGraphStatistics(graph.getGraph()));
 
         graph.bindListeners({
@@ -742,8 +750,12 @@ const AppContent: React.FC<{
     (mode: RenderingManager__DisplayMode) => {
       currentSceneGraph.getDisplayConfig().mode = mode;
       setLegendMode(mode);
-      setNodeLegendConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
-      setEdgeLegendConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
+      setNodeLegendConfig(
+        GetCurrentDisplayConfigOf(currentSceneGraph.getDisplayConfig(), "Node")
+      );
+      setEdgeLegendConfig(
+        GetCurrentDisplayConfigOf(currentSceneGraph.getDisplayConfig(), "Edge")
+      );
     },
     [currentSceneGraph, setLegendMode]
   );
@@ -754,7 +766,11 @@ const AppContent: React.FC<{
       Object.keys(updates).forEach((key) => {
         newConfig[key].isVisible = updates[key];
       });
-      SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
+      SetCurrentDisplayConfigOf(
+        currentSceneGraph.getDisplayConfig(),
+        "Node",
+        newConfig
+      );
       setNodeLegendConfig(newConfig);
     },
     [currentSceneGraph, nodeLegendConfig]
@@ -766,7 +782,11 @@ const AppContent: React.FC<{
       Object.keys(updates).forEach((key) => {
         newConfig[key].isVisible = updates[key];
       });
-      SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
+      SetCurrentDisplayConfigOf(
+        currentSceneGraph.getDisplayConfig(),
+        "Edge",
+        newConfig
+      );
       setEdgeLegendConfig(newConfig);
     },
     [currentSceneGraph, edgeLegendConfig]
@@ -884,10 +904,16 @@ const AppContent: React.FC<{
         const config = await loadRenderingConfigFromFile(file);
         currentSceneGraph.setDisplayConfig(config);
         setNodeLegendConfig(
-          GetCurrentDisplayConfigOf(currentSceneGraph, "Node")
+          GetCurrentDisplayConfigOf(
+            currentSceneGraph.getDisplayConfig(),
+            "Node"
+          )
         );
         setEdgeLegendConfig(
-          GetCurrentDisplayConfigOf(currentSceneGraph, "Edge")
+          GetCurrentDisplayConfigOf(
+            currentSceneGraph.getDisplayConfig(),
+            "Edge"
+          )
         );
       }
     },
@@ -974,13 +1000,31 @@ const AppContent: React.FC<{
   }, [currentSceneGraph]);
 
   const renderLayoutModeRadio = useCallback(() => {
-    return (
-      <LayoutModeRadio
-        layoutMode={legendMode}
-        onLayoutModeChange={handleLegendModeChange}
-      />
-    );
-  }, [legendMode, handleLegendModeChange]);
+    return <LegendModeRadio onLegendModeChange={handleLegendModeChange} />;
+  }, [handleLegendModeChange]);
+
+  useEffect(() => {
+    const errorHandler = (e: any) => {
+      if (
+        e.message.includes(
+          "ResizeObserver loop completed with undelivered notifications"
+        ) ||
+        e.message.includes("ResizeObserver loop limit exceeded")
+      ) {
+        const resizeObserverErr = document.getElementById(
+          "webpack-dev-server-client-overlay"
+        );
+        if (resizeObserverErr) {
+          resizeObserverErr.style.display = "none";
+        }
+      }
+    };
+    window.addEventListener("error", errorHandler);
+
+    return () => {
+      window.removeEventListener("error", errorHandler);
+    };
+  }, []);
 
   const maybeRenderReactFlow = useMemo(() => {
     if (activeView !== "ReactFlow") {
@@ -1118,7 +1162,7 @@ const AppContent: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeView,
-    activeFilterPreset,
+    activeFilter,
     activeLayout,
     currentSceneGraph,
     layoutResult,
@@ -1211,7 +1255,7 @@ const AppContent: React.FC<{
     edgeLegendUpdateTime,
     activeView,
     forceGraph3dOptions.layout,
-    activeFilterPreset,
+    activeFilter,
     currentSceneGraph,
   ]);
 
@@ -1505,10 +1549,15 @@ const AppContent: React.FC<{
         currentSceneGraph.getGraph(),
         preset.rules
       );
+      SetNodeAndEdgeLegendsForOnlyVisibleEntities(
+        currentSceneGraph,
+        legendMode,
+        preset.rules
+      );
       setShowFilterManager(false);
-      setActiveFilterPreset({ preset: null, filterRules: preset.rules });
+      setActiveFilter({ name: preset.name, filterRules: preset.rules });
     },
-    [currentSceneGraph]
+    [currentSceneGraph, legendMode, setActiveFilter]
   );
 
   const maybeRenderLoadSceneGraphWindow = useMemo(() => {
@@ -1588,10 +1637,6 @@ const AppContent: React.FC<{
           renderLayoutModeRadio={renderLayoutModeRadio}
           showFilterWindow={() => setShowFilter(true)}
           showFilterManager={() => setShowFilterManager(true)}
-          clearFilters={() => {
-            DisplayManager.setAllVisible(currentSceneGraph.getGraph());
-            setActiveFilterPreset(null);
-          }}
           showPathAnalysis={() => setShowPathAnalysis(true)}
           renderNodeLegend={renderNodeLegend}
           renderEdgeLegend={renderEdgeLegend}

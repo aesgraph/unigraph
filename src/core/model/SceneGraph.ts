@@ -2,6 +2,7 @@ import { ObjectOf } from "../../App";
 import { AppConfig } from "../../AppConfig";
 import { FilterPreset } from "../../components/filters/FilterRuleDefinition";
 import {
+  CLONE_RENDERING_CONFIG,
   GET_DEFAULT_RENDERING_CONFIG,
   RenderingConfig,
   RenderingManager,
@@ -35,9 +36,10 @@ export interface ISceneGraphMetadata {
 }
 
 export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
+  const displayConfig = GET_DEFAULT_RENDERING_CONFIG(new Graph());
   return {
     graph: new Graph(),
-    displayConfig: GET_DEFAULT_RENDERING_CONFIG(new Graph()),
+    displayConfig: displayConfig,
     forceGraphDisplayConfig: {
       nodeTextLabels: false,
       nodeSize: 3,
@@ -49,6 +51,7 @@ export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
     },
     metadata: {},
     entityCache: new EntityCache(),
+    committed_DisplayConfig: CLONE_RENDERING_CONFIG(displayConfig),
   };
 };
 
@@ -63,6 +66,7 @@ export type SceneGraphData = {
   metadata: ISceneGraphMetadata;
   entityCache: EntityCache; // for storing additional non-graph entities
   defaultAppConfig?: AppConfig;
+  committed_DisplayConfig: RenderingConfig;
 };
 
 export class SceneGraph {
@@ -76,12 +80,23 @@ export class SceneGraph {
         this.data.displayConfig = data.displayConfig;
       } else {
         this.data.displayConfig = GET_DEFAULT_RENDERING_CONFIG(this.data.graph);
+        this.data.committed_DisplayConfig = CLONE_RENDERING_CONFIG(
+          this.data.displayConfig
+        );
       }
     }
     validateSceneGraph(this);
     this.getNodes().validate();
     this.getEdges().validate();
     this.listeners = listeners;
+  }
+
+  getCommittedDisplayConfig() {
+    return this.data.committed_DisplayConfig;
+  }
+
+  commitDisplayConfig() {
+    this.data.committed_DisplayConfig = this.data.displayConfig;
   }
 
   bindListeners(listeners: ISceneGraphListeners) {
@@ -161,10 +176,6 @@ export class SceneGraph {
     this.listeners?.onPositionsChanged?.(positions);
   }
 
-  getRenderingManager() {
-    return new RenderingManager(this.data.displayConfig);
-  }
-
   getNode(nodeId: NodeId) {
     return this.data.graph.getNode(nodeId);
   }
@@ -175,16 +186,6 @@ export class SceneGraph {
 
   getNodePosition(nodeId: NodeId): Position | undefined {
     return this.data.displayConfig?.nodePositions?.[nodeId];
-  }
-
-  // Todo: precache this, make it afap.
-  getNodeColorById(nodeId: NodeId) {
-    return this.getRenderingManager().getNodeColor(this.getNode(nodeId));
-  }
-
-  // Todo: precache this, make it afap.
-  getEdgeColorById(edgeId: EdgeId) {
-    return this.getRenderingManager().getEdgeColor(this.getEdgeById(edgeId));
   }
 
   // Todo: precache this, make it afap.

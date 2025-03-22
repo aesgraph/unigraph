@@ -1,0 +1,35 @@
+.legend-mode-radio {
+  margin-top: 0.625rem;
+  padding: 0.1rem;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.radio-label {
+  cursor: pointer;
+  margin-right: 1.25rem;
+  font-size: 1rem;
+}
+
+.legend-mode-radio.light .radio-label {
+  color: #333;
+}
+
+.legend-mode-radio.dark .radio-label {
+  color: #fff;
+}
+
+.radio-input {
+  margin-right: 0.5rem;
+  cursor: pointer;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.legend-mode-radio.light .radio-input {
+  accent-color: #666;
+}
+
+.legend-mode-radio.dark .radio-input {
+  accent-color: #4a4a4a;
+}

@@ -1,5 +1,5 @@
 import { SceneGraph } from "../../core/model/SceneGraph";
-import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
+// import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
 import { blobMeshGraph } from "./blobMesh";
 import { createE8Petrie2DGraph } from "./e8Petrie2d";
 import { demo_SceneGraph_ArtCollection } from "./Gallery_Demos/demo_SceneGraph_ArtCollection";
@@ -35,7 +35,6 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
     name: "Base",
     graphs: {
       Empty: new SceneGraph({}),
-      URL: urlSceneGraph.sceneGraph,
     },
   },
   "Demo Graphs": {
@@ -69,12 +68,12 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
     graphs: {
       big: randomBigGraph,
       biggest: randomBiggestGraph,
-      AcademicsKG: demo_sceneGraph_academicsKG,
     },
   },
   "Thinker Graphs": {
     name: "Thinker Graphs",
     graphs: {
+      AcademicsKG: demo_sceneGraph_academicsKG,
       thinkers1: thinkers1,
       thinkers2: thinkers2,
     },

@@ -1,5 +1,6 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 
+import { RenderingManager } from "../../../controllers/RenderingManager";
 import { hexToRgba } from "../../../utils/colorUtils";
 import { getEdgesToDegree } from "../../analysis/degree";
 import { NodeId } from "../../model/Node";
@@ -12,7 +13,7 @@ export const focusOnDegrees = (
   degrees: number
 ) => {
   const result = getEdgesToDegree(nodeId, degrees, sceneGraph);
-  const renderingManager = sceneGraph.getRenderingManager();
+  const renderingManager = new RenderingManager(sceneGraph.getDisplayConfig());
   const nodeDegrees: Map<NodeId, number> = new Map();
 
   forceGraph3dInstance.linkColor((link) => {

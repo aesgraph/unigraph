@@ -82,8 +82,8 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
           multiSelectionKeyCode="Shift"
           nodes={nodes}
           edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
+          onNodesChange={(changes) => setTimeout(() => onNodesChange(changes))} // Need to set timeout here to avoid resizeobserver errors
+          onEdgesChange={(changes) => setTimeout(() => onEdgesChange(changes))} // Need to set timeout here to avoid resizeobserver errors
           onNodeDragStop={onNodeDragStop}
           onInit={(instance: ReactFlowInstance) => {
             reactFlowInstance.current = instance;

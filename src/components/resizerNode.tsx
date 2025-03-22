@@ -23,7 +23,6 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
       style={{
         width: dimensions.width,
         height: dimensions.height,
-        position: "relative",
       }}
     >
       <NodeResizer

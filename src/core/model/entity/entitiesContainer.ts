@@ -89,13 +89,17 @@ export class EntitiesContainer<
     );
   }
 
-  public getAll(ids: EntityIds<T>): EntitiesContainer<T, V> {
+  public getAll(
+    ids: EntityIds<T>,
+    strict: boolean = true
+  ): EntitiesContainer<T, V> {
     const container = new EntitiesContainer<T, V>();
     ids.toArray().forEach((id) => {
-      if (!this.has(id)) {
+      if (this.has(id)) {
+        container.addEntity(this.get(id));
+      } else if (strict) {
         throw new Error("getAll called for nonpresent entity id: " + id);
       }
-      container.addEntity(this.get(id));
     });
     return container;
   }
