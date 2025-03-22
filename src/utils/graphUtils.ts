@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Graph } from "../core/model/Graph";
 import { NodeId } from "../core/model/Node";
 import { SceneGraph } from "../core/model/SceneGraph";
+import { Edge } from "./../core/model/Edge";
 import { getRandomColor } from "./colorUtils";
 
 interface RandomNodeOptions {
@@ -176,6 +177,9 @@ export function generateRandomEdges(
     }
 
     // Create the edge
+    const edgeId = Edge.id(source, target);
+    if (graph.getEdges().has(edgeId)) continue; // Skip if edge already exists
+
     const edge = graph.createEdge(source, target, {
       type,
       label,

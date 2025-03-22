@@ -1,5 +1,6 @@
 import { SceneGraph } from "../../core/model/SceneGraph";
 // import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
+import { demo_sceneGraph_academicsKG } from "./academicsKGraph";
 import { blobMeshGraph } from "./blobMesh";
 import { createE8Petrie2DGraph } from "./e8Petrie2d";
 import { demo_SceneGraph_ArtCollection } from "./Gallery_Demos/demo_SceneGraph_ArtCollection";
@@ -14,7 +15,6 @@ import { demo_SceneGraph_StackedGalleryTransparent } from "./Gallery_Demos/demo_
 import { demo_SceneGraph_Thinking } from "./Gallery_Demos/demo_SceneGraph_Thinking";
 import { graphManagementWorkflowDiagram } from "./graphManagementWorkflow";
 import { graphManagementWorkflowDiagram2 } from "./graphManagementWorkflow2";
-import { demo_sceneGraph_academicsKG } from "./mergeGraph";
 import { randomBigGraph } from "./randomBig";
 import { randomBiggestGraph } from "./randomBiggest";
 import { sphereMeshGraph } from "./sphereMesh";

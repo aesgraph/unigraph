@@ -14,6 +14,10 @@ const config: Config = {
     "!**/__tests__/**",
     "!**/public/**",
   ],
+  moduleNameMapper: {
+    "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.ts",
+    "\\.(css|scss)$": "identity-obj-proxy",
+  },
   reporters: [
     "default",
     [
