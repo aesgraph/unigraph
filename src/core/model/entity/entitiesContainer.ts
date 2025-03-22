@@ -219,8 +219,6 @@ export class EntitiesContainer<
       throw new Error(
         `EntitiesContainer has duplicate entries: ${duplicates.join(", ")}`
       );
-    } else {
-      console.log("Validated container.");
     }
   }
 

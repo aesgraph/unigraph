@@ -45,7 +45,7 @@ import {
   extractPositionsFromNodes,
   extractPositionsFromUserData,
 } from "../data/graphs/blobMesh";
-import { SceneGraphCategory, sceneGraphs } from "../data/graphs/sceneGraphLib";
+import { sceneGraphs } from "../data/graphs/sceneGraphLib";
 import { demoSongAnnotations } from "../mp3/data";
 import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
 import {
@@ -59,6 +59,7 @@ import {
   setLeftSidebarConfig,
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
+import { SceneGraphCategory } from "./../data/graphs/sceneGraphLib";
 import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 
 // const handleExportConfig = (sceneGraph: SceneGraph) => {
@@ -155,7 +156,7 @@ export class MenuConfig {
   private buildGraphMenu(): IMenuConfig {
     const graphMenu: IMenuConfig = {};
     Object.entries(sceneGraphs).forEach(([_categoryKey, category]) => {
-      graphMenu[category.name] = {
+      graphMenu[category.label] = {
         submenu: this.createGraphSubmenu(category),
       };
     });
@@ -225,6 +226,7 @@ export class MenuConfig {
           },
         },
       },
+      Graphs: { submenu: this.buildGraphMenu() },
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {

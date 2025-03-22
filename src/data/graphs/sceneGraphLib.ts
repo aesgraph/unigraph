@@ -26,79 +26,78 @@ import { unigraphGraph } from "./unigraph";
 import { unigraphGraph2 } from "./unigraph2";
 
 export interface SceneGraphCategory {
-  name: string;
+  label: string;
   graphs: { [key: string]: SceneGraph | (() => SceneGraph) };
 }
 
 export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
   Base: {
-    name: "Base",
+    label: "Base",
     graphs: {
-      Empty: new SceneGraph({}),
+      Empty: () => new SceneGraph({}),
     },
   },
   "Demo Graphs": {
-    name: "Demo Graphs",
+    label: "Demo Graphs",
     graphs: {
-      thoughtDiagram: thoughtDiagram,
-      unigraph: unigraphGraph,
-      unigraph2: unigraphGraph2,
-      graphManagementWorkflowDiagram: graphManagementWorkflowDiagram(),
-      graphManagementWorkflowDiagram2: graphManagementWorkflowDiagram2(),
+      thoughtDiagram: () => thoughtDiagram(),
+      unigraph: () => unigraphGraph(),
+      unigraph2: () => unigraphGraph2(),
+      graphManagementWorkflowDiagram: () => graphManagementWorkflowDiagram(),
+      graphManagementWorkflowDiagram2: () => graphManagementWorkflowDiagram2(),
     },
   },
   "Math Graphs": {
-    name: "Math Graphs",
+    label: "Math Graphs",
     graphs: {
-      "E8 Petrie 4.21": demo_SceneGraph_e8petrieProjection,
-      "E8 4.21 T2 B6": demo_SceneGraph_e8petrieProjection_421t2b6,
-      "E8 Copilot Attempt": createE8Petrie2DGraph,
+      "E8 Petrie 4.21": () => demo_SceneGraph_e8petrieProjection,
+      "E8 4.21 T2 B6": () => demo_SceneGraph_e8petrieProjection_421t2b6,
+      "E8 Copilot Attempt": () => createE8Petrie2DGraph(),
     },
   },
   "Mesh Graphs": {
-    name: "Mesh Graphs",
+    label: "Mesh Graphs",
     graphs: {
-      cylindrical: cylindricalMeshGraph,
-      spherical: sphereMeshGraph,
-      blobMesh: blobMeshGraph,
+      cylindrical: () => cylindricalMeshGraph(),
+      spherical: () => sphereMeshGraph(),
+      blobMesh: () => blobMeshGraph(),
     },
   },
   "Test Graphs": {
-    name: "Test Graphs",
+    label: "Test Graphs",
     graphs: {
-      big: randomBigGraph,
-      biggest: randomBiggestGraph,
+      big: () => randomBigGraph(),
+      biggest: () => randomBiggestGraph(),
     },
   },
   "Thinker Graphs": {
-    name: "Thinker Graphs",
+    label: "Thinker Graphs",
     graphs: {
-      AcademicsKG: demo_sceneGraph_academicsKG,
-      thinkers1: thinkers1,
-      thinkers2: thinkers2,
+      AcademicsKG: () => demo_sceneGraph_academicsKG(),
+      thinkers1: () => thinkers1(),
+      thinkers2: () => thinkers2(),
     },
   },
   "Image Graphs": {
-    name: "Image Graphs",
+    label: "Image Graphs",
     graphs: {
-      "Solvay Conference": demo_SceneGraph_SolvayConference,
-      "Single Image": demo_SceneGraph_ImageGallery,
-      "Stacked Gallery": demo_SceneGraph_StackedImageGallery,
-      "Transparent Stacked Gallery": demo_SceneGraph_StackedGalleryTransparent,
-      Thinking: demo_SceneGraph_Thinking,
-      Art: demo_SceneGraph_ArtCollection,
+      "Solvay Conference": () => demo_SceneGraph_SolvayConference(),
+      "Single Image": () => demo_SceneGraph_ImageGallery(),
+      "Stacked Gallery": () => demo_SceneGraph_StackedImageGallery(),
+      "Transparent Stacked Gallery": () =>
+        demo_SceneGraph_StackedGalleryTransparent(),
+      Thinking: () => demo_SceneGraph_Thinking(),
+      Art: () => demo_SceneGraph_ArtCollection(),
     },
   },
 };
 
 // Helper function to get all graphs flattened
-export const getAllGraphs = (): {
-  [key: string]: SceneGraph | (() => SceneGraph);
-} => {
-  const allGraphs: { [key: string]: SceneGraph | (() => SceneGraph) } = {};
-  Object.values(sceneGraphs).forEach((category) => {
-    Object.keys(category.graphs).forEach((key) => {
-      allGraphs[key] = category.graphs[key];
+export const getAllDemoSceneGraphKeys = (): string[] => {
+  const allGraphs: string[] = [];
+  Object.entries(sceneGraphs).forEach(([_, graphs]) => {
+    Object.keys(graphs.graphs).forEach((key) => {
+      allGraphs.push(key);
     });
   });
   return allGraphs;
