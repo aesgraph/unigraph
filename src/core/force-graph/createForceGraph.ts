@@ -97,7 +97,7 @@ export const createForceGraph = (
   options: IForceGraphRenderConfig = DEFAULT_FORCE_GRAPH_RENDER_CONFIG,
   layout: ForceGraph3dLayoutMode = "Physics"
 ): ForceGraph3DInstance => {
-  console.log("creating here", options, layout, positions);
+  // console.log("creating here", options, layout, positions);
   const data = exportGraphDataForReactFlow(sceneGraph);
   // console.log("data is ", data);
 

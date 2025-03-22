@@ -26,8 +26,9 @@ export const ConvertSceneGraphToGraphviz = (
     if (isGraphvizLayoutType) {
       g.set("layout", layoutMode);
     } else if (nodePositions) {
-      console.log("SETTING TO NEATO");
       g.set("layout", "neato");
+    } else {
+      g.set("layout", "dot");
     }
 
     for (const node of graph.getNodes()) {

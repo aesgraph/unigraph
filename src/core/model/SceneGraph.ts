@@ -88,14 +88,6 @@ export class SceneGraph {
     this.getNodes().validate();
     this.getEdges().validate();
     this.listeners = listeners;
-
-    const isEmpty =
-      this.getNodes().isEmpty() &&
-      this.getEdges().isEmpty() &&
-      data?.metadata?.name === undefined;
-    if (!isEmpty) {
-      console.log("Constructed SceneGraph", data?.metadata);
-    }
   }
 
   getCommittedDisplayConfig() {
