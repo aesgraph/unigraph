@@ -73,7 +73,6 @@ export class SceneGraph {
   private data: SceneGraphData;
   private listeners: ISceneGraphListeners | undefined;
   constructor(data?: ISceneGraphArgs, listeners?: ISceneGraphListeners) {
-    console.log("Constructing SceneGraph", data?.metadata);
     this.data = { ...DEFAULT_SCENE_GRAPH_DATA(), ...data };
     if (data) {
       if (data.displayConfig) {
@@ -89,6 +88,14 @@ export class SceneGraph {
     this.getNodes().validate();
     this.getEdges().validate();
     this.listeners = listeners;
+
+    const isEmpty =
+      this.getNodes().isEmpty() &&
+      this.getEdges().isEmpty() &&
+      data?.metadata?.name === undefined;
+    if (!isEmpty) {
+      console.log("Constructed SceneGraph", data?.metadata);
+    }
   }
 
   getCommittedDisplayConfig() {

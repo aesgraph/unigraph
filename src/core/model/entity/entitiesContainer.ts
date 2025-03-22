@@ -104,6 +104,10 @@ export class EntitiesContainer<
     return container;
   }
 
+  public isEmpty(): boolean {
+    return this.entities.length === 0;
+  }
+
   public removeEntities(ids: EntityIds<T>, strict: boolean = false) {
     ids.forEach((id) => this.removeEntity(id, strict));
   }

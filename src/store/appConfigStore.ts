@@ -35,7 +35,7 @@ export type AppState = AppConfig &
 const DEFAULTS = DEFAULT_APP_CONFIG();
 
 const useAppConfigStore = create<AppState>((set) => ({
-  currentSceneGraph: new SceneGraph({ metadata: { name: "Empty" } }),
+  currentSceneGraph: new SceneGraph({ metadata: { name: "Unnamed" } }),
   setCurrentSceneGraph: (currentSceneGraph: SceneGraph) =>
     set({ currentSceneGraph }),
   getCurrentSceneGraph: (): SceneGraph =>
@@ -161,10 +161,6 @@ export const setIsDarkMode = (isDarkMode: boolean) => {
 };
 
 export const getShowEntityDataCard = () => {
-  console.log(
-    "getting as ",
-    useAppConfigStore.getState().windows.showEntityDataCard
-  );
   return useAppConfigStore.getState().windows.showEntityDataCard;
 };
 

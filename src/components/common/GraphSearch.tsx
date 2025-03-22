@@ -158,7 +158,6 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
   }, [searchTerm, debouncedSearch]);
 
   useEffect(() => {
-    console.log("effect");
     const handleClickOutside = (event: MouseEvent) => {
       if (
         containerRef.current &&

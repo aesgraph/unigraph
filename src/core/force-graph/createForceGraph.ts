@@ -99,7 +99,7 @@ export const createForceGraph = (
 ): ForceGraph3DInstance => {
   console.log("creating here", options, layout, positions);
   const data = exportGraphDataForReactFlow(sceneGraph);
-  console.log("data is ", data);
+  // console.log("data is ", data);
 
   const graph = new ForceGraph3D(dom, {
     extraRenderers: [new CSS2DRenderer()],
