@@ -686,10 +686,13 @@ const AppContent: React.FC<{
         return;
       }
 
-      const graph =
-        typeof graphGenerator === "function"
-          ? graphGenerator()
-          : graphGenerator;
+      let graph: SceneGraph;
+      if (typeof graphGenerator === "function") {
+        graph = await graphGenerator();
+      } else {
+        graph = graphGenerator;
+      }
+
       handleLoadSceneGraph(graph, clearUrlOfQueryParams);
 
       // Update the URL query parameter
@@ -869,9 +872,8 @@ const AppContent: React.FC<{
 
   const GraphMenuActions = useCallback(() => {
     const actions: { [key: string]: { action: () => void } } = {};
-    // Use getAllGraphs() to get flattened list of all graphs
     const allGraphs = getAllDemoSceneGraphKeys();
-    for (const key of Object.keys(allGraphs)) {
+    for (const key of allGraphs) {
       actions[key] = { action: () => handleSetSceneGraph(key) };
     }
     return actions;

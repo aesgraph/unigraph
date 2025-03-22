@@ -34,7 +34,7 @@ export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
 };
 
 // Create a synchronous function that returns either the cached result or a placeholder
-export const demo_SceneGraph_e8petrieProjection =
+export const demo_SceneGraph_e8petrieProjection = async () =>
   await createE8PetrieSceneGraph();
 
 /**
@@ -63,5 +63,5 @@ export const createE8_4_21_t2_b8_PetrieSceneGraph =
   };
 
 // Create a synchronous function that returns either the cached result or a placeholder
-export const demo_SceneGraph_e8petrieProjection_421t2b6 =
+export const demo_SceneGraph_e8petrieProjection_421t2b6 = async () =>
   await createE8_4_21_t2_b8_PetrieSceneGraph();

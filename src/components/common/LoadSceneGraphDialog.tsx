@@ -16,7 +16,12 @@ import styles from "./LoadSceneGraphDialog.module.css";
 
 interface TreeNodeProps {
   category: string;
-  graphs: { [key: string]: SceneGraph | (() => SceneGraph) };
+  graphs: {
+    [key: string]:
+      | SceneGraph
+      | (() => SceneGraph)
+      | (() => Promise<SceneGraph>);
+  };
   onSelect: (key: string) => void;
   isExpanded: boolean;
   toggleExpand: (category: string) => void;

@@ -27,7 +27,12 @@ import { unigraphGraph2 } from "./unigraph2";
 
 export interface SceneGraphCategory {
   label: string;
-  graphs: { [key: string]: SceneGraph | (() => SceneGraph) };
+  graphs: {
+    [key: string]:
+      | SceneGraph
+      | (() => SceneGraph)
+      | (() => Promise<SceneGraph>);
+  };
 }
 
 export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
@@ -40,54 +45,54 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
   "Demo Graphs": {
     label: "Demo Graphs",
     graphs: {
-      thoughtDiagram: () => thoughtDiagram(),
-      unigraph: () => unigraphGraph(),
-      unigraph2: () => unigraphGraph2(),
-      graphManagementWorkflowDiagram: () => graphManagementWorkflowDiagram(),
-      graphManagementWorkflowDiagram2: () => graphManagementWorkflowDiagram2(),
+      thoughtDiagram: thoughtDiagram,
+      unigraph: unigraphGraph,
+      unigraph2: unigraphGraph2,
+      graphManagementWorkflowDiagram: graphManagementWorkflowDiagram,
+      graphManagementWorkflowDiagram2: graphManagementWorkflowDiagram2,
     },
   },
   "Math Graphs": {
     label: "Math Graphs",
     graphs: {
-      "E8 Petrie 4.21": () => demo_SceneGraph_e8petrieProjection,
-      "E8 4.21 T2 B6": () => demo_SceneGraph_e8petrieProjection_421t2b6,
-      "E8 Copilot Attempt": () => createE8Petrie2DGraph(),
+      "E8 Petrie 4.21": demo_SceneGraph_e8petrieProjection,
+      "E8 4.21 T2 B6": demo_SceneGraph_e8petrieProjection_421t2b6,
+      "E8 Copilot Attempt": createE8Petrie2DGraph,
     },
   },
   "Mesh Graphs": {
     label: "Mesh Graphs",
     graphs: {
-      cylindrical: () => cylindricalMeshGraph(),
-      spherical: () => sphereMeshGraph(),
-      blobMesh: () => blobMeshGraph(),
+      cylindrical: cylindricalMeshGraph,
+      spherical: sphereMeshGraph,
+      blobMesh: blobMeshGraph,
     },
   },
   "Test Graphs": {
     label: "Test Graphs",
     graphs: {
-      big: () => randomBigGraph(),
-      biggest: () => randomBiggestGraph(),
+      big: randomBigGraph,
+      biggest: randomBiggestGraph,
     },
   },
   "Thinker Graphs": {
     label: "Thinker Graphs",
     graphs: {
-      AcademicsKG: () => demo_sceneGraph_academicsKG(),
-      thinkers1: () => thinkers1(),
-      thinkers2: () => thinkers2(),
+      AcademicsKG: demo_sceneGraph_academicsKG,
+      thinkers1: thinkers1,
+      thinkers2: thinkers2,
     },
   },
   "Image Graphs": {
     label: "Image Graphs",
     graphs: {
-      "Solvay Conference": () => demo_SceneGraph_SolvayConference(),
-      "Single Image": () => demo_SceneGraph_ImageGallery(),
-      "Stacked Gallery": () => demo_SceneGraph_StackedImageGallery(),
+      "Solvay Conference": demo_SceneGraph_SolvayConference,
+      "Single Image": demo_SceneGraph_ImageGallery,
+      "Stacked Gallery": demo_SceneGraph_StackedImageGallery,
       "Transparent Stacked Gallery": () =>
         demo_SceneGraph_StackedGalleryTransparent(),
-      Thinking: () => demo_SceneGraph_Thinking(),
-      Art: () => demo_SceneGraph_ArtCollection(),
+      Thinking: demo_SceneGraph_Thinking,
+      Art: demo_SceneGraph_ArtCollection,
     },
   },
 };
@@ -105,7 +110,7 @@ export const getAllDemoSceneGraphKeys = (): string[] => {
 
 export const getSceneGraph = (
   name: string
-): SceneGraph | (() => SceneGraph) => {
+): SceneGraph | (() => SceneGraph) | (() => Promise<SceneGraph>) => {
   for (const [_, graphs] of Object.entries(sceneGraphs)) {
     for (const key of Object.keys(graphs.graphs)) {
       if (key === name) {
