@@ -8,10 +8,11 @@ const config: Config = {
   collectCoverage: true,
   coverageReporters: ["json", "lcov", "text", "clover"],
   collectCoverageFrom: [
-    "src/**/*.{js,jsx,ts,tsx}",
+    "src/**/*.{js,jsx,ts}",
     "!**/node_modules/**",
     "!**/dist/**",
     "!**/__tests__/**",
+    "!**/public/**",
   ],
   reporters: [
     "default",
