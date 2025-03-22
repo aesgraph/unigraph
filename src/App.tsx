@@ -24,7 +24,6 @@ import { GraphEntityType } from "./components/common/GraphSearch";
 import LayoutManager from "./components/common/LayoutManager";
 import Legend from "./components/common/Legend";
 import LegendModeRadio from "./components/common/LegendModeRadio";
-import NodeDisplayCard from "./components/common/NodeDisplayCard";
 import FilterManager from "./components/filters/FilterManager";
 import {
   FilterPreset,
@@ -47,6 +46,7 @@ import SolarSystem from "./components/simulations/solarSystemSimulation";
 import YasguiPanel from "./components/YasguiPanel";
 
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
+import NodeDisplayCard from "./components/common/NodeDisplayCard";
 import SaveSceneGraphDialog from "./components/common/SaveSceneGraphDialog";
 import { AppContextProvider } from "./context/AppContext";
 import {
@@ -94,10 +94,11 @@ import {
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
 import { IMAGE_ANNOTATION_ENTITIES } from "./core/types/ImageAnnotation";
 import { flyToNode } from "./core/webgl/webglHelpers";
+import {
+  getAllDemoSceneGraphKeys,
+  getSceneGraph,
+} from "./data/DemoSceneGraphs";
 import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
-import { demo_SceneGraph_SolvayConference } from "./data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
-import { demo_SceneGraph_StackedImageGallery } from "./data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
-import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
 import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
@@ -135,15 +136,6 @@ const getSimulations = (
   sceneGraph: SceneGraph
 ): ObjectOf<React.JSX.Element> => {
   return {
-    ImageGalleryV3: (
-      <ImageGalleryV3
-        sceneGraph={demo_SceneGraph_SolvayConference()}
-        // Pass initial scene graph but allow changing via dropdown
-      />
-    ),
-    demo3: (
-      <ImageGalleryV3 sceneGraph={demo_SceneGraph_StackedImageGallery()} />
-    ),
     "ImageBox Creator": <ImageBoxCreator sceneGraph={sceneGraph} />,
     ImageGalleryV2: <ImageGalleryV2 />,
     // ParticleStickFigure: <ParticleStickFigure />,
@@ -210,6 +202,8 @@ const AppContent: React.FC<{
     activeSceneGraph,
     legendMode,
     setLegendMode,
+    currentSceneGraph,
+    setCurrentSceneGraph,
   } = useAppConfigStore();
 
   const { showToolbar } = useWorkspaceConfigStore();
@@ -280,8 +274,12 @@ const AppContent: React.FC<{
   const [selectedSimulation, setSelectedSimulation] =
     useState<string>("Lumina");
 
-  const [currentSceneGraph, setCurrentSceneGraph] =
-    useState<SceneGraph>(initialSceneGraph);
+  // const [currentSceneGraph, setCurrentSceneGraph] =
+  //   useState<SceneGraph>(initialSceneGraph);
+
+  useEffect(() => {
+    setCurrentSceneGraph(initialSceneGraph);
+  }, [setCurrentSceneGraph]);
 
   const isDarkMode = useMemo(() => {
     return activeView === "ForceGraph3d" || activeView in simulations;
@@ -673,28 +671,26 @@ const AppContent: React.FC<{
       clearUrlOfQueryParams,
       handleDisplayConfigChanged,
       safeComputeLayout,
+      setCurrentSceneGraph,
       setLegendMode,
     ]
   );
 
   const handleSetSceneGraph = useCallback(
     async (key: string, clearUrlOfQueryParams: boolean = true) => {
-      // Find graph in any category
-      let graph: SceneGraph | undefined;
-      for (const category of Object.values(sceneGraphs)) {
-        if (key in category.graphs) {
-          if (typeof category.graphs[key] === "function") {
-            graph = category.graphs[key]();
-          } else {
-            graph = category.graphs[key];
-          }
-          break;
-        }
-      }
-      if (!graph) {
+      const graphGenerator = getSceneGraph(key);
+
+      if (!graphGenerator) {
         console.error(`Graph ${key} not found`);
-        console.log(`Available graphs are : ${Object.keys(getAllGraphs())}`);
+        console.log(`Available graphs are: ${getAllDemoSceneGraphKeys()}`);
         return;
+      }
+
+      let graph: SceneGraph;
+      if (typeof graphGenerator === "function") {
+        graph = await graphGenerator();
+      } else {
+        graph = graphGenerator;
       }
 
       handleLoadSceneGraph(graph, clearUrlOfQueryParams);
@@ -876,9 +872,8 @@ const AppContent: React.FC<{
 
   const GraphMenuActions = useCallback(() => {
     const actions: { [key: string]: { action: () => void } } = {};
-    // Use getAllGraphs() to get flattened list of all graphs
-    const allGraphs = getAllGraphs();
-    for (const key of Object.keys(allGraphs)) {
+    const allGraphs = getAllDemoSceneGraphKeys();
+    for (const key of allGraphs) {
       actions[key] = { action: () => handleSetSceneGraph(key) };
     }
     return actions;

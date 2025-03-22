@@ -8,11 +8,16 @@ const config: Config = {
   collectCoverage: true,
   coverageReporters: ["json", "lcov", "text", "clover"],
   collectCoverageFrom: [
-    "src/**/*.{js,jsx,ts,tsx}",
+    "src/**/*.{js,jsx,ts}",
     "!**/node_modules/**",
     "!**/dist/**",
     "!**/__tests__/**",
+    "!**/public/**",
   ],
+  moduleNameMapper: {
+    "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.ts",
+    "\\.(css|scss)$": "identity-obj-proxy",
+  },
   reporters: [
     "default",
     [

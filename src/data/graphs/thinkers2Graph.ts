@@ -32,7 +32,6 @@ export const thinkers2 = () => {
       throw new Error("Invalid number of arguments");
     }
     for (let i = 0; i < args.length - 2; i += 2) {
-      console.log("creating edge", args[i], args[i + 1], args[i + 2]);
       _createEdge(args[i], args[i + 1], args[i + 2]);
     }
   };
@@ -1900,7 +1899,6 @@ export const thinkers2 = () => {
   // Social Sciences
   createEdge("Malinowski", "developed", "functionalist anthropology");
   createEdge("Radcliffe-Brown", "developed", "structural functionalism");
-  console.log("HIT");
   createEdge(
     "Saussure",
     "wrote",
@@ -1908,9 +1906,7 @@ export const thinkers2 = () => {
     "influenced",
     "Structuralism"
   );
-  console.log("HIT2");
   createEdge("Boas", "developed", "cultural relativism");
-  console.log("HIT2.5");
   createEdge("Weber", "developed", "social theory");
 
   // Contemporary Philosophy
@@ -1929,7 +1925,6 @@ export const thinkers2 = () => {
     "influenced",
     "universal grammar"
   );
-  console.log("HIT3");
   createEdge("Lewis", "developed", "modal realism");
   createEdge("Deleuze", "invented", "difference philosophy");
 
@@ -1943,7 +1938,6 @@ export const thinkers2 = () => {
     "influenced",
     "quantum gravity"
   );
-  console.log("HIT4");
   createEdge("Mandelbrot", "invented", "fractal geometry");
   createEdge("Bernard", "developed", "experimental medicine");
 
@@ -1959,7 +1953,6 @@ export const thinkers2 = () => {
   );
   createEdge("Schleiermacher", "developed", "modern hermeneutics");
   createEdge("Bergson", "developed", "Vitalism");
-  console.log("HIT5");
   // More filler
   // Byzantine and Islamic Scholarship
   createEdge("John of Damascus", "influenced", "Byzantine Scholars");
@@ -1999,7 +1992,6 @@ export const thinkers2 = () => {
     "Acoustics"
   );
   createEdge("Gassendi", "adopted", "Atomism");
-  console.log("HIT6");
 
   // Mathematics Development
   createEdge("Hamilton", "invented", "quaternions");
@@ -2929,15 +2921,12 @@ export const thinkers2 = () => {
   const nodeNames = new Set();
   graph.getNodes().forEach((node) => nodeNames.add(node.getId()));
 
-  console.log(Array.from(nodeNames).sort().join("\n"));
-
   const majorWorks = new Set();
   for (const person of people) {
     for (const work of person.majorWorks) {
       majorWorks.add(`${person.name}: ${work.name}, ${work.year}`);
     }
   }
-  console.log(Array.from(majorWorks).sort().join("\n"));
 
   const islands = graph.getIslands();
 

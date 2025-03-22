@@ -4,9 +4,11 @@ import { thinkers1 } from "./thinkers1Graph";
 import { thinkers2 } from "./thinkers2Graph";
 
 export const demo_sceneGraph_academicsKG = () => {
+  console.log("Building AcademicsKG graph...");
   const tmp = new SceneGraph();
   mergeIntoSceneGraph(tmp, thinkers1());
   mergeIntoSceneGraph(tmp, thinkers2());
+  console.log("AcademicsKG graph built.");
 
   return new SceneGraph({
     graph: tmp.getGraph(),

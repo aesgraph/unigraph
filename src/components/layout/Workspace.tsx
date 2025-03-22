@@ -128,7 +128,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
     if (sidebarDisabledViews.includes(activeView)) {
       return null;
     }
-    console.log("mode became", leftSidebarConfig.mode);
     return (
       <Sidebar
         position="left"

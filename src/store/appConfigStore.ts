@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { RenderingManager__DisplayMode } from "../controllers/RenderingManager";
 import { LayoutEngineOption } from "../core/layouts/LayoutEngine";
+import { SceneGraph } from "../core/model/SceneGraph";
 import { ActiveView, AppConfig, DEFAULT_APP_CONFIG } from "./../AppConfig";
 
 export type AppConfigActions = {
@@ -25,11 +26,21 @@ export type AppState = AppConfig &
   AppConfigActions & {
     isDarkMode: boolean;
     selectedSimulation: string;
+
+    currentSceneGraph: SceneGraph;
+    setCurrentSceneGraph: (sceneGraph: SceneGraph) => void;
+    getCurrentSceneGraph: () => SceneGraph;
   };
 
 const DEFAULTS = DEFAULT_APP_CONFIG();
 
 const useAppConfigStore = create<AppState>((set) => ({
+  currentSceneGraph: new SceneGraph({ metadata: { name: "Unnamed" } }),
+  setCurrentSceneGraph: (currentSceneGraph: SceneGraph) =>
+    set({ currentSceneGraph }),
+  getCurrentSceneGraph: (): SceneGraph =>
+    useAppConfigStore.getState().currentSceneGraph,
+
   activeView: DEFAULTS.activeView,
   activeSceneGraph: DEFAULTS.activeSceneGraph,
   windows: {
@@ -150,10 +161,6 @@ export const setIsDarkMode = (isDarkMode: boolean) => {
 };
 
 export const getShowEntityDataCard = () => {
-  console.log(
-    "getting as ",
-    useAppConfigStore.getState().windows.showEntityDataCard
-  );
   return useAppConfigStore.getState().windows.showEntityDataCard;
 };
 

@@ -41,11 +41,11 @@ import {
   GetRandomNodeFromSceneGraph,
 } from "../core/model/utils";
 import { processImageNodesInSceneGraph } from "../core/processors/imageBoxProcessor";
+import { DEMO_SCENE_GRAPHS, SceneGraphCategory } from "../data/DemoSceneGraphs";
 import {
   extractPositionsFromNodes,
   extractPositionsFromUserData,
 } from "../data/graphs/blobMesh";
-import { SceneGraphCategory, sceneGraphs } from "../data/graphs/sceneGraphLib";
 import { demoSongAnnotations } from "../mp3/data";
 import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
 import {
@@ -154,8 +154,8 @@ export class MenuConfig {
 
   private buildGraphMenu(): IMenuConfig {
     const graphMenu: IMenuConfig = {};
-    Object.entries(sceneGraphs).forEach(([_categoryKey, category]) => {
-      graphMenu[category.name] = {
+    Object.entries(DEMO_SCENE_GRAPHS).forEach(([_categoryKey, category]) => {
+      graphMenu[category.label] = {
         submenu: this.createGraphSubmenu(category),
       };
     });
@@ -225,6 +225,7 @@ export class MenuConfig {
           },
         },
       },
+      Graphs: { submenu: this.buildGraphMenu() },
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {

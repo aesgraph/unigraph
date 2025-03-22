@@ -45,7 +45,6 @@ export const GET_DEFAULT_RENDERING_CONFIG = (
   starterConfig?: RenderingConfig
 ): RenderingConfig => {
   const metadata = getGraphMetadata(graph);
-  console.log("metadata is ", metadata);
   const palette = "gentle";
 
   const nodeTypeConfig: DisplayConfig = starterConfig?.nodeConfig.types ?? {};

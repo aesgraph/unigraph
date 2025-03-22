@@ -10,7 +10,6 @@ export const validateSceneGraph = (
   sceneGraph: SceneGraph,
   throwError: boolean = true
 ): void => {
-  console.log("Validating scenegraph...");
   const result: ISceneGraphValidationResult = { missingNodes: [] };
   sceneGraph.getEdges().forEach((edge) => {
     const source = sceneGraph.getGraph().maybeGetNode(edge.getSource());
@@ -29,7 +28,5 @@ export const validateSceneGraph = (
     } else {
       console.error(message);
     }
-  } else {
-    console.log("SceneGraph validation passed.");
   }
 };

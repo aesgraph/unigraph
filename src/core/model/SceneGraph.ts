@@ -73,7 +73,6 @@ export class SceneGraph {
   private data: SceneGraphData;
   private listeners: ISceneGraphListeners | undefined;
   constructor(data?: ISceneGraphArgs, listeners?: ISceneGraphListeners) {
-    console.log("Constructing SceneGraph", data?.metadata);
     this.data = { ...DEFAULT_SCENE_GRAPH_DATA(), ...data };
     if (data) {
       if (data.displayConfig) {

@@ -48,26 +48,26 @@ export const parseGraphvizPositions = (
 };
 
 // Example usage:
-const graphData = {
-  name: "G",
-  directed: true,
-  objects: [
-    {
-      _gvid: 0,
-      name: "axiomOfInteraction",
-      pos: "326.91,251.8",
-      label: "axiomOfInteraction",
-      color: "#E29218",
-      shape: "box",
-      height: "0.5",
-      width: "1.7556",
-    },
-    // ... other nodes
-  ],
-} as GraphvizJSON;
+// const graphData = {
+//   name: "G",
+//   directed: true,
+//   objects: [
+//     {
+//       _gvid: 0,
+//       name: "axiomOfInteraction",
+//       pos: "326.91,251.8",
+//       label: "axiomOfInteraction",
+//       color: "#E29218",
+//       shape: "box",
+//       height: "0.5",
+//       width: "1.7556",
+//     },
+//     // ... other nodes
+//   ],
+// } as GraphvizJSON;
 
-const positions = parseGraphvizPositions(graphData);
-console.log(positions);
+// const positions = parseGraphvizPositions(graphData);
+// console.log(positions);
 
 /* Output example:
 [
