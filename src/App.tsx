@@ -54,8 +54,8 @@ import {
   useMousePosition,
 } from "./context/MousePositionContext";
 import {
-  DisplayConfig,
   RenderingConfig,
+  RenderingManager,
   RenderingManager__DisplayMode,
 } from "./controllers/RenderingManager";
 import {
@@ -101,7 +101,16 @@ import { getAllGraphs, sceneGraphs } from "./data/graphs/sceneGraphLib";
 import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
+import useActiveLegendConfigStore, {
+  setEdgeKeyColor,
+  setEdgeKeyVisibility,
+  setEdgeLegendConfig,
+  setNodeKeyColor,
+  setNodeKeyVisibility,
+  setNodeLegendConfig,
+} from "./store/activeLegendConfigStore";
 import useAppConfigStore, {
+  getLegendMode,
   setActiveLayout,
   setAppConfig,
 } from "./store/appConfigStore";
@@ -159,12 +168,6 @@ const getSimulations = (
   };
 };
 
-// export type AppInteractionConfig = {
-//   clickedNode: NodeId | null; // For display card
-//   mouseHoveredNode: string | null; // For highlighting
-//   selectedNodes: Set<string>; // For highlighting
-// };
-
 const initialSceneGraph = new SceneGraph();
 
 export type RenderingView =
@@ -208,6 +211,12 @@ const AppContent: React.FC<{
   } = useAppConfigStore();
 
   const { showToolbar } = useWorkspaceConfigStore();
+  const {
+    nodeLegendConfig,
+    edgeLegendConfig,
+    nodeLegendUpdateTime,
+    edgeLegendUpdateTime,
+  } = useActiveLegendConfigStore();
 
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
@@ -266,10 +275,6 @@ const AppContent: React.FC<{
     [defaultActiveLayout, defaultActiveView]
   );
 
-  // const selectedNode = useMemo(() => {
-  //   return appInteractionConfig.clickedNode;
-  // }, [appInteractionConfig]);
-
   const [layoutResult, setLayoutResult] =
     useState<ILayoutEngineResult | null>();
 
@@ -279,20 +284,9 @@ const AppContent: React.FC<{
   const [currentSceneGraph, setCurrentSceneGraph] =
     useState<SceneGraph>(initialSceneGraph);
 
-  const [nodeConfig, setNodeConfig] = useState<DisplayConfig>(
-    GetCurrentDisplayConfigOf(currentSceneGraph, "Node")
-  );
-  const [edgeConfig, setEdgeConfig] = useState<DisplayConfig>(
-    GetCurrentDisplayConfigOf(currentSceneGraph, "Edge")
-  );
-
   const isDarkMode = useMemo(() => {
     return activeView === "ForceGraph3d" || activeView in simulations;
   }, [activeView, simulations]);
-
-  // useEffect(() => {
-  //   setIsDarkMode(activeView === "ForceGraph3d" || );
-  // });
 
   const [graphStatistics, setGraphStatistics] = useState<
     GraphStastics | undefined
@@ -343,8 +337,8 @@ const AppContent: React.FC<{
       handleReactFlowFitView();
     }
   }, [
-    nodeConfig,
-    edgeConfig,
+    nodeLegendConfig,
+    edgeLegendConfig,
     activeView,
     handleReactFlowFitView,
     layoutResult,
@@ -362,7 +356,7 @@ const AppContent: React.FC<{
       (key: string): void => {
         if (type === "Node") {
           const allNodesOfType =
-            currentSceneGraph.getDisplayConfig().mode === "type"
+            legendMode === "type"
               ? currentSceneGraph
                   .getGraph()
                   .getNodesByType(key)
@@ -381,7 +375,7 @@ const AppContent: React.FC<{
           return;
         }
       },
-    [currentSceneGraph]
+    [currentSceneGraph, legendMode]
   );
 
   const handleMouseUnhoverLegendItem = useCallback(
@@ -604,12 +598,22 @@ const AppContent: React.FC<{
         "notified changed",
         currentSceneGraph.getGraph().getEdges().getTypes()
       );
+      SetCurrentDisplayConfigOf(
+        currentSceneGraph,
+        "Node",
+        displayConfig.nodeConfig
+      );
+      SetCurrentDisplayConfigOf(
+        currentSceneGraph,
+        "Edge",
+        displayConfig.edgeConfig
+      );
       if (displayConfig.mode === "tag") {
-        setNodeConfig({ ...displayConfig.nodeConfig.tags });
-        setEdgeConfig({ ...displayConfig.edgeConfig.tags });
+        setNodeLegendConfig({ ...displayConfig.nodeConfig.tags });
+        setEdgeLegendConfig({ ...displayConfig.edgeConfig.tags });
       } else {
-        setNodeConfig({ ...displayConfig.nodeConfig.types });
-        setEdgeConfig({ ...displayConfig.edgeConfig.types });
+        setNodeLegendConfig({ ...displayConfig.nodeConfig.types });
+        setEdgeLegendConfig({ ...displayConfig.edgeConfig.types });
       }
     },
     [currentSceneGraph]
@@ -629,9 +633,9 @@ const AppContent: React.FC<{
           setAppConfig(graph.getData().defaultAppConfig!);
         }
         setLegendMode(graph.getDisplayConfig().mode);
+        setNodeLegendConfig(GetCurrentDisplayConfigOf(graph, "Node"));
+        setEdgeLegendConfig(GetCurrentDisplayConfigOf(graph, "Edge"));
         setGraphStatistics(getGraphStatistics(graph.getGraph()));
-        setNodeConfig(GetCurrentDisplayConfigOf(graph, "Node"));
-        setEdgeConfig(GetCurrentDisplayConfigOf(graph, "Edge"));
 
         graph.bindListeners({
           onDisplayConfigChanged: handleDisplayConfigChanged,
@@ -734,106 +738,55 @@ const AppContent: React.FC<{
     [graphvizFitToView, handleReactFlowFitView]
   );
 
-  const handleNodeColorChange = useCallback(
-    (key: string, newColor: string) => {
-      const newConfig = {
-        ...nodeConfig,
-        [key]: { ...nodeConfig[key], color: newColor },
-      };
-      SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
-      setNodeConfig(newConfig);
-    },
-    [currentSceneGraph, nodeConfig]
-  );
-
-  const handleEdgeColorChange = useCallback(
-    (key: string, newColor: string) => {
-      const newConfig = {
-        ...edgeConfig,
-        [key]: { ...edgeConfig[key], color: newColor },
-      };
-      SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
-      setEdgeConfig(newConfig);
-    },
-    [currentSceneGraph, edgeConfig]
-  );
-
-  const handleNodeChecked = useCallback(
-    (key: string, isVisible: boolean) => {
-      const newConfig = {
-        ...nodeConfig,
-        [key]: { ...nodeConfig[key], isVisible: isVisible },
-      };
-      SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
-      setNodeConfig(newConfig);
-    },
-    [currentSceneGraph, nodeConfig]
-  );
-
-  const handleEdgeChecked = useCallback(
-    (key: string, isVisible: boolean) => {
-      const newConfig = {
-        ...edgeConfig,
-        [key]: { ...edgeConfig[key], isVisible: isVisible },
-      };
-      SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
-      setEdgeConfig(newConfig);
-    },
-    [currentSceneGraph, edgeConfig]
-  );
-
   const handleLegendModeChange = useCallback(
     (mode: RenderingManager__DisplayMode) => {
       currentSceneGraph.getDisplayConfig().mode = mode;
-      // DisplayManager.applyRenderingConfigToGraph(
-      //   currentSceneGraph.getGraph(),
-      //   currentSceneGraph.getDisplayConfig()
-      // );
-      console.log("changing layoutmode to ", mode);
-      refreshForceGraphInstance(forceGraphInstance.current!, currentSceneGraph);
-
       setLegendMode(mode);
-      setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
-      setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
+      setNodeLegendConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
+      setEdgeLegendConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
     },
     [currentSceneGraph, setLegendMode]
   );
 
   const handleNodeCheckBulk = useCallback(
     (updates: { [key: string]: boolean }) => {
-      const newConfig = { ...nodeConfig };
+      const newConfig = { ...nodeLegendConfig };
       Object.keys(updates).forEach((key) => {
         newConfig[key].isVisible = updates[key];
       });
       SetCurrentDisplayConfigOf(currentSceneGraph, "Node", newConfig);
-      setNodeConfig(newConfig);
+      setNodeLegendConfig(newConfig);
     },
-    [currentSceneGraph, nodeConfig]
+    [currentSceneGraph, nodeLegendConfig]
   );
 
   const handleEdgeCheckBulk = useCallback(
     (updates: { [key: string]: boolean }) => {
-      const newConfig = { ...edgeConfig };
+      const newConfig = { ...edgeLegendConfig };
       Object.keys(updates).forEach((key) => {
         newConfig[key].isVisible = updates[key];
       });
       SetCurrentDisplayConfigOf(currentSceneGraph, "Edge", newConfig);
-      setEdgeConfig(newConfig);
+      setEdgeLegendConfig(newConfig);
     },
-    [currentSceneGraph, edgeConfig]
+    [currentSceneGraph, edgeLegendConfig]
   );
 
   const renderNodeLegend = useMemo(() => {
     const statistics =
-      currentSceneGraph.getDisplayConfig().mode === "type"
+      legendMode === "type"
         ? graphStatistics?.nodeTypeToCount
         : graphStatistics?.nodeTagsToCount;
     return (
       <Legend
         title="Node"
-        displayConfig={{ ...nodeConfig }}
-        onChange={handleNodeColorChange}
-        onCheck={handleNodeChecked}
+        displayConfig={{ ...nodeLegendConfig }}
+        onChange={(key: string, color: string) =>
+          setNodeKeyColor(key as NodeId, color)
+        }
+        onCheck={(key: string, isVisiblity: boolean) =>
+          setNodeKeyVisibility(key as NodeId, isVisiblity)
+        }
         onCheckBulk={handleNodeCheckBulk}
         isDarkMode={isDarkMode}
         totalCount={graphStatistics?.nodeCount}
@@ -844,28 +797,33 @@ const AppContent: React.FC<{
       />
     );
   }, [
-    nodeConfig,
-    isDarkMode,
-    graphStatistics,
-    currentSceneGraph,
-    handleNodeColorChange,
-    handleNodeChecked,
+    legendMode,
+    graphStatistics?.nodeTypeToCount,
+    graphStatistics?.nodeTagsToCount,
+    graphStatistics?.nodeCount,
+    nodeLegendConfig,
     handleNodeCheckBulk,
+    isDarkMode,
+    currentSceneGraph,
     handleMouseHoverLegendItem,
     handleMouseUnhoverLegendItem,
   ]);
 
   const renderEdgeLegend = useMemo(() => {
     const statistics =
-      currentSceneGraph.getDisplayConfig().mode === "type"
+      legendMode === "type"
         ? graphStatistics?.edgeTypeToCount
         : graphStatistics?.edgeTagsToCount;
     return (
       <Legend
         title="Edge"
-        displayConfig={edgeConfig}
-        onChange={handleEdgeColorChange}
-        onCheck={handleEdgeChecked}
+        displayConfig={edgeLegendConfig}
+        onChange={(key: string, color: string) =>
+          setEdgeKeyColor(key as EdgeId, color)
+        }
+        onCheck={(key: string, isVisiblity: boolean) =>
+          setEdgeKeyVisibility(key as EdgeId, isVisiblity)
+        }
         onCheckBulk={handleEdgeCheckBulk}
         isDarkMode={isDarkMode}
         totalCount={graphStatistics?.edgeCount}
@@ -874,12 +832,13 @@ const AppContent: React.FC<{
       />
     );
   }, [
-    edgeConfig,
-    isDarkMode,
-    graphStatistics,
-    handleEdgeColorChange,
-    handleEdgeChecked,
+    legendMode,
+    graphStatistics?.edgeTypeToCount,
+    graphStatistics?.edgeTagsToCount,
+    graphStatistics?.edgeCount,
+    edgeLegendConfig,
     handleEdgeCheckBulk,
+    isDarkMode,
     currentSceneGraph,
   ]);
 
@@ -924,8 +883,12 @@ const AppContent: React.FC<{
       if (file) {
         const config = await loadRenderingConfigFromFile(file);
         currentSceneGraph.setDisplayConfig(config);
-        setNodeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Node"));
-        setEdgeConfig(GetCurrentDisplayConfigOf(currentSceneGraph, "Edge"));
+        setNodeLegendConfig(
+          GetCurrentDisplayConfigOf(currentSceneGraph, "Node")
+        );
+        setEdgeLegendConfig(
+          GetCurrentDisplayConfigOf(currentSceneGraph, "Edge")
+        );
       }
     },
     [currentSceneGraph]
@@ -960,21 +923,6 @@ const AppContent: React.FC<{
     },
     [currentSceneGraph, handleSetActiveLayout, activeView]
   );
-
-  // const handleLoadSceneGraphFromUrl = useCallback(
-  //   (sceneGraph: SceneGraph) => {
-  //     handleLoadSceneGraph(sceneGraph);
-
-  //     // Update the URL query parameter
-  //     const url = new URL(window.location.href);
-  //     url.searchParams.delete("graph");
-  //     url.searchParams.set("svgUrl", sceneGraph.getMetadata().source ?? "");
-  //     window.history.pushState({}, "", url.toString());
-
-  //     setShowImportSvgFromUrlDialog(false);
-  //   },
-  //   [handleLoadSceneGraph]
-  // );
 
   const menuConfigInstance = useMemo(() => {
     const menuConfigCallbacks: IMenuConfigCallbacks = {
@@ -1045,7 +993,6 @@ const AppContent: React.FC<{
     }
 
     const data = exportGraphDataForReactFlow(currentSceneGraph);
-    const renderingManager = currentSceneGraph.getRenderingManager();
     const nodePositions = layoutResult?.positions || {};
 
     const nodesWithPositions = data.nodes.map((node) => ({
@@ -1082,8 +1029,10 @@ const AppContent: React.FC<{
         dimensions: node.data.dimensions,
       },
       style: {
-        background: renderingManager.getNodeColor(
-          currentSceneGraph.getGraph().getNode(node.id as NodeId)
+        background: RenderingManager.getColor(
+          currentSceneGraph.getGraph().getNode(node.id as NodeId),
+          nodeLegendConfig,
+          getLegendMode()
         ),
       },
       sourcePosition: Position.Right,
@@ -1108,13 +1057,17 @@ const AppContent: React.FC<{
             ...edge,
             type: "default",
             style: {
-              stroke: renderingManager.getEdgeColor(
-                currentSceneGraph.getGraph().getEdge(edge.id as EdgeId)
+              stroke: RenderingManager.getColor(
+                currentSceneGraph.getGraph().getEdge(edge.id as EdgeId),
+                edgeLegendConfig,
+                legendMode
               ),
             },
             labelStyle: {
-              fill: renderingManager.getEdgeColor(
-                currentSceneGraph.getGraph().getEdge(edge.id as EdgeId)
+              fill: RenderingManager.getColor(
+                currentSceneGraph.getGraph().getEdge(edge.id as EdgeId),
+                edgeLegendConfig,
+                legendMode
               ),
               fontWeight: 700,
             },
@@ -1165,11 +1118,14 @@ const AppContent: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeView,
+    activeFilterPreset,
     activeLayout,
     currentSceneGraph,
     layoutResult,
-    nodeConfig,
-    edgeConfig,
+    nodeLegendConfig,
+    edgeLegendConfig,
+    nodeLegendUpdateTime,
+    edgeLegendUpdateTime,
     safeComputeLayout,
     handleReactFlowFitView,
     handleNodeRightClick,
@@ -1251,8 +1207,8 @@ const AppContent: React.FC<{
       }
     }
   }, [
-    nodeConfig,
-    edgeConfig,
+    nodeLegendUpdateTime,
+    edgeLegendUpdateTime,
     activeView,
     forceGraph3dOptions.layout,
     activeFilterPreset,
@@ -1380,7 +1336,7 @@ const AppContent: React.FC<{
 
   const handleApplyForceGraphConfig = useCallback(
     (config: IForceGraphRenderConfig) => {
-      // currentSceneGraph.setForceGraphRenderConfig(config);
+      currentSceneGraph.setForceGraphRenderConfig(config);
       if (forceGraphInstance.current) {
         ForceGraphManager.applyForceGraphRenderConfig(
           forceGraphInstance.current,

@@ -262,34 +262,30 @@ export class Graph {
   }
 
   // Returns all edges that connect between any of the given node ids.
-  getAllEdgesConnectingBetween(nodeIds: NodeIds): Edge[] {
-    return this.edges
-      .filter((edge) => {
-        return nodeIds.has(edge.getSource()) && nodeIds.has(edge.getTarget());
-      })
-      .toArray();
+  getAllEdgesConnectingBetween(nodeIds: NodeIds): EdgesContainer {
+    return this.edges.filter((edge) => {
+      return nodeIds.has(edge.getSource()) && nodeIds.has(edge.getTarget());
+    });
   }
 
   getEdgesConnectedToNodes(
     nodeIds: NodeIds | NodeId,
     mode: "both" | "from" | "to" = "both"
-  ): Edge[] {
+  ): EdgesContainer {
     if (typeof nodeIds === "string") {
       nodeIds = new EntityIds([nodeIds]);
     }
-    return this.edges
-      .filter((edge) => {
-        const isSource = nodeIds.has(edge.getSource());
-        const isTarget = nodeIds.has(edge.getTarget());
-        if (mode === "both") {
-          return isSource && isTarget;
-        } else if (mode === "from") {
-          return isSource;
-        } else {
-          return isTarget;
-        }
-      })
-      .toArray();
+    return this.edges.filter((edge) => {
+      const isSource = nodeIds.has(edge.getSource());
+      const isTarget = nodeIds.has(edge.getTarget());
+      if (mode === "both") {
+        return isSource && isTarget;
+      } else if (mode === "from") {
+        return isSource;
+      } else {
+        return isTarget;
+      }
+    });
   }
 
   setNodes = (nodes: NodesContainer): void => {

@@ -49,7 +49,7 @@ if (rootElement) {
   setRightSidebarConfig({
     isVisible: showRightSidebar,
     mode: "full",
-    minimal: false,
+    minimal: true,
   });
 
   const hideWorkspace = getToggleOptionValue(urlParams, "hideWorkspace", false);

@@ -1,9 +1,14 @@
 import { FilterRuleDefinition } from "../../components/filters/FilterRuleDefinition";
-import { RenderingConfig } from "../../controllers/RenderingManager";
+import {
+  DisplayConfig,
+  RenderingConfig,
+  RenderingManager,
+  RenderingManager__DisplayMode,
+} from "../../controllers/RenderingManager";
 import { filterNodes } from "../filters/filterEngine";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EntitiesContainer } from "./entity/entitiesContainer";
-import { Graph } from "./Graph";
+import { EdgesContainer, Graph, NodesContainer } from "./Graph";
 import { DEFAULT_DISPLAY_NODE_DATA } from "./Node";
 
 export interface IDisplayManagerData {
@@ -85,6 +90,28 @@ export const toDisplayManagerData = (
 };
 
 export class DisplayManager {
+  public static applyDisplayConfigToNodesInGraph = (
+    nodes: NodesContainer,
+    config: DisplayConfig,
+    mode: RenderingManager__DisplayMode
+  ) => {
+    nodes.forEach((node) => {
+      node.setColor(RenderingManager.getColor(node, config, mode));
+      node.setVisibility(RenderingManager.getVisibility(node, config, mode));
+    });
+  };
+
+  public static applyDisplayConfigToEdgesInGraph = (
+    edges: EdgesContainer,
+    config: DisplayConfig,
+    mode: RenderingManager__DisplayMode
+  ) => {
+    edges.forEach((edge) => {
+      edge.setColor(RenderingManager.getColor(edge, config, mode));
+      edge.setVisibility(RenderingManager.getVisibility(edge, config, mode));
+    });
+  };
+
   public static applyDisplayConfigToGraph = (
     graph: Graph,
     data: IDisplayManagerData

@@ -3,6 +3,7 @@ import {
   RenderingConfig,
   RenderingManager,
 } from "../../controllers/RenderingManager";
+import { getNodeIsVisible } from "../../store/activeLegendConfigStore";
 import { GraphvizLayoutType } from "../layouts/GraphvizLayoutEngine";
 import { LayoutEngineOption } from "../layouts/LayoutEngine";
 import { Graph } from "./Graph";
@@ -30,7 +31,7 @@ export const ConvertSceneGraphToGraphviz = (
     }
 
     for (const node of graph.getNodes()) {
-      if (!renderingManager.getNodeIsVisible(node)) {
+      if (!getNodeIsVisible(node)) {
         continue;
       }
       const n = g.node(node.getId().replace(/:/g, "_"), {

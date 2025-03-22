@@ -36,6 +36,7 @@ export const createDefaultLeftMenus = ({
   onShowLoadSceneGraphWindow,
   onShowSaveSceneGraphDialog,
   showLayoutManager,
+  handleLoadLayout,
 }: any) => [
   {
     id: "project",
@@ -120,7 +121,7 @@ export const createDefaultLeftMenus = ({
             onClick={() => {
               const positions = extractPositionsFromNodes(sceneGraph);
               sceneGraph.setNodePositions(positions);
-              onLayoutChange(positions);
+              handleLoadLayout(positions);
             }}
           >
             Reset

@@ -11,6 +11,12 @@ import {
   CSS2DRenderer,
 } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { ForceGraph3dLayoutMode } from "../../AppConfig";
+import { RenderingManager } from "../../controllers/RenderingManager";
+import {
+  getEdgeLegendConfig,
+  getNodeLegendConfig,
+} from "../../store/activeLegendConfigStore";
+import { getLegendMode } from "../../store/appConfigStore";
 import {
   DEFAULT_FORCE_GRAPH_RENDER_CONFIG,
   IForceGraphRenderConfig,
@@ -39,8 +45,6 @@ export const refreshForceGraphInstance = (
 ) => {
   console.log("Refreshing existing force graph instance...");
 
-  const renderingManager = sceneGraph.getRenderingManager();
-
   // Update visible nodes and edges (with smart position handling)
   updateVisibleEntitiesInForceGraphInstance(forceGraphInstance, sceneGraph);
 
@@ -48,8 +52,10 @@ export const refreshForceGraphInstance = (
     if (getHoveredNodeIds().has(node.id as NodeId)) {
       return "rgb(242, 254, 9)";
     }
-    return renderingManager.getNodeColor(
-      sceneGraph.getGraph().getNode(node.id as NodeId)
+    return RenderingManager.getColor(
+      sceneGraph.getGraph().getNode(node.id as NodeId),
+      getNodeLegendConfig(),
+      getLegendMode()
     );
   });
 
@@ -63,8 +69,10 @@ export const refreshForceGraphInstance = (
     if (getHoveredEdgeIds().has((link as any).id)) {
       return "white";
     }
-    return renderingManager.getEdgeColor(
-      sceneGraph.getGraph().getEdge((link as any).id)
+    return RenderingManager.getColor(
+      sceneGraph.getGraph().getEdge((link as any).id),
+      getEdgeLegendConfig(),
+      getLegendMode()
     );
   });
 
@@ -92,7 +100,6 @@ export const createForceGraph = (
   console.log("creating here", options, layout, positions);
   const data = exportGraphDataForReactFlow(sceneGraph);
   console.log("data is ", data);
-  const renderingManager = sceneGraph.getRenderingManager();
 
   const graph = new ForceGraph3D(dom, {
     extraRenderers: [new CSS2DRenderer()],
@@ -103,8 +110,10 @@ export const createForceGraph = (
       if (getHoveredNodeIds().has(node.id as NodeId)) {
         return "rgb(242, 254, 9)";
       }
-      return renderingManager.getNodeColor(
-        sceneGraph.getGraph().getNode(node.id as NodeId)
+      return RenderingManager.getColor(
+        sceneGraph.getGraph().getNode(node.id as NodeId),
+        getNodeLegendConfig(),
+        getLegendMode()
       );
     })
     .linkColor((link) => {
@@ -117,10 +126,11 @@ export const createForceGraph = (
       if (getHoveredEdgeIds().has((link as any).id)) {
         return "white";
       }
-      const x = renderingManager.getEdgeColor(
-        sceneGraph.getGraph().getEdge((link as any).id)
+      return RenderingManager.getColor(
+        sceneGraph.getGraph().getEdge((link as any).id),
+        getEdgeLegendConfig(),
+        getLegendMode()
       );
-      return x;
     })
     .linkLabel("type")
     .backgroundColor("#1a1a1a")
@@ -227,7 +237,11 @@ export const createForceGraph = (
           nodeEl.style.color = "yellow";
         }
 
-        nodeEl.style.color = renderingManager.getNodeColor(n);
+        nodeEl.style.color = RenderingManager.getColor(
+          sceneGraph.getGraph().getNode(node.id as NodeId),
+          getNodeLegendConfig(),
+          getLegendMode()
+        );
         nodeEl.className = "node-label";
         return new CSS2DObject(nodeEl);
       })

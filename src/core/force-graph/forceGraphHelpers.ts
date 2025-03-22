@@ -1,7 +1,12 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { ForceGraph3dLayoutMode } from "../../AppConfig";
+import {
+  getEdgeIsVisible,
+  getNodeIsVisible,
+} from "../../store/activeLegendConfigStore";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EdgeId } from "../model/Edge";
+import { EntityIds } from "../model/entity/entityIds";
 import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
@@ -27,15 +32,15 @@ export const updateVisibleEntitiesInForceGraphInstance = (
   sceneGraph: SceneGraph,
   layoutMode: ForceGraph3dLayoutMode = "Physics"
 ): void => {
-  const visibleNodes = sceneGraph.getNodes().filter((node) => node.isVisible());
+  const visibleNodes = sceneGraph
+    .getNodes()
+    .filter((node) => node.isVisible() && getNodeIsVisible(node));
   const visibleEdges = sceneGraph
-    .getEdges()
-    .filter((edge) => edge.isVisible())
-    .filter((edge) => {
-      const source = sceneGraph.getNodes().get(edge.getSource());
-      const target = sceneGraph.getNodes().get(edge.getTarget());
-      return source.isVisible() && target.isVisible();
-    });
+    .getGraph()
+    .getEdgesConnectedToNodes(
+      new EntityIds(visibleNodes.map((node) => node.getId()))
+    )
+    .filter((edge) => edge.isVisible() && getEdgeIsVisible(edge));
 
   const newNodeList = instance
     .graphData()

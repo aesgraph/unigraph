@@ -19,7 +19,7 @@ type WorkspaceConfigState = {
 const useWorkspaceConfigStore = create<WorkspaceConfigState>((set) => ({
   showToolbar: true,
   leftSidebarConfig: { isVisible: true, mode: "full", minimal: false },
-  rightSidebarConfig: { isVisible: true, mode: "full", minimal: false },
+  rightSidebarConfig: { isVisible: true, mode: "full", minimal: true },
 
   setShowToolbar: (show) => set({ showToolbar: show }),
   setLeftSidebarConfig: (config) => set({ leftSidebarConfig: config }),

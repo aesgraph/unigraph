@@ -1,6 +1,12 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { Sprite, SpriteMaterial, SRGBColorSpace, TextureLoader } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { RenderingManager } from "../../controllers/RenderingManager";
+import {
+  getEdgeLegendConfig,
+  getNodeLegendConfig,
+} from "../../store/activeLegendConfigStore";
+import { getLegendMode } from "../../store/appConfigStore";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
@@ -30,8 +36,6 @@ export class ForceGraphManager {
     sceneGraph: SceneGraph,
     reheatSimulation: boolean = false
   ): void {
-    const renderingManager = sceneGraph.getRenderingManager();
-
     instance.nodeRelSize(config.nodeSize);
     instance.linkWidth(config.linkWidth);
     instance.nodeOpacity(config.nodeOpacity);
@@ -109,7 +113,11 @@ export class ForceGraphManager {
         nodeEl.textContent = `${n.getLabel()}` as string;
         nodeEl.className = "node-label";
       }
-      nodeEl.style.color = renderingManager.getNodeColor(n);
+      nodeEl.style.color = RenderingManager.getColor(
+        n,
+        getNodeLegendConfig(),
+        getLegendMode()
+      );
       return new CSS2DObject(nodeEl);
     });
     instance.nodeThreeObjectExtend(true);
@@ -121,7 +129,11 @@ export class ForceGraphManager {
         linkEl.textContent = e.getType();
         linkEl.className = "link-label";
       }
-      linkEl.style.color = renderingManager.getEdgeColor(e);
+      linkEl.style.color = RenderingManager.getColor(
+        e,
+        getEdgeLegendConfig(),
+        getLegendMode()
+      );
       return new CSS2DObject(linkEl);
     });
     instance.linkPositionUpdate((sprite, { start, end }) => {

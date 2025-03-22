@@ -27,7 +27,8 @@ export const getEdgesToDegree = (
       const directEdges = sceneGraph
         .getGraph()
         .getEdgesConnectedToNodes(nodeId)
-        .filter((edge) => !visitedEdgeIds.has(edge.getId()));
+        .filter((edge) => !visitedEdgeIds.has(edge.getId()))
+        .toArray();
       degreesToEdges.set(degree, directEdges);
       directEdges.forEach((edge) => {
         visitedEdgeIds.add(edge.getId());
