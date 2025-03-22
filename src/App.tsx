@@ -202,6 +202,8 @@ const AppContent: React.FC<{
     activeSceneGraph,
     legendMode,
     setLegendMode,
+    currentSceneGraph,
+    setCurrentSceneGraph,
   } = useAppConfigStore();
 
   const { showToolbar } = useWorkspaceConfigStore();
@@ -272,8 +274,12 @@ const AppContent: React.FC<{
   const [selectedSimulation, setSelectedSimulation] =
     useState<string>("Lumina");
 
-  const [currentSceneGraph, setCurrentSceneGraph] =
-    useState<SceneGraph>(initialSceneGraph);
+  // const [currentSceneGraph, setCurrentSceneGraph] =
+  //   useState<SceneGraph>(initialSceneGraph);
+
+  useEffect(() => {
+    setCurrentSceneGraph(initialSceneGraph);
+  }, [setCurrentSceneGraph]);
 
   const isDarkMode = useMemo(() => {
     return activeView === "ForceGraph3d" || activeView in simulations;
@@ -665,6 +671,7 @@ const AppContent: React.FC<{
       clearUrlOfQueryParams,
       handleDisplayConfigChanged,
       safeComputeLayout,
+      setCurrentSceneGraph,
       setLegendMode,
     ]
   );
