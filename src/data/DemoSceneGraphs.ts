@@ -1,29 +1,29 @@
-import { SceneGraph } from "../../core/model/SceneGraph";
+import { SceneGraph } from "../core/model/SceneGraph";
 // import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
-import { demo_sceneGraph_academicsKG } from "./academicsKGraph";
-import { blobMeshGraph } from "./blobMesh";
-import { createE8Petrie2DGraph } from "./e8Petrie2d";
-import { demo_SceneGraph_ArtCollection } from "./Gallery_Demos/demo_SceneGraph_ArtCollection";
+import { demo_sceneGraph_academicsKG } from "./graphs/academicsKGraph";
+import { blobMeshGraph } from "./graphs/blobMesh";
+import { createE8Petrie2DGraph } from "./graphs/e8Petrie2d";
+import { demo_SceneGraph_ArtCollection } from "./graphs/Gallery_Demos/demo_SceneGraph_ArtCollection";
 import {
   demo_SceneGraph_e8petrieProjection,
   demo_SceneGraph_e8petrieProjection_421t2b6,
-} from "./Gallery_Demos/demo_SceneGraph_e8petrieProjection";
-import { demo_SceneGraph_ImageGallery } from "./Gallery_Demos/demo_SceneGraph_ImageGallery";
-import { demo_SceneGraph_SolvayConference } from "./Gallery_Demos/demo_SceneGraph_SolvayConference";
-import { demo_SceneGraph_StackedImageGallery } from "./Gallery_Demos/demo_SceneGraph_StackedImageGallery";
-import { demo_SceneGraph_StackedGalleryTransparent } from "./Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
-import { demo_SceneGraph_Thinking } from "./Gallery_Demos/demo_SceneGraph_Thinking";
-import { graphManagementWorkflowDiagram } from "./graphManagementWorkflow";
-import { graphManagementWorkflowDiagram2 } from "./graphManagementWorkflow2";
-import { randomBigGraph } from "./randomBig";
-import { randomBiggestGraph } from "./randomBiggest";
-import { sphereMeshGraph } from "./sphereMesh";
-import { cylindricalMeshGraph } from "./sphericalMesh";
-import { thinkers1 } from "./thinkers1Graph";
-import { thinkers2 } from "./thinkers2Graph";
-import { thoughtDiagram } from "./thoughtDiagram";
-import { unigraphGraph } from "./unigraph";
-import { unigraphGraph2 } from "./unigraph2";
+} from "./graphs/Gallery_Demos/demo_SceneGraph_e8petrieProjection";
+import { demo_SceneGraph_ImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_ImageGallery";
+import { demo_SceneGraph_SolvayConference } from "./graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
+import { demo_SceneGraph_StackedImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
+import { demo_SceneGraph_StackedGalleryTransparent } from "./graphs/Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
+import { demo_SceneGraph_Thinking } from "./graphs/Gallery_Demos/demo_SceneGraph_Thinking";
+import { graphManagementWorkflowDiagram } from "./graphs/graphManagementWorkflow";
+import { graphManagementWorkflowDiagram2 } from "./graphs/graphManagementWorkflow2";
+import { randomBigGraph } from "./graphs/randomBig";
+import { randomBiggestGraph } from "./graphs/randomBiggest";
+import { sphereMeshGraph } from "./graphs/sphereMesh";
+import { cylindricalMeshGraph } from "./graphs/sphericalMesh";
+import { thinkers1 } from "./graphs/thinkers1Graph";
+import { thinkers2 } from "./graphs/thinkers2Graph";
+import { thoughtDiagram } from "./graphs/thoughtDiagram";
+import { unigraphGraph } from "./graphs/unigraph";
+import { unigraphGraph2 } from "./graphs/unigraph2";
 
 export interface SceneGraphCategory {
   label: string;
@@ -35,7 +35,7 @@ export interface SceneGraphCategory {
   };
 }
 
-export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
+export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
   Base: {
     label: "Base",
     graphs: {
@@ -100,7 +100,7 @@ export const sceneGraphs: { [key: string]: SceneGraphCategory } = {
 // Helper function to get all graphs flattened
 export const getAllDemoSceneGraphKeys = (): string[] => {
   const allGraphs: string[] = [];
-  Object.entries(sceneGraphs).forEach(([_, graphs]) => {
+  Object.entries(DEMO_SCENE_GRAPHS).forEach(([_, graphs]) => {
     Object.keys(graphs.graphs).forEach((key) => {
       allGraphs.push(key);
     });
@@ -111,7 +111,7 @@ export const getAllDemoSceneGraphKeys = (): string[] => {
 export const getSceneGraph = (
   name: string
 ): SceneGraph | (() => SceneGraph) | (() => Promise<SceneGraph>) => {
-  for (const [_, graphs] of Object.entries(sceneGraphs)) {
+  for (const [_, graphs] of Object.entries(DEMO_SCENE_GRAPHS)) {
     for (const key of Object.keys(graphs.graphs)) {
       if (key === name) {
         return graphs.graphs[key];

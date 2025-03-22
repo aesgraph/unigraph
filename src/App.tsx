@@ -94,11 +94,11 @@ import {
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
 import { IMAGE_ANNOTATION_ENTITIES } from "./core/types/ImageAnnotation";
 import { flyToNode } from "./core/webgl/webglHelpers";
-import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import {
   getAllDemoSceneGraphKeys,
   getSceneGraph,
-} from "./data/graphs/sceneGraphLib";
+} from "./data/DemoSceneGraphs";
+import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";

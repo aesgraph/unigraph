@@ -10,7 +10,7 @@ import { deserializeDotToSceneGraph } from "../../core/serializers/fromDot";
 import { deserializeGraphmlToSceneGraph } from "../../core/serializers/fromGraphml";
 import { deserializeSvgToSceneGraph } from "../../core/serializers/fromSvg";
 import { deserializeSceneGraphFromJson } from "../../core/serializers/toFromJson";
-import { sceneGraphs } from "../../data/graphs/sceneGraphLib";
+import { DEMO_SCENE_GRAPHS } from "../../data/DemoSceneGraphs";
 import { fetchSvgSceneGraph } from "../../hooks/useSvgSceneGraph";
 import styles from "./LoadSceneGraphDialog.module.css";
 
@@ -119,7 +119,7 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
   };
 
   const expandAll = () => {
-    const allCategories = Object.keys(sceneGraphs);
+    const allCategories = Object.keys(DEMO_SCENE_GRAPHS);
     const expandedState = allCategories.reduce(
       (acc, category) => ({ ...acc, [category]: true }),
       {}
@@ -135,7 +135,7 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
 
-    const expandedState = Object.entries(sceneGraphs).reduce(
+    const expandedState = Object.entries(DEMO_SCENE_GRAPHS).reduce(
       (acc, [category, { graphs }]) => {
         const matchesCategory = category.toLowerCase().includes(term);
         const matchesGraphs = Object.keys(graphs).some((key) =>
@@ -148,7 +148,7 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
     setExpandedCategories(expandedState);
   };
 
-  const filteredSceneGraphs = Object.entries(sceneGraphs).filter(
+  const filteredSceneGraphs = Object.entries(DEMO_SCENE_GRAPHS).filter(
     ([category, { graphs }]) =>
       category.toLowerCase().includes(searchTerm) ||
       Object.keys(graphs).some((key) => key.toLowerCase().includes(searchTerm))

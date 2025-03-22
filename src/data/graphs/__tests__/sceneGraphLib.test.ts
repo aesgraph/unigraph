@@ -1,8 +1,8 @@
 import { SceneGraph } from "../../../core/model/SceneGraph";
-import { sceneGraphs } from "../sceneGraphLib";
+import { DEMO_SCENE_GRAPHS } from "../../DemoSceneGraphs";
 
 describe("SceneGraphLib", () => {
-  Object.entries(sceneGraphs).forEach(([_categoryKey, category]) => {
+  Object.entries(DEMO_SCENE_GRAPHS).forEach(([_categoryKey, category]) => {
     describe(`Category: ${category.label}`, () => {
       Object.entries(category.graphs).forEach(([graphKey, graphGenerator]) => {
         if (
