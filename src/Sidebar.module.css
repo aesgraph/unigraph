@@ -12,6 +12,9 @@
   overflow: hidden;
   height: 100%;
   width: var(--sidebar-width, 200px);
+  position: relative;
+  z-index: 50; /* Higher z-index than panel */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow to sidebar */
 }
 
 .sidebarHeader {
@@ -41,7 +44,7 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden; /* Prevent horizontal scrollbar */
-  padding: 16px 0;
+  padding: 8px 0; /* Reduce horizontal padding */
 }
 
 .nav {
@@ -52,6 +55,7 @@
 
 .menuItem {
   margin-bottom: 4px;
+  position: relative;
 }
 
 .menuButton {
@@ -67,10 +71,42 @@
   transition: background-color 0.2s;
   text-align: left;
   justify-content: center;
+  /* Add better tooltip display */
+  position: relative;
+}
+
+/* Add a custom tooltip effect for collapsed sidebar */
+.sidebar:not(:hover) .menuButton[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-100%);
+  background-color: #374151;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 10px;
+  z-index: 100;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-left: 40px;
 }
 
 .menuButton:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Add styling for active menu item */
+.active .menuButton {
+  background-color: rgba(53, 107, 188, 0.2);
+  border-left: 3px solid #4e84d5;
+  padding-left: 5px;
+  font-weight: 500;
+}
+
+.active .menuText {
+  color: #ffffff;
 }
 
 /* Add styling for expanded menu items */
@@ -82,6 +118,25 @@
 .menuIcon {
   flex-shrink: 0;
   transition: margin 0.3s ease;
+  position: relative; /* Add this to position the badge */
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -8px; /* Move up slightly */
+  right: -12px; /* Move right slightly */
+  background-color: rgba(249, 115, 22, 0.8); /* Reduce opacity of orange */
+  color: white;
+  border-radius: 9999px;
+  padding: 1px 4px; /* Reduce padding */
+  font-size: 8px; /* Smaller font */
+  font-weight: 500; /* Slightly less bold */
+  min-width: 10px; /* Smaller minimum width */
+  height: 10px; /* Smaller height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(31, 41, 55, 0.8); /* More transparent border */
 }
 
 .menuText {
@@ -186,10 +241,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 16px 0;
   border-top: 1px solid #374151;
   width: 100%;
   box-sizing: border-box;
+}
+
+.sidebarFooter .nav {
+  width: 100%;
+  padding: 0 8px;
+}
+
+/* Remove the custom footer nav styles since we'll use the standard nav styles instead */
+.footerNav {
+  display: none;
+}
+
+/* Remove the custom footerButton styles */
+.footerButton {
+  display: none;
 }
 
 .footerLink {
@@ -394,4 +464,175 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sidePanel {
+  display: none; /* Hide the old inline panel */
+}
+
+/* New full-height side panel */
+.fullHeightSidePanel {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 240px; /* Reduce from 280px/260px to 240px */
+  min-width: 180px; /* Reduce minimum width */
+  max-width: 360px; /* Reduce maximum width */
+  background-color: #2d3748;
+  overflow-y: auto;
+  overflow-x: hidden; /* Add this to prevent horizontal scroll */
+  z-index: 40; /* Lower z-index than sidebar */
+  box-shadow:
+    inset 3px 0 5px -3px rgba(0, 0, 0, 0.5),
+    inset -3px 0 5px -3px rgba(0, 0, 0, 0.5); /* Inset shadow for recessed effect */
+  display: flex;
+  flex-direction: column;
+  transition: width 0.1s ease; /* Add smooth transition when not dragging */
+  will-change: width; /* Hint to browser to optimize for width changes */
+  box-sizing: border-box; /* Add this to ensure padding is included in width */
+}
+
+/* Resize handle for left panel (appears on right edge) */
+.resizeHandle.left {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px; /* Wider for easier grabbing */
+  height: 100%;
+  cursor: e-resize;
+  background-color: transparent;
+  transition: background-color 0.2s;
+  z-index: 60; /* Make sure it's above other content */
+  touch-action: none; /* Prevent scrolling during resize */
+}
+
+/* Resize handle for right panel (appears on left edge) */
+.resizeHandle.right {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px; /* Wider for easier grabbing */
+  height: 100%;
+  cursor: w-resize;
+  background-color: transparent;
+  transition: background-color 0.2s;
+  z-index: 60;
+  touch-action: none;
+}
+
+/* Add this for better resize performance */
+.resizing {
+  user-select: none !important;
+  cursor: e-resize;
+}
+
+.resizeHandle:hover,
+.resizeHandle:active {
+  background-color: rgba(78, 132, 213, 0.5);
+}
+
+/* Make the resize area slightly larger for better UX but still visually slim */
+.resizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -2px;
+  right: -2px;
+  bottom: 0;
+  z-index: 1;
+}
+
+.sidePanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #374151;
+  background-color: #1f2937;
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.3); /* Shadow below header */
+}
+
+.sidePanelHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidePanelContent {
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.active .sidePanel {
+  transform: translateX(0);
+}
+
+.noHeaderMenuContainer {
+  /* padding-top: 0; */
+  border-top: none;
+}
+
+.footerIconGroup {
+  /* These styles are now replaced by footerNav */
+  display: none;
+}
+
+.footerIconButton {
+  /* These styles are now replaced by footerButton */
+  display: none;
+}
+
+.infoPanel {
+  padding: 16px;
+}
+
+.infoSection {
+  margin-bottom: 12px;
+}
+
+.infoSectionTitle {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0 0 4px 0;
+}
+
+.infoSectionValue {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.controlGroup,
+.section,
+.nodeInfoCard,
+.multiNodeContainer,
+.form-field,
+.formGroup {
+  max-width: 100%; /* Ensure no content exceeds container width */
+  box-sizing: border-box;
+}
+
+.numberInputContainer {
+  width: 60px; /* Reduce from 80px to 60px for better fit in narrower panel */
 }

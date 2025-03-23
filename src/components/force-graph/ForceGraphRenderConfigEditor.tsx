@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
+import { FormFieldProps, FormSchema } from "../shared/FormSchemaTypes";
 import "./ForceGraphRenderConfigEditor.css";
-
-interface FormSchemaField {
-  validate: (value: number | boolean) => string | null;
-  label: string;
-  type: "number" | "checkbox";
-}
-
-interface FormSchema {
-  [key: string]: FormSchemaField;
-}
 
 const formSchema: FormSchema = {
   nodeTextLabels: {
@@ -77,15 +68,6 @@ const formSchema: FormSchema = {
     type: "number",
   },
 };
-
-interface FormFieldProps {
-  name: string;
-  value: number | boolean;
-  error: string | null;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  schema: FormSchema;
-  isDarkMode: boolean;
-}
 
 const FormField: React.FC<FormFieldProps> = ({
   name,
@@ -222,9 +204,14 @@ const ForceGraphRenderConfigEditor: React.FC<
     return validator(value);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : parseFloat(value);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const newValue =
+      type === "checkbox"
+        ? (e.target as HTMLInputElement).checked
+        : parseFloat(value);
     setFormData((prev) => ({ ...prev, [name]: newValue }));
     onApply({ ...formData, [name]: newValue });
 

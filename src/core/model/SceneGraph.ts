@@ -268,6 +268,15 @@ export class SceneGraph {
     return this.data.filterPresets || {};
   }
 
+  getNodesByType(type: string) {
+    const nodes = this.getGraph()
+      .getNodes()
+      .filter((node) => node.getType() === type);
+
+    console.log(`Nodes of type ${type}:`, nodes);
+    return nodes;
+  }
+
   public static fromJSON(json: string): SceneGraph {
     const data = JSON.parse(json);
     console.log(data);

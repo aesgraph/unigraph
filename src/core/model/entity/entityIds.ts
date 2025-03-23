@@ -40,6 +40,18 @@ export class EntityIds<T extends EntityId> extends Set<T> {
     }
   }
 
+  public isEqualTo(other: EntityIds<T>): boolean {
+    if (this.size !== other.size) return false;
+    for (const id of this) {
+      if (!other.has(id)) return false;
+    }
+    return true;
+  }
+
+  public static isEqualTo(a: EntityIds<any>, b: EntityIds<any>): boolean {
+    return a.isEqualTo(b);
+  }
+
   // Returns the set of entities contained in this set that are not present in the other.
   public getDifference(other: EntityIds<T>): EntityIds<T> {
     const difference = new EntityIds<T>();
@@ -49,10 +61,5 @@ export class EntityIds<T extends EntityId> extends Set<T> {
       }
     });
     return difference;
-  }
-
-  public isEqualTo(other: EntityIds<T>): boolean {
-    if (this.size !== other.size) return false;
-    return this.toArray().every((id) => other.has(id));
   }
 }

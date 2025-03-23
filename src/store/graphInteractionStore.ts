@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { EdgeId } from "../core/model/Edge";
 import { NodeId } from "../core/model/Node";
 import { EntityIds } from "../core/model/entity/entityIds";
+import { getCurrentSceneGraph } from "./appConfigStore";
 
 type GraphInteractionState = {
   hoveredNodeIds: EntityIds<NodeId>;
@@ -42,12 +43,12 @@ const useGraphInteractionStore = create<GraphInteractionState>((set, get) => ({
     set({ hoveredEdgeIds: new EntityIds(edgeIds) }),
 
   getHoveredNodeId: () => {
-    const hoveredNodes = Array.from(get().hoveredNodeIds);
-    return hoveredNodes.length === 1 ? hoveredNodes[0] : null;
+    const hoveredNodeIds = get().hoveredNodeIds;
+    return hoveredNodeIds.size === 1 ? hoveredNodeIds.toArray()[0] : null;
   },
   getHoveredEdgeId: () => {
-    const hoveredEdges = Array.from(get().hoveredEdgeIds);
-    return hoveredEdges.length === 1 ? hoveredEdges[0] : null;
+    const hoveredEdgeIds = get().hoveredEdgeIds;
+    return hoveredEdgeIds.size === 1 ? hoveredEdgeIds.toArray()[0] : null;
   },
   getHoveredNodeIds: () => get().hoveredNodeIds,
   getHoveredEdgeIds: () => get().hoveredEdgeIds,
@@ -109,7 +110,47 @@ export const setSelectedNodeIds = (nodeIds: EntityIds<NodeId> | NodeId[]) =>
   useGraphInteractionStore.getState().setSelectedNodeIds(nodeIds);
 export const setSelectedEdgeIds = (edgeIds: EntityIds<EdgeId> | EdgeId[]) =>
   useGraphInteractionStore.getState().setSelectedEdgeIds(edgeIds);
+export const getSelectedNodeIds = () =>
+  useGraphInteractionStore.getState().selectedNodeIds;
+export const getSelectedEdgeIds = () =>
+  useGraphInteractionStore.getState().selectedEdgeIds;
 export const clearSelections = () =>
   useGraphInteractionStore.getState().clearSelections();
+
+export const selectNodeIdsByType = (nodeType: string) => {
+  useGraphInteractionStore
+    .getState()
+    .setSelectedNodeIds(
+      Array.from(
+        getCurrentSceneGraph().getNodes().filterByType(nodeType).getIds()
+      )
+    );
+};
+
+export const selectNodesIdsByTag = (tag: string) => {
+  useGraphInteractionStore
+    .getState()
+    .setSelectedNodeIds(
+      Array.from(getCurrentSceneGraph().getNodes().filterByTag(tag).getIds())
+    );
+};
+
+export const selectEdgeIdsByType = (edgeType: string) => {
+  useGraphInteractionStore
+    .getState()
+    .setSelectedEdgeIds(
+      Array.from(
+        getCurrentSceneGraph().getEdges().filterByType(edgeType).getIds()
+      )
+    );
+};
+
+export const selectEdgeIdsByTag = (tag: string) => {
+  useGraphInteractionStore
+    .getState()
+    .setSelectedEdgeIds(
+      Array.from(getCurrentSceneGraph().getEdges().filterByTag(tag).getIds())
+    );
+};
 
 export default useGraphInteractionStore;

@@ -1,15 +1,15 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import {
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
   Menu,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "./Sidebar.module.css";
 import { SubMenuItem } from "./configs/RightSidebarConfig";
+import useWorkspaceConfigStore from "./store/workspaceConfigStore";
 
 interface SidebarProps {
   position: "left" | "right";
@@ -22,6 +22,7 @@ interface SidebarProps {
   minimal?: boolean;
   mode: "collapsed" | "full";
   style?: React.CSSProperties;
+  hideHeader?: boolean; // Add option to hide the header entirely
 }
 
 interface MenuItem {
@@ -45,16 +46,90 @@ const Sidebar: React.FC<SidebarProps> = ({
   minimal = false,
   style = {},
   mode = "full",
+  hideHeader = true,
 }) => {
   const [isOpen, setIsOpen] = useState(mode === "full");
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // Get the config based on sidebar position
+  const {
+    leftSidebarConfig,
+    rightSidebarConfig,
+    setLeftPanelWidth,
+    setRightPanelWidth,
+  } = useWorkspaceConfigStore();
+
+  // Initialize from the correct config based on position
+  const configPanelWidth =
+    position === "left"
+      ? leftSidebarConfig.panelWidth
+      : rightSidebarConfig.panelWidth;
+
+  const [panelWidth, setPanelWidth] = useState(configPanelWidth);
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const lastWidthRef = useRef<number>(configPanelWidth);
+
+  const {
+    showToolbar,
+    getActiveSection,
+    setLeftActiveSection,
+    setRightActiveSection,
+  } = useWorkspaceConfigStore();
 
   useEffect(() => {
     setIsOpen(mode === "full");
   }, [mode]);
 
-  const [expandedMenus, setExpandedMenus] = useState<{
-    [key: string]: boolean;
-  }>({});
+  // Sync active section from config when it changes, but only if not already syncing
+  useEffect(() => {
+    // Get active section from workspace config store to coordinate across sidebars
+    const configBasedActiveSection =
+      position === "left"
+        ? leftSidebarConfig.activeSectionId
+        : rightSidebarConfig.activeSectionId;
+
+    if (configBasedActiveSection != activeSection) {
+      setActiveSection(configBasedActiveSection);
+    }
+  }, [
+    leftSidebarConfig.activeSectionId,
+    rightSidebarConfig.activeSectionId,
+    position,
+    getActiveSection,
+    activeSection,
+  ]);
+
+  // Handler for section click - updates local state only
+  const handleSectionClick = (menuId: string) => {
+    const newValue = activeSection === menuId ? null : menuId;
+    setActiveSection(newValue);
+
+    // Update the store directly instead of relying on effect
+    if (position === "left") {
+      setLeftActiveSection(newValue);
+    } else {
+      setRightActiveSection(newValue);
+    }
+  };
+
+  // Properly handle the close button click to update both local state and store
+  const handleCloseSection = () => {
+    setActiveSection(null);
+    if (position === "left") {
+      setLeftActiveSection(null);
+    } else {
+      setRightActiveSection(null);
+    }
+  };
+
+  // Get toolbar height from CSS or use default
+  const toolbarHeight =
+    getComputedStyle(document.documentElement).getPropertyValue(
+      "--toolbar-height"
+    ) || "40px";
 
   const closeButton =
     position === "left" ? (
@@ -68,23 +143,105 @@ const Sidebar: React.FC<SidebarProps> = ({
     onToggle?.();
   };
 
-  const toggleMenu = (menuId: string) => {
-    if (!isOpen) {
-      setIsOpen(true);
-      setExpandedMenus((prev) => ({ ...prev, [menuId]: true }));
-    } else {
-      setExpandedMenus((prev) => ({
-        ...prev,
-        [menuId]: !prev[menuId],
-      }));
-    }
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    resizeRef.current = {
+      startX: e.clientX,
+      startWidth: lastWidthRef.current,
+    };
+    // Add a class to the body to disable text selection during resize
+    document.body.classList.add("resizing");
   };
 
+  const handleResizeMove = React.useCallback(
+    (e: MouseEvent) => {
+      if (!isResizing || !resizeRef.current) return;
+
+      // Cancel any pending animation frame
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+
+      // Use requestAnimationFrame for smoother updates
+      rafRef.current = requestAnimationFrame(() => {
+        if (!resizeRef.current) return;
+
+        const delta =
+          position === "left"
+            ? e.clientX - resizeRef.current.startX
+            : resizeRef.current.startX - e.clientX;
+
+        const newWidth = Math.max(
+          250,
+          Math.min(600, resizeRef.current.startWidth + delta)
+        );
+
+        lastWidthRef.current = newWidth;
+
+        // Directly update the DOM element style for better performance
+        if (panelRef.current) {
+          panelRef.current.style.width = `${newWidth}px`;
+        }
+      });
+    },
+    [isResizing, position]
+  );
+
+  // Update panel width when config changes
   useEffect(() => {
-    if (!isOpen) {
-      setExpandedMenus({});
+    setPanelWidth(configPanelWidth);
+    lastWidthRef.current = configPanelWidth;
+  }, [configPanelWidth]);
+
+  const handleResizeEnd = React.useCallback(() => {
+    setIsResizing(false);
+    resizeRef.current = null;
+    document.body.classList.remove("resizing");
+
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     }
-  }, [isOpen]);
+
+    // Update the state AND the store
+    setPanelWidth(lastWidthRef.current);
+
+    // Update the global store
+    if (position === "left") {
+      setLeftPanelWidth(lastWidthRef.current);
+    } else {
+      setRightPanelWidth(lastWidthRef.current);
+    }
+  }, [position, setLeftPanelWidth, setRightPanelWidth]);
+
+  useLayoutEffect(() => {
+    if (isResizing) {
+      document.addEventListener("mousemove", handleResizeMove, {
+        passive: true,
+      });
+      document.addEventListener("mouseup", handleResizeEnd);
+
+      document.body.style.cursor =
+        position === "left" ? "e-resize" : "w-resize";
+    } else {
+      document.removeEventListener("mousemove", handleResizeMove);
+      document.removeEventListener("mouseup", handleResizeEnd);
+
+      document.body.style.cursor = "";
+    }
+
+    return () => {
+      document.removeEventListener("mousemove", handleResizeMove);
+      document.removeEventListener("mouseup", handleResizeEnd);
+      document.body.style.cursor = "";
+
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, [handleResizeMove, handleResizeEnd, isResizing, position]);
 
   if (minimal && !isOpen) {
     return (
@@ -103,78 +260,130 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
 
   return (
-    <div
-      className={styles.sidebar}
-      style={{
-        width: isOpen ? "200px" : minimal ? "0px" : "60px",
-        ...style,
-      }}
-    >
-      <div className={styles.sidebarHeader}>
-        {isOpen && <h1 className={styles.sidebarTitle}>{title}</h1>}
-        <button
-          onClick={toggleSidebar}
-          className={styles.toggleButton}
-          aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          {isOpen ? closeButton : <Menu size={20} />}
-        </button>
-      </div>
+    <>
+      <div
+        className={styles.sidebar}
+        style={{
+          width: isOpen ? "150px" : minimal ? "0px" : "60px",
+          ...style,
+        }}
+      >
+        {!hideHeader && (
+          <div className={styles.sidebarHeader}>
+            {isOpen && <h1 className={styles.sidebarTitle}>{title}</h1>}
+            <button
+              onClick={toggleSidebar}
+              className={styles.toggleButton}
+              aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
+            >
+              {isOpen ? closeButton : <Menu size={20} />}
+            </button>
+          </div>
+        )}
 
-      <div className={styles.menuContainer}>
-        {content ? (
-          <div className={styles.sidebarContent}>{content}</div>
-        ) : (
-          <nav className={styles.nav}>
-            {menuItems.map((item) => (
-              <div key={item.id} className={styles.menuItem}>
-                {!item.hideHeader && (
-                  <button
-                    className={styles.menuButton}
-                    onClick={() => toggleMenu(item.id)}
-                  >
-                    {item.icon}
-                    {isOpen && (
-                      <>
-                        <span className={styles.menuText}>{item.label}</span>
-                        {expandedMenus[item.id] ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        )}
-                      </>
-                    )}
-                  </button>
-                )}
-                {isOpen && (expandedMenus[item.id] || item.alwaysExpanded) && (
-                  <div className={styles.submenu}>
-                    {item.content ||
-                      item.subMenus?.map((subMenu, idx) => (
-                        <div key={idx} className={styles.submenuItem}>
-                          {subMenu.customRender || subMenu.content || (
-                            <button
-                              onClick={subMenu.onClick}
-                              className={styles.submenuButton}
-                            >
-                              {subMenu.label}
-                            </button>
+        <div
+          className={`${styles.menuContainer} ${hideHeader ? styles.noHeaderMenuContainer : ""}`}
+        >
+          {content ? (
+            <div className={styles.sidebarContent}>{content}</div>
+          ) : (
+            <nav className={styles.nav}>
+              {menuItems.map((item) => (
+                <div
+                  key={item.id}
+                  className={`${styles.menuItem} ${
+                    activeSection === item.id ? styles.active : ""
+                  }`}
+                >
+                  {!item.hideHeader && (
+                    <button
+                      className={`${styles.menuButton} ${
+                        activeSection === item.id ? styles.activeMenuButton : ""
+                      }`}
+                      onClick={() => handleSectionClick(item.id)}
+                      title={item.label} // Add tooltip that shows on hover
+                      aria-label={item.label} // For accessibility
+                    >
+                      {item.icon}
+                      {isOpen && (
+                        <>
+                          <span className={styles.menuText}>{item.label}</span>
+                          {activeSection === item.id ? (
+                            <ChevronRight
+                              size={16}
+                              className={styles.activeIcon}
+                            />
+                          ) : (
+                            <ChevronLeft size={16} />
                           )}
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </nav>
+          )}
+        </div>
+
+        {footer && typeof footer === "function" ? (
+          <div className={styles.sidebarFooter}>{footer(isOpen)}</div>
+        ) : (
+          footer && <div className={styles.sidebarFooter}>{footer}</div>
         )}
       </div>
 
-      {footer && typeof footer === "function" ? (
-        <div className={styles.sidebarFooter}>{footer(isOpen)}</div>
-      ) : (
-        footer && <div className={styles.sidebarFooter}>{footer}</div>
-      )}
-    </div>
+      {/* Full-height side panels for active section */}
+      {activeSection &&
+        menuItems.find((item) => item.id === activeSection)?.content && (
+          <div
+            ref={panelRef}
+            className={styles.fullHeightSidePanel}
+            style={{
+              [position === "left" ? "left" : "right"]: isOpen
+                ? "150px"
+                : minimal
+                  ? "0px"
+                  : "60px",
+              // Adjust top position and height based on toolbar presence
+              top: showToolbar
+                ? `var(--toolbar-height, ${toolbarHeight})`
+                : "0",
+              height: showToolbar
+                ? `calc(100vh - var(--toolbar-height, ${toolbarHeight}))`
+                : "100vh",
+              width: `${panelWidth}px`, // Apply dynamic width
+              willChange: isResizing ? "width" : "auto", // Add will-change for better performance during resize
+              transitionProperty: isResizing ? "none" : "width", // Disable transitions during resize
+            }}
+          >
+            <div className={styles.sidePanelHeader}>
+              <h3>
+                {menuItems.find((item) => item.id === activeSection)?.label}
+              </h3>
+              <button
+                onClick={handleCloseSection} // Use the new handler here
+                className={styles.closeButton}
+              >
+                {position === "left" ? (
+                  <ChevronLeft size={16} />
+                ) : (
+                  <ChevronRight size={16} />
+                )}
+              </button>
+            </div>
+            <div className={styles.sidePanelContent}>
+              {menuItems.find((item) => item.id === activeSection)?.content}
+            </div>
+
+            {/* Add resize handle */}
+            <div
+              className={`${styles.resizeHandle} ${styles[position]}`}
+              onMouseDown={handleResizeStart}
+            />
+          </div>
+        )}
+    </>
   );
 };
 

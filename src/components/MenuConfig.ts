@@ -56,6 +56,7 @@ import {
 import {
   getLeftSidebarConfig,
   getRightSidebarConfig,
+  setLeftActiveSection,
   setLeftSidebarConfig,
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
@@ -130,12 +131,12 @@ export interface IMenuConfigCallbacks {
 export class MenuConfig {
   private callbacks: IMenuConfigCallbacks;
   private sceneGraph: SceneGraph;
-  private forceGraphInstance: React.RefObject<ForceGraph3DInstance | null>;
+  private forceGraphInstance: ForceGraph3DInstance | null;
 
   constructor(
     callbacks: IMenuConfigCallbacks,
     sceneGraph: SceneGraph,
-    forceGraphInstance: React.RefObject<ForceGraph3DInstance | null>
+    forceGraphInstance: ForceGraph3DInstance | null
   ) {
     this.callbacks = callbacks;
     this.sceneGraph = sceneGraph;
@@ -195,7 +196,7 @@ export class MenuConfig {
               const positions = extractPositionsFromUserData(this.sceneGraph);
               this.sceneGraph.setNodePositions(positions);
               console.log(positions);
-              updateNodePositions(this.forceGraphInstance.current!, positions);
+              updateNodePositions(this.forceGraphInstance!, positions);
             },
           },
           reloadNodePositions: {
@@ -229,6 +230,12 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "TEST: Set Left Sidebar to Layouts": {
+            action: () => {
+              setLeftActiveSection("layouts");
+              console.log("Left sidebar section set to 'layouts'");
+            },
+          },
           "Print SceneGraph": {
             action: () => {
               console.log(this.sceneGraph);
@@ -246,7 +253,7 @@ export class MenuConfig {
               setRightSidebarConfig({
                 mode: rightConfig.mode === "collapsed" ? "full" : "collapsed",
                 isVisible: true,
-                minimal: true,
+                minimal: false,
               });
             },
           },
@@ -258,7 +265,7 @@ export class MenuConfig {
           },
           "Run animation": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 Compute_Layout(
                   this.sceneGraph,
                   GraphvizLayoutType.Graphviz_dot
@@ -266,19 +273,19 @@ export class MenuConfig {
                   if (!result) {
                     return;
                   }
-                  attachSimulation(this.forceGraphInstance.current!, result);
+                  attachSimulation(this.forceGraphInstance!, result);
                 });
-                this.forceGraphInstance.current.resumeAnimation();
+                this.forceGraphInstance.resumeAnimation();
               }
             },
           },
           "Add cluster": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 addCluster(
                   10,
                   [getRandomNode(this.sceneGraph.getGraph()).getId()],
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   this.sceneGraph
                 );
               }
@@ -286,16 +293,16 @@ export class MenuConfig {
           },
           "Randomize visible": {
             action: () => {
-              if (this.forceGraphInstance.current) {
-                randomizeVisible(this.forceGraphInstance.current, 0.2);
+              if (this.forceGraphInstance) {
+                randomizeVisible(this.forceGraphInstance, 0.2);
               }
             },
           },
           "Randomize visible and physics": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 randomizeVisibleAndPhysics(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   this.sceneGraph,
                   0.8
                 );
@@ -304,29 +311,29 @@ export class MenuConfig {
           },
           Compactify: {
             action: () => {
-              if (this.forceGraphInstance.current) {
-                compactify(this.forceGraphInstance.current);
+              if (this.forceGraphInstance) {
+                compactify(this.forceGraphInstance);
               }
             },
           },
           "Focus with transparency": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 focusWithTransparency(
                   GetRandomNodeFromSceneGraph(this.sceneGraph).getId(),
                   this.sceneGraph,
-                  this.forceGraphInstance.current
+                  this.forceGraphInstance
                 );
               }
             },
           },
           "Focus on degrees": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 focusOnDegrees(
                   GetRandomNodeFromSceneGraph(this.sceneGraph).getId(),
                   this.sceneGraph,
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   5
                 );
               }
@@ -334,17 +341,17 @@ export class MenuConfig {
           },
           Pulsate: {
             action: () => {
-              if (this.forceGraphInstance.current) {
-                pulsateNodes(this.forceGraphInstance.current, this.sceneGraph);
+              if (this.forceGraphInstance) {
+                pulsateNodes(this.forceGraphInstance, this.sceneGraph);
               }
             },
           },
           Transition: {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 // eslint-disable-next-line unused-imports/no-unused-vars
                 const cleanup = transitionToConfig(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   {
                     nodeOpacity: 0.1,
                     linkOpacity: 0.2,
@@ -364,9 +371,9 @@ export class MenuConfig {
           },
           "Song Timeline": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 const timeline = createSongVisualizationTimeline(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   demoSongAnnotations.toArray()
                 );
                 timeline.start();
@@ -375,9 +382,9 @@ export class MenuConfig {
           },
           "Random effects": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 applyRandomEffects(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   demoSongAnnotations.toArray()
                 );
               }
@@ -385,9 +392,9 @@ export class MenuConfig {
           },
           "Staggered effects": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 applyStaggeredEffects(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   demoSongAnnotations.toArray(),
                   {
                     minNodeSize: 2,
@@ -407,9 +414,9 @@ export class MenuConfig {
           },
           "Demo 2": {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 applyStaggeredEffects(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   demoSongAnnotations2.toArray(),
                   {
                     minNodeSize: 2,
@@ -429,9 +436,9 @@ export class MenuConfig {
           },
           Spawner: {
             action: () => {
-              if (this.forceGraphInstance.current) {
+              if (this.forceGraphInstance) {
                 const spawner = createAnnotationNodeSpawner(
-                  this.forceGraphInstance.current,
+                  this.forceGraphInstance,
                   demoSongAnnotations2.getDatas(),
                   {
                     maxNodes: 5,
@@ -452,16 +459,13 @@ export class MenuConfig {
           },
           "Random Edge Spawner": {
             action: () => {
-              if (!this.forceGraphInstance.current) return;
+              if (!this.forceGraphInstance) return;
 
               // eslint-disable-next-line unused-imports/no-unused-vars
               const cleanup = runManagedAnimation(
-                this.forceGraphInstance.current,
+                this.forceGraphInstance,
                 () => {
-                  addRandomEdges(
-                    this.sceneGraph,
-                    this.forceGraphInstance.current!
-                  );
+                  addRandomEdges(this.sceneGraph, this.forceGraphInstance!);
                 },
                 {
                   duration: 30000, // 30 seconds
@@ -474,16 +478,13 @@ export class MenuConfig {
           },
           "Random Edge Spawner Burst": {
             action: () => {
-              if (!this.forceGraphInstance.current) return;
+              if (!this.forceGraphInstance) return;
 
               // eslint-disable-next-line unused-imports/no-unused-vars
               const cleanup = runManagedAnimation(
-                this.forceGraphInstance.current,
+                this.forceGraphInstance,
                 () => {
-                  addRandomEdges(
-                    this.sceneGraph,
-                    this.forceGraphInstance.current!
-                  );
+                  addRandomEdges(this.sceneGraph, this.forceGraphInstance!);
                 },
                 {
                   duration: 30000, // 30 seconds
@@ -496,16 +497,13 @@ export class MenuConfig {
           },
           "Random Node Spawner Burst": {
             action: () => {
-              if (!this.forceGraphInstance.current) return;
+              if (!this.forceGraphInstance) return;
 
               // eslint-disable-next-line unused-imports/no-unused-vars
               const cleanup = runManagedAnimation(
-                this.forceGraphInstance.current,
+                this.forceGraphInstance,
                 () => {
-                  addRandomNodes(
-                    this.sceneGraph,
-                    this.forceGraphInstance.current!
-                  );
+                  addRandomNodes(this.sceneGraph, this.forceGraphInstance!);
                 },
                 {
                   duration: 10000, // 30 seconds
@@ -523,21 +521,19 @@ export class MenuConfig {
             submenu: {
               Basic: {
                 action: () => {
-                  if (!this.forceGraphInstance.current) {
+                  if (!this.forceGraphInstance) {
                     return;
                   }
                   // eslint-disable-next-line unused-imports/no-unused-vars
                   const cleanup = runManagedAnimation(
-                    this.forceGraphInstance.current,
+                    this.forceGraphInstance,
                     (elapsedTime, frame) => {
                       // Do something with the graph
-                      this.forceGraphInstance.current?.nodeOpacity(
-                        Math.random() * 2
-                      );
-                      this.forceGraphInstance.current
+                      this.forceGraphInstance?.nodeOpacity(Math.random() * 2);
+                      this.forceGraphInstance
                         ?.d3Force("charge")
                         ?.strength(Math.random() * 200 - 100);
-                      this.forceGraphInstance.current?.d3ReheatSimulation();
+                      this.forceGraphInstance?.d3ReheatSimulation();
                       console.log(`Frame ${frame}: ${elapsedTime}ms elapsed`);
                     },
                     {
@@ -552,24 +548,21 @@ export class MenuConfig {
               },
               ConfigTransition: {
                 action: () => {
-                  if (!this.forceGraphInstance.current) {
+                  if (!this.forceGraphInstance) {
                     return;
                   }
-                  playConfigSequence(
-                    this.forceGraphInstance.current,
-                    demoConfig
-                  );
+                  playConfigSequence(this.forceGraphInstance, demoConfig);
                 },
               },
               FromAnnotations: {
                 action: () => {
-                  if (!this.forceGraphInstance.current) {
+                  if (!this.forceGraphInstance) {
                     return;
                   }
                   const configs = generateConfigsFromAnnotations(
                     songAnnotation247_2_entities.getDatas()
                   );
-                  playConfigSequence(this.forceGraphInstance.current, configs);
+                  playConfigSequence(this.forceGraphInstance, configs);
                 },
               },
             },

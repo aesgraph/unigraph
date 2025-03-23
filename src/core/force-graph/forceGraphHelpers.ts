@@ -11,6 +11,17 @@ import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
 
+/**
+ * Find a node in the ForceGraph instance by its ID
+ */
+export function findNodeInForceGraph(
+  forceGraphInstance: ForceGraph3DInstance,
+  nodeId: NodeId
+): any | null {
+  const graphData = forceGraphInstance.graphData();
+  return graphData.nodes.find((node: any) => node.id === nodeId) || null;
+}
+
 export const extractPositionDataFromForceGraphInstance = (
   instance: ForceGraph3DInstance
 ): NodePositionData => {
@@ -32,9 +43,17 @@ export const updateVisibleEntitiesInForceGraphInstance = (
   sceneGraph: SceneGraph,
   layoutMode: ForceGraph3dLayoutMode = "Physics"
 ): void => {
+  const currentVisibleNodesInForceGraph = instance
+    .graphData()
+    .nodes.map((node) => node.id as NodeId);
+  const currentVisibleEdgesInForceGraph = instance
+    .graphData()
+    .links.map((link) => (link as any).id as EdgeId);
+
   const visibleNodes = sceneGraph
     .getNodes()
     .filter((node) => node.isVisible() && getNodeIsVisible(node));
+
   const visibleEdges = sceneGraph
     .getGraph()
     .getEdgesConnectedToNodes(
@@ -42,11 +61,34 @@ export const updateVisibleEntitiesInForceGraphInstance = (
     )
     .filter((edge) => edge.isVisible() && getEdgeIsVisible(edge));
 
+  const nodesChanged = !visibleNodes
+    .getIds()
+    .isEqualTo(new EntityIds(currentVisibleNodesInForceGraph));
+  const edgesChanged = !visibleEdges
+    .getIds()
+    .isEqualTo(new EntityIds(currentVisibleEdgesInForceGraph));
+
+  if (!nodesChanged && !edgesChanged) {
+    return;
+  }
+
+  // incomplete list, need to add any additionals in visibleNodes
   const newNodeList = instance
     .graphData()
     .nodes.filter((node) => visibleNodes.has(node.id as NodeId));
 
-  const existingNodes = new Set(newNodeList.map((node) => node.id));
+  const existingNodes = new EntityIds(
+    newNodeList.map((node) => node.id as NodeId)
+  );
+
+  // incomplete list, need to add any additions in visibleEdges
+  const newEdgeList = instance
+    .graphData()
+    .links.filter((link) => visibleEdges.has((link as any).id as EdgeId));
+
+  const existingEdges = new EntityIds(
+    newEdgeList.map((link) => (link as any).id)
+  );
 
   visibleNodes.forEach((node) => {
     if (existingNodes.has(node.getId())) {
@@ -54,17 +96,12 @@ export const updateVisibleEntitiesInForceGraphInstance = (
     }
     newNodeList.push({
       id: node.getId(),
-      x: layoutMode === "Layout" ? node.getPosition().x : 0,
-      y: layoutMode === "Layout" ? node.getPosition().y : 0,
-      z: layoutMode === "Layout" ? node.getPosition().z : 0,
+      x: layoutMode === "Layout" ? node.getPosition().x : Math.random() * 5,
+      y: layoutMode === "Layout" ? node.getPosition().y : Math.random() * 5,
+      z: layoutMode === "Layout" ? node.getPosition().z : Math.random() * 5,
     });
   });
 
-  const newEdgeList = instance
-    .graphData()
-    .links.filter((link) => visibleEdges.has((link as any).id as EdgeId));
-
-  const existingEdges = new Set(newEdgeList.map((link) => (link as any).id));
   visibleEdges.forEach((edge) => {
     if (existingEdges.has(edge.getId())) {
       return;

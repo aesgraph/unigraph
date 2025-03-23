@@ -1,3 +1,4 @@
+import { ForceGraph3DInstance } from "3d-force-graph";
 import { create } from "zustand";
 import { RenderingManager__DisplayMode } from "../controllers/RenderingManager";
 import { LayoutEngineOption } from "../core/layouts/LayoutEngine";
@@ -30,6 +31,12 @@ export type AppState = AppConfig &
     currentSceneGraph: SceneGraph;
     setCurrentSceneGraph: (sceneGraph: SceneGraph) => void;
     getCurrentSceneGraph: () => SceneGraph;
+
+    forceGraphInstance: ForceGraph3DInstance | null;
+    setForceGraphInstance: (
+      forceGraphInstance: ForceGraph3DInstance | null
+    ) => void;
+    getForceGraphInstance: () => ForceGraph3DInstance | null;
   };
 
 const DEFAULTS = DEFAULT_APP_CONFIG();
@@ -40,6 +47,12 @@ const useAppConfigStore = create<AppState>((set) => ({
     set({ currentSceneGraph }),
   getCurrentSceneGraph: (): SceneGraph =>
     useAppConfigStore.getState().currentSceneGraph,
+
+  forceGraphInstance: null,
+  setForceGraphInstance: (forceGraphInstance: ForceGraph3DInstance | null) =>
+    set({ forceGraphInstance }),
+  getForceGraphInstance: (): ForceGraph3DInstance | null =>
+    useAppConfigStore.getState().forceGraphInstance,
 
   activeView: DEFAULTS.activeView,
   activeSceneGraph: DEFAULTS.activeSceneGraph,
@@ -179,6 +192,28 @@ export const setLegendMode = (legendMode: RenderingManager__DisplayMode) => {
 
 export const getLegendMode = () => {
   return useAppConfigStore.getState().legendMode;
+};
+
+export const getCurrentSceneGraph = () => {
+  return useAppConfigStore.getState().currentSceneGraph;
+};
+
+export const setCurrentSceneGraph = (currentSceneGraph: SceneGraph) => {
+  useAppConfigStore.setState(() => ({
+    currentSceneGraph,
+  }));
+};
+
+export const getForceGraphInstance = () => {
+  return useAppConfigStore.getState().forceGraphInstance;
+};
+
+export const setForceGraphInstance = (
+  forceGraphInstance: ForceGraph3DInstance
+) => {
+  useAppConfigStore.setState(() => ({
+    forceGraphInstance,
+  }));
 };
 
 export default useAppConfigStore;

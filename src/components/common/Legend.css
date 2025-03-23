@@ -1,82 +1,82 @@
 .legend-container {
-  backdrop-filter: blur(1rem);
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Allow the legend to expand to fill available height */
   padding: 0.2rem;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-height: 25rem;
-  background: white;
-  background-color: transparent;
-  width: 100%;
-}
-
-.legend-container.light {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #333;
-}
-
-.legend-container.dark {
-  background: #1a1a1a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Slightly softer shadow */
+  background-color: rgba(31, 41, 55, 0.9); /* Darker tone */
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
 
 .legend-title {
-  margin: 0 0 0px 0;
+  margin: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
   padding-bottom: 0.5rem;
-}
-
-.legend-title.light {
-  color: #333;
-  border-bottom: 2px solid #eee;
-}
-
-.legend-title.dark {
   color: white;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15); /* Adjust border opacity */
 }
 
 .legend-title-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0; /* Remove any padding to ensure perfect alignment */
+  padding: 0;
 }
 
 .legend-items {
-  max-height: 10rem;
+  flex: 1; /* Allow the items to expand and fill the container */
   overflow-y: auto;
+  max-height: none; /* Remove any fixed height */
+  background-color: rgba(31, 41, 55, 0.9); /* Match container background */
+}
+
+/* Consistent scrollbar styling */
+.legend-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.legend-items::-webkit-scrollbar-track {
+  background: #1f2937; /* Dark background for scrollbar track */
+  border-radius: 3px;
+}
+
+.legend-items::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* Medium gray for scrollbar thumb */
+  border-radius: 3px;
+}
+
+.legend-items::-webkit-scrollbar-thumb:hover {
+  background-color: #60a5fa; /* Blue highlight on hover */
+}
+
+/* Add fallback for non-WebKit browsers */
+.legend-items {
+  scrollbar-color: #4b5563 #1f2937; /* Thumb color, Track color */
+  scrollbar-width: thin;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: background-color 0.2s;
-  cursor: pointer;
-  margin-bottom: 0.5rem;
-}
-
-.legend-item.light {
-  border-bottom: 1px solid #eee;
-}
-
-.legend-item.dark {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  background-color: rgba(31, 41, 55, 0.9); /* Match container background */
 }
 
 .legend-item:hover {
-  background-color: rgba(0, 123, 255, 0.1); /* Slight highlight on hover */
-}
-
-.legend-item.dark:hover {
   background-color: rgba(
     255,
     255,
     255,
-    0.1
-  ); /* Slight highlight on hover for dark mode */
+    0.08
+  ); /* Slightly lighter hover effect */
 }
 
 .legend-item-label {
@@ -91,10 +91,10 @@
   cursor: pointer;
   accent-color: #666;
   margin-right: 0.5rem;
-  margin-left: auto;
+  margin-left: 0.5rem;
 }
 
-.legend-container.dark .legend-checkbox {
+.legend-container .legend-checkbox {
   accent-color: #4a4a4a;
   background-color: #2a2a2a;
   border-color: #666;
@@ -103,13 +103,6 @@
 .legend-text {
   font-size: 1rem;
   margin-right: 0.5rem;
-}
-
-.legend-text.light {
-  color: #444;
-}
-
-.legend-text.dark {
   color: white;
 }
 
@@ -120,11 +113,7 @@
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
-  background-color: transparent;
   margin-left: 0.5rem;
-}
-
-.legend-container.dark .legend-color-picker {
   background-color: #2a2a2a;
   border: 1px solid #666;
 }
@@ -132,14 +121,10 @@
 .legend-count {
   margin-left: auto;
   margin-right: 0.5rem;
-  color: rgba(0, 0, 0, 0.5); /* Transparent color */
+  color: rgba(255, 255, 255, 1);
   padding-bottom: 0.5rem;
   font-size: 0.8rem;
   opacity: 0.7;
-}
-
-.legend-count.dark {
-  color: rgba(255, 255, 255, 0.5); /* Transparent color for dark mode */
 }
 
 .legend-header {
@@ -190,7 +175,7 @@
 
 /* Dark mode specific styles */
 .dark-mode .legend-container {
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .dark-mode .legend-header {

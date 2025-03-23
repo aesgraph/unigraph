@@ -15,6 +15,7 @@ interface LegendProps {
   sceneGraph: SceneGraph;
   onMouseHoverItem?: (key: string) => void;
   onMouseUnhoverItem?: (key: string) => void;
+  onLabelSelected?: (key: string) => void;
 }
 
 const Legend: React.FC<LegendProps> = ({
@@ -31,6 +32,7 @@ const Legend: React.FC<LegendProps> = ({
   sceneGraph,
   onMouseHoverItem,
   onMouseUnhoverItem,
+  onLabelSelected,
 }) => {
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     Object.entries(displayConfig).reduce(
@@ -103,11 +105,17 @@ const Legend: React.FC<LegendProps> = ({
       </div>
       <div className="legend-items">
         {keys.map((key) => (
-          <label
+          <div
             key={key}
             className={`legend-item ${theme}`}
             onMouseEnter={() => handleMouseEnter(key)}
             onMouseLeave={() => handleMouseLeave(key)}
+            onClick={(e) => {
+              // Only trigger if we didn't click the checkbox
+              if (!(e.target as HTMLElement).closest(".legend-checkbox")) {
+                onLabelSelected?.(key);
+              }
+            }}
           >
             <div className="legend-item-label">
               <input
@@ -131,7 +139,7 @@ const Legend: React.FC<LegendProps> = ({
                 className="legend-color-picker"
               />
             </div>
-          </label>
+          </div>
         ))}
       </div>
     </div>

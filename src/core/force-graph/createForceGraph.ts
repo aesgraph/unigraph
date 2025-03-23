@@ -24,10 +24,19 @@ import {
 import {
   getHoveredEdgeIds,
   getHoveredNodeIds,
+  getSelectedNodeId,
+  getSelectedNodeIds,
   setHoveredEdgeId,
   setHoveredNodeId,
+  setSelectedEdgeId,
+  setSelectedEdgeIds,
   setSelectedNodeId,
+  setSelectedNodeIds,
 } from "../../store/graphInteractionStore";
+import {
+  getActiveSection,
+  setRightActiveSection,
+} from "../../store/workspaceConfigStore";
 import { ILayoutEngineResult } from "../layouts/LayoutEngine";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EdgeId } from "../model/Edge";
@@ -35,8 +44,11 @@ import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
 import { flyToNode } from "../webgl/webglHelpers";
-import { updateVisibleEntitiesInForceGraphInstance } from "./forceGraphHelpers";
 import { ForceGraphManager } from "./ForceGraphManager";
+import { updateVisibleEntitiesInForceGraphInstance } from "./forceGraphHelpers";
+
+export const MOUSE_HOVERED_NODE_COLOR = "rgb(243, 255, 16)";
+export const SELECTED_NODE_COLOR = "rgb(254, 148, 9)";
 
 export const refreshForceGraphInstance = (
   forceGraphInstance: ForceGraph3DInstance,
@@ -50,7 +62,13 @@ export const refreshForceGraphInstance = (
 
   forceGraphInstance.nodeColor((node) => {
     if (getHoveredNodeIds().has(node.id as NodeId)) {
-      return "rgb(242, 254, 9)";
+      return MOUSE_HOVERED_NODE_COLOR;
+    }
+    if (
+      getSelectedNodeId() === node.id ||
+      getSelectedNodeIds().has(node.id as NodeId)
+    ) {
+      return SELECTED_NODE_COLOR;
     }
     return RenderingManager.getColor(
       sceneGraph.getGraph().getNode(node.id as NodeId),
@@ -108,7 +126,12 @@ export const createForceGraph = (
     .nodeLabel("label")
     .nodeColor((node) => {
       if (getHoveredNodeIds().has(node.id as NodeId)) {
-        return "rgb(242, 254, 9)";
+        return MOUSE_HOVERED_NODE_COLOR;
+      } else if (
+        getSelectedNodeId() === node.id ||
+        getSelectedNodeIds().has(node.id as NodeId)
+      ) {
+        return SELECTED_NODE_COLOR;
       }
       return RenderingManager.getColor(
         sceneGraph.getGraph().getNode(node.id as NodeId),
@@ -268,7 +291,31 @@ export const bindEventsToGraphInstance = (
   onNodeRightClick?: (event: MouseEvent, nodeId: string | null) => void,
   onBackgroundRightClick?: (event: MouseEvent) => void
 ) => {
-  graph.onNodeClick((node) => setSelectedNodeId(node?.id as NodeId));
+  graph.onNodeClick((node) => {
+    setSelectedNodeId(node?.id as NodeId);
+    setRightActiveSection("node-details");
+
+    // Force refresh to update node colors immediately
+    updateHighlight(graph);
+  });
+
+  // Add a background click handler to clear selections
+  graph.onBackgroundClick((_event) => {
+    // Clear all selections when clicking on background
+    setSelectedNodeId(null);
+    setSelectedNodeIds([]);
+    setSelectedEdgeId(null);
+    setSelectedEdgeIds([]);
+
+    // Close the node details panel if it's open
+    if (getActiveSection("right") === "node-details") {
+      setRightActiveSection(null);
+    }
+
+    // Force refresh to update visual state
+    updateHighlight(graph);
+  });
+
   graph.onNodeHover((node) => {
     // no state change
     // if (!node && !sceneGraph.getAppState().hoveredNodes.has(node.id as string)) {
@@ -345,11 +392,15 @@ export const applyCameraAndControls = (
 };
 
 function updateHighlight(graph: ForceGraph3DInstance) {
-  graph
-    .nodeColor(graph.nodeColor())
-    .linkColor(graph.linkColor())
-    .linkWidth(graph.linkWidth())
-    .linkDirectionalParticles(graph.linkDirectionalParticles());
+  // Force complete refresh of all node and link appearances
+  graph.nodeColor(graph.nodeColor());
+  graph.linkColor(graph.linkColor());
+  graph.linkWidth(graph.linkWidth());
+
+  // Add explicit refresh to ensure immediate visual update
+  requestAnimationFrame(() => {
+    graph.refresh();
+  });
 }
 
 export const getNodePosition = (
