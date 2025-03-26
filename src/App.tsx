@@ -46,6 +46,8 @@ import YasguiPanel from "./components/YasguiPanel";
 
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
 import SaveSceneGraphDialog from "./components/common/SaveSceneGraphDialog";
+import LexicalEditorV2 from "./components/LexicalEditor";
+import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -89,6 +91,7 @@ import {
   SetCurrentDisplayConfigOf,
 } from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
+import { persistentStore } from "./core/storage/PersistentStoreManager";
 import { IMAGE_ANNOTATION_ENTITIES } from "./core/types/ImageAnnotation";
 import { flyToNode } from "./core/webgl/webglHelpers";
 import {
@@ -113,13 +116,20 @@ import useAppConfigStore, {
   getForceGraphInstance,
   getLegendMode,
   setActiveLayout,
+  setActiveProjectId,
   setAppConfig,
 } from "./store/appConfigStore";
 import useDialogStore from "./store/dialogStore";
+import {
+  loadDocumentsFromSceneGraph,
+  useActiveDocument,
+  useDocumentStore,
+} from "./store/documentStore";
 import { IForceGraphRenderConfig } from "./store/forceGraphConfigStore";
 import useGraphInteractionStore, {
   clearSelections,
   getHoveredNodeIds,
+  getSelectedNodeId,
   selectEdgeIdsByTag,
   selectEdgeIdsByType,
   selectNodeIdsByType,
@@ -129,9 +139,12 @@ import useGraphInteractionStore, {
   setHoveredNodeIds,
   setSelectedNodeId,
 } from "./store/graphInteractionStore";
+import { addNotification } from "./store/notificationStore";
 import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "./store/workspaceConfigStore";
+
+// Import the persistent store
 
 export type ObjectOf<T> = { [key: string]: T };
 
@@ -139,6 +152,7 @@ const getSimulations = (
   sceneGraph: SceneGraph
 ): ObjectOf<React.JSX.Element> => {
   return {
+    Lexical: <LexicalEditorV2 />,
     "ImageBox Creator": <ImageBoxCreator sceneGraph={sceneGraph} />,
     ImageGalleryV2: <ImageGalleryV2 />,
     // ParticleStickFigure: <ParticleStickFigure />,
@@ -173,7 +187,8 @@ export type RenderingView =
   | "ReactFlow"
   | "Gallery" // Add new view type
   | "Simulation"
-  | "Yasgui"; // Add new view type
+  | "Yasgui" // Add new view type
+  | "Editor"; // Add new view type
 
 const AppContent: React.FC<{
   defaultGraph?: string;
@@ -232,16 +247,17 @@ const AppContent: React.FC<{
   // eslint-disable-next-line unused-imports/no-unused-vars
   const { mousePosition, setMousePosition } = useMousePosition();
 
+  const activeDocument = useActiveDocument();
+  const { setActiveDocument } = useDocumentStore();
+
   const clearUrlOfQueryParams = useCallback(() => {
     const url = new URL(window.location.href);
-    // url.searchParams.delete('graph');
-    // url.searchParams.delete('svgUrl');
-    // url.searchParams.delete('view');
-    // url.searchParams.delete('layout');
-    url.searchParams.delete("showOptionsPanel");
-    url.searchParams.delete("showLegendBars");
-    url.searchParams.delete("showGraphLayoutToolbar");
-    url.searchParams.delete("showRenderConfig");
+    window.history.pushState({}, "", url.toString());
+  }, []);
+
+  const clearGraphFromUrl = useCallback(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("graph");
     window.history.pushState({}, "", url.toString());
   }, []);
 
@@ -632,8 +648,10 @@ const AppContent: React.FC<{
     async (graph: SceneGraph, clearQueryParams: boolean = true) => {
       const tick = Date.now();
       console.log("Loading SceneGraph", graph.getMetadata().name, "...");
+      loadDocumentsFromSceneGraph(graph); // clears existing store, and loads in new documents
       if (clearQueryParams) {
         clearUrlOfQueryParams();
+        clearGraphFromUrl();
       }
       clearSelections();
       safeComputeLayout(graph, activeLayout).then(() => {
@@ -668,10 +686,16 @@ const AppContent: React.FC<{
 
         const tock = Date.now();
         console.log("TOTAL TIME", tock - tick);
+        addNotification({
+          message: `Loaded SceneGraph: ${graph.getMetadata().name}`,
+          type: "success",
+          groupId: "load-scene-graph",
+        });
       });
     },
     [
       activeLayout,
+      clearGraphFromUrl,
       clearUrlOfQueryParams,
       forceGraphInstance,
       handleDisplayConfigChanged,
@@ -683,28 +707,51 @@ const AppContent: React.FC<{
 
   const handleSetSceneGraph = useCallback(
     async (key: string, clearUrlOfQueryParams: boolean = true) => {
-      const graphGenerator = getSceneGraph(key);
+      // First try to load from persistent store
+      try {
+        const persistedGraph = await persistentStore.loadSceneGraph(key);
+        if (persistedGraph) {
+          handleLoadSceneGraph(persistedGraph, clearUrlOfQueryParams);
+          setActiveProjectId(key); // Set the active project ID
 
-      if (!graphGenerator) {
+          // Update the URL query parameter
+          const url = new URL(window.location.href);
+          url.searchParams.set("graph", key);
+          url.searchParams.delete("svgUrl");
+          window.history.pushState({}, "", url.toString());
+          return;
+        }
+      } catch (err) {
+        console.log(
+          `Key not found in persistent store, checking demo graphs ${err}`
+        );
+      }
+
+      // Fall back to demo graphs if not in persistent store
+      try {
+        const graphGenerator = getSceneGraph(key);
+        let graph: SceneGraph;
+        if (typeof graphGenerator === "function") {
+          graph = await graphGenerator();
+        } else {
+          graph = graphGenerator;
+        }
+
+        handleLoadSceneGraph(graph, clearUrlOfQueryParams);
+        setActiveProjectId(null); // Clear project ID since this is a demo graph
+
+        // Update the URL query parameter
+        const url = new URL(window.location.href);
+        url.searchParams.set("graph", key);
+        url.searchParams.delete("svgUrl");
+        window.history.pushState({}, "", url.toString());
+        // eslint-disable-next-line unused-imports/no-unused-vars
+      } catch (err) {
         console.error(`Graph ${key} not found`);
         console.log(`Available graphs are: ${getAllDemoSceneGraphKeys()}`);
+        handleLoadSceneGraph(new SceneGraph(), true);
         return;
       }
-
-      let graph: SceneGraph;
-      if (typeof graphGenerator === "function") {
-        graph = await graphGenerator();
-      } else {
-        graph = graphGenerator;
-      }
-
-      handleLoadSceneGraph(graph, clearUrlOfQueryParams);
-
-      // Update the URL query parameter
-      const url = new URL(window.location.href);
-      url.searchParams.set("graph", key);
-      url.searchParams.delete("svgUrl");
-      window.history.pushState({}, "", url.toString());
     },
     [handleLoadSceneGraph]
   );
@@ -1630,6 +1677,31 @@ const AppContent: React.FC<{
     );
   }, [activeView, currentSceneGraph]);
 
+  const maybeRenderNodeDocumentEditor = () => {
+    // Return nothing if not in Editor view or no active document
+    if (!getSelectedNodeId()) {
+      return null;
+    }
+    if (activeView !== "Editor" || !activeDocument) {
+      return null;
+    }
+
+    const previousView = useDocumentStore.getState().previousView;
+
+    return (
+      <div className="document-editor-overlay">
+        <NodeDocumentEditor
+          nodeId={getSelectedNodeId()!}
+          onClose={() => {
+            // Return to the previously stored view
+            setActiveView(previousView || "ForceGraph3d");
+            setActiveDocument(null);
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
       <div
@@ -1663,6 +1735,7 @@ const AppContent: React.FC<{
           handleLoadLayout={handleLoadLayout}
           handleFitToView={handleFitToView}
           handleShowEntityTables={() => setShowEntityTables(true)}
+          handleLoadSceneGraph={handleLoadSceneGraph}
         >
           {/* Main content */}
           <div style={{ height: "100%", position: "relative" }}>
@@ -1670,6 +1743,7 @@ const AppContent: React.FC<{
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
             {maybeRenderYasgui}
+            {maybeRenderNodeDocumentEditor()}
             {activeView === "Gallery" && (
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}

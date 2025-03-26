@@ -28,6 +28,10 @@ export type AppState = AppConfig &
     isDarkMode: boolean;
     selectedSimulation: string;
 
+    activeProjectId: string | null;
+    getActiveProjectId: () => string | null;
+    setActiveProjectId: (activeProjectId: string | null) => void;
+
     currentSceneGraph: SceneGraph;
     setCurrentSceneGraph: (sceneGraph: SceneGraph) => void;
     getCurrentSceneGraph: () => SceneGraph;
@@ -42,6 +46,12 @@ export type AppState = AppConfig &
 const DEFAULTS = DEFAULT_APP_CONFIG();
 
 const useAppConfigStore = create<AppState>((set) => ({
+  activeProjectId: "undefined",
+  getActiveProjectId: (): string | null =>
+    useAppConfigStore.getState().activeProjectId,
+  setActiveProjectId: (activeProjectId: string | null) =>
+    set({ activeProjectId }),
+
   currentSceneGraph: new SceneGraph({ metadata: { name: "Unnamed" } }),
   setCurrentSceneGraph: (currentSceneGraph: SceneGraph) =>
     set({ currentSceneGraph }),
@@ -214,6 +224,16 @@ export const setForceGraphInstance = (
   useAppConfigStore.setState(() => ({
     forceGraphInstance,
   }));
+};
+
+export const setActiveProjectId = (activeProjectId: string | null) => {
+  useAppConfigStore.setState(() => ({
+    activeProjectId,
+  }));
+};
+
+export const getActiveProjectId = () => {
+  return useAppConfigStore.getState().activeProjectId;
 };
 
 export default useAppConfigStore;

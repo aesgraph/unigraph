@@ -120,3 +120,45 @@ export const getSceneGraph = (
   }
   throw new Error(`SceneGraph not found: ${name}`);
 };
+
+// Add tree structure helpers for ProjectManager component
+export interface DemoSceneGraphTree {
+  [category: string]: string[];
+}
+
+export function getAllDemoSceneGraphCategories(): string[] {
+  // Group the demo scene graphs by category
+  const categories = new Set<string>();
+
+  getAllDemoSceneGraphKeys().forEach((key) => {
+    const parts = key.split("/");
+    if (parts.length > 1) {
+      categories.add(parts[0]);
+    } else {
+      categories.add("Uncategorized");
+    }
+  });
+
+  return Array.from(categories);
+}
+
+export function getDemoSceneGraphTree(): DemoSceneGraphTree {
+  const tree: DemoSceneGraphTree = {};
+
+  getAllDemoSceneGraphKeys().forEach((key) => {
+    const parts = key.split("/");
+    let category = "Uncategorized";
+
+    if (parts.length > 1) {
+      category = parts[0];
+    }
+
+    if (!tree[category]) {
+      tree[category] = [];
+    }
+
+    tree[category].push(key);
+  });
+
+  return tree;
+}

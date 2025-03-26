@@ -30,4 +30,25 @@ export class EntityCache {
   public getTypes(): string[] {
     return Array.from(this.cache.keys());
   }
+
+  public getSize(): number {
+    return Array.from(this.cache.values()).reduce(
+      (acc, entities) => acc + entities.size(),
+      0
+    );
+  }
+
+  // public maybeGetEntityById(type: string, id: string): IEntity | null {
+  //   return this.cache.get(type)?.maybeGet(id);
+  // }
+
+  public maybeGetEntityById(id: string): IEntity | null {
+    for (const entities of this.cache.values()) {
+      const entity = entities.maybeGet(id);
+      if (entity) {
+        return entity;
+      }
+    }
+    return null;
+  }
 }

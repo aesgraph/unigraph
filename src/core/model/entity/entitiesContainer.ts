@@ -231,8 +231,6 @@ export class EntitiesContainer<
   }
 
   public toJSON() {
-    console.log("entities JSON", this.entities);
-    console.log("entities JSON", JSON.stringify(this.entities));
     return this.entities;
   }
 

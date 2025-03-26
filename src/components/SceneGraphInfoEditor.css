@@ -1,0 +1,219 @@
+.scenegraph-info-editor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+}
+
+.scenegraph-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  gap: 8px; /* Add gap between elements */
+}
+
+.scenegraph-info-title {
+  flex: 1; /* Allow title to grow */
+  min-width: 0; /* Prevent overflow */
+}
+
+.scenegraph-info-title h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff; /* Changed from #e0e0e0 to #ffffff for bright white */
+}
+
+.scenegraph-info-title-edit {
+  display: flex; /* Make edit container flex */
+  gap: 8px; /* Space between input and buttons */
+  width: 100%; /* Take full width */
+  align-items: center; /* Center items vertically */
+}
+
+.title-input {
+  flex: 1; /* Allow input to grow */
+  min-width: 0; /* Prevent overflow */
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Darker background for better contrast */
+  color: #ffffff; /* Brighter text */
+}
+
+.scenegraph-info-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #e0e0e0;
+  opacity: 0.8;
+}
+
+.action-button:hover {
+  opacity: 1;
+  background-color: var(--hover-bg, rgba(0, 0, 0, 0.05));
+}
+
+.scenegraph-info-content {
+  padding: 12px 16px;
+}
+
+.scenegraph-info-section {
+  margin-bottom: 16px;
+}
+
+.scenegraph-info-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #d8d8d8; /* Reduced brightness from #ffffff */
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-content {
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #ffffff; /* Brightest color for main content */
+}
+
+.notes-content {
+  min-height: 40px;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.empty-placeholder {
+  opacity: 0.5;
+  font-style: italic;
+  font-size: 13px;
+  color: #888888; /* Lighter gray for better visibility */
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+  font-weight: 500;
+  color: #d8d8d8; /* Reduced brightness from #d0d0d0 */
+}
+
+.description-input,
+.notes-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 60px;
+  font-size: 13px;
+  font-family: inherit;
+  background-color: rgba(0, 0, 0, 0.3); /* Darker background */
+  color: #ffffff; /* Brighter text */
+}
+
+.description-input::placeholder,
+.notes-input::placeholder,
+.title-input::placeholder {
+  color: #a0a0a0; /* Lighter placeholder text */
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #d8d8d8; /* Reduced brightness from #d0d0d0 */
+}
+
+.info-value {
+  color: #ffffff; /* Brightest color for values */
+}
+
+.filter-active {
+  color: var(--highlight-color, #e97f00);
+  font-weight: 500;
+}
+
+/* Scrollbar styles */
+.notes-content::-webkit-scrollbar,
+.description-input::-webkit-scrollbar,
+.notes-input::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.notes-content::-webkit-scrollbar-track,
+.description-input::-webkit-scrollbar-track,
+.notes-input::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.notes-content::-webkit-scrollbar-thumb,
+.description-input::-webkit-scrollbar-thumb,
+.notes-input::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.scenegraph-info-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #e0e0e0;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.export-button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+}

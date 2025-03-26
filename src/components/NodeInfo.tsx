@@ -1,7 +1,16 @@
-import { ArrowUpRight, ExternalLink, MapPin, Zap } from "lucide-react";
+import {
+  ArrowUpRight,
+  ExternalLink,
+  FileText,
+  MapPin,
+  Zap,
+} from "lucide-react";
 import React from "react";
 import { NodeId } from "../core/model/Node";
-import { getCurrentSceneGraph } from "../store/appConfigStore";
+import useAppConfigStore, {
+  getCurrentSceneGraph,
+} from "../store/appConfigStore";
+import { useDocumentStore } from "../store/documentStore";
 import { getSelectedNodeId } from "../store/graphInteractionStore";
 import { Badge } from "./Badge";
 import styles from "./NodeInfo.module.css";
@@ -25,6 +34,9 @@ const NodeInfo: React.FC<NodeInfoProps> = ({
   // Use provided nodeId, or fallback to selected node id from global state
   const activeNodeId = nodeId || getSelectedNodeId();
   const sceneGraph = getCurrentSceneGraph();
+
+  const { setActiveDocument, createDocument } = useDocumentStore();
+  const { setActiveView, activeView } = useAppConfigStore();
 
   if (!activeNodeId) {
     return (
@@ -71,6 +83,16 @@ const NodeInfo: React.FC<NodeInfoProps> = ({
 
   const handleZoom = () => {
     onZoomToNode?.(node.getId());
+  };
+
+  const handleDocumentClick = () => {
+    console.log("Document button clicked for node:", activeNodeId);
+    // Ensure document exists first
+    createDocument(activeNodeId);
+    // Store the current view before switching to Editor
+    setActiveDocument(activeNodeId, activeView);
+    // Switch to Editor view
+    setActiveView("Editor");
   };
 
   // Different layout for compact mode
@@ -138,6 +160,13 @@ const NodeInfo: React.FC<NodeInfoProps> = ({
             title="Zoom to this node"
           >
             <Zap size={18} />
+          </button>
+          <button
+            className={styles.actionButton}
+            onClick={handleDocumentClick}
+            title="Add Document"
+          >
+            <FileText size={18} />
           </button>
         </div>
       </div>

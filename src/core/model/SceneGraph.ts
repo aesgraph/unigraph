@@ -1,4 +1,3 @@
-import { ObjectOf } from "../../App";
 import { AppConfig } from "../../AppConfig";
 import { FilterPreset } from "../../components/filters/FilterRuleDefinition";
 import {
@@ -7,8 +6,10 @@ import {
   RenderingConfig,
   RenderingManager,
 } from "../../controllers/RenderingManager";
+import { DocumentState } from "../../store/documentStore";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { NodePositionData, Position } from "../layouts/layoutHelpers";
+import { ObjectOf } from "./../../App";
 import { EdgeId } from "./Edge";
 import { IEntity } from "./entity/abstractEntity";
 import { EntityCache } from "./entity/entityCache";
@@ -33,6 +34,7 @@ export interface ISceneGraphMetadata {
   name?: string;
   description?: string;
   source?: string;
+  notes?: string;
 }
 
 export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
@@ -52,6 +54,7 @@ export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
     metadata: {},
     entityCache: new EntityCache(),
     committed_DisplayConfig: CLONE_RENDERING_CONFIG(displayConfig),
+    documents: {},
   };
 };
 
@@ -67,6 +70,7 @@ export type SceneGraphData = {
   entityCache: EntityCache; // for storing additional non-graph entities
   defaultAppConfig?: AppConfig;
   committed_DisplayConfig: RenderingConfig;
+  documents: ObjectOf<DocumentState>; // for storing additional documents, by entityId for now
 };
 
 export class SceneGraph {
@@ -94,8 +98,46 @@ export class SceneGraph {
     return this.data.committed_DisplayConfig;
   }
 
+  // Improved document handling
+  setDocument(storageKey: string, document: DocumentState | null) {
+    if (!storageKey) {
+      console.error("Cannot set document with empty storageKey");
+      return;
+    }
+
+    // Validate the document refers to an existing node if it's a NodeId
+    if (document && this.data.graph.getNodes().getIds().size > 0) {
+      const nodeExists = this.data.graph.getNodes().has(storageKey as NodeId);
+      if (!nodeExists) {
+        console.warn(
+          `Setting document for non-existent node ID: ${storageKey}`
+        );
+      }
+    }
+
+    if (document) {
+      this.data.documents[storageKey] = document;
+    } else {
+      delete this.data.documents[storageKey];
+    }
+  }
+
+  getDocuments() {
+    return this.data.documents;
+  }
+
+  getDocument(storageKey: string) {
+    return this.data.documents[storageKey];
+  }
+
+  // clearDocuments() {
+  //   this.data.documents = {};
+  // }
+
   commitDisplayConfig() {
-    this.data.committed_DisplayConfig = this.data.displayConfig;
+    this.data.committed_DisplayConfig = CLONE_RENDERING_CONFIG(
+      this.data.displayConfig
+    );
   }
 
   bindListeners(listeners: ISceneGraphListeners) {
@@ -147,7 +189,16 @@ export class SceneGraph {
   }
 
   getNodeById(id: NodeId) {
-    return this.data.graph.getNodes().get(id);
+    if (!id) {
+      console.warn("getNodeById called with undefined or null id");
+      return null;
+    }
+
+    const node = this.data.graph.getNodes().get(id);
+    if (!node) {
+      console.debug(`Node with id "${id}" not found in graph`);
+    }
+    return node;
   }
 
   getEdgeById(id: EdgeId) {
@@ -277,9 +328,31 @@ export class SceneGraph {
     return nodes;
   }
 
+  // Add validation during SceneGraph loading
   public static fromJSON(json: string): SceneGraph {
-    const data = JSON.parse(json);
-    console.log(data);
-    return new SceneGraph(data);
+    try {
+      const data = JSON.parse(json);
+      console.log("Loaded SceneGraph data:", data);
+
+      // Validate nodes and documents
+      if (data.documents) {
+        console.log(
+          `SceneGraph has ${Object.keys(data.documents).length} documents`
+        );
+
+        // Check for document node references
+        for (const docId in data.documents) {
+          const nodeExists = data.graph?.nodes?.has?.(docId);
+          if (!nodeExists) {
+            console.warn(`Document ${docId} refers to a non-existent node`);
+          }
+        }
+      }
+
+      return new SceneGraph(data);
+    } catch (error) {
+      console.error("Error parsing SceneGraph from JSON:", error);
+      return new SceneGraph(); // Return empty graph on error
+    }
   }
 }

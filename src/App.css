@@ -102,3 +102,15 @@ html {
   align-items: center;
   z-index: 99999;
 }
+
+.document-editor-overlay {
+  position: fixed;
+  top: 40px; /* Account for toolbar height */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000; /* High z-index to appear above other content */
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}

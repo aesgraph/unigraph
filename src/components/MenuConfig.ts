@@ -53,6 +53,7 @@ import {
   getShowEntityDataCard,
   setShowEntityDataCard,
 } from "../store/appConfigStore";
+import { clearDocuments, getAllDocuments } from "../store/documentStore";
 import {
   getLeftSidebarConfig,
   getRightSidebarConfig,
@@ -230,6 +231,24 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "TEST: Save documents to scenegraph": {
+            action: () => {
+              const documents = getAllDocuments();
+              for (const [key, doc] of Object.entries(documents)) {
+                this.sceneGraph.setDocument(key, doc);
+              }
+            },
+          },
+          "TEXT: Print documentStore": {
+            action: () => {
+              console.log(getAllDocuments());
+            },
+          },
+          "TEST: Clear documentStore": {
+            action: () => {
+              clearDocuments();
+            },
+          },
           "TEST: Set Left Sidebar to Layouts": {
             action: () => {
               setLeftActiveSection("layouts");

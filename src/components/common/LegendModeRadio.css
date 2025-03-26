@@ -1,8 +1,35 @@
 .legend-mode-radio {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 8px;
   margin-top: 0.625rem;
-  padding: 0.1rem;
   border-radius: 0.5rem;
   backdrop-filter: blur(10px);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #e0e0e0;
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+}
+
+.radio-option label {
+  font-size: 13px;
+  cursor: pointer;
 }
 
 .radio-label {
