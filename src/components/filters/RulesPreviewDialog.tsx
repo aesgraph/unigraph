@@ -1,10 +1,10 @@
 import React from "react";
-import { FilterPreset } from "./FilterRuleDefinition";
+import { Filter } from "../../store/activeFilterStore";
 
 interface RulesPreviewDialogProps {
-  preset: FilterPreset;
+  preset: Filter;
   onClose: () => void;
-  onApply: (preset: FilterPreset) => void;
+  onApply: (preset: Filter) => void;
   isDarkMode?: boolean;
 }
 
@@ -24,7 +24,7 @@ const RulesPreviewDialog: React.FC<RulesPreviewDialogProps> = ({
           </button>
         </div>
         <div className="preview-content">
-          {preset.rules.map((rule, _index) => (
+          {preset.filterRules.map((rule, _index) => (
             <div key={rule.id} className="preview-rule-item">
               <span className={`rule-operator ${rule.operator}`}>
                 {rule.operator}

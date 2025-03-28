@@ -7,9 +7,7 @@ import {
 import React, { useCallback, useState } from "react";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { deserializeDotToSceneGraph } from "../../core/serializers/fromDot";
-import { deserializeGraphmlToSceneGraph } from "../../core/serializers/fromGraphml";
-import { deserializeSvgToSceneGraph } from "../../core/serializers/fromSvg";
-import { deserializeSceneGraphFromJson } from "../../core/serializers/toFromJson";
+import { loadSceneGraphFromFile } from "../../core/serializers/sceneGraphLoader";
 import { DEMO_SCENE_GRAPHS } from "../../data/DemoSceneGraphs";
 import { fetchSvgSceneGraph } from "../../hooks/useSvgSceneGraph";
 import styles from "./LoadSceneGraphDialog.module.css";
@@ -159,47 +157,17 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
       const file = event.target.files?.[0];
       if (!file) return;
 
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      const reader = new FileReader();
-
-      reader.onload = async (e) => {
-        const content = e.target?.result as string;
-        let sceneGraph: SceneGraph | undefined;
-
-        try {
-          switch (fileExtension) {
-            case "json":
-              sceneGraph = deserializeSceneGraphFromJson(content);
-              break;
-            case "graphml":
-              sceneGraph = await deserializeGraphmlToSceneGraph(content);
-              break;
-            case "svg":
-              sceneGraph = deserializeSvgToSceneGraph(content);
-              break;
-            case "dot":
-              sceneGraph = deserializeDotToSceneGraph(content);
-              break;
-            default:
-              console.error(
-                `Unsupported file type: ${fileExtension || file.type}`
-              );
-              return;
-          }
-
-          if (sceneGraph) {
-            handleLoadSceneGraph(sceneGraph);
-          } else {
-            throw new Error("Unable to load file to SceneGraph");
-          }
-        } catch (error) {
-          console.error(`Error importing file: ${error}`);
-        } finally {
+      try {
+        const sceneGraph = await loadSceneGraphFromFile(file);
+        if (sceneGraph) {
+          handleLoadSceneGraph(sceneGraph);
           onClose();
+        } else {
+          throw new Error("Failed to load scene graph from file");
         }
-      };
-
-      reader.readAsText(file);
+      } catch (error) {
+        console.error(`Error importing file: ${error}`);
+      }
     },
     [handleLoadSceneGraph, onClose]
   );

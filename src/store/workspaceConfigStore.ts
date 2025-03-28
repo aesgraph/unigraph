@@ -8,6 +8,25 @@ export interface ISidebarConfig {
   panelWidth: number;
 }
 
+// Add section width configuration
+export interface SectionWidthConfig {
+  [sectionId: string]: number;
+}
+
+// Default widths for specific sections
+const defaultSectionWidths: SectionWidthConfig = {
+  projects: 500, // Wider default for Projects section
+  layouts: 300,
+  filters: 500,
+  analysis: 300,
+  displaySettings: 350,
+  project: 300,
+  // Add other sections as needed
+};
+
+// Default width for sections not explicitly configured
+export const defaultSectionWidth = 300;
+
 export const DEFAULT_SIDEBAR_CONFIG = (): ISidebarConfig => {
   return {
     isVisible: true,
@@ -22,6 +41,7 @@ type WorkspaceConfigState = {
   showToolbar: boolean;
   leftSidebarConfig: ISidebarConfig;
   rightSidebarConfig: ISidebarConfig;
+  sectionWidths: SectionWidthConfig;
 
   setShowToolbar: (show: boolean) => void;
   setLeftSidebarConfig: (config: Partial<ISidebarConfig>) => void;
@@ -37,6 +57,7 @@ const useWorkspaceConfigStore = create<WorkspaceConfigState>((set) => ({
   showToolbar: true,
   leftSidebarConfig: DEFAULT_SIDEBAR_CONFIG(),
   rightSidebarConfig: DEFAULT_SIDEBAR_CONFIG(),
+  sectionWidths: defaultSectionWidths,
 
   getActiveSection: (sidebar): string | null => {
     return sidebar === "left"
@@ -124,6 +145,23 @@ export const getActiveSection = (sidebar: "left" | "right") => {
   return sidebar === "left"
     ? useWorkspaceConfigStore.getState().leftSidebarConfig.activeSectionId
     : useWorkspaceConfigStore.getState().rightSidebarConfig.activeSectionId;
+};
+
+// Add action to update section width
+export const updateSectionWidth = (id: string, width: number) => {
+  const state = useWorkspaceConfigStore.getState();
+  useWorkspaceConfigStore.setState({
+    sectionWidths: {
+      ...state.sectionWidths,
+      [id]: width,
+    },
+  });
+};
+
+// Add helper to get section width
+export const getSectionWidth = (id: string) => {
+  const { sectionWidths } = useWorkspaceConfigStore.getState();
+  return sectionWidths[id] || defaultSectionWidth;
 };
 
 export default useWorkspaceConfigStore;

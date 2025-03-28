@@ -83,5 +83,4 @@ export const onSubmitImage = (sceneGraph: SceneGraph, data: ImageBoxData) => {
   sceneGraph.setDisplayConfig(
     GET_DEFAULT_RENDERING_CONFIG(sceneGraph.getGraph())
   );
-  console.log(sceneGraph);
 };

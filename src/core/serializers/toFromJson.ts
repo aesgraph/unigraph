@@ -34,8 +34,14 @@ export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
   delete malformedSceneGraphData.data.entityCache; //@todo fix this hack. entitycache entities need to be loaded into properly
   delete malformedSceneGraphData.data.appState; //@todo fix this hack. appState entities need to be loaded into properly
 
+  console.log(malformedSceneGraphData.data.displayConfig);
+
   return new SceneGraph({
     ...malformedSceneGraphData.data,
     graph,
   });
 }
+
+export const compareEquality = (a: SceneGraph, b: SceneGraph) => {
+  return JSON.stringify(a) === JSON.stringify(b);
+};

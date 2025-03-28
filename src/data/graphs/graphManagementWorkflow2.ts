@@ -170,6 +170,7 @@ export const graphManagementWorkflowDiagram2 = () => {
       },
       activeLayout: CustomLayoutType.Random,
       legendMode: "type",
+      activeFilter: null,
     },
   });
 

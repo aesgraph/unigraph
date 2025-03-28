@@ -11,7 +11,7 @@ import React, {
 import { toDot } from "ts-graphviz";
 import { v4 as uuidv4 } from "uuid";
 import "./App.css";
-import { AppConfig } from "./AppConfig";
+import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
   IPathArgs,
 } from "./components/analysis/PathAnalysisWizard";
@@ -24,10 +24,6 @@ import LayoutManager from "./components/common/LayoutManager";
 import Legend from "./components/common/Legend";
 import LegendModeRadio from "./components/common/LegendModeRadio";
 import FilterManager from "./components/filters/FilterManager";
-import {
-  FilterPreset,
-  FilterRuleDefinition,
-} from "./components/filters/FilterRuleDefinition";
 import FilterWindow from "./components/filters/FilterWindow";
 import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
 import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
@@ -46,6 +42,8 @@ import YasguiPanel from "./components/YasguiPanel";
 
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
 import SaveSceneGraphDialog from "./components/common/SaveSceneGraphDialog";
+import LexicalEditorV2 from "./components/LexicalEditor";
+import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -64,7 +62,6 @@ import {
   updateNodePositions,
   zoomToFit,
 } from "./core/force-graph/createForceGraph";
-import { songAnnotation247_2_entities } from "./core/force-graph/dynamics/247-2";
 import { syncMissingNodesAndEdgesInForceGraph } from "./core/force-graph/forceGraphHelpers";
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
 import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
@@ -73,6 +70,7 @@ import {
   Compute_Layout,
   ILayoutEngineResult,
   LayoutEngineOption,
+  LayoutEngineOptionLabels,
   PresetLayoutType,
 } from "./core/layouts/LayoutEngine";
 import { fitToRect, NodePositionData } from "./core/layouts/layoutHelpers";
@@ -89,7 +87,7 @@ import {
   SetCurrentDisplayConfigOf,
 } from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
-import { IMAGE_ANNOTATION_ENTITIES } from "./core/types/ImageAnnotation";
+import { persistentStore } from "./core/storage/PersistentStoreManager";
 import { flyToNode } from "./core/webgl/webglHelpers";
 import {
   getAllDemoSceneGraphKeys,
@@ -99,7 +97,13 @@ import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
-import useActiveFilterStore from "./store/activeFilterStore";
+import { Filter, loadFiltersFromSceneGraph } from "./store/activeFilterStore";
+import {
+  getLayoutByName,
+  getSavedLayouts,
+  Layout,
+  loadLayoutsFromSceneGraph,
+} from "./store/activeLayoutStore";
 import useActiveLegendConfigStore, {
   setEdgeKeyColor,
   setEdgeKeyVisibility,
@@ -113,13 +117,20 @@ import useAppConfigStore, {
   getForceGraphInstance,
   getLegendMode,
   setActiveLayout,
+  setActiveProjectId,
   setAppConfig,
 } from "./store/appConfigStore";
 import useDialogStore from "./store/dialogStore";
+import {
+  loadDocumentsFromSceneGraph,
+  useActiveDocument,
+  useDocumentStore,
+} from "./store/documentStore";
 import { IForceGraphRenderConfig } from "./store/forceGraphConfigStore";
 import useGraphInteractionStore, {
   clearSelections,
   getHoveredNodeIds,
+  getSelectedNodeId,
   selectEdgeIdsByTag,
   selectEdgeIdsByType,
   selectNodeIdsByType,
@@ -129,9 +140,17 @@ import useGraphInteractionStore, {
   setHoveredNodeIds,
   setSelectedNodeId,
 } from "./store/graphInteractionStore";
+import { addNotification } from "./store/notificationStore";
 import useWorkspaceConfigStore, {
+  getLeftSidebarConfig,
+  getRightSidebarConfig,
+  setLeftActiveSection,
+  setLeftSidebarConfig,
   setRightActiveSection,
+  setRightSidebarConfig,
 } from "./store/workspaceConfigStore";
+
+// Import the persistent store
 
 export type ObjectOf<T> = { [key: string]: T };
 
@@ -139,6 +158,7 @@ const getSimulations = (
   sceneGraph: SceneGraph
 ): ObjectOf<React.JSX.Element> => {
   return {
+    Lexical: <LexicalEditorV2 />,
     "ImageBox Creator": <ImageBoxCreator sceneGraph={sceneGraph} />,
     ImageGalleryV2: <ImageGalleryV2 />,
     // ParticleStickFigure: <ParticleStickFigure />,
@@ -173,7 +193,8 @@ export type RenderingView =
   | "ReactFlow"
   | "Gallery" // Add new view type
   | "Simulation"
-  | "Yasgui"; // Add new view type
+  | "Yasgui" // Add new view type
+  | "Editor"; // Add new view type
 
 const AppContent: React.FC<{
   defaultGraph?: string;
@@ -221,7 +242,7 @@ const AppContent: React.FC<{
 
   const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
 
-  const { activeFilter, setActiveFilter } = useActiveFilterStore();
+  const { activeFilter, setActiveFilter } = useAppConfigStore();
 
   const graphvizRef = useRef<HTMLDivElement | null>(null);
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
@@ -232,16 +253,17 @@ const AppContent: React.FC<{
   // eslint-disable-next-line unused-imports/no-unused-vars
   const { mousePosition, setMousePosition } = useMousePosition();
 
+  const activeDocument = useActiveDocument();
+  const { setActiveDocument } = useDocumentStore();
+
   const clearUrlOfQueryParams = useCallback(() => {
     const url = new URL(window.location.href);
-    // url.searchParams.delete('graph');
-    // url.searchParams.delete('svgUrl');
-    // url.searchParams.delete('view');
-    // url.searchParams.delete('layout');
-    url.searchParams.delete("showOptionsPanel");
-    url.searchParams.delete("showLegendBars");
-    url.searchParams.delete("showGraphLayoutToolbar");
-    url.searchParams.delete("showRenderConfig");
+    window.history.pushState({}, "", url.toString());
+  }, []);
+
+  const clearGraphFromUrl = useCallback(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("graph");
     window.history.pushState({}, "", url.toString());
   }, []);
 
@@ -390,40 +412,64 @@ const AppContent: React.FC<{
   );
 
   const handleSetActiveFilterPreset = useCallback(
-    (preset: string | undefined, filterRules: FilterRuleDefinition[]) => {
+    (filter: Filter) => {
       DisplayManager.applyVisibilityFromFilterRulesToGraph(
         currentSceneGraph.getGraph(),
-        filterRules
+        filter.filterRules
       );
       SetNodeAndEdgeLegendsForOnlyVisibleEntities(
         currentSceneGraph,
         legendMode,
-        filterRules
+        filter.filterRules
       );
-      setActiveFilter({ name: preset, filterRules });
+      setActiveFilter(filter);
     },
     [currentSceneGraph, legendMode, setActiveFilter]
   );
 
   const handleSetVisibleNodes = useCallback(
     (nodeIds: string[]) => {
-      handleSetActiveFilterPreset("node id selection", [
-        {
-          id: "node id selection",
-          operator: "include",
-          ruleMode: "entities",
-          conditions: {
-            nodes: nodeIds,
+      handleSetActiveFilterPreset({
+        name: "node id selection",
+        filterRules: [
+          {
+            id: "node id selection",
+            operator: "include",
+            ruleMode: "entities",
+            conditions: {
+              nodes: nodeIds,
+            },
           },
-        },
-      ]);
+        ],
+      });
     },
     [handleSetActiveFilterPreset]
   );
 
   let isComputing = false;
   const safeComputeLayout = useCallback(
-    async (sceneGraph: SceneGraph, layout: LayoutEngineOption) => {
+    async (
+      sceneGraph: SceneGraph,
+      layout: LayoutEngineOption | string | null
+    ) => {
+      if (Object.keys(getSavedLayouts()).includes(layout as string)) {
+        console.log("Skipping layout computation for saved layout", layout);
+        currentSceneGraph.setNodePositions(
+          getLayoutByName(layout as string).positions
+        );
+        setLayoutResult({
+          layoutType: layout!,
+          positions: getLayoutByName(layout as string).positions,
+        });
+        return;
+      }
+      if (
+        layout != null &&
+        !LayoutEngineOptionLabels.includes(layout as LayoutEngineOption)
+      ) {
+        console.error("Invalid layout option", layout);
+      }
+
       if (isComputing) {
         console.log("Already computing layout. Skipping.");
         return;
@@ -443,7 +489,10 @@ const AppContent: React.FC<{
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
       isComputing = true;
-      const output = await Compute_Layout(sceneGraph, layout);
+      const output = await Compute_Layout(
+        sceneGraph,
+        (layout ?? DEFAULT_APP_CONFIG().activeLayout) as LayoutEngineOption
+      );
       if (!output) {
         throw new Error(`Failed to compute layout for ${layout}`);
       }
@@ -456,7 +505,7 @@ const AppContent: React.FC<{
             ...sceneGraph.getDisplayConfig(),
             nodePositions: fitToRect(50, 50, output.positions),
           },
-          layout
+          (layout ?? DEFAULT_APP_CONFIG().activeLayout) as LayoutEngineOption
         );
         const dot = toDot(g);
         const graphviz = await Graphviz.load();
@@ -632,11 +681,18 @@ const AppContent: React.FC<{
     async (graph: SceneGraph, clearQueryParams: boolean = true) => {
       const tick = Date.now();
       console.log("Loading SceneGraph", graph.getMetadata().name, "...");
+      loadDocumentsFromSceneGraph(graph); // clears existing store, and loads in new documents
+      loadFiltersFromSceneGraph(graph);
+      loadLayoutsFromSceneGraph(graph);
       if (clearQueryParams) {
         clearUrlOfQueryParams();
+        clearGraphFromUrl();
       }
       clearSelections();
-      safeComputeLayout(graph, activeLayout).then(() => {
+      safeComputeLayout(
+        graph,
+        graph.getData().defaultAppConfig?.activeLayout ?? null
+      ).then(() => {
         setCurrentSceneGraph(graph);
         if (graph.getData().defaultAppConfig) {
           setAppConfig(graph.getData().defaultAppConfig!);
@@ -663,19 +719,40 @@ const AppContent: React.FC<{
         });
 
         // DEV LOGIC
-        graph.getEntityCache().addEntities(songAnnotation247_2_entities);
-        graph.getEntityCache().addEntities(IMAGE_ANNOTATION_ENTITIES());
+        // graph.getEntityCache().addEntities(songAnnotation247_2_entities);
+        // graph.getEntityCache().addEntities(IMAGE_ANNOTATION_ENTITIES());
+
+        setActiveFilter(graph.getData().defaultAppConfig?.activeFilter ?? null);
+
+        if (graph.getData()?.defaultAppConfig?.workspaceConfig) {
+          setLeftSidebarConfig(
+            graph.getData()!.defaultAppConfig!.workspaceConfig!
+              .leftSidebarConfig
+          );
+          setLeftActiveSection(getLeftSidebarConfig().activeSectionId);
+          setRightSidebarConfig(
+            graph.getData()!.defaultAppConfig!.workspaceConfig!
+              .rightSidebarConfig
+          );
+          setRightActiveSection(getRightSidebarConfig().activeSectionId);
+        }
 
         const tock = Date.now();
         console.log("TOTAL TIME", tock - tick);
+        addNotification({
+          message: `Loaded SceneGraph: ${graph.getMetadata().name}`,
+          type: "success",
+          groupId: "load-scene-graph",
+        });
       });
     },
     [
-      activeLayout,
+      clearGraphFromUrl,
       clearUrlOfQueryParams,
       forceGraphInstance,
       handleDisplayConfigChanged,
       safeComputeLayout,
+      setActiveFilter,
       setCurrentSceneGraph,
       setLegendMode,
     ]
@@ -683,28 +760,51 @@ const AppContent: React.FC<{
 
   const handleSetSceneGraph = useCallback(
     async (key: string, clearUrlOfQueryParams: boolean = true) => {
-      const graphGenerator = getSceneGraph(key);
+      // First try to load from persistent store
+      try {
+        const persistedGraph = await persistentStore.loadSceneGraph(key);
+        if (persistedGraph) {
+          handleLoadSceneGraph(persistedGraph, clearUrlOfQueryParams);
+          setActiveProjectId(key); // Set the active project ID
 
-      if (!graphGenerator) {
+          // Update the URL query parameter
+          const url = new URL(window.location.href);
+          url.searchParams.set("graph", key);
+          url.searchParams.delete("svgUrl");
+          window.history.pushState({}, "", url.toString());
+          return;
+        }
+      } catch (err) {
+        console.log(
+          `Key not found in persistent store, checking demo graphs ${err}`
+        );
+      }
+
+      // Fall back to demo graphs if not in persistent store
+      try {
+        const graphGenerator = getSceneGraph(key);
+        let graph: SceneGraph;
+        if (typeof graphGenerator === "function") {
+          graph = await graphGenerator();
+        } else {
+          graph = graphGenerator;
+        }
+
+        handleLoadSceneGraph(graph, clearUrlOfQueryParams);
+        setActiveProjectId(null); // Clear project ID since this is a demo graph
+
+        // Update the URL query parameter
+        const url = new URL(window.location.href);
+        url.searchParams.set("graph", key);
+        url.searchParams.delete("svgUrl");
+        window.history.pushState({}, "", url.toString());
+        // eslint-disable-next-line unused-imports/no-unused-vars
+      } catch (err) {
         console.error(`Graph ${key} not found`);
         console.log(`Available graphs are: ${getAllDemoSceneGraphKeys()}`);
+        handleLoadSceneGraph(new SceneGraph(), true);
         return;
       }
-
-      let graph: SceneGraph;
-      if (typeof graphGenerator === "function") {
-        graph = await graphGenerator();
-      } else {
-        graph = graphGenerator;
-      }
-
-      handleLoadSceneGraph(graph, clearUrlOfQueryParams);
-
-      // Update the URL query parameter
-      const url = new URL(window.location.href);
-      url.searchParams.set("graph", key);
-      url.searchParams.delete("svgUrl");
-      window.history.pushState({}, "", url.toString());
     },
     [handleLoadSceneGraph]
   );
@@ -724,9 +824,12 @@ const AppContent: React.FC<{
     [simulations]
   );
 
-  const handleSetActiveLayout = useCallback((layout: LayoutEngineOption) => {
-    setActiveLayout(layout);
-  }, []);
+  const handleSetActiveLayout = useCallback(
+    (layout: LayoutEngineOption | string) => {
+      setActiveLayout(layout);
+    },
+    []
+  );
 
   const graphvizFitToView = useCallback((element: HTMLDivElement) => {
     enableZoomAndPanOnSvg(element);
@@ -943,16 +1046,27 @@ const AppContent: React.FC<{
   const [editingNodeId, setEditingNodeId] = useState<NodeId | null>(null);
 
   const handleLoadLayout = useCallback(
-    (positions: NodePositionData) => {
-      currentSceneGraph.getDisplayConfig().nodePositions = positions;
+    (layout: Layout) => {
+      // Add safety check to ensure positions exist
+      if (!layout || !layout.positions) {
+        console.warn("Cannot load layout: missing position data");
+        addNotification({
+          message: "Failed to apply layout: missing position data",
+          type: "error",
+          duration: 3000,
+        });
+        return;
+      }
+
+      currentSceneGraph.getDisplayConfig().nodePositions = layout.positions;
       DisplayManager.applyNodePositions(
         currentSceneGraph.getGraph(),
-        positions
+        layout.positions
       );
-      handleSetActiveLayout(PresetLayoutType.Preset);
-      setLayoutResult({ positions, layoutType: PresetLayoutType.Preset });
+      handleSetActiveLayout(layout.name);
+      setLayoutResult({ positions: layout.positions, layoutType: layout.name });
       if (forceGraphInstance && activeView === "ForceGraph3d") {
-        updateNodePositions(forceGraphInstance, positions);
+        updateNodePositions(forceGraphInstance, layout.positions);
       } else if (activeView === "ReactFlow") {
         setGraphModelUpdateTime(Date.now()); //hack
       }
@@ -1559,18 +1673,18 @@ const AppContent: React.FC<{
   };
 
   const handleLoadFilter = useCallback(
-    (preset: FilterPreset) => {
+    (preset: Filter) => {
       DisplayManager.applyVisibilityFromFilterRulesToGraph(
         currentSceneGraph.getGraph(),
-        preset.rules
+        preset.filterRules
       );
       SetNodeAndEdgeLegendsForOnlyVisibleEntities(
         currentSceneGraph,
         legendMode,
-        preset.rules
+        preset.filterRules
       );
       setShowFilterManager(false);
-      setActiveFilter({ name: preset.name, filterRules: preset.rules });
+      setActiveFilter({ name: preset.name, filterRules: preset.filterRules });
     },
     [currentSceneGraph, legendMode, setActiveFilter]
   );
@@ -1630,6 +1744,31 @@ const AppContent: React.FC<{
     );
   }, [activeView, currentSceneGraph]);
 
+  const maybeRenderNodeDocumentEditor = () => {
+    // Return nothing if not in Editor view or no active document
+    if (!getSelectedNodeId()) {
+      return null;
+    }
+    if (activeView !== "Editor" || !activeDocument) {
+      return null;
+    }
+
+    const previousView = useDocumentStore.getState().previousView;
+
+    return (
+      <div className="document-editor-overlay">
+        <NodeDocumentEditor
+          nodeId={getSelectedNodeId()!}
+          onClose={() => {
+            // Return to the previously stored view
+            setActiveView(previousView || "ForceGraph3d");
+            setActiveDocument(null);
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
       <div
@@ -1663,6 +1802,8 @@ const AppContent: React.FC<{
           handleLoadLayout={handleLoadLayout}
           handleFitToView={handleFitToView}
           handleShowEntityTables={() => setShowEntityTables(true)}
+          handleLoadSceneGraph={handleLoadSceneGraph}
+          handleSetActiveFilter={handleSetActiveFilterPreset}
         >
           {/* Main content */}
           <div style={{ height: "100%", position: "relative" }}>
@@ -1670,6 +1811,7 @@ const AppContent: React.FC<{
             {maybeRenderForceGraph3D}
             {maybeRenderReactFlow}
             {maybeRenderYasgui}
+            {maybeRenderNodeDocumentEditor()}
             {activeView === "Gallery" && (
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}

@@ -24,6 +24,8 @@
   position: relative;
   overflow: hidden;
   isolation: isolate; /* Create stacking context */
+  display: flex;
+  flex-direction: column;
 }
 
 .graphContainer {
@@ -43,4 +45,27 @@
 
 .sidebarLayer > * {
   pointer-events: auto; /* Re-enable pointer events for sidebar content */
+}
+
+.documentEditorContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.emptyEditor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  color: #666;
+  font-size: 16px;
+  text-align: center;
+  padding: 40px;
+  background-color: #f9f9f9;
 }

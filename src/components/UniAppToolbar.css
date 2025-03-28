@@ -325,7 +325,7 @@
   background: white;
   cursor: pointer;
   color: #333;
-  min-width: 6rem;
+  min-width: 5rem;
   font-size: 1.125rem; /* Increased font size */
   height: 3rem; /* Increased height */
   transition: all 0.2s ease;

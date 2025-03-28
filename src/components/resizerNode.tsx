@@ -5,7 +5,7 @@ import {
   ResizeDragEvent,
   ResizeParams,
 } from "@xyflow/react";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { NodeData } from "../core/model/Node";
 
 export type ResizerNodeDataArgs = NodeData & {
@@ -17,6 +17,16 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
     width: data.dimensions?.width || 100,
     height: data.dimensions?.height || 50,
   });
+
+  // Add effect to update dimensions when props change
+  useEffect(() => {
+    if (data.dimensions) {
+      setDimensions({
+        width: data.dimensions.width || 100,
+        height: data.dimensions.height || 50,
+      });
+    }
+  }, [data.dimensions]);
 
   return (
     <div
@@ -49,4 +59,12 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
   );
 }
 
-export default memo(ResizerNode);
+// Use React.memo with a custom comparison function to prevent unnecessary rerenders
+export default memo(ResizerNode, (prevProps, nextProps) => {
+  // Only rerender if label or dimensions have changed
+  return (
+    prevProps.data.label === nextProps.data.label &&
+    prevProps.data.dimensions?.width === nextProps.data.dimensions?.width &&
+    prevProps.data.dimensions?.height === nextProps.data.dimensions?.height
+  );
+});

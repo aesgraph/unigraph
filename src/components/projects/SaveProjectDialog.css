@@ -1,0 +1,152 @@
+.save-project-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.save-project-dialog {
+  background-color: #ffffff;
+  border-radius: 8px;
+  width: 460px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.save-project-overlay.dark .save-project-dialog {
+  background-color: #1e293b;
+  color: #e0e0e0;
+}
+
+.save-project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.save-project-overlay.dark .save-project-header {
+  border-bottom: 1px solid #334155;
+}
+
+.save-project-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #24292e;
+}
+
+.save-project-overlay.dark .save-project-header h2 {
+  color: #e0e0e0;
+}
+
+.save-project-close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6e7781;
+}
+
+.save-project-overlay.dark .save-project-close-button {
+  color: #94a3b8;
+}
+
+.save-project-form {
+  padding: 20px;
+}
+
+.save-project-field {
+  margin-bottom: 16px;
+}
+
+.save-project-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #24292e;
+}
+
+.save-project-overlay.dark .save-project-field label {
+  color: #cbd5e1;
+}
+
+.save-project-input,
+.save-project-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.save-project-overlay.dark .save-project-input,
+.save-project-overlay.dark .save-project-textarea {
+  background-color: #1a2942;
+  border-color: #334155;
+  color: #e0e0e0;
+}
+
+.save-project-input:focus,
+.save-project-textarea:focus {
+  outline: none;
+  border-color: #0969da;
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.2);
+}
+
+.save-project-overlay.dark .save-project-input:focus,
+.save-project-overlay.dark .save-project-textarea:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+}
+
+.save-project-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.save-project-cancel-button {
+  padding: 8px 16px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background-color: #f6f8fa;
+  color: #24292e;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.save-project-overlay.dark .save-project-cancel-button {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e0e0e0;
+}
+
+.save-project-save-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4285f4;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.save-project-save-button:hover {
+  background-color: #3367d6;
+}
+
+.save-project-overlay.dark .save-project-save-button:hover {
+  background-color: #5294ff;
+}

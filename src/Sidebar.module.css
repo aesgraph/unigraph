@@ -477,7 +477,7 @@
   height: 100vh;
   width: 240px; /* Reduce from 280px/260px to 240px */
   min-width: 180px; /* Reduce minimum width */
-  max-width: 360px; /* Reduce maximum width */
+  max-width: 800px; /* Reduce maximum width */
   background-color: #2d3748;
   overflow-y: auto;
   overflow-x: hidden; /* Add this to prevent horizontal scroll */
@@ -577,8 +577,8 @@
 .sidePanelContent {
   flex: 1;
   padding: 8px;
-  overflow-y: auto;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: hidden;
+  overflow-x: hidden;
   width: 100%;
   box-sizing: border-box;
 }

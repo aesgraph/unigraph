@@ -22,6 +22,8 @@ import {
 } from "../../core/force-graph/createForceGraph";
 import { NodeId } from "../../core/model/Node";
 import { EntityIds } from "../../core/model/entity/entityIds";
+import useAppConfigStore from "../../store/appConfigStore";
+import { useDocumentStore } from "../../store/documentStore";
 import useGraphInteractionStore, {
   getSelectedNodeId,
   getSelectedNodeIds,
@@ -101,6 +103,8 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
 
   const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
   const { getActiveSection } = useWorkspaceConfigStore();
+  const { setActiveDocument } = useDocumentStore();
+  const { setActiveView, activeView } = useAppConfigStore();
 
   // Get configuration from the store
   const reactFlowConfig = getReactFlowConfig();
@@ -310,6 +314,15 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
     }
   }, [selectedNodeIds, selectedEdgeIds]);
 
+  const handleNodeDoubleClick = useCallback(
+    (event: React.MouseEvent, node: any) => {
+      // Create document and switch to editor view
+      setActiveDocument(node.id as NodeId, activeView);
+      setActiveView("Editor");
+    },
+    [setActiveDocument, activeView, setActiveView]
+  );
+
   return (
     <div
       style={{
@@ -349,6 +362,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
           onNodeMouseLeave={handleNodeMouseLeave}
           onNodeClick={handleNodeClick}
           onSelectionChange={handleSelectionChange}
+          onNodeDoubleClick={handleNodeDoubleClick}
           fitView={true}
           minZoom={0.1}
           maxZoom={200}

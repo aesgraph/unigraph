@@ -11,9 +11,3 @@ export interface FilterRuleDefinition {
     nodes?: string[]; // Add nodes array for manual selection
   };
 }
-
-export interface FilterPreset {
-  name: string;
-  rules: FilterRuleDefinition[];
-  description?: string;
-}

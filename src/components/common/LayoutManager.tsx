@@ -4,14 +4,14 @@ import {
   GET_DEFAULT_RENDERING_CONFIG,
   RenderingConfig,
 } from "../../controllers/RenderingManager";
-import { NodePositionData } from "../../core/layouts/layoutHelpers";
 import { SceneGraph } from "../../core/model/SceneGraph";
+import { Layout } from "../../store/activeLayoutStore";
 import "./LayoutManager.css";
 
 interface LayoutManagerProps {
   sceneGraph: SceneGraph;
   onClose: () => void;
-  onLayoutLoad: (positions: NodePositionData) => void;
+  onLayoutLoad: (layout: Layout) => void;
   isDarkMode?: boolean;
   mode: "save" | "load";
 }
@@ -30,7 +30,6 @@ const LayoutManager: React.FC<LayoutManagerProps> = ({
   >(sceneGraph.getData().displayConfigPresets || {});
 
   useEffect(() => {
-    console.log("presets are ", sceneGraph.getData());
     setCurrentLayouts(sceneGraph.getData().displayConfigPresets || {});
   }, [sceneGraph]);
 
@@ -62,8 +61,13 @@ const LayoutManager: React.FC<LayoutManagerProps> = ({
 
   const handleLoadLayout = (layoutName: string) => {
     const renderingConfig = currentLayouts[layoutName];
-    if (renderingConfig) {
-      onLayoutLoad(renderingConfig.nodePositions || {});
+    console.log("config is ", renderingConfig);
+    if (renderingConfig && renderingConfig.nodePositions) {
+      onLayoutLoad({
+        name: layoutName,
+        positions: renderingConfig.nodePositions,
+      });
+      console.log("Loaded layout", layoutName);
       onClose();
     }
   };

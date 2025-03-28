@@ -33,7 +33,6 @@ import {
   Compute_Layout,
   LayoutEngineOption,
 } from "../core/layouts/LayoutEngine";
-import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { DisplayManager } from "../core/model/DisplayManager";
 import { SceneGraph } from "../core/model/SceneGraph";
 import {
@@ -48,11 +47,13 @@ import {
 } from "../data/graphs/blobMesh";
 import { demoSongAnnotations } from "../mp3/data";
 import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
+import { Layout } from "../store/activeLayoutStore";
 import {
   getActiveView,
   getShowEntityDataCard,
   setShowEntityDataCard,
 } from "../store/appConfigStore";
+import { clearDocuments, getAllDocuments } from "../store/documentStore";
 import {
   getLeftSidebarConfig,
   getRightSidebarConfig,
@@ -124,7 +125,7 @@ export interface IMenuConfigCallbacks {
   setShowEdgeTable: (show: boolean) => void;
   showLayoutManager: (mode: "save" | "load") => void;
   showFilterWindow: () => void;
-  handleLoadLayout: (positions: NodePositionData) => void;
+  handleLoadLayout: (layout: Layout) => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
 }
 
@@ -203,7 +204,10 @@ export class MenuConfig {
             action: () => {
               const positions = extractPositionsFromNodes(this.sceneGraph);
               this.sceneGraph.setNodePositions(positions);
-              this.callbacks.handleLoadLayout(positions);
+              this.callbacks.handleLoadLayout({
+                name: "reloadedPositions",
+                positions,
+              });
             },
           },
           Graphviz: {
@@ -230,6 +234,24 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "TEST: Save documents to scenegraph": {
+            action: () => {
+              const documents = getAllDocuments();
+              for (const [key, doc] of Object.entries(documents)) {
+                this.sceneGraph.setDocument(key, doc);
+              }
+            },
+          },
+          "TEXT: Print documentStore": {
+            action: () => {
+              console.log(getAllDocuments());
+            },
+          },
+          "TEST: Clear documentStore": {
+            action: () => {
+              clearDocuments();
+            },
+          },
           "TEST: Set Left Sidebar to Layouts": {
             action: () => {
               setLeftActiveSection("layouts");

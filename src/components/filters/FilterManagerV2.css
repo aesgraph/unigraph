@@ -1,0 +1,556 @@
+.project-manager {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  color: #e0e0e0;
+  background-color: #1a2942;
+  transition: background-color 0.3s ease;
+  overflow: hidden; /* Ensure outer container has no scrollbar */
+}
+
+/* Dark mode styles - even darker blue */
+.project-manager.dark {
+  background-color: #162035;
+  color: #e0e0e0;
+}
+
+.project-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.project-manager-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.project-manager-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #bbb;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dark .action-button {
+  color: #a0b7e2;
+}
+
+.dark .action-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #d0e0ff;
+}
+
+/* Tab navigation styles */
+.project-tabs {
+  display: flex;
+  margin-bottom: 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.tab-button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #bbb;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button.active {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scrollbar at this level */
+  min-height: 0; /* Fix nested flexbox scrolling issues */
+}
+
+.project-error {
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background-color: rgba(211, 47, 47, 0.2);
+  color: #ef5350;
+  border-radius: 4px;
+  font-size: 14px;
+  border-left: 3px solid #d32f2f;
+}
+
+.dark .project-error {
+  background-color: rgba(211, 47, 47, 0.15);
+  color: #ff6b6b;
+}
+
+.projects-list,
+.demo-graphs-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Only allow scrolling here */
+  overflow-x: hidden; /* No horizontal scrollbar */
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.03);
+  position: relative; /* For context menus */
+}
+
+.projects-loading,
+.projects-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #9e9e9e;
+  text-align: center;
+}
+
+.dark .projects-loading,
+.dark .projects-empty {
+  color: #a0b7e2;
+}
+
+.projects-empty p {
+  margin-bottom: 16px;
+}
+
+.new-project-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.new-project-button:hover {
+  background-color: #5294ff;
+}
+
+.project-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #31415e;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.project-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.project-item.selected {
+  background-color: rgba(78, 132, 222, 0.2);
+  border-left: 3px solid #4285f4;
+}
+
+.dark .project-item {
+  border-bottom: 1px solid #263859;
+}
+
+.dark .project-item:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.dark .project-item.selected {
+  background-color: rgba(78, 132, 222, 0.25);
+}
+
+.project-icon {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+  color: #7e9cd8;
+}
+
+.dark .project-icon {
+  color: #6d95e0;
+}
+
+.project-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.project-name {
+  font-weight: 500;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e0e0e0;
+}
+
+.project-date {
+  font-size: 12px;
+  color: #9e9e9e;
+}
+
+.dark .project-date {
+  color: #8caad4;
+}
+
+.project-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  position: relative; /* This ensures menu is positioned relative to actions container */
+}
+
+.project-item:hover .project-actions {
+  opacity: 1;
+}
+
+.project-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #bbb;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.project-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ff6b6b;
+}
+
+.dark .project-action-button {
+  color: #a0b7e2;
+}
+
+.dark .project-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ff8080;
+}
+
+/* Add styles for the name input */
+.project-name-input {
+  background: transparent;
+  border: 1px solid #4285f4;
+  border-radius: 4px;
+  color: inherit;
+  font-size: inherit;
+  padding: 2px 6px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.dark .project-name-input {
+  border-color: #5294ff;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.project-name-input:focus {
+  outline: none;
+  border-color: #5294ff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Tree view for demo graphs */
+.tree-node {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-node:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tree-node.selected {
+  background-color: rgba(78, 132, 222, 0.25);
+  border-left: 3px solid #4285f4;
+}
+
+.tree-icon {
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  color: #7e9cd8;
+}
+
+.tree-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.demo-search-container {
+  flex-shrink: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #31415e;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.dark .demo-search-container {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: #263859;
+}
+
+.demo-search-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #31415e;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+}
+
+.demo-search-input:focus {
+  outline: none;
+  border-color: #4285f4;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .demo-search-input {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: #263859;
+  color: #e0e0e0;
+}
+
+.dark .demo-search-input:focus {
+  border-color: #4285f4;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tree-controls {
+  display: flex;
+  margin-left: 8px;
+}
+
+.tree-control-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #7e9cd8;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.tree-control-button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .tree-control-button {
+  color: #6d95e0;
+}
+
+.dark .tree-control-button:hover {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.highlight {
+  background-color: var(--highlight-color, #fef08a);
+  color: var(--highlight-text, #854d0e);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.dark .highlight {
+  background-color: var(--dark-highlight-color, #713f12);
+  color: var(--dark-highlight-text, #fef08a);
+}
+
+.no-results {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-muted, #64748b);
+  font-style: italic;
+}
+
+.dark .no-results {
+  color: var(--dark-text-muted, #94a3b8);
+}
+
+.project-dates {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #9e9e9e;
+  gap: 4px;
+}
+
+.dark .project-dates {
+  color: #8caad4;
+}
+
+.project-date-label {
+  color: #bbb;
+  margin-right: 2px;
+}
+
+.dark .project-date-label {
+  color: #a0b7e2;
+}
+
+.project-date {
+  margin-right: 8px;
+}
+
+.options-menu {
+  position: fixed; /* Change to fixed positioning */
+  background: #1a2942;
+  border: 1px solid #31415e;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  min-width: 160px;
+  padding: 4px 0;
+  z-index: 1000;
+}
+
+.dark .options-menu {
+  background: #162035;
+  border-color: #263859;
+}
+
+.options-menu button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  color: #e0e0e0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.options-menu button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.options-menu .delete-option {
+  color: #ef4444;
+  width: 100%;
+  text-align: left;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.options-menu .delete-option:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.dark .options-menu .delete-option {
+  color: #f87171;
+}
+
+.dark .options-menu .delete-option:hover {
+  background-color: rgba(248, 113, 113, 0.1);
+}
+
+/* Fix for Firefox to prevent unwanted scrollbars */
+@-moz-document url-prefix() {
+  .project-manager {
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .tab-content {
+    overflow: hidden;
+  }
+}
+
+/* Ensure the filter manager container takes full height of its parent */
+.filter-manager-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* Hide any overflow on the outer container */
+  flex: 1;
+}
+
+/* Critical fix: Ensure the list container scrolls properly */
+.filter-list-container {
+  flex: 1;
+  min-height: 0; /* Critical for nested flex containers in Firefox */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  position: relative; /* Ensure proper stacking context */
+}
+
+/* Additional styles for Firefox */
+@-moz-document url-prefix() {
+  .filter-list-container {
+    overflow-y: scroll; /* Force scrollbar in Firefox */
+    scrollbar-width: thin; /* Use a thin scrollbar in Firefox */
+  }
+}
+
+/* Style for WebKit browsers (Chrome, Safari) */
+.filter-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-list-container::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 3px;
+}

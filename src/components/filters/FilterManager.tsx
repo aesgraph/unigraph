@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 import { SceneGraph } from "../../core/model/SceneGraph";
-import { FilterPreset } from "./FilterRuleDefinition";
+import useActiveFilterStore, { Filter } from "../../store/activeFilterStore";
 import RulesPreviewDialog from "./RulesPreviewDialog";
 
 interface FilterManagerProps {
   sceneGraph: SceneGraph;
   onClose: () => void;
-  onFilterLoad: (preset: FilterPreset) => void;
+  onFilterLoad: (preset: Filter) => void;
   isDarkMode?: boolean;
 }
 
 const FilterManager: React.FC<FilterManagerProps> = ({
-  sceneGraph,
   onClose,
   onFilterLoad,
   isDarkMode,
 }) => {
-  const [previewPreset, setPreviewPreset] = useState<FilterPreset | null>(null);
-  const filterPresets = sceneGraph.getFilterPresets();
+  const [previewPreset, setPreviewPreset] = useState<Filter | null>(null);
+  const { savedFilters } = useActiveFilterStore();
 
   return (
     <div className="layout-manager-overlay">
@@ -29,11 +28,11 @@ const FilterManager: React.FC<FilterManagerProps> = ({
           </button>
         </div>
         <div className="layout-manager-content">
-          {Object.entries(filterPresets).length === 0 ? (
+          {Object.entries(savedFilters).length === 0 ? (
             <div className="no-presets">No saved filter presets</div>
           ) : (
             <div className="preset-list">
-              {Object.entries(filterPresets).map(([name, preset]) => (
+              {Object.entries(savedFilters).map(([name, preset]) => (
                 <div key={name} className="preset-item">
                   <div className="preset-info">
                     <span className="preset-name">{name}</span>

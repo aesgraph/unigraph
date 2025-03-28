@@ -21,10 +21,17 @@ export type LayoutEngineOption =
   | CustomLayoutType
   | PresetLayoutType;
 
+export const LayoutEngineOptionLabels = [
+  ...Object.values(GraphvizLayoutType),
+  ...Object.values(GraphologyLayoutType),
+  ...Object.values(CustomLayoutType),
+  ...Object.values(PresetLayoutType),
+];
+
 export interface ILayoutEngineResult {
   positions: NodePositionData;
   svg?: string;
-  layoutType: LayoutEngineOption;
+  layoutType: LayoutEngineOption | string;
 }
 
 export class LayoutEngine {

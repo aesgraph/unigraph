@@ -216,10 +216,19 @@ export class DisplayManager {
   };
 
   public static applyNodePositions = (graph: Graph, data: NodePositionData) => {
+    // Add validation check to prevent errors
+    if (!data) {
+      console.warn("DisplayManager.applyNodePositions: positions is undefined");
+      return;
+    }
+
+    // Iterate through the graph nodes safely
     graph.getNodes().forEach((node) => {
-      const id = node.getId();
-      if (id in data) {
-        node.setPosition(data[id]);
+      const nodeId = node.getId();
+      // Check if positions object has this node id
+      if (data && nodeId in data) {
+        const pos = data[nodeId];
+        node.setPosition(pos);
       }
     });
   };
