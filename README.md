@@ -29,7 +29,7 @@ model, allowing for highly flexible and interactive representations of complex s
 5. Open http://localhost:3000/
 
 <ins>Documentation: Serving Locally</ins><br>
-_For developing and previewing documentation locally before pushing_<br>
+_For developing and previewing documentation locally_<br>
 1. `brew install ruby`
 2. `gem install jekyll bundler`
 3. `cd docs`
