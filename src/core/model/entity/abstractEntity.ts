@@ -1,3 +1,4 @@
+import uuid4 from "uuid4";
 import { ObjectOf } from "../../../App";
 
 export type EntityId = string;
@@ -12,21 +13,21 @@ export interface EntityData {
   description?: string;
 }
 
-export type EntityDataArgs = Omit<Partial<EntityData>, "tags" | "id"> & {
+export type EntityDataArgs = Omit<Partial<EntityData>, "tags"> & {
   tags?: Iterable<Tag>;
+  id?: EntityId;
 };
 
 type FullEntityType<T> = Omit<T, keyof EntityDataArgs> & EntityData;
 
-function fromDefault<T extends EntityDataArgs>(
-  id: EntityId,
-  args?: T
-): FullEntityType<T> {
+function fromDefault<T extends EntityDataArgs>(args?: T): FullEntityType<T> {
+  const type = args?.type ?? "entity";
+  const id = `${args?.id ?? uuid4()}`;
   return {
     ...args,
     id,
     tags: new Set(args?.tags ?? []),
-    type: args?.type ?? "entity",
+    type,
     userData: args?.userData ?? {},
   } as FullEntityType<T>;
 }
@@ -55,11 +56,9 @@ export abstract class AbstractEntity<
 {
   protected data: Data;
 
-  public constructor(id: T, args?: EntityDataArgs) {
+  public constructor(args?: EntityDataArgs) {
     this.data = {
-      ...fromDefault(id, {
-        ...args,
-      }),
+      ...fromDefault(args),
     } as Data;
   }
 

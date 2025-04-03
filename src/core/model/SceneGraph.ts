@@ -96,6 +96,14 @@ export class SceneGraph {
     this.listeners = listeners;
   }
 
+  refreshDisplayConfig() {
+    const newRenderingConfig = GET_DEFAULT_RENDERING_CONFIG(
+      this.getGraph(),
+      this.getDisplayConfig()
+    );
+    this.data.displayConfig = newRenderingConfig;
+  }
+
   getCommittedDisplayConfig() {
     return this.data.committed_DisplayConfig;
   }

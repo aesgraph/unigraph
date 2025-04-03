@@ -50,6 +50,7 @@ import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
 import { Layout } from "../store/activeLayoutStore";
 import {
   getActiveView,
+  getCurrentSceneGraph,
   getShowEntityDataCard,
   setShowEntityDataCard,
 } from "../store/appConfigStore";
@@ -61,6 +62,7 @@ import {
   setLeftSidebarConfig,
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
+import { runConversationsAnalysis } from "../utils/runConversationsAnalysis";
 import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 
 // const handleExportConfig = (sceneGraph: SceneGraph) => {
@@ -127,6 +129,7 @@ export interface IMenuConfigCallbacks {
   showFilterWindow: () => void;
   handleLoadLayout: (layout: Layout) => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
+  showChatGptImporter: () => void;
 }
 
 export class MenuConfig {
@@ -234,6 +237,19 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "TEST: Conversation Analysis": {
+            action: () => {
+              // Get the current SceneGraph
+              const sceneGraph = getCurrentSceneGraph();
+
+              // Run analysis
+              runConversationsAnalysis(sceneGraph, true, true, (progress) => {
+                console.log(
+                  `Processed ${progress.processed} of ${progress.total} documents`
+                );
+              });
+            },
+          },
           "TEST: Save documents to scenegraph": {
             action: () => {
               const documents = getAllDocuments();

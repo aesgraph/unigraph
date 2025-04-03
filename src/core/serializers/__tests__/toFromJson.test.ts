@@ -34,7 +34,8 @@ describe("SceneGraph Serialization Roundtrip, difference", () => {
 describe("SceneGraph Serialization Roundtrip, add properties to node and edges", () => {
   const sceneGraph = demo_sceneGraph_academicsKG();
 
-  sceneGraph.getGraph().createNode("newNode1", {
+  sceneGraph.getGraph().createNode({
+    id: "newNode1",
     label: "newNode1",
     type: "newType",
     dimensions: { width: 123, height: 456 },
@@ -42,7 +43,8 @@ describe("SceneGraph Serialization Roundtrip, add properties to node and edges",
     isVisible: false,
   });
 
-  sceneGraph.getGraph().createNode("newNode2", {
+  sceneGraph.getGraph().createNode({
+    id: "newNode2",
     label: "newNode2",
     type: "newType",
     dimensions: { width: 234, height: 567 },
@@ -64,7 +66,8 @@ describe("SceneGraph Serialization Roundtrip, add properties to node and edges",
 describe("SceneGraph Serialization Roundtrip, displayConfig, positions", () => {
   const sceneGraph = demo_sceneGraph_academicsKG();
 
-  sceneGraph.getGraph().createNode("newNode1", {
+  sceneGraph.getGraph().createNode({
+    id: "newNode1",
     label: "newNode1",
     type: "newType",
     dimensions: { width: 123, height: 456 },
@@ -72,7 +75,8 @@ describe("SceneGraph Serialization Roundtrip, displayConfig, positions", () => {
     isVisible: false,
   });
 
-  sceneGraph.getGraph().createNode("newNode2", {
+  sceneGraph.getGraph().createNode({
+    id: "newNode2",
     label: "newNode2",
     type: "newType",
     dimensions: { width: 234, height: 567 },

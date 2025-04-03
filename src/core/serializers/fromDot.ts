@@ -17,7 +17,7 @@ export function deserializeDotToSceneGraph(dotContent: string): SceneGraph {
     const pos = element.attributes.get("pos")?.toString() || "0,0";
     const [x, y] = pos.split(",").map(parseFloat);
 
-    const _node = graph.createNode(id, { label });
+    const _node = graph.createNode({ id, label });
     positions[id] = { x, y };
   });
   parsedGraph.edges.forEach((element) => {
@@ -27,10 +27,10 @@ export function deserializeDotToSceneGraph(dotContent: string): SceneGraph {
     const label = element.attributes.get("label")?.toString() || "";
     if (source && target) {
       if (!graph.containsNode(source)) {
-        graph.createNode(source, { label: source });
+        graph.createNode({ id: source, label: source });
       }
       if (!graph.containsNode(target)) {
-        graph.createNode(target, { label: target });
+        graph.createNode({ id: target, label: target });
       }
       graph.createEdge(source, target, { label, type: label });
     }

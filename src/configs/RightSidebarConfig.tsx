@@ -1,4 +1,13 @@
-import { FileText, Info, List, Scan, Settings2, Table2 } from "lucide-react";
+import {
+  FileText,
+  Info,
+  List,
+  MessageCircle,
+  MessageSquare,
+  Scan,
+  Settings2,
+  Table2,
+} from "lucide-react";
 import React from "react";
 import ForceGraphLayoutRadio from "../components/force-graph/ForceGraphLayoutRadio";
 import NodeDetailsPanel from "../components/NodeDetailsPanel";
@@ -11,6 +20,10 @@ import {
   setForceGraph3dLayoutMode,
 } from "../store/appConfigStore";
 import { getSelectedNodeIds } from "../store/graphInteractionStore";
+
+// Add this import
+import AIChatPanel from "../components/ai/AIChatPanel";
+import ChatGptPanel from "../components/tools/ChatGptPanel";
 
 export interface SubMenuItem {
   label: string;
@@ -81,6 +94,19 @@ export const createDefaultRightMenus = (
           isDarkMode={isDarkMode}
         />
       ),
+    },
+    // Add ChatGPT import section
+    {
+      id: "chatgpt-import",
+      icon: <MessageSquare size={20} className={styles.menuIcon} />,
+      label: "ChatGPT",
+      content: <ChatGptPanel isDarkMode={isDarkMode} />,
+    },
+    {
+      id: "ai-chat",
+      label: "AI Chat",
+      icon: <MessageCircle size={20} className={styles.menuIcon} />,
+      content: <AIChatPanel isDarkMode={isDarkMode} />,
     },
   ];
 

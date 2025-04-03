@@ -36,17 +36,14 @@ export enum GraphvizLayoutType {
 // };
 
 export class GraphvizLayoutEngine {
-  private sceneGraph: SceneGraph;
-
-  constructor(sceneGraph: SceneGraph) {
-    this.sceneGraph = sceneGraph;
-  }
-
-  async computeLayout(layoutType: GraphvizLayoutType): Promise<GraphvizOutput> {
+  public static async computeLayout(
+    sceneGraph: SceneGraph,
+    layoutType: GraphvizLayoutType
+  ): Promise<GraphvizOutput> {
     const dot = toDot(
       ConvertSceneGraphToGraphviz(
-        this.sceneGraph.getGraph(),
-        { ...this.sceneGraph.getDisplayConfig(), nodePositions: undefined },
+        sceneGraph.getGraph(),
+        { ...sceneGraph.getDisplayConfig(), nodePositions: undefined },
         layoutType
       )
     );

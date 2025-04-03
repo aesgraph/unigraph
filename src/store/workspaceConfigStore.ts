@@ -20,7 +20,7 @@ const defaultSectionWidths: SectionWidthConfig = {
   filters: 500,
   analysis: 300,
   displaySettings: 350,
-  project: 300,
+  "chatgpt-import": 400,
   // Add other sections as needed
 };
 
@@ -33,7 +33,7 @@ export const DEFAULT_SIDEBAR_CONFIG = (): ISidebarConfig => {
     mode: "collapsed",
     minimal: false,
     activeSectionId: null,
-    panelWidth: 240, // Reduce from 260px to 240px
+    panelWidth: 300,
   };
 };
 
@@ -162,6 +162,23 @@ export const updateSectionWidth = (id: string, width: number) => {
 export const getSectionWidth = (id: string) => {
   const { sectionWidths } = useWorkspaceConfigStore.getState();
   return sectionWidths[id] || defaultSectionWidth;
+};
+
+export const setLeftSidebarIsCollapsed = (isCollapsed: boolean) => {
+  useWorkspaceConfigStore.setState((state) => ({
+    leftSidebarConfig: {
+      ...state.leftSidebarConfig,
+      mode: isCollapsed ? "collapsed" : "full",
+    },
+  }));
+};
+export const setRightSidebarIsCollapsed = (isCollapsed: boolean) => {
+  useWorkspaceConfigStore.setState((state) => ({
+    rightSidebarConfig: {
+      ...state.rightSidebarConfig,
+      mode: isCollapsed ? "collapsed" : "full",
+    },
+  }));
 };
 
 export default useWorkspaceConfigStore;

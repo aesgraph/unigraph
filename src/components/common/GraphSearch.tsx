@@ -85,7 +85,10 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
           const nodes = sceneGraph.getGraph().getNodes();
           const matchingNodes = nodes
             .filter((node) => {
-              const idMatch = node.getId().toLowerCase().includes(searchLower);
+              const labelMatch = node
+                .getLabel()
+                ?.toLowerCase()
+                .includes(searchLower);
               const typeMatch = node
                 .getType()
                 .toLowerCase()
@@ -93,11 +96,11 @@ const GraphSearch: React.FC<GraphSearchProps> = ({
               const tagsMatch = Array.from(node.getTags()).some((tag) =>
                 tag.toLowerCase().includes(searchLower)
               );
-              return idMatch || typeMatch || tagsMatch;
+              return labelMatch || typeMatch || tagsMatch;
             })
             .map((node) => ({
               id: node.getId(),
-              label: node.getId(),
+              label: node.getLabel() || node.getId(),
               type: node.getType(),
               tags: Array.from(node.getTags()),
               entityType: "Node" as GraphEntityType,

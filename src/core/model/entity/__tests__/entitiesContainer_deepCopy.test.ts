@@ -4,8 +4,8 @@ import { EntitiesContainer } from "../entitiesContainer";
 
 describe("EntitiesContainer", () => {
   it("should deep copy nodes", () => {
-    const node1 = new Node("1", { label: "Node 1", tags: ["tag1"] });
-    const node2 = new Node("2", { label: "Node 2", tags: ["tag2"] });
+    const node1 = new Node({ id: "1", label: "Node 1", tags: ["tag1"] });
+    const node2 = new Node({ id: "2", label: "Node 2", tags: ["tag2"] });
     const container = new EntitiesContainer<NodeId, Node>([node1, node2]);
 
     const copy = container.deepCopy();
@@ -25,13 +25,13 @@ describe("EntitiesContainer", () => {
   });
 
   it("should deep copy edges", () => {
-    const edge1 = new Edge("1-2", {
+    const edge1 = new Edge({
       source: "1",
       target: "2",
       label: "Edge 1-2",
       tags: ["tag1"],
     });
-    const edge2 = new Edge("2-3", {
+    const edge2 = new Edge({
       source: "2",
       target: "3",
       label: "Edge 2-3",
@@ -42,25 +42,28 @@ describe("EntitiesContainer", () => {
     const copy = container.deepCopy();
 
     // Verify the copy is independent
+    console.log("Container:", container, copy);
     expect(copy).not.toBe(container);
     expect(copy.size()).toBe(container.size());
 
     // Modify the copy and ensure the original is not affected
-    const copiedEdge1 = copy.get("1-2" as EdgeId);
+    const copiedEdge1 = copy.get("1:::2" as EdgeId);
     copiedEdge1.setLabel("Modified Edge 1-2");
     copiedEdge1.addTag("newTag");
-    expect(container.get("1-2" as EdgeId).getLabel()).toBe("Edge 1-2");
-    expect(container.get("1-2" as EdgeId).getTags()).not.toContain("newTag");
+    expect(container.get("1:::2" as EdgeId).getLabel()).toBe("Edge 1-2");
+    expect(container.get("1:::2" as EdgeId).getTags()).not.toContain("newTag");
     expect(copiedEdge1.getLabel()).toBe("Modified Edge 1-2");
     expect(copiedEdge1.getTags()).toContain("newTag");
   });
 
   it("should deep copy nodes with nested user data", () => {
-    const node1 = new Node("1", {
+    const node1 = new Node({
+      id: "1",
       label: "Node 1",
       userData: { nested: { key: "value" } },
     });
-    const node2 = new Node("2", {
+    const node2 = new Node({
+      id: "2",
       label: "Node 2",
       userData: { nested: { key: "value" } },
     });
@@ -84,13 +87,13 @@ describe("EntitiesContainer", () => {
   });
 
   it("should deep copy edges with nested user data", () => {
-    const edge1 = new Edge("1-2", {
+    const edge1 = new Edge({
       source: "1" as NodeId,
       target: "2" as NodeId,
       label: "Edge 1-2",
       userData: { nested: { key: "value" } },
     });
-    const edge2 = new Edge("2-3", {
+    const edge2 = new Edge({
       source: "2",
       target: "3",
       label: "Edge 2-3",
@@ -105,9 +108,9 @@ describe("EntitiesContainer", () => {
     expect(copy.size()).toBe(container.size());
 
     // Modify the copy and ensure the original is not affected
-    const copiedEdge1 = copy.get("1-2" as EdgeId);
+    const copiedEdge1 = copy.get("1:::2" as EdgeId);
     copiedEdge1.setUserDataObject({ nested: { key: "newValue" } });
-    expect(container.get("1-2" as EdgeId).getUserDataObject()).toEqual({
+    expect(container.get("1:::2" as EdgeId).getUserDataObject()).toEqual({
       nested: { key: "value" },
     });
     expect(copiedEdge1.getUserDataObject()).toEqual({

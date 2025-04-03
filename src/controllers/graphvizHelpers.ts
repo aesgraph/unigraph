@@ -115,8 +115,7 @@ export async function _computeSceneGraphLayout(
   sceneGraph: SceneGraph,
   layoutType: LayoutEngineOption = GraphvizLayoutType.Graphviz_dot
 ): Promise<GraphvizOutput> {
-  const layoutEngine = new LayoutEngine(sceneGraph);
-  return layoutEngine.computeLayout(layoutType);
+  return LayoutEngine.computeLayout(sceneGraph, layoutType);
 }
 
 // Function to check if a cluster exists and create it if it doesn't

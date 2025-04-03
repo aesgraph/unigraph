@@ -1,5 +1,5 @@
 import Graph from "graphology";
-import { extractPositions } from "../../core/layouts/GraphologyLayoutEngine";
+import { extractPositionsFromGraphlogyGraph } from "../../core/layouts/GraphologyLayoutEngine";
 import {
   centerPositions,
   createGraphologyGraph,
@@ -10,9 +10,9 @@ import { SceneGraph } from "../../core/model/SceneGraph";
 
 // Mock ModelGraph and SceneGraph
 const graph = new ModelGraph();
-graph.createNode("1", { type: "type1" });
-graph.createNode("2", { type: "type2" });
-graph.createNode("3", { type: "type1" });
+graph.createNode({ id: "1", type: "type1" });
+graph.createNode({ id: "2", type: "type2" });
+graph.createNode({ id: "3", type: "type1" });
 graph.createEdge("1", "2", { type: "edge1" });
 graph.createEdge("2", "3", { type: "edge2" });
 
@@ -21,7 +21,7 @@ const mockSceneGraph = new SceneGraph({ graph });
 describe("layoutHelpers", () => {
   describe("createGraphologyGraph", () => {
     it("should create a graphology graph from scene graph", () => {
-      const graph = createGraphologyGraph(mockSceneGraph);
+      const graph = createGraphologyGraph(mockSceneGraph.getGraph());
 
       expect(graph.order).toBe(3); // Number of nodes
       expect(graph.size).toBe(2); // Number of edges
@@ -43,7 +43,7 @@ describe("layoutHelpers", () => {
       graph.addNode("1", { x: 100, y: 200 });
       graph.addNode("2", { x: 300, y: 400 });
 
-      const positions = extractPositions(graph);
+      const positions = extractPositionsFromGraphlogyGraph(graph);
 
       expect(positions).toEqual({
         "1": { x: 100, y: 200 },
@@ -55,7 +55,7 @@ describe("layoutHelpers", () => {
       const graph = new Graph();
       graph.addNode("1");
 
-      const positions = extractPositions(graph);
+      const positions = extractPositionsFromGraphlogyGraph(graph);
 
       expect(positions).toEqual({
         "1": { x: 0, y: 0 },

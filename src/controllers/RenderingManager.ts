@@ -12,7 +12,7 @@ export type Position = {
   y: number;
 };
 
-type DisplayConfigData = {
+export type DisplayConfigData = {
   color: string;
   isVisible: boolean;
 };
@@ -47,10 +47,10 @@ export const GET_DEFAULT_RENDERING_CONFIG = (
   const metadata = getGraphMetadata(graph);
   const palette = "gentle";
 
-  const nodeTypeConfig: DisplayConfig = starterConfig?.nodeConfig.types ?? {};
-  const nodeTagConfig: DisplayConfig = starterConfig?.nodeConfig.tags ?? {};
-  const edgeTypeConfig: DisplayConfig = starterConfig?.edgeConfig.types ?? {};
-  const edgeTagConfig: DisplayConfig = starterConfig?.edgeConfig.tags ?? {};
+  const nodeTypeConfig: DisplayConfig = { ...starterConfig?.nodeConfig.types };
+  const nodeTagConfig: DisplayConfig = { ...starterConfig?.nodeConfig.tags };
+  const edgeTypeConfig: DisplayConfig = { ...starterConfig?.edgeConfig.types };
+  const edgeTagConfig: DisplayConfig = { ...starterConfig?.edgeConfig.tags };
   for (const tag of metadata.nodes.tags) {
     if (!nodeTagConfig[tag]) {
       nodeTagConfig[tag] = {

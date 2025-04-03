@@ -4,6 +4,10 @@ import { RenderingManager } from "../controllers/RenderingManager";
 import { Edge } from "../core/model/Edge";
 import { NodeDataArgs, NodeId } from "../core/model/Node";
 import { SceneGraph } from "../core/model/SceneGraph";
+import { setNodeKeyData } from "../store/activeLegendConfigStore";
+import { getLegendMode } from "../store/appConfigStore";
+import { DisplayConfigManager } from "../store/TagManager";
+import { getRandomColorFromPalette } from "../utils/colorUtils";
 import EdgeListItem, { EdgeInfo } from "./common/EdgeListItem";
 import MultiSelectDropdown from "./common/MultiSelectDropdown";
 import SelectDropdown from "./common/SelectDropdown";
@@ -280,6 +284,8 @@ const NodeEditorWizard: React.FC<NodeEditorWizardProps> = ({
               <label>Type:</label>
               <SelectDropdown
                 options={availableTypes}
+                allowNewItems={true}
+                showColorPicker={true}
                 value={{
                   value: type,
                   label: type,
@@ -291,6 +297,29 @@ const NodeEditorWizard: React.FC<NodeEditorWizardProps> = ({
                 onChange={(option) => setType(option?.value || "")}
                 placeholder="Search types..."
                 isDarkMode={isDarkMode}
+                onAddNewItem={(_newType) => {
+                  console.log(_newType);
+                  const randomColor = getRandomColorFromPalette();
+                  DisplayConfigManager.addKeyToDisplayConfig(
+                    _newType.label,
+                    {
+                      color: _newType.color ?? randomColor,
+                      isVisible: true,
+                    },
+                    "type",
+                    "Node",
+                    sceneGraph
+                  );
+                  if (getLegendMode() === "type") {
+                    setNodeKeyData(_newType.label as NodeId, {
+                      color: _newType.color ?? randomColor,
+                      isVisible: true,
+                    });
+                  }
+                  sceneGraph.getNodeById(nodeId!)?.setType(_newType.label);
+                  setType(_newType.label);
+                  sceneGraph.notifyGraphChanged();
+                }}
               />
             </div>
             <div className="form-group">
@@ -301,6 +330,33 @@ const NodeEditorWizard: React.FC<NodeEditorWizardProps> = ({
                 onChange={setTags}
                 placeholder="Select or add tags..."
                 isDarkMode={isDarkMode}
+                allowNewItems={true}
+                showColorPicker={true}
+                onAddNewItem={(_newTag) => {
+                  console.log(_newTag);
+                  DisplayConfigManager.addKeyToDisplayConfig(
+                    _newTag.label,
+                    { color: _newTag.color, isVisible: true },
+                    "tag",
+                    "Node",
+                    sceneGraph
+                  );
+                  if (nodeId) {
+                    sceneGraph.getNodeById(nodeId)?.addTag(_newTag.label);
+                    console.log("added tag", sceneGraph.getNodeById(nodeId));
+                    console.log(
+                      "tags",
+                      sceneGraph.getNodeById(nodeId)?.getTags()
+                    );
+                  }
+                  if (getLegendMode() === "tag") {
+                    setNodeKeyData(_newTag.label as NodeId, {
+                      color: _newTag.color,
+                      isVisible: true,
+                    });
+                  }
+                  sceneGraph.notifyGraphChanged();
+                }}
               />
             </div>
             <div className="form-group">

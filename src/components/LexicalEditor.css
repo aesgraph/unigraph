@@ -625,3 +625,41 @@ span[data-hashtag="true"] {
   background-color: rgba(40, 40, 40, 0.7);
   border-color: #444;
 }
+
+/* Context menu styles */
+.editor-context-menu {
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  min-width: 150px;
+  z-index: 10000; /* Increased z-index to ensure it appears on top */
+  overflow: hidden; /* Ensure clean corners */
+}
+
+.dark-mode .editor-context-menu {
+  background-color: #333;
+  border-color: #555;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.context-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #333;
+  font-size: 14px;
+  user-select: none;
+}
+
+.context-menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dark-mode .context-menu-item {
+  color: #f0f0f0;
+}
+
+.dark-mode .context-menu-item:hover {
+  background-color: #444;
+}

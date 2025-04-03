@@ -35,18 +35,10 @@ export interface ILayoutEngineResult {
 }
 
 export class LayoutEngine {
-  private sceneGraph: SceneGraph;
-  private graphologyLayoutEngine: GraphologyLayoutEngine;
-  private graphvizLayoutEngine: GraphvizLayoutEngine;
   private static isComputingSafeLayout: boolean = false; // can prob take static off of this
 
-  constructor(sceneGraph: SceneGraph) {
-    this.sceneGraph = sceneGraph;
-    this.graphologyLayoutEngine = new GraphologyLayoutEngine(sceneGraph);
-    this.graphvizLayoutEngine = new GraphvizLayoutEngine(sceneGraph);
-  }
-
-  async safeComputeLayout(
+  public static async safeComputeLayout(
+    sceneGraph: SceneGraph,
     layoutType: LayoutEngineOption
   ): Promise<ILayoutEngineResult | null> {
     if (LayoutEngine.isComputingSafeLayout) {
@@ -57,7 +49,7 @@ export class LayoutEngine {
     console.log("Computing layout!...");
     const startTime = Date.now();
     try {
-      const result = this.computeLayout(layoutType);
+      const result = LayoutEngine.computeLayout(sceneGraph, layoutType);
       return result;
     } finally {
       LayoutEngine.isComputingSafeLayout = false;
@@ -68,7 +60,8 @@ export class LayoutEngine {
     }
   }
 
-  async computeLayout(
+  public static async computeLayout(
+    sceneGraph: SceneGraph,
     layoutType: LayoutEngineOption
   ): Promise<ILayoutEngineResult> {
     if (
@@ -76,7 +69,8 @@ export class LayoutEngine {
         layoutType as GraphologyLayoutType
       )
     ) {
-      const positions = await this.graphologyLayoutEngine.computeLayout(
+      const positions = await new GraphologyLayoutEngine().computeLayout(
+        sceneGraph.getGraph(),
         layoutType as GraphologyLayoutType
       );
       return { positions, layoutType };
@@ -85,7 +79,8 @@ export class LayoutEngine {
         layoutType as GraphvizLayoutType
       )
     ) {
-      const output = await this.graphvizLayoutEngine.computeLayout(
+      const output = await GraphvizLayoutEngine.computeLayout(
+        sceneGraph,
         layoutType as GraphvizLayoutType
       );
       return { ...output, layoutType };
@@ -93,7 +88,7 @@ export class LayoutEngine {
       Object.values(CustomLayoutType).includes(layoutType as CustomLayoutType)
     ) {
       const positions = computeCustomLayout(
-        this.sceneGraph,
+        sceneGraph,
         layoutType as CustomLayoutType
       );
       return { positions, layoutType };
@@ -106,6 +101,5 @@ export const Compute_Layout = (
   sceneGraph: SceneGraph,
   layoutType: LayoutEngineOption
 ): Promise<ILayoutEngineResult | null> => {
-  const layoutEngine = new LayoutEngine(sceneGraph);
-  return layoutEngine.safeComputeLayout(layoutType);
+  return LayoutEngine.safeComputeLayout(sceneGraph, layoutType);
 };

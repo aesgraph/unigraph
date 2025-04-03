@@ -71,12 +71,14 @@ export const addFeatureSetsToGraph = (
   graph: Graph
 ): void => {
   for (const feature of featureSet) {
-    graph.createNode(feature.name, {
+    graph.createNode({
+      id: feature.name,
       type: "feature",
       tags: [`tag:feature:${feature.name}`],
     });
     for (const subFeature of Object.values(feature.subFeatures)) {
-      graph.createNode(subFeature, {
+      graph.createNode({
+        id: subFeature,
         type: "subFeature",
         tags: [`tag:subFeature:${subFeature}}`],
       });

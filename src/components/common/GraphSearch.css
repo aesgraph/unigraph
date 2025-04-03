@@ -20,11 +20,17 @@
   font-size: 1rem;
   transition: all 0.2s ease;
   border: 0;
+  height: 1rem;
+  text-align: left; /* Ensure text is always left-aligned */
 }
 
 .search-input.no-results {
   background-color: rgba(255, 0, 0, 0.05);
   border-color: rgba(255, 0, 0, 0.2);
+  padding: 0.8rem 1.2rem;
+  margin: 0;
+  height: 1rem;
+  text-align: left; /* Ensure text is always left-aligned */
 }
 
 .dark .search-input.no-results {

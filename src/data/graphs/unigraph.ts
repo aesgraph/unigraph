@@ -50,7 +50,7 @@ export const unigraphGraph = () => {
   };
 
   const createGraphSoftwareNode = (software: GraphSoftware) => {
-    const node = graph.createNode(software.name, { type: graph_software });
+    const node = graph.createNode({ id: software.name, type: graph_software });
     software.features.forEach((feature) => {
       graph.createNodeIfMissing(feature, {
         type: graph_software,
@@ -137,11 +137,11 @@ export const unigraphGraph = () => {
   //   ],
   // });
 
-  graph.createNode("lumina", { type: "sub application" });
+  graph.createNode({ id: "lumina", type: "sub application" });
   graph.createEdge("lumina", "unigraph", { type: "subcomponent of" });
 
-  graph.createNode("reactflow", { type: "graph software" });
-  graph.createNode("graphiz", { type: "graph software" });
+  graph.createNode({ id: "reactflow", type: "graph software" });
+  graph.createNode({ id: "graphiz", type: "graph software" });
   graph.createEdge("unigraph", "reactflow", { type: "adaptor for" });
   graph.createEdge("unigraph", "graphiz", { type: "adaptor for" });
 

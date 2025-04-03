@@ -1,6 +1,6 @@
 import Graph from "graphology";
 import { ObjectOf } from "../../App";
-import { SceneGraph } from "../model/SceneGraph";
+import { Graph as MGraph } from "../model/Graph";
 
 export type Position = { x: number; y: number; z?: number };
 export type Dimensions = { width: number; height: number }; //for now this is 2d only
@@ -43,30 +43,24 @@ export const translateCoordinates = (
   return translatedPositions;
 };
 
-export function createGraphologyGraph(sceneGraph: SceneGraph): Graph {
-  const graph = new Graph();
+export function createGraphologyGraph(graph: MGraph): Graph {
+  const graphologyGraph = new Graph();
 
   // Add nodes
-  sceneGraph
-    .getGraph()
-    .getNodes()
-    .forEach((node) => {
-      graph.addNode(node.getId(), {
-        type: node.getType(),
-      });
+  graph.getNodes().forEach((node) => {
+    graphologyGraph.addNode(node.getId(), {
+      type: node.getType(),
     });
+  });
 
   // Add edges
-  sceneGraph
-    .getGraph()
-    .getEdges()
-    .forEach((edge) => {
-      graph.addEdge(edge.getSource(), edge.getTarget(), {
-        type: edge.getType(),
-      });
+  graph.getEdges().forEach((edge) => {
+    graphologyGraph.addEdge(edge.getSource(), edge.getTarget(), {
+      type: edge.getType(),
     });
+  });
 
-  return graph;
+  return graphologyGraph;
 }
 
 export function normalizePositions(

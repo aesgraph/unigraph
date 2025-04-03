@@ -1,5 +1,5 @@
 import { EdgeId } from "../core/model/Edge";
-import { NodeDataArgs, NodeId } from "../core/model/Node";
+import { NodeDataArgs } from "../core/model/Node";
 import { SceneGraph } from "../core/model/SceneGraph";
 
 export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
@@ -43,7 +43,9 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
   console.log("generated node and edge count is ", nodes, edges);
 
   Object.entries(nodes).forEach(([nodeId, nodeData]) => {
-    sceneGraph.getGraph().createNode(nodeId as NodeId, nodeData);
+    sceneGraph
+      .getGraph()
+      .createNode({ ...nodeData, id: nodeId } as NodeDataArgs);
   });
 
   Object.entries(edges).forEach(([_edgeId, edgeData]) => {

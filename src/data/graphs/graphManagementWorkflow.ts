@@ -5,57 +5,68 @@ export const graphManagementWorkflowDiagram = () => {
   const graph = new Graph();
 
   // Create nodes for the workflow
-  graph.createNode("TextDefinedGraph", {
+  graph.createNode({
+    id: "TextDefinedGraph",
     type: "concept pillar",
     tags: ["graph source", "story entrypoint"],
   });
 
-  graph.createNode("Graphviz", {
+  graph.createNode({
+    id: "Graphviz",
     type: "graph software",
     tags: ["graph software", "story entrypoint"],
   });
 
-  graph.createNode("MermaidJS", {
+  graph.createNode({
+    id: "MermaidJS",
     type: "graph software",
     tags: ["graph software", "story entrypoint"],
   });
 
-  graph.createNode("SVG", {
+  graph.createNode({
+    id: "SVG",
     type: "output format",
     tags: ["visualization"],
   });
 
-  graph.createNode("Unigraph", {
+  graph.createNode({
+    id: "Unigraph",
     type: "concept pillar",
     tags: ["unigraph", "story entrypoint", "graph software"],
   });
 
-  graph.createNode("UpdatePositions", {
+  graph.createNode({
+    id: "UpdatePositions",
     type: "operation",
     tags: ["graph operation"],
   });
 
-  graph.createNode("UpdateOpacity", {
+  graph.createNode({
+    id: "UpdateOpacity",
     type: "operation",
     tags: ["graph operation"],
   });
 
-  graph.createNode("UpdateSizes", {
+  graph.createNode({
+    id: "UpdateSizes",
     type: "operation",
     tags: ["graph operation"],
   });
 
-  graph.createNode("UpdateColors", {
+  graph.createNode({
+    id: "UpdateColors",
     type: "operation",
     tags: ["graph operation"],
   });
 
-  graph.createNode("UnigraphModelGraph", {
+  graph.createNode({
+    id: "UnigraphModelGraph",
     type: "concept pillar",
     tags: ["graph model"],
   });
 
-  graph.createNode("Export", {
+  graph.createNode({
+    id: "Export",
     type: "operation",
     tags: ["graph operation"],
   });

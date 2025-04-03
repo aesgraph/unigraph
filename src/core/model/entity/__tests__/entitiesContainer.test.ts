@@ -1,7 +1,7 @@
-import { EntitiesContainer } from "../entitiesContainer";
-import { Entity, EntityId } from "../abstractEntity";
-import { EntityIds } from "../entityIds";
 import { NodeId } from "../../Node";
+import { Entity, EntityId } from "../abstractEntity";
+import { EntitiesContainer } from "../entitiesContainer";
+import { EntityIds } from "../entityIds";
 
 describe("EntitiesContainer", () => {
   let container: EntitiesContainer<EntityId, Entity>;
@@ -18,13 +18,13 @@ describe("EntitiesContainer", () => {
 
   describe("add()", () => {
     it("should add an entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       expect(container.get("test1")).toBe(entity);
     });
 
     it("should throw when adding duplicate entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity, true);
       expect(() => container.addEntity(entity, true)).toThrow();
     });
@@ -36,7 +36,7 @@ describe("EntitiesContainer", () => {
     });
 
     it("should retrieve an existing entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       expect(container.get("test1")).toBe(entity);
     });
@@ -44,7 +44,7 @@ describe("EntitiesContainer", () => {
 
   describe("delete()", () => {
     it("should delete an existing entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       container.removeEntity("test1");
       expect(container.maybeGet("test1")).toBeUndefined();
@@ -57,8 +57,8 @@ describe("EntitiesContainer", () => {
 
   describe("clear()", () => {
     it("should remove all entities", () => {
-      container.addEntity(new Entity("test1"));
-      container.addEntity(new Entity("test2"));
+      container.addEntity(new Entity({ id: "test1" }));
+      container.addEntity(new Entity({ id: "test2" }));
       container.clear();
       expect(container.toArray()).toHaveLength(0);
     });
@@ -66,8 +66,8 @@ describe("EntitiesContainer", () => {
 
   describe("getAll()", () => {
     it("should return all entities", () => {
-      const entity1 = new Entity("test1");
-      const entity2 = new Entity("test2");
+      const entity1 = new Entity({ id: "test1" });
+      const entity2 = new Entity({ id: "test2" });
       container.addEntity(entity1);
       container.addEntity(entity2);
       const entities = container.toArray();
@@ -83,9 +83,9 @@ describe("EntitiesContainer", () => {
 
   describe("filterByType()", () => {
     beforeEach(() => {
-      container.addEntity(new Entity("node1", { type: "type1" }));
-      container.addEntity(new Entity("node2", { type: "type1" }));
-      container.addEntity(new Entity("node3", { type: "type2" }));
+      container.addEntity(new Entity({ id: "node1", type: "type1" }));
+      container.addEntity(new Entity({ id: "node2", type: "type1" }));
+      container.addEntity(new Entity({ id: "node3", type: "type2" }));
     });
 
     it("should return entities of specified type", () => {
@@ -102,9 +102,9 @@ describe("EntitiesContainer", () => {
 
   describe("filterByTag()", () => {
     beforeEach(() => {
-      container.addEntity(new Entity("node1", { tags: ["tag1"] }));
-      container.addEntity(new Entity("node2", { tags: ["tag1", "tag2"] }));
-      container.addEntity(new Entity("node3", { tags: ["tag2"] }));
+      container.addEntity(new Entity({ id: "node1", tags: ["tag1"] }));
+      container.addEntity(new Entity({ id: "node2", tags: ["tag1", "tag2"] }));
+      container.addEntity(new Entity({ id: "node3", tags: ["tag2"] }));
     });
 
     it("should return entities with specified tag", () => {
@@ -121,9 +121,9 @@ describe("EntitiesContainer", () => {
 
   describe("getTypes()", () => {
     beforeEach(() => {
-      container.addEntity(new Entity("node1", { type: "type1" }));
-      container.addEntity(new Entity("node2", { type: "type1" }));
-      container.addEntity(new Entity("node3", { type: "type2" }));
+      container.addEntity(new Entity({ id: "node1", type: "type1" }));
+      container.addEntity(new Entity({ id: "node2", type: "type1" }));
+      container.addEntity(new Entity({ id: "node3", type: "type2" }));
     });
 
     it("should return all unique types", () => {
@@ -141,9 +141,9 @@ describe("EntitiesContainer", () => {
 
   describe("getTags()", () => {
     beforeEach(() => {
-      container.addEntity(new Entity("node1", { tags: ["tag1"] }));
-      container.addEntity(new Entity("node2", { tags: ["tag1", "tag2"] }));
-      container.addEntity(new Entity("node3", { tags: ["tag2"] }));
+      container.addEntity(new Entity({ id: "node1", tags: ["tag1"] }));
+      container.addEntity(new Entity({ id: "node2", tags: ["tag1", "tag2"] }));
+      container.addEntity(new Entity({ id: "node3", tags: ["tag2"] }));
     });
 
     it("should return all unique tags", () => {
@@ -161,7 +161,7 @@ describe("EntitiesContainer", () => {
 
   describe("has()", () => {
     it("should return true for existing entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       expect(container.has("test1")).toBe(true);
     });
@@ -173,8 +173,8 @@ describe("EntitiesContainer", () => {
 
   describe("size()", () => {
     it("should return correct number of entities", () => {
-      container.addEntity(new Entity("test1"));
-      container.addEntity(new Entity("test2"));
+      container.addEntity(new Entity({ id: "test1" }));
+      container.addEntity(new Entity({ id: "test2" }));
       expect(container.size()).toBe(2);
     });
 
@@ -183,8 +183,8 @@ describe("EntitiesContainer", () => {
     });
 
     it("should update after deletions", () => {
-      container.addEntity(new Entity("test1"));
-      container.addEntity(new Entity("test2"));
+      container.addEntity(new Entity({ id: "test1" }));
+      container.addEntity(new Entity({ id: "test2" }));
       container.removeEntity("test1");
       expect(container.size()).toBe(1);
     });
@@ -192,20 +192,20 @@ describe("EntitiesContainer", () => {
 
   describe("edge cases", () => {
     it("should handle entities with no tags", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       expect(container.getTags().size).toBe(0);
     });
 
     it("should handle entities with empty string tags", () => {
-      const entity = new Entity("test1", { tags: [""] });
+      const entity = new Entity({ id: "test1", tags: [""] });
       container.addEntity(entity);
       expect(container.getTags().size).toBe(1);
       expect(container.getTags()).toContain("");
     });
 
     it("should handle entities with special characters in IDs", () => {
-      const entity = new Entity("test/1@#$%^&*()");
+      const entity = new Entity({ id: "test/1@#$%^&*()" });
       container.addEntity(entity);
       expect(container.has("test/1@#$%^&*()")).toBe(true);
     });
@@ -213,7 +213,7 @@ describe("EntitiesContainer", () => {
 
   describe("basic operations", () => {
     it("should add and retrieve an entity", () => {
-      const entity = new Entity("test1", { type: "testType" });
+      const entity = new Entity({ id: "test1", type: "testType" });
       container.addEntity(entity);
       expect(container.get("test1")).toBe(entity);
     });
@@ -223,15 +223,15 @@ describe("EntitiesContainer", () => {
     });
 
     it("should delete an entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       container.removeEntity("test1");
       expect(container.has("test1")).toBe(false);
     });
 
     it("should return all entities", () => {
-      const entity1 = new Entity("test1");
-      const entity2 = new Entity("test2");
+      const entity1 = new Entity({ id: "test1" });
+      const entity2 = new Entity({ id: "test2" });
       container.addEntity(entity1);
       container.addEntity(entity2);
       const entities = container.toArray();
@@ -241,8 +241,8 @@ describe("EntitiesContainer", () => {
     });
 
     it("should clear all entities", () => {
-      const entity1 = new Entity("test1");
-      const entity2 = new Entity("test2");
+      const entity1 = new Entity({ id: "test1" });
+      const entity2 = new Entity({ id: "test2" });
       container.addEntity(entity1);
       container.addEntity(entity2);
       container.clear();
@@ -253,13 +253,13 @@ describe("EntitiesContainer", () => {
   describe("filtering and querying", () => {
     beforeEach(() => {
       container.addEntity(
-        new Entity("node1", { type: "type1", tags: ["tag1"] })
+        new Entity({ id: "node1", type: "type1", tags: ["tag1"] })
       );
       container.addEntity(
-        new Entity("node2", { type: "type1", tags: ["tag2"] })
+        new Entity({ id: "node2", type: "type1", tags: ["tag2"] })
       );
       container.addEntity(
-        new Entity("node3", { type: "type2", tags: ["tag1"] })
+        new Entity({ id: "node3", type: "type2", tags: ["tag1"] })
       );
     });
 
@@ -294,7 +294,7 @@ describe("EntitiesContainer", () => {
 
   describe("error handling", () => {
     it("should throw when adding duplicate entity", () => {
-      const entity = new Entity("test1");
+      const entity = new Entity({ id: "test1" });
       container.addEntity(entity);
       expect(() => container.addEntity(entity, true)).toThrow();
     });
@@ -306,7 +306,7 @@ describe("EntitiesContainer", () => {
 
   describe("entity updates", () => {
     it("should update entity type", () => {
-      const entity = new Entity("test1", { type: "oldType" });
+      const entity = new Entity({ id: "test1", type: "oldType" });
       container.addEntity(entity);
       entity.setType("newType");
       expect(Array.from(container.filterByType("newType"))[0]).toBe(entity);
@@ -314,7 +314,7 @@ describe("EntitiesContainer", () => {
     });
 
     it("should update entity tags", () => {
-      const entity = new Entity("test1", { tags: ["oldTag"] });
+      const entity = new Entity({ id: "test1", tags: ["oldTag"] });
       container.addEntity(entity);
       entity.setTags(new Set(["newTag"]));
       expect(Array.from(container.filterByTag("newTag"))[0]).toBe(entity);
@@ -327,7 +327,8 @@ describe("EntitiesContainer", () => {
       const startTime = performance.now();
       for (let i = 0; i < 100000; i++) {
         container.addEntity(
-          new Entity(`test${i}`, {
+          new Entity({
+            id: `test${i}`,
             type: `type${i % 100}`,
             tags: [`tag${i % 50}`],
           })
@@ -347,7 +348,8 @@ describe("EntitiesContainer", () => {
           idsToFetch.add(id as NodeId);
         }
         container.addEntity(
-          new Entity(id, {
+          new Entity({
+            id,
             type: `type${i % 100}`,
             tags: [`tag${i % 50}`],
           })
@@ -368,7 +370,8 @@ describe("EntitiesContainer", () => {
           idsToRemove.add(id as NodeId);
         }
         container.addEntity(
-          new Entity(id, {
+          new Entity({
+            id,
             type: `type${i % 100}`,
             tags: [`tag${i % 50}`],
           })

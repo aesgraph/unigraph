@@ -3,6 +3,7 @@ import { immer } from "zustand/middleware/immer";
 import { FilterRuleDefinition } from "../components/filters/FilterRuleDefinition";
 import {
   DisplayConfig,
+  DisplayConfigData,
   RenderingManager,
   RenderingManager__DisplayMode,
 } from "../controllers/RenderingManager";
@@ -32,6 +33,8 @@ export type ActiveLegendConfigState = {
   getNodeKeyColor: (key: NodeId) => string;
   setEdgeKeyColor: (key: EdgeId, color: string) => void;
   getEdgeKeyColor: (key: EdgeId) => string;
+  setNodeKeyData: (key: NodeId, data: DisplayConfigData) => void;
+  setEdgeKeyData: (key: EdgeId, data: DisplayConfigData) => void;
 };
 
 const useActiveLegendConfigStore = create(
@@ -40,6 +43,17 @@ const useActiveLegendConfigStore = create(
     edgeLegendConfig: {},
     nodeLegendUpdateTime: Date.now(),
     edgeLegendUpdateTime: Date.now(),
+
+    setNodeKeyData: (key, data) =>
+      set((state) => {
+        state.nodeLegendConfig[key] = data;
+        state.nodeLegendUpdateTime = Date.now();
+      }),
+    setEdgeKeyData: (key, data) =>
+      set((state) => {
+        state.edgeLegendConfig[key] = data;
+        state.edgeLegendUpdateTime = Date.now();
+      }),
 
     setNodeLegendConfig: (config: DisplayConfig) =>
       set((state) => {
@@ -179,6 +193,14 @@ export const getEdgeIsVisible = (edge: IEntity): boolean =>
 
 export const getEdgeColor = (edge: IEntity): string =>
   RenderingManager.getColor(edge, getEdgeLegendConfig(), getLegendMode());
+
+export const setNodeKeyData = (key: NodeId, data: DisplayConfigData) => {
+  useActiveLegendConfigStore.getState().setNodeKeyData(key, data);
+};
+
+export const setEdgeKeyData = (key: EdgeId, data: DisplayConfigData) => {
+  useActiveLegendConfigStore.getState().setEdgeKeyData(key, data);
+};
 
 export const SetNodeAndEdgeLegendsForOnlyVisibleEntities = (
   sceneGraph: SceneGraph,

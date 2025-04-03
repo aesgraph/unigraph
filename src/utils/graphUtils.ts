@@ -76,7 +76,8 @@ export function generateRandomNodes(
     }
 
     // Create node with userData
-    const node = graph.createNode(id, {
+    const node = graph.createNode({
+      id,
       type,
       label,
       userData: {

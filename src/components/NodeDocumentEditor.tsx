@@ -17,12 +17,6 @@ const NodeDocumentEditor: React.FC<NodeDocumentEditorProps> = ({
 }) => {
   const { currentSceneGraph } = useAppConfigStore();
 
-  // Add better debugging for node lookup
-  console.log(`NodeDocumentEditor: Looking up node ID "${nodeId}"`);
-  if (!nodeId) {
-    console.error("NodeDocumentEditor: Received undefined or null nodeId");
-  }
-
   // Safer node lookup with validation
   const node = nodeId ? currentSceneGraph.getNodeById(nodeId) : null;
 

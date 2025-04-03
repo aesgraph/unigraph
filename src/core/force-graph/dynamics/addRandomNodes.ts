@@ -51,7 +51,8 @@ export const addRandomNodes = (
   for (let i = 0; i < count; i++) {
     const nodeId = uuidv4();
 
-    const node = sceneGraph.getGraph().createNode(nodeId, {
+    const node = sceneGraph.getGraph().createNode({
+      id: nodeId,
       type: getRandomItem(NODE_TYPES),
       tags: getRandomTags(),
     });

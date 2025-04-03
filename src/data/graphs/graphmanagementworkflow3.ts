@@ -5,357 +5,425 @@ export const unigraphArchitectureDiagram = () => {
   const graph = new Graph();
 
   // Core Architectural Components
-  graph.createNode("Unigraph", {
+  graph.createNode({
+    id: "Unigraph",
     type: "system",
     tags: ["web-based", "client-side", "story entrypoint"],
   });
 
-  graph.createNode("GraphModelLayer", {
+  graph.createNode({
+    id: "GraphModelLayer",
     type: "core component",
     tags: ["architecture", "backend-independent"],
   });
 
-  graph.createNode("SceneAbstractionLayer", {
+  graph.createNode({
+    id: "SceneAbstractionLayer",
     type: "core component",
     tags: ["architecture", "display configuration"],
   });
 
-  graph.createNode("RenderingPipeline", {
+  graph.createNode({
+    id: "RenderingPipeline",
     type: "core component",
     tags: ["architecture", "visualization"],
   });
 
-  graph.createNode("ClientInteractivity", {
+  graph.createNode({
+    id: "ClientInteractivity",
     type: "core component",
     tags: ["architecture", "user experience"],
   });
 
   // Model Layer Components
-  graph.createNode("GraphEngineCore", {
+  graph.createNode({
+    id: "GraphEngineCore",
     type: "model component",
     tags: ["nodes", "edges", "metadata"],
   });
 
-  graph.createNode("CustomProperties", {
+  graph.createNode({
+    id: "CustomProperties",
     type: "model feature",
     tags: ["extensibility"],
   });
 
-  graph.createNode("DeclarativeBinding", {
+  graph.createNode({
+    id: "DeclarativeBinding",
     type: "model feature",
     tags: ["data binding"],
   });
 
   // Scene Layer Components
-  graph.createNode("MultipleViews", {
+  graph.createNode({
+    id: "MultipleViews",
     type: "scene feature",
     tags: ["visualization", "representation"],
   });
 
-  graph.createNode("DisplayConfigurations", {
+  graph.createNode({
+    id: "DisplayConfigurations",
     type: "scene feature",
     tags: ["customization", "presentation"],
   });
 
   // Rendering Components
-  graph.createNode("WebGL", {
+  graph.createNode({
+    id: "WebGL",
     type: "rendering technology",
     tags: ["visualization", "high-performance"],
   });
 
-  graph.createNode("SVG", {
+  graph.createNode({
+    id: "SVG",
     type: "rendering technology",
     tags: ["visualization", "vector graphics"],
   });
 
-  graph.createNode("Canvas", {
+  graph.createNode({
+    id: "Canvas",
     type: "rendering technology",
     tags: ["visualization", "drawing"],
   });
 
   // Interaction Components
-  graph.createNode("DeclarativeAPI", {
+  graph.createNode({
+    id: "DeclarativeAPI",
     type: "interaction feature",
     tags: ["configuration", "user experience"],
   });
 
-  graph.createNode("InputMethods", {
+  graph.createNode({
+    id: "InputMethods",
     type: "interaction feature",
     tags: ["touch", "mouse", "keyboard", "accessibility"],
   });
 
   // Unigraph Vision Components
-  graph.createNode("Web3Vision", {
+  graph.createNode({
+    id: "Web3Vision",
     type: "vision pillar",
     tags: ["conceptual", "future"],
   });
 
-  graph.createNode("CompositionalCollaboration", {
+  graph.createNode({
+    id: "CompositionalCollaboration",
     type: "vision pillar",
     tags: ["conceptual", "collaboration"],
   });
 
-  graph.createNode("DecentralizedKnowledge", {
+  graph.createNode({
+    id: "DecentralizedKnowledge",
     type: "vision pillar",
     tags: ["conceptual", "interoperability"],
   });
 
-  graph.createNode("HumanCentricNavigation", {
+  graph.createNode({
+    id: "HumanCentricNavigation",
     type: "vision pillar",
     tags: ["conceptual", "user experience"],
   });
 
   // Use Cases
-  graph.createNode("SystemDiagrams", {
+  graph.createNode({
+    id: "SystemDiagrams",
     type: "use case",
     tags: ["application"],
   });
 
-  graph.createNode("ScientificGraphs", {
+  graph.createNode({
+    id: "ScientificGraphs",
     type: "use case",
     tags: ["application"],
   });
 
-  graph.createNode("KnowledgeRepresentation", {
+  graph.createNode({
+    id: "KnowledgeRepresentation",
     type: "use case",
     tags: ["application"],
   });
 
-  graph.createNode("SoftwareDevelopment", {
+  graph.createNode({
+    id: "SoftwareDevelopment",
     type: "use case",
     tags: ["application"],
   });
 
   // Additional Graph Engine Components
-  graph.createNode("NodeStructure", {
+  graph.createNode({
+    id: "NodeStructure",
     type: "engine component",
     tags: ["data structure", "model"],
   });
 
-  graph.createNode("EdgeRepository", {
+  graph.createNode({
+    id: "EdgeRepository",
     type: "engine component",
     tags: ["data structure", "model"],
   });
 
-  graph.createNode("MetadataManager", {
+  graph.createNode({
+    id: "MetadataManager",
     type: "engine component",
     tags: ["data management", "model"],
   });
 
-  graph.createNode("GraphTraversal", {
+  graph.createNode({
+    id: "GraphTraversal",
     type: "engine capability",
     tags: ["algorithm", "model"],
   });
 
-  graph.createNode("QueryEngine", {
+  graph.createNode({
+    id: "QueryEngine",
     type: "engine component",
     tags: ["data retrieval", "model"],
   });
 
   // Data Management Components
-  graph.createNode("DataBindingLayer", {
+  graph.createNode({
+    id: "DataBindingLayer",
     type: "data component",
     tags: ["integration", "model"],
   });
 
-  graph.createNode("SerializationEngine", {
+  graph.createNode({
+    id: "SerializationEngine",
     type: "data component",
     tags: ["persistence", "model"],
   });
 
-  graph.createNode("ImportManager", {
+  graph.createNode({
+    id: "ImportManager",
     type: "data component",
     tags: ["external data", "model"],
   });
 
-  graph.createNode("ExportManager", {
+  graph.createNode({
+    id: "ExportManager",
     type: "data component",
     tags: ["external data", "model"],
   });
 
-  graph.createNode("VersionControl", {
+  graph.createNode({
+    id: "VersionControl",
     type: "data component",
     tags: ["history", "model"],
   });
 
   // Scene Management Components
-  graph.createNode("LayoutEngine", {
+  graph.createNode({
+    id: "LayoutEngine",
     type: "scene component",
     tags: ["arrangement", "visualization"],
   });
 
-  graph.createNode("FilterEngine", {
+  graph.createNode({
+    id: "FilterEngine",
     type: "scene component",
     tags: ["data filtering", "visualization"],
   });
 
-  graph.createNode("ViewportManager", {
+  graph.createNode({
+    id: "ViewportManager",
     type: "scene component",
     tags: ["navigation", "visualization"],
   });
 
-  graph.createNode("StyleManager", {
+  graph.createNode({
+    id: "StyleManager",
     type: "scene component",
     tags: ["appearance", "visualization"],
   });
 
-  graph.createNode("ScenePresets", {
+  graph.createNode({
+    id: "ScenePresets",
     type: "scene component",
     tags: ["configuration", "visualization"],
   });
 
   // Layout Algorithms
-  graph.createNode("ForceDirectedLayout", {
+  graph.createNode({
+    id: "ForceDirectedLayout",
     type: "layout algorithm",
     tags: ["arrangement", "visualization"],
   });
 
-  graph.createNode("HierarchicalLayout", {
+  graph.createNode({
+    id: "HierarchicalLayout",
     type: "layout algorithm",
     tags: ["arrangement", "visualization"],
   });
 
-  graph.createNode("CircularLayout", {
+  graph.createNode({
+    id: "CircularLayout",
     type: "layout algorithm",
     tags: ["arrangement", "visualization"],
   });
 
-  graph.createNode("GridLayout", {
+  graph.createNode({
+    id: "GridLayout",
     type: "layout algorithm",
     tags: ["arrangement", "visualization"],
   });
 
-  graph.createNode("CustomLayout", {
+  graph.createNode({
+    id: "CustomLayout",
     type: "layout algorithm",
     tags: ["arrangement", "visualization"],
   });
 
   // Interactivity Components
-  graph.createNode("SelectionManager", {
+  graph.createNode({
+    id: "SelectionManager",
     type: "interaction component",
     tags: ["user interaction", "experience"],
   });
 
-  graph.createNode("DragAndDrop", {
+  graph.createNode({
+    id: "DragAndDrop",
     type: "interaction component",
     tags: ["user interaction", "experience"],
   });
 
-  graph.createNode("ZoomControl", {
+  graph.createNode({
+    id: "ZoomControl",
     type: "interaction component",
     tags: ["navigation", "experience"],
   });
 
-  graph.createNode("HistoryManager", {
+  graph.createNode({
+    id: "HistoryManager",
     type: "interaction component",
     tags: ["undo/redo", "experience"],
   });
 
-  graph.createNode("ContextMenu", {
+  graph.createNode({
+    id: "ContextMenu",
     type: "interaction component",
     tags: ["user interface", "experience"],
   });
 
   // Visual Enhancement Components
-  graph.createNode("AnimationEngine", {
+  graph.createNode({
+    id: "AnimationEngine",
     type: "visual component",
     tags: ["motion", "visualization"],
   });
 
-  graph.createNode("ThemeManager", {
+  graph.createNode({
+    id: "ThemeManager",
     type: "visual component",
     tags: ["appearance", "visualization"],
   });
 
-  graph.createNode("IconsLibrary", {
+  graph.createNode({
+    id: "IconsLibrary",
     type: "visual component",
     tags: ["representation", "visualization"],
   });
 
-  graph.createNode("TextRenderer", {
+  graph.createNode({
+    id: "TextRenderer",
     type: "visual component",
     tags: ["labels", "visualization"],
   });
 
-  graph.createNode("HighlightManager", {
+  graph.createNode({
+    id: "HighlightManager",
     type: "visual component",
     tags: ["focus", "visualization"],
   });
 
   // Advanced Features
-  graph.createNode("PatternDetection", {
+  graph.createNode({
+    id: "PatternDetection",
     type: "advanced feature",
     tags: ["analytics", "intelligence"],
   });
 
-  graph.createNode("MachineLearning", {
+  graph.createNode({
+    id: "MachineLearning",
     type: "advanced feature",
     tags: ["analytics", "intelligence"],
   });
 
-  graph.createNode("Recommendations", {
+  graph.createNode({
+    id: "Recommendations",
     type: "advanced feature",
     tags: ["analytics", "intelligence"],
   });
 
-  graph.createNode("NaturalLanguage", {
+  graph.createNode({
+    id: "NaturalLanguage",
     type: "advanced feature",
     tags: ["interface", "intelligence"],
   });
 
-  graph.createNode("GraphAlgorithms", {
+  graph.createNode({
+    id: "GraphAlgorithms",
     type: "advanced feature",
     tags: ["analytics", "intelligence"],
   });
 
   // Integration Components
-  graph.createNode("APILayer", {
+  graph.createNode({
+    id: "APILayer",
     type: "integration component",
     tags: ["extensibility", "interface"],
   });
 
-  graph.createNode("PluginSystem", {
+  graph.createNode({
+    id: "PluginSystem",
     type: "integration component",
     tags: ["extensibility", "interface"],
   });
 
-  graph.createNode("EventSystem", {
+  graph.createNode({
+    id: "EventSystem",
     type: "integration component",
     tags: ["communication", "interface"],
   });
 
-  graph.createNode("DataSourceConnector", {
+  graph.createNode({
+    id: "DataSourceConnector",
     type: "integration component",
     tags: ["external data", "interface"],
   });
 
-  graph.createNode("WebHooks", {
+  graph.createNode({
+    id: "WebHooks",
     type: "integration component",
     tags: ["automation", "interface"],
   });
 
   // Specialized Use Cases
-  graph.createNode("RealTimeCollaboration", {
+  graph.createNode({
+    id: "RealTimeCollaboration",
     type: "specialized use case",
     tags: ["collaboration", "application"],
   });
 
-  graph.createNode("DataVisualization", {
+  graph.createNode({
+    id: "DataVisualization",
     type: "specialized use case",
     tags: ["analytics", "application"],
   });
 
-  graph.createNode("DecisionSupport", {
+  graph.createNode({
+    id: "DecisionSupport",
     type: "specialized use case",
     tags: ["business", "application"],
   });
 
-  graph.createNode("EducationalTools", {
+  graph.createNode({
+    id: "EducationalTools",
     type: "specialized use case",
     tags: ["learning", "application"],
   });
 
-  graph.createNode("ResearchMapping", {
+  graph.createNode({
+    id: "ResearchMapping",
     type: "specialized use case",
     tags: ["academia", "application"],
   });

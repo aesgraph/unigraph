@@ -10,8 +10,8 @@ describe("pathSearch", () => {
   });
 
   test("returns empty path when no path exists", () => {
-    modelGraph.createNode("A", { type: "test" });
-    modelGraph.createNode("B", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
+    modelGraph.createNode({ id: "B", type: "test" });
 
     const path = computePath(
       "A" as NodeId,
@@ -22,7 +22,7 @@ describe("pathSearch", () => {
   });
 
   test("returns single node path for same start and end", () => {
-    modelGraph.createNode("A", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
 
     const path = computePath(
       "A" as NodeId,
@@ -33,8 +33,8 @@ describe("pathSearch", () => {
   });
 
   test("finds direct path between connected nodes", () => {
-    modelGraph.createNode("A", { type: "test" });
-    modelGraph.createNode("B", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
+    modelGraph.createNode({ id: "B", type: "test" });
     modelGraph.createEdge("A", "B", { type: "test" });
 
     const path = computePath(
@@ -47,10 +47,10 @@ describe("pathSearch", () => {
 
   test("finds shortest path in a complex graph", () => {
     // Create a diamond-shaped graph
-    modelGraph.createNode("A", { type: "test" });
-    modelGraph.createNode("B", { type: "test" });
-    modelGraph.createNode("C", { type: "test" });
-    modelGraph.createNode("D", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
+    modelGraph.createNode({ id: "B", type: "test" });
+    modelGraph.createNode({ id: "C", type: "test" });
+    modelGraph.createNode({ id: "D", type: "test" });
     modelGraph.createEdge("A", "B", { type: "test" });
     modelGraph.createEdge("A", "C", { type: "test" });
     modelGraph.createEdge("B", "D", { type: "test" });
@@ -67,9 +67,9 @@ describe("pathSearch", () => {
   });
 
   test("finds path in cyclic graph", () => {
-    modelGraph.createNode("A", { type: "test" });
-    modelGraph.createNode("B", { type: "test" });
-    modelGraph.createNode("C", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
+    modelGraph.createNode({ id: "B", type: "test" });
+    modelGraph.createNode({ id: "C", type: "test" });
     modelGraph.createEdge("A", "B", { type: "test" });
     modelGraph.createEdge("B", "C", { type: "test" });
     modelGraph.createEdge("C", "A", { type: "test" }); // Creates cycle
@@ -86,7 +86,7 @@ describe("pathSearch", () => {
     // Create a large linear graph
     const size = 1000;
     for (let i = 0; i < size; i++) {
-      modelGraph.createNode(`node${i}`, { type: "test" });
+      modelGraph.createNode({ id: `node${i}`, type: "test" });
       if (i > 0) {
         modelGraph.createEdge(`node${i - 1}`, `node${i}`, {
           type: "test",
@@ -107,7 +107,7 @@ describe("pathSearch", () => {
   });
 
   test("handles invalid node IDs", () => {
-    modelGraph.createNode("A", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
 
     const path = computePath(
       "A" as NodeId,
@@ -119,10 +119,10 @@ describe("pathSearch", () => {
 
   test("finds path with multiple possible routes", () => {
     // Create a graph with multiple paths from A to D
-    modelGraph.createNode("A", { type: "test" });
-    modelGraph.createNode("B", { type: "test" });
-    modelGraph.createNode("C", { type: "test" });
-    modelGraph.createNode("D", { type: "test" });
+    modelGraph.createNode({ id: "A", type: "test" });
+    modelGraph.createNode({ id: "B", type: "test" });
+    modelGraph.createNode({ id: "C", type: "test" });
+    modelGraph.createNode({ id: "D", type: "test" });
     modelGraph.createEdge("A", "B", { type: "test" });
     modelGraph.createEdge("B", "D", { type: "test" });
     modelGraph.createEdge("A", "C", { type: "test" });

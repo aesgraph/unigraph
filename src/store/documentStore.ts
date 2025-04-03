@@ -207,4 +207,13 @@ export const saveDocumentsToSceneGraph = (sceneGraph: SceneGraph) => {
   }
 };
 
+export const createDocument = (nodeId: NodeId) => {
+  const store = useDocumentStore.getState();
+  if (store.documents[nodeId]) {
+    console.log(`Document for ${nodeId} already exists.`);
+    return;
+  }
+  store.createDocument(nodeId);
+};
+
 export default useDocumentStore;

@@ -35,8 +35,8 @@ export type NodeData = EntityData & DisplayNodeData;
 export type NodeDataArgs = EntityDataArgs & DisplayNodeDataArgs;
 
 class Node extends AbstractEntity<NodeId, NodeData> {
-  constructor(id: NodeId | string, args?: NodeDataArgs) {
-    super(id as NodeId, { ...DEFAULT_DISPLAY_NODE_DATA, ...args });
+  constructor(args?: NodeDataArgs) {
+    super({ ...DEFAULT_DISPLAY_NODE_DATA, ...args });
   }
 
   getDimensions(): Dimensions | undefined {

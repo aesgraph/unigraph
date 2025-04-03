@@ -31,7 +31,8 @@ function createSphereMesh(radius: number = 100, segments: number = 12): Graph {
     isPole: true,
     poleType: "north",
   });
-  graph.createNode(northPoleId, {
+  graph.createNode({
+    id: northPoleId,
     type: "sphere-node",
     tags: new Set(["pole", "north"]),
     userData: getSpherePoint(0, 0),
@@ -52,7 +53,8 @@ function createSphereMesh(radius: number = 100, segments: number = 12): Graph {
         point,
       });
 
-      graph.createNode(nodeId, {
+      graph.createNode({
+        id: nodeId,
         type: "sphere-node",
         tags: new Set([`ring-${phi}`]),
         userData: point,
@@ -68,7 +70,8 @@ function createSphereMesh(radius: number = 100, segments: number = 12): Graph {
     isPole: true,
     poleType: "south",
   });
-  graph.createNode(southPoleId, {
+  graph.createNode({
+    id: southPoleId,
     type: "sphere-node",
     tags: new Set(["pole", "south"]),
     userData: getSpherePoint(0, Math.PI),

@@ -19,7 +19,6 @@ type ImageAnnotationData = EntityData & {
 };
 
 export type ImageAnnotationDataArgs = EntityDataArgs & {
-  id: string | ImageAnnotationId;
   imageUrl: string;
   topLeft: Position;
   bottomRight: Position;
@@ -29,8 +28,8 @@ class ImageAnnotation extends AbstractEntity<
   ImageAnnotationId,
   ImageAnnotationData
 > {
-  constructor(id: ImageAnnotationId | string, args: ImageAnnotationDataArgs) {
-    super(args.id as ImageAnnotationId, args);
+  constructor(args: ImageAnnotationDataArgs) {
+    super(args);
   }
 
   getData(): ImageAnnotationData {
@@ -41,11 +40,8 @@ class ImageAnnotation extends AbstractEntity<
     return "imageAnnotation";
   }
 
-  static create(
-    id: ImageAnnotationId | string,
-    args: ImageAnnotationDataArgs
-  ): ImageAnnotation {
-    return new ImageAnnotation(id, args);
+  static create(args: ImageAnnotationDataArgs): ImageAnnotation {
+    return new ImageAnnotation(args);
   }
 }
 
@@ -59,7 +55,7 @@ export const IMAGE_ANNOTATION_ENTITIES = (): EntitiesContainer<
   >();
   const artCollection = demo_SceneGraph_ArtCollection();
   for (const imageBox of artCollection.getNodes()) {
-    const imageAnnotation = new ImageAnnotation(imageBox.getId(), {
+    const imageAnnotation = new ImageAnnotation({
       id: imageBox.getId(),
       imageUrl: imageBox.getAllUserData().imageUrl,
       topLeft: imageBox.getAllUserData().topLeft,
@@ -79,7 +75,7 @@ export const loadFromJson = (data: ImageBoxData[]) => {
     ImageAnnotation
   >();
   for (const obj of Object.values(data)) {
-    const imageAnnotation = new ImageAnnotation(obj.id, {
+    const imageAnnotation = new ImageAnnotation({
       id: obj.id,
       imageUrl: obj.imageUrl,
       topLeft: obj.topLeft,

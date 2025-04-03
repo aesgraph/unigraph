@@ -25,7 +25,7 @@ class SongAnnotation extends AbstractEntity<
   SongAnnotationData
 > {
   constructor(id: SongAnnotationId | string, args: SongAnnotationDataArgs) {
-    super(args.id as SongAnnotationId, args);
+    super(args);
   }
 
   getData(): SongAnnotationData {

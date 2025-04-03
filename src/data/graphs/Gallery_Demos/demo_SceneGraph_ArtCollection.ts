@@ -11,7 +11,8 @@ export const demo_SceneGraph_ArtCollection = () => {
   for (const [key, value] of Object.entries(
     demo_SceneGraph_ArtCollection_Images
   )) {
-    imageGraph.createNode(key, {
+    imageGraph.createNode({
+      id: key,
       type: "image",
       userData: {
         imageUrl: value,
@@ -24,7 +25,8 @@ export const demo_SceneGraph_ArtCollection = () => {
   ];
   for (const imageBoxes of imageBoxesToInclude) {
     for (const imageBox of imageBoxes) {
-      imageGraph.createNode(imageBox.id, {
+      imageGraph.createNode({
+        id: imageBox.id,
         type: "imageBox",
         userData: {
           imageUrl: imageBox.imageUrl,
@@ -56,7 +58,8 @@ export const onSubmitImage = (sceneGraph: SceneGraph, data: ImageBoxData) => {
     // eslint-disable-next-line unused-imports/no-unused-vars
     imageSource,
   } = data;
-  sceneGraph.getGraph().createNode(id, {
+  sceneGraph.getGraph().createNode({
+    id,
     type: "ImageBox",
     description,
     tags,

@@ -186,9 +186,21 @@ describe("GetInclusiveTypesAndTags", () => {
 
   it("should include types and tags from nodes specified in entities ruleMode", () => {
     const sceneGraph = new SceneGraph();
-    const node1 = new Node("node1", { type: "type1", tags: new Set(["tag1"]) });
-    const node2 = new Node("node2", { type: "type2", tags: new Set(["tag2"]) });
-    const node3 = new Node("node3", { type: "type3", tags: new Set(["tag3"]) });
+    const node1 = new Node({
+      id: "node1",
+      type: "type1",
+      tags: new Set(["tag1"]),
+    });
+    const node2 = new Node({
+      id: "node2",
+      type: "type2",
+      tags: new Set(["tag2"]),
+    });
+    const node3 = new Node({
+      id: "node3",
+      type: "type3",
+      tags: new Set(["tag3"]),
+    });
 
     sceneGraph.getGraph().addNode(node1);
     sceneGraph.getGraph().addNode(node2);
@@ -230,9 +242,21 @@ describe("GetInclusiveTypesAndTags", () => {
 
   it("should handle entities ruleMode with mixed include and exclude rules", () => {
     const sceneGraph = new SceneGraph();
-    const node1 = new Node("node1", { type: "type1", tags: new Set(["tag1"]) });
-    const node2 = new Node("node2", { type: "type2", tags: new Set(["tag2"]) });
-    const node3 = new Node("node3", { type: "type3", tags: new Set(["tag3"]) });
+    const node1 = new Node({
+      id: "node1",
+      type: "type1",
+      tags: new Set(["tag1"]),
+    });
+    const node2 = new Node({
+      id: "node2",
+      type: "type2",
+      tags: new Set(["tag2"]),
+    });
+    const node3 = new Node({
+      id: "node3",
+      type: "type3",
+      tags: new Set(["tag3"]),
+    });
 
     sceneGraph.getGraph().addNode(node1);
     sceneGraph.getGraph().addNode(node2);
@@ -395,9 +419,21 @@ describe("GetInclusiveTypesAndTags - Additional Tests", () => {
 
   it("should handle multiple include and exclude rules with entities", () => {
     const sceneGraph = new SceneGraph();
-    const node1 = new Node("node1", { type: "type1", tags: new Set(["tag1"]) });
-    const node2 = new Node("node2", { type: "type2", tags: new Set(["tag2"]) });
-    const node3 = new Node("node3", { type: "type3", tags: new Set(["tag3"]) });
+    const node1 = new Node({
+      id: "node1",
+      type: "type1",
+      tags: new Set(["tag1"]),
+    });
+    const node2 = new Node({
+      id: "node2",
+      type: "type2",
+      tags: new Set(["tag2"]),
+    });
+    const node3 = new Node({
+      id: "node3",
+      type: "type3",
+      tags: new Set(["tag3"]),
+    });
 
     sceneGraph.getGraph().addNode(node1);
     sceneGraph.getGraph().addNode(node2);
@@ -447,7 +483,11 @@ describe("GetInclusiveTypesAndTags - Additional Tests", () => {
 
   it("should handle rules with no matching nodes in entities mode", () => {
     const sceneGraph = new SceneGraph();
-    const node1 = new Node("node1", { type: "type1", tags: new Set(["tag1"]) });
+    const node1 = new Node({
+      id: "node1",
+      type: "type1",
+      tags: new Set(["tag1"]),
+    });
 
     sceneGraph.getGraph().addNode(node1);
 
@@ -478,8 +518,16 @@ describe("GetInclusiveTypesAndTags - Additional Tests", () => {
 
   it("should handle rules with overlapping types and tags from nodes", () => {
     const sceneGraph = new SceneGraph();
-    const node1 = new Node("node1", { type: "type1", tags: new Set(["tag1"]) });
-    const node2 = new Node("node2", { type: "type2", tags: new Set(["tag1"]) });
+    const node1 = new Node({
+      id: "node1",
+      type: "type1",
+      tags: new Set(["tag1"]),
+    });
+    const node2 = new Node({
+      id: "node2",
+      type: "type2",
+      tags: new Set(["tag1"]),
+    });
 
     sceneGraph.getGraph().addNode(node1);
     sceneGraph.getGraph().addNode(node2);
@@ -573,8 +621,16 @@ describe("GetInclusiveTypesAndTags - Additional Tests", () => {
 
   it("should handle rules with mixed include and exclude for entities and typesAndTags", () => {
     const sceneGraph = new SceneGraph();
-    const node1 = new Node("node1", { type: "type1", tags: new Set(["tag1"]) });
-    const node2 = new Node("node2", { type: "type2", tags: new Set(["tag2"]) });
+    const node1 = new Node({
+      id: "node1",
+      type: "type1",
+      tags: new Set(["tag1"]),
+    });
+    const node2 = new Node({
+      id: "node2",
+      type: "type2",
+      tags: new Set(["tag2"]),
+    });
 
     sceneGraph.getGraph().addNode(node1);
     sceneGraph.getGraph().addNode(node2);

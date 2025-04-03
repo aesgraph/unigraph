@@ -39,7 +39,7 @@ export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
   Base: {
     label: "Base",
     graphs: {
-      Empty: () => new SceneGraph({}),
+      Empty: () => new SceneGraph({ metadata: { name: "New SceneGraph" } }),
     },
   },
   "Demo Graphs": {

@@ -72,7 +72,8 @@ export const loadSvgToSceneGraph = (
       const _r = parseFloat(circle.getAttribute("r") || "1");
 
       // Create node in graph
-      graph.createNode(circleId, {
+      graph.createNode({
+        id: circleId,
         label: circleId,
         type: fill,
         color: fill,

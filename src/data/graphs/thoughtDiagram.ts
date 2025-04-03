@@ -4,63 +4,65 @@ import { SceneGraph } from "../../core/model/SceneGraph";
 export const constructModel = () => {
   const graph = new Graph();
 
-  graph.createNode("Graphviz");
-  graph.createNode("ReactFlow");
-  graph.createNode("Unigraph");
+  graph.createNode({ id: "Graphviz" });
+  graph.createNode({ id: "ReactFlow" });
+  graph.createNode({ id: "Unigraph" });
 
-  graph.createNode("A technology for communication");
-  graph.createNode("Use it to tell a story");
+  graph.createNode({ id: "A technology for communication" });
+  graph.createNode({ id: "Use it to tell a story" });
 
-  graph.createNode("Diagramming tool");
-  graph.createNode("Describes itself");
+  graph.createNode({ id: "Diagramming tool" });
+  graph.createNode({ id: "Describes itself" });
 
   // Adding famous mathematicians
-  graph.createNode("Euclid", { tags: ["mathematician"] });
-  graph.createNode("Isaac Newton", { tags: ["mathematician"] });
-  graph.createNode("Carl Friedrich Gauss", { tags: ["mathematician"] });
-  graph.createNode("Leonhard Euler", { tags: ["mathematician"] });
-  graph.createNode("Pythagoras", { tags: ["mathematician"] });
-  graph.createNode("Albert Einstein", { tags: ["scientist"] });
-  graph.createNode("Galileo Galilei", { tags: ["scientist"] });
-  graph.createNode("Marie Curie", { tags: ["scientist"] });
-  graph.createNode("Nikola Tesla", { tags: ["scientist"] });
-  graph.createNode("Stephen Hawking", { tags: ["scientist"] });
-  graph.createNode("Alan Turing", { tags: ["scientist"] });
-  graph.createNode("Ada Lovelace", { tags: ["scientist"] });
-  graph.createNode("Niels Bohr", { tags: ["scientist"] });
-  graph.createNode("Richard Feynman", { tags: ["scientist"] });
-  graph.createNode("James Clerk Maxwell", { tags: ["scientist"] });
+  graph.createNode({ id: "Euclid", tags: ["mathematician"] });
+  graph.createNode({ id: "Isaac Newton", tags: ["mathematician"] });
+  graph.createNode({ id: "Carl Friedrich Gauss", tags: ["mathematician"] });
+  graph.createNode({ id: "Leonhard Euler", tags: ["mathematician"] });
+  graph.createNode({ id: "Pythagoras", tags: ["mathematician"] });
+  graph.createNode({ id: "Albert Einstein", tags: ["scientist"] });
+  graph.createNode({ id: "Galileo Galilei", tags: ["scientist"] });
+  graph.createNode({ id: "Marie Curie", tags: ["scientist"] });
+  graph.createNode({ id: "Nikola Tesla", tags: ["scientist"] });
+  graph.createNode({ id: "Stephen Hawking", tags: ["scientist"] });
+  graph.createNode({ id: "Alan Turing", tags: ["scientist"] });
+  graph.createNode({ id: "Ada Lovelace", tags: ["scientist"] });
+  graph.createNode({ id: "Niels Bohr", tags: ["scientist"] });
+  graph.createNode({ id: "Richard Feynman", tags: ["scientist"] });
+  graph.createNode({ id: "James Clerk Maxwell", tags: ["scientist"] });
 
   // Adding major works
-  graph.createNode("Elements", { tags: ["major work"] });
-  graph.createNode("Principia Mathematica", { tags: ["major work"] });
-  graph.createNode("Opticks", { tags: ["major work"] });
-  graph.createNode("Disquisitiones Arithmeticae", { tags: ["major work"] });
-  graph.createNode("Introductio in analysin infinitorum", {
+  graph.createNode({ id: "Elements", tags: ["major work"] });
+  graph.createNode({ id: "Principia Mathematica", tags: ["major work"] });
+  graph.createNode({ id: "Opticks", tags: ["major work"] });
+  graph.createNode({ id: "Disquisitiones Arithmeticae", tags: ["major work"] });
+  graph.createNode({
+    id: "Introductio in analysin infinitorum",
     tags: ["major work"],
   });
-  graph.createNode("Pythagorean Theorem", { tags: ["major work"] });
-  graph.createNode("Theory of Relativity", { tags: ["major work"] });
-  graph.createNode("Dialogue Concerning the Two Chief World Systems", {
+  graph.createNode({ id: "Pythagorean Theorem", tags: ["major work"] });
+  graph.createNode({ id: "Theory of Relativity", tags: ["major work"] });
+  graph.createNode({
+    id: "Dialogue Concerning the Two Chief World Systems",
     tags: ["major work"],
   });
-  graph.createNode("Radioactivity", { tags: ["major work"] });
-  graph.createNode("AC Power", { tags: ["major work"] });
-  graph.createNode("A Brief History of Time", { tags: ["major work"] });
-  graph.createNode("On Computable Numbers", { tags: ["major work"] });
-  graph.createNode("Analytical Engine", { tags: ["major work"] });
-  graph.createNode("Bohr Model", { tags: ["major work"] });
-  graph.createNode("Quantum Electrodynamics", { tags: ["major work"] });
-  graph.createNode("Maxwell's Equations", { tags: ["major work"] });
+  graph.createNode({ id: "Radioactivity", tags: ["major work"] });
+  graph.createNode({ id: "AC Power", tags: ["major work"] });
+  graph.createNode({ id: "A Brief History of Time", tags: ["major work"] });
+  graph.createNode({ id: "On Computable Numbers", tags: ["major work"] });
+  graph.createNode({ id: "Analytical Engine", tags: ["major work"] });
+  graph.createNode({ id: "Bohr Model", tags: ["major work"] });
+  graph.createNode({ id: "Quantum Electrodynamics", tags: ["major work"] });
+  graph.createNode({ id: "Maxwell's Equations", tags: ["major work"] });
 
   // Adding scientific and mathematical fields
-  graph.createNode("Geometry", { tags: ["field"] });
-  graph.createNode("Physics", { tags: ["field"] });
-  graph.createNode("Mathematics", { tags: ["field"] });
-  graph.createNode("Computer Science", { tags: ["field"] });
-  graph.createNode("Chemistry", { tags: ["field"] });
-  graph.createNode("Electrical Engineering", { tags: ["field"] });
-  graph.createNode("Quantum Mechanics", { tags: ["field"] });
+  graph.createNode({ id: "Geometry", tags: ["field"] });
+  graph.createNode({ id: "Physics", tags: ["field"] });
+  graph.createNode({ id: "Mathematics", tags: ["field"] });
+  graph.createNode({ id: "Computer Science", tags: ["field"] });
+  graph.createNode({ id: "Chemistry", tags: ["field"] });
+  graph.createNode({ id: "Electrical Engineering", tags: ["field"] });
+  graph.createNode({ id: "Quantum Mechanics", tags: ["field"] });
 
   // Creating links between mathematicians/scientists and their works
   graph.createEdge("Euclid", "Elements", { tags: ["contributed"] });

@@ -1,5 +1,4 @@
-import { Graphviz } from "@hpcc-js/wasm";
-import { Position, ReactFlowInstance } from "@xyflow/react";
+import { Position } from "@xyflow/react";
 import React, {
   JSX,
   useCallback,
@@ -8,8 +7,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { toDot } from "ts-graphviz";
-import { v4 as uuidv4 } from "uuid";
 import "./App.css";
 import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
@@ -38,6 +35,7 @@ import SceneGraphTitle from "./components/SceneGraphTitle";
 import GravitySimulation3 from "./components/simulations/GravitySimulation3";
 import ReactFlowPanel from "./components/simulations/ReactFlowPanel";
 import SolarSystem from "./components/simulations/solarSystemSimulation";
+import ChatGptImporter from "./components/tools/ChatGptImporter";
 import YasguiPanel from "./components/YasguiPanel";
 
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
@@ -58,7 +56,6 @@ import {
   attachRepulsiveForce,
   bindEventsToGraphInstance,
   createForceGraph,
-  refreshForceGraphInstance,
   updateNodePositions,
   zoomToFit,
 } from "./core/force-graph/createForceGraph";
@@ -73,8 +70,7 @@ import {
   LayoutEngineOptionLabels,
   PresetLayoutType,
 } from "./core/layouts/LayoutEngine";
-import { fitToRect, NodePositionData } from "./core/layouts/layoutHelpers";
-import { ConvertSceneGraphToGraphviz } from "./core/model/ConvertSceneGraphToGraphviz";
+import { NodePositionData } from "./core/layouts/layoutHelpers";
 import { DisplayManager } from "./core/model/DisplayManager";
 import { EdgeId } from "./core/model/Edge";
 import { Entity } from "./core/model/entity/abstractEntity";
@@ -99,6 +95,7 @@ import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 import { Filter, loadFiltersFromSceneGraph } from "./store/activeFilterStore";
 import {
+  getActiveLayoutResult,
   getLayoutByName,
   getSavedLayouts,
   Layout,
@@ -114,8 +111,10 @@ import useActiveLegendConfigStore, {
   setNodeLegendConfig,
 } from "./store/activeLegendConfigStore";
 import useAppConfigStore, {
+  getActiveView,
   getForceGraphInstance,
   getLegendMode,
+  getPreviousView,
   setActiveLayout,
   setActiveProjectId,
   setAppConfig,
@@ -151,6 +150,11 @@ import useWorkspaceConfigStore, {
 } from "./store/workspaceConfigStore";
 
 // Import the persistent store
+
+// main();
+
+// initialize shared llm client
+// getSharedLLMClient(); // brittle because of cache.add() failing
 
 export type ObjectOf<T> = { [key: string]: T };
 
@@ -230,6 +234,8 @@ const AppContent: React.FC<{
     setCurrentSceneGraph,
     forceGraphInstance,
     setForceGraphInstance,
+    reactFlowInstance,
+    setReactFlowInstance,
   } = useAppConfigStore();
 
   const { showToolbar } = useWorkspaceConfigStore();
@@ -248,7 +254,7 @@ const AppContent: React.FC<{
   const forceGraphRef = useRef<HTMLDivElement | null>(null);
   const reactFlowRef = useRef<HTMLDivElement | null>(null);
   // const forceGraphInstance = useRef<ForceGraph3DInstance | null>(null);
-  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+  // const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
 
   // eslint-disable-next-line unused-imports/no-unused-vars
   const { mousePosition, setMousePosition } = useMousePosition();
@@ -273,6 +279,8 @@ const AppContent: React.FC<{
 
   const [showFilter, setShowFilter] = useState(false);
   const [showFilterManager, setShowFilterManager] = useState(false);
+
+  const [showChatGptImporter, setShowChatGptImporter] = useState(false);
 
   const _getAppConfigWithUrlOverrides = useCallback(
     (config: AppConfig) => {
@@ -320,13 +328,13 @@ const AppContent: React.FC<{
 
   const handleReactFlowFitView = useCallback(
     (padding: number = 0.1, duration: number = 0) => {
-      if (activeView === "ReactFlow" && reactFlowInstance.current) {
+      if (activeView === "ReactFlow" && reactFlowInstance) {
         setTimeout(() => {
-          reactFlowInstance.current?.fitView({ padding, duration });
+          reactFlowInstance.fitView({ padding, duration });
         }, 0);
       }
     },
-    [activeView]
+    [activeView, reactFlowInstance]
   );
 
   useEffect(() => {
@@ -359,8 +367,10 @@ const AppContent: React.FC<{
   }, [defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout]);
 
   useEffect(() => {
-    if (activeView === "ReactFlow" && reactFlowInstance.current) {
-      handleReactFlowFitView();
+    if (activeView === "ReactFlow" && reactFlowInstance) {
+      if (getPreviousView() !== "Editor") {
+        handleReactFlowFitView();
+      }
     }
   }, [
     nodeLegendConfig,
@@ -368,6 +378,7 @@ const AppContent: React.FC<{
     activeView,
     handleReactFlowFitView,
     layoutResult,
+    reactFlowInstance,
   ]);
 
   // const selectedGraphNode = useMemo(() => {
@@ -497,21 +508,22 @@ const AppContent: React.FC<{
         throw new Error(`Failed to compute layout for ${layout}`);
       }
       sceneGraph.getDisplayConfig().nodePositions = output.positions;
-      if (!output.svg) {
-        console.log("Generating svg from graphviz");
-        const g = ConvertSceneGraphToGraphviz(
-          sceneGraph.getGraph(),
-          {
-            ...sceneGraph.getDisplayConfig(),
-            nodePositions: fitToRect(50, 50, output.positions),
-          },
-          (layout ?? DEFAULT_APP_CONFIG().activeLayout) as LayoutEngineOption
-        );
-        const dot = toDot(g);
-        const graphviz = await Graphviz.load();
-        const svg = await graphviz.layout(dot, "svg");
-        output.svg = svg;
-      }
+      // Turn off svg generation for now
+      // if (!output.svg) {
+      //   console.log("Generating svg from graphviz");
+      //   const g = ConvertSceneGraphToGraphviz(
+      //     sceneGraph.getGraph(),
+      //     {
+      //       ...sceneGraph.getDisplayConfig(),
+      //       nodePositions: fitToRect(50, 50, output.positions),
+      //     },
+      //     (layout ?? DEFAULT_APP_CONFIG().activeLayout) as LayoutEngineOption
+      //   );
+      //   const dot = toDot(g);
+      //   const graphviz = await Graphviz.load();
+      //   const svg = await graphviz.layout(dot, "svg");
+      //   output.svg = svg;
+      // }
       sceneGraph.getDisplayConfig().svg = output.svg;
       setLayoutResult(output);
       isComputing = false;
@@ -560,9 +572,7 @@ const AppContent: React.FC<{
 
   const handleCreateNodeSubmit = useCallback(
     (newNodeData: NodeDataArgs) => {
-      const newNode = currentSceneGraph
-        .getGraph()
-        .createNode(uuidv4(), newNodeData);
+      const newNode = currentSceneGraph.getGraph().createNode(newNodeData);
       console.log("new node created is ", newNode);
       currentSceneGraph.notifyGraphChanged();
       setIsNodeEditorOpen(false);
@@ -582,15 +592,16 @@ const AppContent: React.FC<{
         forceGraphInstance.refresh();
       }
       setEditingNodeId(null);
+      currentSceneGraph.notifyGraphChanged();
     },
     [currentSceneGraph, forceGraphInstance]
   );
 
   const initializeForceGraph = useCallback(() => {
     console.log(
-      "Creating new force graph instance",
-      getForceGraphInstance(),
-      currentSceneGraph.getDisplayConfig().nodePositions,
+      "Creating new force graph instance...",
+      currentSceneGraph.getDisplayConfig().nodePositions ??
+        getActiveLayoutResult()?.positions,
       forceGraph3dOptions.layout
     );
     const newInstance = createForceGraph(
@@ -841,13 +852,17 @@ const AppContent: React.FC<{
         graphvizFitToView(graphvizRef.current);
       } else if (activeView === "ForceGraph3d" && forceGraphInstance) {
         zoomToFit(forceGraphInstance!, duration);
-      } else if (activeView === "ReactFlow" && reactFlowInstance.current) {
-        console.log("fitting");
+      } else if (activeView === "ReactFlow" && reactFlowInstance) {
         handleReactFlowFitView(0.1, duration);
         // reactFlowInstance.current.fitView({ padding: 0.1, duration: 400 });
       }
     },
-    [forceGraphInstance, graphvizFitToView, handleReactFlowFitView]
+    [
+      forceGraphInstance,
+      graphvizFitToView,
+      handleReactFlowFitView,
+      reactFlowInstance,
+    ]
   );
 
   const handleLegendModeChange = useCallback(
@@ -978,7 +993,7 @@ const AppContent: React.FC<{
 
   const handleSetActiveView = useCallback(
     (key: string) => {
-      console.log("setting active view", key);
+      console.log("Setting active view", key);
       setActiveView(key);
       handleFitToView(key);
       const url = new URL(window.location.href);
@@ -1090,6 +1105,7 @@ const AppContent: React.FC<{
       showSceneGraphDetailView: (readOnly: boolean) => {
         setShowSceneGraphDetailView({ show: true, readOnly });
       },
+      showChatGptImporter: () => setShowChatGptImporter(true),
     };
     return new MenuConfig(
       menuConfigCallbacks,
@@ -1152,7 +1168,7 @@ const AppContent: React.FC<{
   }, []);
 
   const maybeRenderReactFlow = useMemo(() => {
-    if (activeView !== "ReactFlow") {
+    if (!(activeView === "ReactFlow" || activeView === "Editor")) {
       return null;
     }
 
@@ -1242,8 +1258,8 @@ const AppContent: React.FC<{
             },
           }))}
           onLoad={(instance) => {
-            if (reactFlowInstance.current !== instance) {
-              reactFlowInstance.current = instance;
+            if (reactFlowInstance !== instance) {
+              setReactFlowInstance(instance);
               setTimeout(() => handleReactFlowFitView(), 100);
             }
           }}
@@ -1326,7 +1342,7 @@ const AppContent: React.FC<{
   }, [activeView]);
 
   const maybeRenderForceGraph3D = useMemo(() => {
-    if (activeView === "ForceGraph3d") {
+    if (activeView === "ForceGraph3d" || activeView === "Editor") {
       return (
         <div
           id="force-graph"
@@ -1339,6 +1355,7 @@ const AppContent: React.FC<{
             bottom: 0,
             background: "black",
             zIndex: 1,
+            visibility: activeView === "Editor" ? "hidden" : "visible", // Hide but keep in DOM when in Editor view
           }}
         />
       );
@@ -1365,14 +1382,12 @@ const AppContent: React.FC<{
   );
 
   useEffect(() => {
-    if (activeView === "ForceGraph3d") {
-      if (forceGraphInstance) {
-        refreshForceGraphInstance(
-          forceGraphInstance,
-          currentSceneGraph,
-          forceGraph3dOptions.layout
-        );
-      }
+    if (activeView === "ForceGraph3d" && forceGraphInstance) {
+      ForceGraphManager.refreshForceGraphInstance(
+        forceGraphInstance,
+        currentSceneGraph,
+        forceGraph3dOptions.layout
+      );
     }
   }, [
     nodeLegendUpdateTime,
@@ -1387,6 +1402,10 @@ const AppContent: React.FC<{
   ]);
 
   useEffect(() => {
+    if (activeView === "Editor") {
+      return;
+    }
+
     if (
       layoutResult?.layoutType !== activeLayout &&
       (activeView === "Graphviz" || activeView === "ReactFlow")
@@ -1394,13 +1413,22 @@ const AppContent: React.FC<{
       if (currentSceneGraph.getDisplayConfig().nodePositions === undefined) {
         safeComputeLayout(currentSceneGraph, activeLayout);
       }
-    } else if (activeView === "ForceGraph3d") {
-      console.log("Reinitializing");
+    } else if (
+      getPreviousView() !== "Editor" &&
+      activeView === "ForceGraph3d"
+    ) {
+      console.log("previous view was ", getPreviousView());
+      console.log("active view history Reinitializing");
       initializeForceGraph();
     }
 
     return () => {
-      if (getForceGraphInstance()) {
+      if (
+        getActiveView() !== "Editor" &&
+        getForceGraphInstance() &&
+        getActiveView() !== "ForceGraph3d"
+      ) {
+        console.log("destructor called");
         getForceGraphInstance()?._destructor();
         setForceGraphInstance(null);
       }
@@ -1465,25 +1493,40 @@ const AppContent: React.FC<{
     [activeView, forceGraphInstance]
   );
 
+  const zoomToNode = useCallback(
+    (nodeId: string) => {
+      if (reactFlowInstance) {
+        const node = reactFlowInstance.getNode(nodeId);
+        if (node) {
+          reactFlowInstance.fitView({
+            nodes: [{ id: nodeId }],
+            duration: 800,
+            padding: 4,
+          });
+          setSelectedNodeId(nodeId as NodeId);
+        }
+      }
+    },
+    [reactFlowInstance]
+  );
+
   const handleSelectResult = useCallback(
     (nodeId: NodeId | string) => {
-      if (!forceGraphInstance) {
-        return;
-      }
-      if (activeView === "ForceGraph3d") {
+      if (activeView === "ReactFlow") {
+        zoomToNode(nodeId); // Call zoomToNode for ReactFlow
+      } else if (activeView === "ForceGraph3d" && forceGraphInstance) {
         const node = forceGraphInstance
           .graphData()
           .nodes.find((node) => node.id === nodeId);
         if (node) {
-          console.log("flying to ", node);
           flyToNode(forceGraphInstance, node);
           handleHighlight(nodeId);
           setSelectedNodeId(nodeId as NodeId);
-          setRightActiveSection("node-details");
+          // setRightActiveSection("node-details");
         }
       }
     },
-    [activeView, forceGraphInstance, handleHighlight]
+    [activeView, forceGraphInstance, handleHighlight, zoomToNode]
   );
 
   const handleMouseMove = useCallback(
@@ -1882,7 +1925,7 @@ const AppContent: React.FC<{
             onClose={() => setShowEntityTables(false)}
             onNodeClick={(nodeId) => {
               setSelectedNodeId(nodeId as NodeId);
-              setRightActiveSection("node-details");
+              // setRightActiveSection("node-details");
               setShowEntityTables(false);
               if (activeView === "ForceGraph3d" && forceGraphInstance) {
                 const node = forceGraphInstance
@@ -1958,6 +2001,14 @@ const AppContent: React.FC<{
             }
             darkMode={isDarkMode}
           />
+        )}
+        {showChatGptImporter && (
+          <div className="overlay">
+            <ChatGptImporter
+              onClose={() => setShowChatGptImporter(false)}
+              isDarkMode={isDarkMode}
+            />
+          </div>
         )}
       </div>
     </AppContextProvider>

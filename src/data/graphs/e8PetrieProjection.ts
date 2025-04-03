@@ -93,7 +93,8 @@ export const createE8PetrieGraph = (): SceneGraph => {
     nodeMap.set(key, nodeId);
 
     const projected = petrieProject(root);
-    sceneGraph.getGraph().createNode(nodeId, {
+    sceneGraph.getGraph().createNode({
+      id: nodeId,
       type: "e8vertex",
       position: {
         x: projected.x * scale,

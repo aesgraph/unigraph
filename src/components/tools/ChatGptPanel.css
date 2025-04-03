@@ -1,0 +1,424 @@
+.chatgpt-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  color: #333;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.chatgpt-panel.dark {
+  background-color: #1a2942;
+  color: #e0e0e0;
+}
+
+.chatgpt-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.chatgpt-panel.dark .chatgpt-panel-header {
+  border-bottom-color: #31415e;
+}
+
+/* Add tabs styling */
+.chatgpt-panel-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.chatgpt-panel.dark .chatgpt-panel-tabs {
+  border-bottom-color: #31415e;
+}
+
+.chatgpt-panel-tab {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+}
+
+.chatgpt-panel.dark .chatgpt-panel-tab {
+  color: #a0b7e2;
+}
+
+.chatgpt-panel-tab.active {
+  color: #4285f4;
+  border-bottom-color: #4285f4;
+  background-color: rgba(66, 133, 244, 0.05);
+}
+
+.chatgpt-panel.dark .chatgpt-panel-tab.active {
+  color: #5294ff;
+  border-bottom-color: #5294ff;
+  background-color: rgba(82, 148, 255, 0.1);
+}
+
+.chatgpt-panel-tab:hover:not(.active) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.chatgpt-panel.dark .chatgpt-panel-tab:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chatgpt-panel-content {
+  padding: 16px;
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chatgpt-description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #666;
+}
+
+.chatgpt-panel.dark .chatgpt-description {
+  color: #a0b7e2;
+}
+
+.chatgpt-url-container {
+  display: flex;
+  gap: 8px;
+}
+
+.chatgpt-url-input {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  background-color: white;
+}
+
+.chatgpt-panel.dark .chatgpt-url-input {
+  background-color: #2c3e50;
+  border-color: #31415e;
+  color: #e0e0e0;
+}
+
+.chatgpt-url-input:focus {
+  outline: none;
+  border-color: #4285f4;
+}
+
+.chatgpt-panel.dark .chatgpt-url-input:focus {
+  border-color: #5294ff;
+}
+
+.chatgpt-import-button {
+  padding: 8px 16px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.chatgpt-import-button:hover {
+  background-color: #3367d6;
+}
+
+.chatgpt-import-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.chatgpt-panel.dark .chatgpt-import-button:disabled {
+  background-color: #4a5568;
+}
+
+.chatgpt-recent {
+  margin-top: 16px;
+  border-top: 1px solid #eee;
+  padding-top: 16px;
+}
+
+.chatgpt-panel.dark .chatgpt-recent {
+  border-top-color: #31415e;
+}
+
+.chatgpt-recent h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chatgpt-recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chatgpt-recent-item {
+  margin: 0;
+  padding: 0;
+}
+
+.chatgpt-recent-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #333;
+}
+
+.chatgpt-panel.dark .chatgpt-recent-button {
+  background-color: #2c3e50;
+  color: #e0e0e0;
+}
+
+.chatgpt-recent-button:hover {
+  background-color: #f0f0f0;
+}
+
+.chatgpt-panel.dark .chatgpt-recent-button:hover {
+  background-color: #3c4e60;
+}
+
+.chatgpt-recent-button span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Add file import styles */
+.chatgpt-file-import {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chatgpt-or {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+}
+
+.chatgpt-panel.dark .chatgpt-or {
+  color: #a0b7e2;
+}
+
+.chatgpt-file-button,
+.conversations-file-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.chatgpt-file-button:hover,
+.conversations-file-button:hover {
+  background-color: #e0e0e0;
+  border-color: #ccc;
+}
+
+.chatgpt-panel.dark .chatgpt-file-button,
+.chatgpt-panel.dark .conversations-file-button {
+  background-color: #2c3e50;
+  border-color: #31415e;
+  color: #e0e0e0;
+}
+
+.chatgpt-panel.dark .chatgpt-file-button:hover,
+.chatgpt-panel.dark .conversations-file-button:hover {
+  background-color: #3c4e60;
+}
+
+.chatgpt-file-button:disabled,
+.conversations-file-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chatgpt-recent-item-container {
+  display: flex;
+  width: 100%;
+}
+
+.chatgpt-recent-button {
+  flex: 1;
+}
+
+.chatgpt-analyze-button {
+  background: none;
+  border: none;
+  color: #4285f4;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatgpt-analyze-button:hover {
+  background-color: rgba(66, 133, 244, 0.1);
+}
+
+.dark .chatgpt-analyze-button {
+  color: #5294ff;
+}
+
+.dark .chatgpt-analyze-button:hover {
+  background-color: rgba(82, 148, 255, 0.15);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Add styles for conversations import section */
+.conversations-file-import {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.03);
+  margin-top: 12px;
+}
+
+.chatgpt-panel.dark .conversations-file-import {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.file-format-note {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.chatgpt-panel.dark .file-format-note {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.file-format-note strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.file-format-note p {
+  margin: 0;
+  color: #666;
+}
+
+.chatgpt-panel.dark .file-format-note p {
+  color: #a0b7e2;
+}
+
+/* Styles for import options */
+.import-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+}
+
+.chatgpt-panel.dark .import-options {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.import-options h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.option-checkbox input {
+  cursor: pointer;
+}
+
+.downsample-control,
+.keyword-threshold-control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.downsample-slider,
+.keyword-threshold-slider {
+  width: 100%;
+}
+
+.downsample-hint,
+.keyword-threshold-hint {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+.chatgpt-panel.dark .downsample-hint,
+.chatgpt-panel.dark .keyword-threshold-hint {
+  color: #a0b7e2;
+}

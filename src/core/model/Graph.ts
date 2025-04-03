@@ -29,12 +29,12 @@ export class Graph {
     this.strict = strict;
   }
 
-  static createNode(id: NodeId, args: NodeDataArgs): Node {
-    return new Node(id, args);
+  static createNode(args: NodeDataArgs): Node {
+    return new Node(args);
   }
 
   static createEdge(fromNode: NodeId, toNode: NodeId): Edge {
-    return new Edge(`${fromNode}:::${toNode}`, {
+    return new Edge({
       source: fromNode,
       target: toNode,
     });
@@ -47,8 +47,8 @@ export class Graph {
     ]);
   }
 
-  createNode(id: NodeId | string, args?: NodeDataArgs): Node {
-    const node = new Node(id as NodeId, args);
+  createNode(args?: NodeDataArgs): Node {
+    const node = new Node(args);
     this.addNode(node);
     return node;
   }
@@ -74,7 +74,7 @@ export class Graph {
         `Cannot create edge that already exists: ${fromNode} -> ${toNode}`
       );
     }
-    const edge = new Edge(newEdgeId, {
+    const edge = new Edge({
       source: fromNode,
       target: toNode,
       ...args,
@@ -85,7 +85,7 @@ export class Graph {
 
   createNodeIfMissing(id: NodeId | string, args?: NodeDataArgs): Node {
     if (!this.containsNode(id as NodeId)) {
-      return this.createNode(id, args);
+      return this.createNode({ ...args, id });
     }
     return this.getNode(id as NodeId);
   }
@@ -115,7 +115,7 @@ export class Graph {
       throw Error("Unable to find node with id: " + id);
       console.warn("DEBUG: creating node with id: " + id);
       console.log(this.nodes);
-      return this.createNode(id, { type: "unknown" });
+      return this.createNode({ id, type: "unknown" });
     } else {
       return this.nodes.get(id)!;
     }

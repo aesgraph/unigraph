@@ -1,6 +1,7 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { Sprite, SpriteMaterial, SRGBColorSpace, TextureLoader } from "three";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";
+import { ForceGraph3dLayoutMode } from "../../AppConfig";
 import { RenderingManager } from "../../controllers/RenderingManager";
 import {
   getEdgeLegendConfig,
@@ -8,13 +9,83 @@ import {
 } from "../../store/activeLegendConfigStore";
 import { getLegendMode } from "../../store/appConfigStore";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
+import {
+  getHoveredEdgeIds,
+  getHoveredNodeIds,
+  getSelectedNodeId,
+  getSelectedNodeIds,
+} from "../../store/graphInteractionStore";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { ImageBoxData } from "../types/ImageBoxData";
 import { reconstructImageSource } from "../utils/imageProcessing";
+import {
+  MOUSE_HOVERED_NODE_COLOR,
+  SELECTED_NODE_COLOR,
+} from "./createForceGraph";
+import { updateVisibleEntitiesInForceGraphInstance } from "./forceGraphHelpers";
 
 export class ForceGraphManager {
+  // This function should NOT trigger a simulation restart. Avoid this
+  public static refreshForceGraphInstance = (
+    forceGraphInstance: ForceGraph3DInstance,
+    sceneGraph: SceneGraph,
+    layout: ForceGraph3dLayoutMode = "Physics"
+  ) => {
+    console.log("Refreshing existing force graph instance...");
+
+    // Update visible nodes and edges (with smart position handling)
+    updateVisibleEntitiesInForceGraphInstance(forceGraphInstance, sceneGraph);
+
+    forceGraphInstance.nodeColor((node) => {
+      if (getHoveredNodeIds().has(node.id as NodeId)) {
+        return MOUSE_HOVERED_NODE_COLOR;
+      }
+      if (
+        getSelectedNodeId() === node.id ||
+        getSelectedNodeIds().has(node.id as NodeId)
+      ) {
+        return SELECTED_NODE_COLOR;
+      }
+      return RenderingManager.getColor(
+        sceneGraph.getGraph().getNode(node.id as NodeId),
+        getNodeLegendConfig(),
+        getLegendMode()
+      );
+    });
+
+    forceGraphInstance.linkColor((link) => {
+      if (
+        getHoveredNodeIds().has((link.source as any).id) ||
+        getHoveredNodeIds().has((link.target as any).id)
+      ) {
+        return "yellow";
+      }
+      if (getHoveredEdgeIds().has((link as any).id)) {
+        return "white";
+      }
+      return RenderingManager.getColor(
+        sceneGraph.getGraph().getEdge((link as any).id),
+        getEdgeLegendConfig(),
+        getLegendMode()
+      );
+    });
+
+    ForceGraphManager.applyForceGraphRenderConfig(
+      forceGraphInstance,
+      sceneGraph.getForceGraphRenderConfig(),
+      sceneGraph
+    );
+
+    if (layout === "Layout" && sceneGraph.getDisplayConfig().nodePositions) {
+      ForceGraphManager.applyFixedNodePositions(
+        forceGraphInstance,
+        sceneGraph.getDisplayConfig().nodePositions!
+      );
+    }
+  };
+
   /** Assign fx, fy, fz from a layout result */
   public static applyFixedNodePositions = (
     forceGraph3dInstance: ForceGraph3DInstance,

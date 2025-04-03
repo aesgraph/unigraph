@@ -34,8 +34,9 @@ export const DEFAULT_DISPLAY_EDGE_DATA: DisplayEdgeData = {
 
 export type DisplayEdgeDataArgs = Partial<DisplayEdgeData>;
 class Edge extends AbstractEntity<EdgeId, EdgeData> {
-  constructor(id: EdgeId | string, args: EdgeDataArgs) {
-    super(id as EdgeId, { ...DEFAULT_DISPLAY_EDGE_DATA, ...args });
+  constructor(args: EdgeDataArgs) {
+    const id = Edge.id(args.source, args.target);
+    super({ ...DEFAULT_DISPLAY_EDGE_DATA, ...args, id });
   }
 
   public static id(source: NodeId | string, target: NodeId | string): EdgeId {

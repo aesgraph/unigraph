@@ -12,7 +12,7 @@ export const randomBiggestGraph = () => {
   const tags = Array.from({ length: numTags }, (_, i) => `tag${i}`);
 
   for (let i = 0; i < numNodes; i++) {
-    graph.createNode(`node${i}`, { tags: [tags[i % numTags]] });
+    graph.createNode({ id: `node${i}`, tags: [tags[i % numTags]] });
   }
 
   for (let i = 0; i < numEdges; i++) {

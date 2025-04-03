@@ -86,7 +86,8 @@ const findOrCreateNode = (
   // Create new node if none exists
   const nodeId = uuidv4();
   nodes.set(JSON.stringify(point), nodeId);
-  sceneGraph.getGraph().createNode(nodeId, {
+  sceneGraph.getGraph().createNode({
+    id: nodeId,
     type: "svgNode",
     position: { x: point.x, y: point.y, z: 0 },
     tags: new Set(["svg"]),

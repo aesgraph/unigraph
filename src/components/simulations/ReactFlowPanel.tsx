@@ -161,7 +161,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
     setSelectedNodeId(node.id as NodeId);
 
     // Open the node details panel
-    setRightActiveSection("node-details");
+    // setRightActiveSection("node-details");
 
     // Update the ReactFlow nodes directly to show selection immediately
     if (reactFlowInstance.current) {
@@ -193,7 +193,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
         // Single node selection
         setSelectedNodeId(selectedNodes[0].id as NodeId);
         if (getActiveSection("right") === null) {
-          setRightActiveSection("node-details");
+          // setRightActiveSection("node-details");
         }
       } else {
         // Multi-node selection
@@ -258,6 +258,12 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
     },
     [onLoad]
   );
+
+  useEffect(() => {
+    if (onLoad && reactFlowInstance.current) {
+      onLoad(reactFlowInstance.current);
+    }
+  }, [onLoad]);
 
   // Subscribe to ReactFlowConfig changes
   useEffect(() => {
@@ -339,6 +345,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
     >
       <ReactFlowProvider>
         <ReactFlow
+          onlyRenderVisibleElements={true}
           selectionMode={SelectionMode.Partial}
           selectionOnDrag={true}
           selectNodesOnDrag={false}
@@ -365,7 +372,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
           onNodeDoubleClick={handleNodeDoubleClick}
           fitView={true}
           minZoom={0.1}
-          maxZoom={200}
+          maxZoom={500}
           connectionLineType={ConnectionLineType.Bezier}
           snapToGrid={reactFlowConfig.snapToGrid}
           snapGrid={reactFlowConfig.snapGrid}

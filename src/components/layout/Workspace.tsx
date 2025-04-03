@@ -1,5 +1,5 @@
 import { Info } from "lucide-react";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   createDefaultLeftMenus,
   leftFooterContent,
@@ -19,7 +19,6 @@ import { Filter } from "../../store/activeFilterStore";
 import { Layout } from "../../store/activeLayoutStore";
 import { ResetNodeAndEdgeLegends } from "../../store/activeLegendConfigStore";
 import useAppConfigStore from "../../store/appConfigStore";
-import { useActiveDocument, useDocumentStore } from "../../store/documentStore";
 import { getSelectedNodeId } from "../../store/graphInteractionStore";
 import useWorkspaceConfigStore, {
   defaultSectionWidth,
@@ -96,15 +95,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   handleLoadSceneGraph,
   handleSetActiveFilter,
 }) => {
-  const activeDocument = useActiveDocument();
-  const { documents } = useDocumentStore();
-
-  // Add logging to track document state
-  useEffect(() => {
-    console.log("Active document changed:", activeDocument);
-    console.log("All documents:", documents);
-  }, [activeDocument, documents]);
-
   const { showToolbar, leftSidebarConfig, rightSidebarConfig } =
     useWorkspaceConfigStore();
 

@@ -19,12 +19,27 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
-import { $getRoot, EditorState, LexicalEditor } from "lexical";
+import {
+  $createLineBreakNode,
+  $createParagraphNode,
+  $createTextNode,
+  $getRoot,
+  $getSelection,
+  $isRangeSelection,
+  createCommand,
+  EditorState,
+  LexicalCommand,
+  LexicalEditor,
+} from "lexical";
 import { debounce, throttle } from "lodash";
 import React, { JSX, useEffect, useState } from "react";
+// Add this import
 import { NodeId } from "../core/model/Node";
-import { getCurrentSceneGraph } from "../store/appConfigStore";
+import useAppConfigStore, {
+  getCurrentSceneGraph,
+} from "../store/appConfigStore"; // Add this import
 import { useDocumentStore } from "../store/documentStore";
+import { addNotification } from "../store/notificationStore";
 import "./LexicalEditor.css";
 import { MentionNode } from "./lexical/nodes/MentionNode";
 import { EntityReferenceNode } from "./lexical/plugins/EntityReferencePlugin";
@@ -41,13 +56,22 @@ const PlaceholderPlugin = ({
   return <div className="editor-placeholder">{placeholder}</div>;
 };
 
-// Create an EditorStateInitializer plugin to properly initialize content from saved state
-const EditorStateInitializer: React.FC<{ savedState: string | null }> = ({
-  savedState,
-}) => {
+// Fix the EditorStateInitializer to run only once on mount
+const EditorStateInitializer: React.FC<{
+  savedState: string | null;
+  content: string;
+}> = ({ savedState, content }) => {
   const [editor] = useLexicalComposerContext();
+  const hasInitialized = React.useRef(false);
 
   useEffect(() => {
+    // Only initialize once when component mounts
+    if (hasInitialized.current) {
+      return;
+    }
+
+    hasInitialized.current = true;
+
     if (savedState) {
       try {
         // Try to parse and load the saved state
@@ -55,9 +79,40 @@ const EditorStateInitializer: React.FC<{ savedState: string | null }> = ({
         editor.setEditorState(editor.parseEditorState(parsedState));
       } catch (error) {
         console.error("Error restoring editor state:", error);
+        // Fallback to using content if state loading fails
+        editor.update(() => {
+          const root = $getRoot();
+          root.clear();
+          root.append($createParagraphNode().append($createTextNode(content)));
+        });
       }
+    } else if (content && content.trim().length > 0) {
+      // If no saved state but we have content, create a simple editor state with it
+      editor.update(() => {
+        const root = $getRoot();
+        root.clear();
+
+        // Split content by newlines to create paragraphs
+        const paragraphs = content.split(/\r?\n\r?\n/);
+        for (const paragraph of paragraphs) {
+          if (paragraph.trim().length > 0) {
+            const paragraphNode = $createParagraphNode();
+            const lines = paragraph.split(/\r?\n/);
+
+            for (let i = 0; i < lines.length; i++) {
+              paragraphNode.append($createTextNode(lines[i]));
+              if (i < lines.length - 1) {
+                // Add line breaks between lines in the same paragraph
+                paragraphNode.append($createLineBreakNode());
+              }
+            }
+
+            root.append(paragraphNode);
+          }
+        }
+      });
     }
-  }, [editor, savedState]);
+  }, [content, editor, savedState]); // Only depend on editor, not savedState or content
 
   return null;
 };
@@ -96,6 +151,122 @@ const AutoSavePlugin: React.FC<{
 
   return null;
 };
+
+// Create a proper Lexical command for context menu
+const CONTEXT_MENU_COMMAND: LexicalCommand<MouseEvent> = createCommand();
+
+// Add new ContextMenuPlugin component
+function ContextMenuPlugin(): JSX.Element | null {
+  const [editor] = useLexicalComposerContext();
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    text: string;
+  } | null>(null);
+  const { currentSceneGraph } = useAppConfigStore();
+  const { activeDocument } = useDocumentStore();
+
+  useEffect(() => {
+    // Register for native DOM right-click event on the editor
+    const editorElement = document.querySelector(".editor-input");
+    if (!editorElement) return;
+
+    const handleContextMenu = (e: Event) => {
+      const mouseEvent = e as MouseEvent;
+      mouseEvent.preventDefault(); // Prevent browser context menu
+
+      // Get current selection
+      editor.update(() => {
+        const selection = $getSelection();
+        if (
+          !selection ||
+          !$isRangeSelection(selection) ||
+          selection.isCollapsed()
+        ) {
+          return;
+        }
+
+        const selectedText = selection.getTextContent().trim();
+        if (!selectedText) return;
+
+        // Show our custom context menu
+        setContextMenu({
+          x: (e as MouseEvent).clientX,
+          y: (e as MouseEvent).clientY,
+          text: selectedText,
+        });
+      });
+    };
+
+    editorElement.addEventListener("contextmenu", handleContextMenu);
+
+    // Click outside listener
+    const handleClickOutside = (e: MouseEvent) => {
+      if (contextMenu) {
+        setContextMenu(null);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        setContextMenu(null);
+      }
+    });
+
+    return () => {
+      editorElement.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [editor, contextMenu]);
+
+  const handleCreateNode = () => {
+    if (contextMenu && currentSceneGraph) {
+      const newNode = currentSceneGraph.getGraph().createNode({
+        label: contextMenu.text,
+        type: "Note",
+      });
+
+      const newEdge = currentSceneGraph
+        .getGraph()
+        .createEdge(activeDocument as NodeId, newNode.getId(), {
+          type: "contains",
+          label: "contains",
+        });
+
+      currentSceneGraph.refreshDisplayConfig();
+      currentSceneGraph.notifyGraphChanged();
+
+      // Show notification
+      addNotification({
+        message: `Created node "${contextMenu.text}"`,
+        type: "success",
+        duration: 3000,
+      });
+
+      setContextMenu(null);
+    }
+  };
+
+  if (!contextMenu) return null;
+
+  return (
+    <div
+      className="editor-context-menu"
+      style={{
+        position: "fixed",
+        left: `${contextMenu.x}px`,
+        top: `${contextMenu.y}px`,
+        zIndex: 10000,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="context-menu-item" onClick={handleCreateNode}>
+        Create Node
+      </div>
+    </div>
+  );
+}
 
 interface LexicalEditorProps {
   id?: string; // Add an ID prop to identify this editor instance
@@ -159,26 +330,43 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
 
       // Then try documentStore
       const doc = getDocumentByNodeId(id as NodeId);
-      if (doc && doc.lexicalState) {
-        console.log("Loading content from documentStore:", id);
-        return {
-          content: doc.content,
-          state: doc.lexicalState,
-        };
+      if (doc) {
+        // If we have lexicalState, use it
+        if (doc.lexicalState && doc.lexicalState.length > 0) {
+          console.log("Loading lexicalState from documentStore:", id);
+          return {
+            content: doc.content,
+            state: doc.lexicalState,
+          };
+        }
+        // If we have content but no lexicalState (e.g., from ChatGPT import),
+        // use the content and create a fresh state from it
+        else if (doc.content && doc.content.trim().length > 0) {
+          console.log("Using content from document with no lexicalState:", id);
+          // Return just the content - we'll create state from it
+          return {
+            content: doc.content,
+            state: null,
+          };
+        }
       }
 
       // Fall back to initialContent
       console.log("Using initialContent for:", id);
-      return { content: initialContent, state: null };
+      return { content: doc?.content ?? initialContent, state: null };
     } catch (e) {
       console.warn("Error loading content:", e);
       return { content: initialContent, state: null };
     }
   }, [id, initialContent, storageKey, stateStorageKey, getDocumentByNodeId]);
 
+  // Capture the initial state value in a ref so it doesn't change
+  const initialStateRef = React.useRef(initialData.state);
+  const initialContentRef = React.useRef(initialData.content);
+
   // Load saved state
   const [savedState, setSavedState] = useState<string | null>(
-    initialData.state
+    initialStateRef.current
   );
 
   // Move these outside of the render function to prevent recreation
@@ -525,7 +713,10 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
               />
 
               {/* Add our EditorStateInitializer to properly set initial content */}
-              <EditorStateInitializer savedState={savedState} />
+              <EditorStateInitializer
+                savedState={initialStateRef.current}
+                content={initialContentRef.current}
+              />
               <HistoryPlugin />
               <AutoFocusPlugin />
               <ListPlugin />
@@ -548,6 +739,9 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
               />
 
               <MentionsPlugin />
+
+              {/* Add the ContextMenuPlugin here */}
+              <ContextMenuPlugin />
             </div>
           </div>
         </LexicalComposer>

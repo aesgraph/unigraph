@@ -3,7 +3,7 @@ import forceLayout from "graphology-layout-force";
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import noverlap from "graphology-layout-noverlap";
 import random from "graphology-layout/random";
-import { SceneGraph } from "../model/SceneGraph";
+import { Graph as ModelGraph } from "../model/Graph";
 import {
   createGraphologyGraph,
   NodePositionData,
@@ -19,16 +19,11 @@ export enum GraphologyLayoutType {
 }
 
 export class GraphologyLayoutEngine {
-  private sceneGraph: SceneGraph;
-
-  constructor(sceneGraph: SceneGraph) {
-    this.sceneGraph = sceneGraph;
-  }
-
   async computeLayout(
+    modelGraph: ModelGraph,
     layoutType: GraphologyLayoutType
   ): Promise<NodePositionData> {
-    const graph = createGraphologyGraph(this.sceneGraph);
+    const graph = createGraphologyGraph(modelGraph);
 
     switch (layoutType) {
       case GraphologyLayoutType.Graphology_force:
@@ -77,7 +72,7 @@ export class GraphologyLayoutEngine {
       case GraphologyLayoutType.Graphology_grid: {
         // Start with random layout then normalize to grid
         random.assign(graph);
-        const positions = extractPositions(graph);
+        const positions = extractPositionsFromGraphlogyGraph(graph);
         const sortedNodes = Object.keys(positions).sort();
         const gridSize = Math.ceil(Math.sqrt(sortedNodes.length));
 
@@ -96,13 +91,15 @@ export class GraphologyLayoutEngine {
     }
 
     // Extract and normalize positions
-    const positions = extractPositions(graph);
+    const positions = extractPositionsFromGraphlogyGraph(graph);
     // return positions;
     return normalizePositions(positions);
   }
 }
 
-export function extractPositions(graph: Graph): NodePositionData {
+export function extractPositionsFromGraphlogyGraph(
+  graph: Graph
+): NodePositionData {
   const positions: NodePositionData = {};
 
   graph.forEachNode((node, attributes) => {

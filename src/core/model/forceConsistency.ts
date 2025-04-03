@@ -13,12 +13,12 @@ export const forceConsistencyOnGraph = (
   graph.getEdges().forEach((edge) => {
     const source = graph.maybeGetNode(edge.getSource());
     if (!source) {
-      const sourceNodeAdded = graph.createNode(edge.getSource());
+      const sourceNodeAdded = graph.createNode({ id: edge.getSource() });
       result.nodesAdded.push(sourceNodeAdded);
     }
     const target = graph.maybeGetNode(edge.getTarget());
     if (!target) {
-      const targetNodeAdded = graph.createNode(edge.getTarget());
+      const targetNodeAdded = graph.createNode({ id: edge.getTarget() });
       result.nodesAdded.push(targetNodeAdded);
     }
   });

@@ -24,6 +24,7 @@ export enum CustomLayoutType {
   Box = "Box",
   Random = "Random",
   TypeDriven3D = "TypeDriven3D",
+  ChatGptConversation = "ChatGptConversation", // Add new layout type
   // ImageGraph = "ImageGraph", // this one times out. it was generated be chatgpt
 }
 
@@ -340,6 +341,135 @@ export const computeImageGraphLayout = (
   return positions;
 };
 
+/**
+ * Creates a layout optimized for ChatGPT conversations
+ * Conversations are laid out in rows, with the longest conversation at the top
+ * Each conversation is a horizontal chain of messages
+ */
+export const computeChatGptConversationLayout = (
+  sceneGraph: SceneGraph
+): NodePositionData => {
+  const positions: NodePositionData = {};
+  const graph = sceneGraph.getGraph();
+  const nodes = Array.from(graph.getNodes());
+  const edges = Array.from(graph.getEdges());
+
+  // Step 1: Find conversation thread nodes
+  const conversationNodes = nodes.filter(
+    (node) => node.getType() === "ConversationThread"
+  );
+
+  // Step 2: Get message chains for each conversation
+  interface ConversationChain {
+    conversationId: string;
+    messages: {
+      id: string;
+      nextId?: string;
+    }[];
+  }
+
+  const conversationChains: ConversationChain[] = [];
+
+  // For each conversation thread
+  for (const conversationNode of conversationNodes) {
+    const conversationId = conversationNode.getId();
+    const chain: ConversationChain = {
+      conversationId,
+      messages: [],
+    };
+
+    // Find all messages that are contained in this conversation
+    const containsEdges = edges.filter(
+      (edge) =>
+        edge.getType() === "contains" && edge.getSource() === conversationId
+    );
+
+    // Get all message nodes in this conversation
+    const messageIds = containsEdges.map((edge) => edge.getTarget());
+    const messageNodes = messageIds.map((id) => graph.getNode(id));
+
+    // Create a map of message IDs to their objects for quick lookup
+    const messageMap = new Map();
+    messageNodes.forEach((node) => {
+      messageMap.set(node.getId(), {
+        id: node.getId(),
+        nextId: undefined,
+      });
+    });
+
+    // Connect messages in sequence using "nextMessage" edges
+    const nextMessageEdges = edges.filter(
+      (edge) => edge.getType() === "nextMessage"
+    );
+    for (const edge of nextMessageEdges) {
+      const source = edge.getSource();
+      const target = edge.getTarget();
+
+      if (messageMap.has(source)) {
+        const message = messageMap.get(source);
+        message.nextId = target;
+      }
+    }
+
+    // Find starting message (one with no previous message)
+    const targetIds = new Set(nextMessageEdges.map((edge) => edge.getTarget()));
+    const startingMessageIds = Array.from(messageMap.keys()).filter(
+      (id) => !targetIds.has(id)
+    );
+
+    // Build chains from starting messages
+    for (const startId of startingMessageIds) {
+      let currentId = startId;
+      const messageChain = [];
+
+      // Follow the chain of messages
+      while (currentId) {
+        if (messageMap.has(currentId)) {
+          const message = messageMap.get(currentId);
+          messageChain.push(message);
+          currentId = message.nextId;
+        } else {
+          break;
+        }
+      }
+
+      chain.messages = [...chain.messages, ...messageChain];
+    }
+
+    // If we found any messages, add this chain
+    if (chain.messages.length > 0) {
+      conversationChains.push(chain);
+    }
+  }
+
+  // Step 3: Sort conversations by length (longest first)
+  conversationChains.sort((a, b) => b.messages.length - a.messages.length);
+
+  // Step 4: Position the nodes in rows
+  const spacing = 150; // Space between messages
+  const rowHeight = 200; // Space between conversation rows
+
+  conversationChains.forEach((chain, rowIndex) => {
+    // Position conversation node on the left side
+    positions[chain.conversationId] = {
+      x: -spacing,
+      y: rowIndex * rowHeight,
+      z: 0,
+    };
+
+    // Position message nodes in sequence
+    chain.messages.forEach((message, colIndex) => {
+      positions[message.id] = {
+        x: colIndex * spacing,
+        y: rowIndex * rowHeight,
+        z: 0,
+      };
+    });
+  });
+
+  return positions;
+};
+
 export const computeCustomLayout = (
   sceneGraph: SceneGraph,
   layoutType: CustomLayoutType = CustomLayoutType.Box
@@ -363,6 +493,9 @@ export const computeCustomLayout = (
       break;
     case CustomLayoutType.TypeDriven3D:
       positions = computeTypeDriven3DLayout(sceneGraph);
+      break;
+    case CustomLayoutType.ChatGptConversation: // Add new case
+      positions = computeChatGptConversationLayout(sceneGraph);
       break;
     // case CustomLayoutType.ImageGraph: // times out. was made by chatgpt
     // positions = computeImageGraphLayout(sceneGraph);

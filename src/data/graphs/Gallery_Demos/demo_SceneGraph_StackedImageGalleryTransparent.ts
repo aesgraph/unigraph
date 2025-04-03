@@ -15,7 +15,8 @@ export const demo_SceneGraph_StackedGalleryTransparent = () => {
   for (const [key, value] of Object.entries(
     demo_SceneGraph_StackedImageGalleryTransparent_images
   )) {
-    graph.createNode(key, {
+    graph.createNode({
+      id: key,
       type: "image",
       userData: {
         imageUrl: value,
@@ -31,7 +32,8 @@ export const demo_SceneGraph_StackedGalleryTransparent = () => {
 
   for (const imageBoxList of imageBoxLists) {
     for (const imageBox of imageBoxList) {
-      graph.createNode(imageBox.id, {
+      graph.createNode({
+        id: imageBox.id,
         type: "imageBox",
         userData: {
           imageUrl: imageBox.imageUrl,

@@ -41,7 +41,7 @@ export async function deserializeGraphmlToSceneGraph(
       [];
 
     if (id) {
-      const node = graph.createNode(id, { label, type });
+      const node = graph.createNode({ id, label, type });
       tags.forEach((tag) => {
         if (tag) {
           node.addTag(tag);

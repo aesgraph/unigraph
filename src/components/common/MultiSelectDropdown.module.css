@@ -137,3 +137,26 @@
 .multi-select-dropdown.dark .no-options {
   color: #aaa;
 }
+
+.addNewItemRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align items to the left */
+  gap: 8px; /* Add spacing between the label and the color picker */
+  overflow: hidden; /* Prevent horizontal overflow */
+}
+
+.colorPicker {
+  width: 2rem; /* Fixed width */
+  height: 2rem; /* Fixed height */
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+  background: none;
+  flex-shrink: 0; /* Prevent it from expanding */
+  display: inline-block; /* Ensure it behaves like a button */
+  box-sizing: border-box; /* Include padding and border in width/height */
+  max-width: 2rem; /* Ensure it cannot exceed its intended size */
+  overflow: hidden; /* Prevent content overflow */
+}

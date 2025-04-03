@@ -5,257 +5,306 @@ export const semanticWebTechnologiesDiagram = () => {
   const graph = new Graph();
 
   // Core Semantic Web Standards
-  graph.createNode("SemanticWeb", {
+  graph.createNode({
+    id: "SemanticWeb",
     type: "core concept",
     tags: ["web technology", "story entrypoint"],
   });
 
-  graph.createNode("RDF", {
+  graph.createNode({
+    id: "RDF",
     type: "core standard",
     tags: ["data model", "foundation"],
   });
 
-  graph.createNode("RDFS", {
+  graph.createNode({
+    id: "RDFS",
     type: "core standard",
     tags: ["schema", "vocabulary"],
   });
 
-  graph.createNode("OWL", {
+  graph.createNode({
+    id: "OWL",
     type: "core standard",
     tags: ["ontology", "logic"],
   });
 
-  graph.createNode("SPARQL", {
+  graph.createNode({
+    id: "SPARQL",
     type: "core standard",
     tags: ["query language", "data access"],
   });
 
-  graph.createNode("LinkedData", {
+  graph.createNode({
+    id: "LinkedData",
     type: "core concept",
     tags: ["data publishing", "web of data"],
   });
 
   // RDF Serialization Formats
-  graph.createNode("RDFXml", {
+  graph.createNode({
+    id: "RDFXml",
     type: "serialization format",
     tags: ["xml", "data exchange"],
   });
 
-  graph.createNode("Turtle", {
+  graph.createNode({
+    id: "Turtle",
     type: "serialization format",
     tags: ["human readable", "data exchange"],
   });
 
-  graph.createNode("JSONLD", {
+  graph.createNode({
+    id: "JSONLD",
     type: "serialization format",
     tags: ["json", "data exchange"],
   });
 
-  graph.createNode("NTriples", {
+  graph.createNode({
+    id: "NTriples",
     type: "serialization format",
     tags: ["simple", "data exchange"],
   });
 
-  graph.createNode("TriG", {
+  graph.createNode({
+    id: "TriG",
     type: "serialization format",
     tags: ["named graphs", "data exchange"],
   });
 
   // Ontologies and Vocabularies
-  graph.createNode("FOAF", {
+  graph.createNode({
+    id: "FOAF",
     type: "ontology",
     tags: ["social", "people"],
   });
 
-  graph.createNode("Dublin Core", {
+  graph.createNode({
+    id: "Dublin Core",
     type: "ontology",
     tags: ["metadata", "publishing"],
   });
 
-  graph.createNode("SKOS", {
+  graph.createNode({
+    id: "SKOS",
     type: "ontology",
     tags: ["knowledge organization", "taxonomy"],
   });
 
-  graph.createNode("Schema.org", {
+  graph.createNode({
+    id: "Schema.org",
     type: "ontology",
     tags: ["structured data", "SEO"],
   });
 
-  graph.createNode("GoodRelations", {
+  graph.createNode({
+    id: "GoodRelations",
     type: "ontology",
     tags: ["e-commerce", "product"],
   });
 
-  graph.createNode("SIOC", {
+  graph.createNode({
+    id: "SIOC",
     type: "ontology",
     tags: ["online communities", "social"],
   });
 
   // Triple Stores
-  graph.createNode("Virtuoso", {
+  graph.createNode({
+    id: "Virtuoso",
     type: "triple store",
     tags: ["database", "implementation"],
   });
 
-  graph.createNode("Apache Jena", {
+  graph.createNode({
+    id: "Apache Jena",
     type: "triple store",
     tags: ["database", "framework"],
   });
 
-  graph.createNode("AllegroGraph", {
+  graph.createNode({
+    id: "AllegroGraph",
     type: "triple store",
     tags: ["database", "graph database"],
   });
 
-  graph.createNode("Blazegraph", {
+  graph.createNode({
+    id: "Blazegraph",
     type: "triple store",
     tags: ["database", "high performance"],
   });
 
-  graph.createNode("Stardog", {
+  graph.createNode({
+    id: "Stardog",
     type: "triple store",
     tags: ["database", "knowledge graph"],
   });
 
   // Semantic Web Services
-  graph.createNode("DBpedia", {
+  graph.createNode({
+    id: "DBpedia",
     type: "semantic web service",
     tags: ["knowledge base", "wikipedia extraction"],
   });
 
-  graph.createNode("Wikidata", {
+  graph.createNode({
+    id: "Wikidata",
     type: "semantic web service",
     tags: ["knowledge base", "structured data"],
   });
 
-  graph.createNode("YAGO", {
+  graph.createNode({
+    id: "YAGO",
     type: "semantic web service",
     tags: ["knowledge base", "ontology"],
   });
 
-  graph.createNode("BioPortal", {
+  graph.createNode({
+    id: "BioPortal",
     type: "semantic web service",
     tags: ["biomedical", "ontologies"],
   });
 
   // Tools and Frameworks
-  graph.createNode("Protégé", {
+  graph.createNode({
+    id: "Protégé",
     type: "tool",
     tags: ["ontology editor", "development"],
   });
 
-  graph.createNode("TopBraid", {
+  graph.createNode({
+    id: "TopBraid",
     type: "tool",
     tags: ["modeling", "integration"],
   });
 
-  graph.createNode("Apache Jena Framework", {
+  graph.createNode({
+    id: "Apache Jena Framework",
     type: "framework",
     tags: ["java", "development"],
   });
 
-  graph.createNode("RDFLib", {
+  graph.createNode({
+    id: "RDFLib",
     type: "framework",
     tags: ["python", "development"],
   });
 
-  graph.createNode("rdfjs", {
+  graph.createNode({
+    id: "rdfjs",
     type: "framework",
     tags: ["javascript", "development"],
   });
 
   // Reasoning and Rules
-  graph.createNode("OWLReasoning", {
+  graph.createNode({
+    id: "OWLReasoning",
     type: "reasoning technology",
     tags: ["inference", "logic"],
   });
 
-  graph.createNode("SWRL", {
+  graph.createNode({
+    id: "SWRL",
     type: "rule language",
     tags: ["rules", "logic"],
   });
 
-  graph.createNode("RIF", {
+  graph.createNode({
+    id: "RIF",
     type: "rule interchange",
     tags: ["rules", "standard"],
   });
 
   // Web Technologies Integration
-  graph.createNode("RDFa", {
+  graph.createNode({
+    id: "RDFa",
     type: "web integration",
     tags: ["html", "annotation"],
   });
 
-  graph.createNode("Microdata", {
+  graph.createNode({
+    id: "Microdata",
     type: "web integration",
     tags: ["html", "structured data"],
   });
 
-  graph.createNode("Microformats", {
+  graph.createNode({
+    id: "Microformats",
     type: "web integration",
     tags: ["html", "markup"],
   });
 
   // Applications and Use Cases
-  graph.createNode("SemanticSearch", {
+  graph.createNode({
+    id: "SemanticSearch",
     type: "application",
     tags: ["search", "information retrieval"],
   });
 
-  graph.createNode("KnowledgeGraphs", {
+  graph.createNode({
+    id: "KnowledgeGraphs",
     type: "application",
     tags: ["knowledge representation", "graph"],
   });
 
-  graph.createNode("SemanticIntegration", {
+  graph.createNode({
+    id: "SemanticIntegration",
     type: "application",
     tags: ["data integration", "interoperability"],
   });
 
-  graph.createNode("SemanticAnnotation", {
+  graph.createNode({
+    id: "SemanticAnnotation",
     type: "application",
     tags: ["content enrichment", "metadata"],
   });
 
   // Related Technologies
-  graph.createNode("GraphDatabases", {
+  graph.createNode({
+    id: "GraphDatabases",
     type: "related technology",
     tags: ["database", "graph"],
   });
 
-  graph.createNode("NaturalLanguageProcessing", {
+  graph.createNode({
+    id: "NaturalLanguageProcessing",
     type: "related technology",
     tags: ["AI", "text analysis"],
   });
 
-  graph.createNode("MachineLearning", {
+  graph.createNode({
+    id: "MachineLearning",
     type: "related technology",
     tags: ["AI", "data science"],
   });
 
-  graph.createNode("BigData", {
+  graph.createNode({
+    id: "BigData",
     type: "related technology",
     tags: ["data processing", "scale"],
   });
 
   // Future Directions
-  graph.createNode("SemanticWebOfThings", {
+  graph.createNode({
+    id: "SemanticWebOfThings",
     type: "future direction",
     tags: ["IoT", "connected devices"],
   });
 
-  graph.createNode("DecentralizedWeb", {
+  graph.createNode({
+    id: "DecentralizedWeb",
     type: "future direction",
     tags: ["web3", "distributed"],
   });
 
-  graph.createNode("AIKnowledgeGraphs", {
+  graph.createNode({
+    id: "AIKnowledgeGraphs",
     type: "future direction",
     tags: ["AI", "knowledge representation"],
   });
 
-  graph.createNode("SOLID", {
+  graph.createNode({
+    id: "SOLID",
     type: "future direction",
     tags: ["data ownership", "privacy"],
   });

@@ -67,7 +67,7 @@ const processImageNodesInSceneGraph = async (
 
       // Create entities for each box
       boxes.forEach((box) => {
-        const entity = new Node(box.id, {
+        const entity = new Node({
           ...box,
           type: "ImageBox",
           tags: new Set(["imageBox"]),
@@ -82,7 +82,8 @@ const processImageNodesInSceneGraph = async (
         sceneGraph.getEntityCache().addEntity(entity);
 
         // Create a node in the graph for this box
-        sceneGraph.getGraph().createNode(box.id, {
+        sceneGraph.getGraph().createNode({
+          id: box.id,
           type: "ImageBox",
           position: {
             x: (box.topLeft.x + box.bottomRight.x) / 2,

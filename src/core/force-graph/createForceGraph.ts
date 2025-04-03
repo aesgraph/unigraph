@@ -45,68 +45,9 @@ import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
 import { flyToNode } from "../webgl/webglHelpers";
 import { ForceGraphManager } from "./ForceGraphManager";
-import { updateVisibleEntitiesInForceGraphInstance } from "./forceGraphHelpers";
 
 export const MOUSE_HOVERED_NODE_COLOR = "rgb(243, 255, 16)";
 export const SELECTED_NODE_COLOR = "rgb(254, 148, 9)";
-
-export const refreshForceGraphInstance = (
-  forceGraphInstance: ForceGraph3DInstance,
-  sceneGraph: SceneGraph,
-  layout: ForceGraph3dLayoutMode = "Physics"
-) => {
-  console.log("Refreshing existing force graph instance...");
-
-  // Update visible nodes and edges (with smart position handling)
-  updateVisibleEntitiesInForceGraphInstance(forceGraphInstance, sceneGraph);
-
-  forceGraphInstance.nodeColor((node) => {
-    if (getHoveredNodeIds().has(node.id as NodeId)) {
-      return MOUSE_HOVERED_NODE_COLOR;
-    }
-    if (
-      getSelectedNodeId() === node.id ||
-      getSelectedNodeIds().has(node.id as NodeId)
-    ) {
-      return SELECTED_NODE_COLOR;
-    }
-    return RenderingManager.getColor(
-      sceneGraph.getGraph().getNode(node.id as NodeId),
-      getNodeLegendConfig(),
-      getLegendMode()
-    );
-  });
-
-  forceGraphInstance.linkColor((link) => {
-    if (
-      getHoveredNodeIds().has((link.source as any).id) ||
-      getHoveredNodeIds().has((link.target as any).id)
-    ) {
-      return "yellow";
-    }
-    if (getHoveredEdgeIds().has((link as any).id)) {
-      return "white";
-    }
-    return RenderingManager.getColor(
-      sceneGraph.getGraph().getEdge((link as any).id),
-      getEdgeLegendConfig(),
-      getLegendMode()
-    );
-  });
-
-  ForceGraphManager.applyForceGraphRenderConfig(
-    forceGraphInstance,
-    sceneGraph.getForceGraphRenderConfig(),
-    sceneGraph
-  );
-
-  if (layout === "Layout" && sceneGraph.getDisplayConfig().nodePositions) {
-    ForceGraphManager.applyFixedNodePositions(
-      forceGraphInstance,
-      sceneGraph.getDisplayConfig().nodePositions!
-    );
-  }
-};
 
 export const createForceGraph = (
   sceneGraph: SceneGraph,
@@ -293,7 +234,7 @@ export const bindEventsToGraphInstance = (
 ) => {
   graph.onNodeClick((node) => {
     setSelectedNodeId(node?.id as NodeId);
-    setRightActiveSection("node-details");
+    // setRightActiveSection("node-details");
 
     // Force refresh to update node colors immediately
     updateHighlight(graph);

@@ -69,7 +69,7 @@ export function createAnnotationNodeSpawner(
 
     // Add new elements
     console.log("adding elements", spawnedNode, link);
-    sceneGraph.getGraph().createNode(spawnedNode.id);
+    sceneGraph.getGraph().createNode({ id: spawnedNode.id });
     const edge = sceneGraph.getGraph().createEdge(link.source, link.target);
     graphData.nodes.push(spawnedNode);
     graphData.links.push({ ...link, id: edge.getId() } as any);

@@ -29,7 +29,8 @@ function createBlobMesh(
     isCore: true,
   });
 
-  graph.createNode(coreId, {
+  graph.createNode({
+    id: coreId,
     type: "blob-node",
     tags: new Set(["core"]),
     userData: { x: 0, y: 0, z: 0, layer: 0 },
@@ -59,7 +60,8 @@ function createBlobMesh(
         point: { x, y, z },
       });
 
-      graph.createNode(nodeId, {
+      graph.createNode({
+        id: nodeId,
         type: "blob-node",
         tags: new Set([`shell-${shell}`]),
         userData: { x, y, z, shell },

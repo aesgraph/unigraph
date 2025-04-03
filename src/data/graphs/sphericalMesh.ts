@@ -24,7 +24,8 @@ function createCylindricalMesh(
       nodes.push({ id: nodeId, lat, long });
 
       // Add node with position data in userData
-      graph.createNode(nodeId, {
+      graph.createNode({
+        id: nodeId,
         type: "sphere-node",
         tags: new Set([`latitude-${lat}`, `longitude-${long}`]),
         userData: { x, y, z },

@@ -18,7 +18,7 @@ export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
 
   malformedSceneGraphData.data.graph.nodes.forEach(
     (node: NodeDataArgsAndId) => {
-      graph.createNode(node.id, node);
+      graph.createNode(node);
     }
   );
 

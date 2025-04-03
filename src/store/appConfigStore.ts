@@ -1,11 +1,16 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
+import { ReactFlowInstance } from "@xyflow/react";
 import { create } from "zustand";
 import { RenderingManager__DisplayMode } from "../controllers/RenderingManager";
 import { LayoutEngineOption } from "../core/layouts/LayoutEngine";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { ActiveView, AppConfig, DEFAULT_APP_CONFIG } from "./../AppConfig";
 import { Filter } from "./activeFilterStore";
-import { getLeftSidebarConfig } from "./workspaceConfigStore";
+import {
+  getLeftSidebarConfig,
+  getRightSidebarConfig,
+  updateSectionWidth,
+} from "./workspaceConfigStore";
 
 export type AppConfigActions = {
   setActiveView: (activeView: ActiveView) => void;
@@ -31,6 +36,7 @@ export type AppState = AppConfig &
   AppConfigActions & {
     isDarkMode: boolean;
     selectedSimulation: string;
+    previousView: string | null;
 
     activeProjectId: string | null;
     getActiveProjectId: () => string | null;
@@ -45,11 +51,26 @@ export type AppState = AppConfig &
       forceGraphInstance: ForceGraph3DInstance | null
     ) => void;
     getForceGraphInstance: () => ForceGraph3DInstance | null;
+
+    reactFlowInstance: ReactFlowInstance | null;
+    setReactFlowInstance: (reactFlowInstance: ReactFlowInstance | null) => void;
+    getReactFlowInstance: () => ReactFlowInstance | null;
   };
 
 const DEFAULTS = DEFAULT_APP_CONFIG();
 
 const useAppConfigStore = create<AppState>((set) => ({
+  previousView: null,
+  setPreviousView: (previousView: string | null) => set({ previousView }),
+  getPreviousView: (): string | null =>
+    useAppConfigStore.getState().previousView,
+
+  reactFlowInstance: null,
+  setReactFlowInstance: (reactFlowInstance: ReactFlowInstance | null) =>
+    set({ reactFlowInstance }),
+  getReactFlowInstance: (): ReactFlowInstance | null =>
+    useAppConfigStore.getState().reactFlowInstance,
+
   activeFilter: null,
   setActiveFilter: (activeFilter: Filter | null) => set({ activeFilter }),
   getActiveFilter: (): Filter | null =>
@@ -86,7 +107,8 @@ const useAppConfigStore = create<AppState>((set) => ({
   selectedSimulation: "Lumina",
   legendMode: DEFAULTS.legendMode,
 
-  setActiveView: (activeView: ActiveView) => set({ activeView }),
+  setActiveView: (activeView: ActiveView) =>
+    set({ previousView: useAppConfigStore.getState().activeView, activeView }),
   setActiveSceneGraph: (activeSceneGraph: string) => set({ activeSceneGraph }),
   setWindows: (windows: { showEntityDataCard: boolean }) => set({ windows }),
 
@@ -180,6 +202,18 @@ export const getActiveLayout = () => {
 
 export const setAppConfig = (appConfig: AppConfig) => {
   useAppConfigStore.setState(() => appConfig);
+  if (appConfig.workspaceConfig?.leftSidebarConfig.activeSectionId) {
+    updateSectionWidth(
+      appConfig.workspaceConfig.leftSidebarConfig.activeSectionId,
+      appConfig.workspaceConfig.leftSidebarConfig.panelWidth
+    );
+  }
+  if (appConfig.workspaceConfig?.rightSidebarConfig.activeSectionId) {
+    updateSectionWidth(
+      appConfig.workspaceConfig.rightSidebarConfig.activeSectionId,
+      appConfig.workspaceConfig.rightSidebarConfig.panelWidth
+    );
+  }
 };
 
 export const getAppConfig = (): AppConfig => {
@@ -194,7 +228,7 @@ export const getAppConfig = (): AppConfig => {
     activeFilter: state.activeFilter,
     workspaceConfig: {
       leftSidebarConfig: getLeftSidebarConfig(),
-      rightSidebarConfig: getLeftSidebarConfig(),
+      rightSidebarConfig: getRightSidebarConfig(),
     },
   };
 };
@@ -266,6 +300,15 @@ export const setActiveFilter = (activeFilter: Filter | null) => {
 
 export const getActiveFilter = () => {
   return useAppConfigStore.getState().activeFilter;
+};
+
+export const setPreviousView = (previousView: string | null) => {
+  useAppConfigStore.setState(() => ({
+    previousView,
+  }));
+};
+export const getPreviousView = () => {
+  return useAppConfigStore.getState().previousView;
 };
 
 export default useAppConfigStore;
