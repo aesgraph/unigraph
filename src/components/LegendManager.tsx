@@ -11,6 +11,8 @@ interface LegendManagerProps {
   onEdgeLegendChange: (key: string, newColor: string) => void;
   onNodeVisibilityChange: (key: string, isVisible: boolean) => void;
   onEdgeVisibilityChange: (key: string, isVisible: boolean) => void;
+  onNodeOpacityChange: (key: string, opacity: number) => void;
+  onEdgeOpacityChange: (key: string, opacity: number) => void;
   onClose: () => void;
   isDarkMode?: boolean;
 }
@@ -23,6 +25,8 @@ const LegendManager: React.FC<LegendManagerProps> = ({
   onEdgeLegendChange,
   onNodeVisibilityChange,
   onEdgeVisibilityChange,
+  onNodeOpacityChange,
+  onEdgeOpacityChange,
   onClose,
   isDarkMode = false,
 }) => {
@@ -31,7 +35,8 @@ const LegendManager: React.FC<LegendManagerProps> = ({
   const renderLegendItems = (
     config: DisplayConfig,
     onChange: (key: string, newColor: string) => void,
-    onVisibilityChange: (key: string, isVisible: boolean) => void
+    onVisibilityChange: (key: string, isVisible: boolean) => void,
+    onOpacityChange: (key: string, opacity: number) => void
   ) => {
     return Object.entries(config).map(([key, value]) => (
       <div key={key} className={`legend-item ${isDarkMode ? "dark" : "light"}`}>
@@ -47,6 +52,14 @@ const LegendManager: React.FC<LegendManagerProps> = ({
           type="color"
           value={value.color}
           onChange={(e) => onChange(key, e.target.value)}
+        />
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          value={value.opacity || 1}
+          onChange={(e) => onOpacityChange(key, parseFloat(e.target.value))}
         />
       </div>
     ));
@@ -77,13 +90,15 @@ const LegendManager: React.FC<LegendManagerProps> = ({
           renderLegendItems(
             nodeLegendConfig,
             onNodeLegendChange,
-            onNodeVisibilityChange
+            onNodeVisibilityChange,
+            onNodeOpacityChange
           )}
         {activeTab === "edges" &&
           renderLegendItems(
             edgeLegendConfig,
             onEdgeLegendChange,
-            onEdgeVisibilityChange
+            onEdgeVisibilityChange,
+            onEdgeOpacityChange
           )}
       </div>
     </div>

@@ -1883,6 +1883,16 @@ const AppContent: React.FC<{
             onEdgeVisibilityChange={(key, isVisible) =>
               setEdgeKeyVisibility(key as EdgeId, isVisible)
             }
+            onNodeOpacityChange={(key, opacity) => {
+              const newConfig = { ...nodeLegendConfig };
+              newConfig[key].opacity = opacity;
+              setNodeLegendConfig(newConfig);
+            }}
+            onEdgeOpacityChange={(key, opacity) => {
+              const newConfig = { ...edgeLegendConfig };
+              newConfig[key].opacity = opacity;
+              setEdgeLegendConfig(newConfig);
+            }}
             onClose={() => setShowLegendManager(false)}
             isDarkMode={isDarkMode}
           />
