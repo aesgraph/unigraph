@@ -1,0 +1,61 @@
+.legend-manager-container {
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  background-color: var(--background-color, #ffffff);
+  border: 1px solid var(--border-color, #cccccc);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.legend-manager-container.dark {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+.legend-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.legend-manager-tabs {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.legend-manager-tabs button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background-color: var(--tab-background, #f0f0f0);
+  cursor: pointer;
+}
+
+.legend-manager-tabs button.active {
+  background-color: var(--tab-active-background, #007bff);
+  color: #ffffff;
+}
+
+.legend-manager-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.legend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legend-item input[type="color"] {
+  margin-left: 8px;
+}

@@ -130,6 +130,7 @@ export interface IMenuConfigCallbacks {
   handleLoadLayout: (layout: Layout) => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
   showChatGptImporter: () => void;
+  showLegendManager: () => void; // Add callback for LegendManager
 }
 
 export class MenuConfig {
@@ -179,6 +180,9 @@ export class MenuConfig {
           },
           "SceneGraph Details": {
             action: () => this.callbacks.showSceneGraphDetailView(false),
+          },
+          "Legend Manager": {
+            action: () => this.callbacks.showLegendManager(), // Add Legend Manager option
           },
         },
       },
