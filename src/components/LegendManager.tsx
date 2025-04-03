@@ -15,6 +15,8 @@ interface LegendManagerProps {
   onEdgeOpacityChange: (key: string, opacity: number) => void;
   onClose: () => void;
   isDarkMode?: boolean;
+  onAddNewType: (type: string, color: string) => void;
+  onAddNewTag: (tag: string, color: string) => void;
 }
 
 const LegendManager: React.FC<LegendManagerProps> = ({
@@ -29,8 +31,29 @@ const LegendManager: React.FC<LegendManagerProps> = ({
   onEdgeOpacityChange,
   onClose,
   isDarkMode = false,
+  onAddNewType,
+  onAddNewTag,
 }) => {
   const [activeTab, setActiveTab] = useState<"nodes" | "edges">("nodes");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newItemName, setNewItemName] = useState("");
+  const [newItemColor, setNewItemColor] = useState("#000000");
+
+  const handleAddNew = () => {
+    if (!newItemName.trim()) return;
+    
+    if (activeTab === "nodes") {
+      // For nodes, we add both type and tag
+      onAddNewType(newItemName, newItemColor);
+      onAddNewTag(newItemName, newItemColor);
+    } else {
+      // For edges, just add type
+      onAddNewType(newItemName, newItemColor);
+    }
+    
+    setNewItemName("");
+    setShowAddForm(false);
+  };
 
   const renderLegendItems = (
     config: DisplayConfig,
@@ -88,21 +111,63 @@ const LegendManager: React.FC<LegendManagerProps> = ({
         </button>
       </div>
       <div className="legend-manager-content">
-        {activeTab === "nodes" &&
-          renderLegendItems(
-            nodeLegendConfig,
-            onNodeLegendChange,
-            onNodeVisibilityChange,
-            onNodeOpacityChange
-          )}
-        {activeTab === "edges" &&
-          renderLegendItems(
-            edgeLegendConfig,
-            onEdgeLegendChange,
-            onEdgeVisibilityChange,
-            onEdgeOpacityChange
-          )}
+        {activeTab === "nodes" && (
+          <>
+            {renderLegendItems(
+              nodeLegendConfig,
+              onNodeLegendChange,
+              onNodeVisibilityChange,
+              onNodeOpacityChange
+            )}
+            <button 
+              className="add-new-button" 
+              onClick={() => setShowAddForm(true)}
+            >
+              + Add New Node Type
+            </button>
+          </>
+        )}
+        {activeTab === "edges" && (
+          <>
+            {renderLegendItems(
+              edgeLegendConfig,
+              onEdgeLegendChange,
+              onEdgeVisibilityChange,
+              onEdgeOpacityChange
+            )}
+            <button 
+              className="add-new-button" 
+              onClick={() => setShowAddForm(true)}
+            >
+              + Add New Edge Type
+            </button>
+          </>
+        )}
       </div>
+
+      {showAddForm && (
+        <div className="add-form-overlay">
+          <div className={`add-form ${isDarkMode ? "dark" : "light"}`}>
+            <h3>Add New {activeTab === "nodes" ? "Node" : "Edge"} Type</h3>
+            <input
+              type="text"
+              value={newItemName}
+              onChange={(e) => setNewItemName(e.target.value)}
+              placeholder="Enter name..."
+              autoFocus
+            />
+            <input
+              type="color"
+              value={newItemColor}
+              onChange={(e) => setNewItemColor(e.target.value)}
+            />
+            <div className="add-form-buttons">
+              <button onClick={() => setShowAddForm(false)}>Cancel</button>
+              <button onClick={handleAddNew}>Add</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

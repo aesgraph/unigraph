@@ -1895,6 +1895,42 @@ const AppContent: React.FC<{
             }}
             onClose={() => setShowLegendManager(false)}
             isDarkMode={isDarkMode}
+            onAddNewType={(type, color) => {
+              const newConfig = { ...nodeLegendConfig };
+              newConfig[type] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              setNodeLegendConfig(newConfig);
+              
+              // Update display config
+              const displayConfig = currentSceneGraph.getDisplayConfig();
+              displayConfig.nodeConfig.types[type] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              currentSceneGraph.setDisplayConfig(displayConfig);
+            }}
+            onAddNewTag={(tag, color) => {
+              const newConfig = { ...nodeLegendConfig };
+              newConfig[tag] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              setNodeLegendConfig(newConfig);
+              
+              // Update display config
+              const displayConfig = currentSceneGraph.getDisplayConfig();
+              displayConfig.nodeConfig.tags[tag] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              currentSceneGraph.setDisplayConfig(displayConfig);
+            }}
           />
         )}
         {showSaveSceneGraphDialog && (
