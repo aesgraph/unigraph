@@ -48,19 +48,21 @@ const LegendManager: React.FC<LegendManagerProps> = ({
           />
           <span>{key}</span>
         </div>
-        <input
-          type="color"
-          value={value.color}
-          onChange={(e) => onChange(key, e.target.value)}
-        />
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.1"
-          value={value.opacity || 1}
-          onChange={(e) => onOpacityChange(key, parseFloat(e.target.value))}
-        />
+        <div className="legend-item-controls">
+          <input
+            type="color"
+            value={value.color}
+            onChange={(e) => onChange(key, e.target.value)}
+          />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            value={value.opacity || 1}
+            onChange={(e) => onOpacityChange(key, parseFloat(e.target.value))}
+          />
+        </div>
       </div>
     ));
   };
