@@ -108,6 +108,7 @@ import useActiveLegendConfigStore, {
   setEdgeLegendConfig,
   SetNodeAndEdgeLegendsForOnlyVisibleEntities,
   setNodeKeyColor,
+  setNodeKeyOpacity,
   setNodeKeyVisibility,
   setNodeLegendConfig,
 } from "./store/activeLegendConfigStore";
@@ -1884,9 +1885,7 @@ const AppContent: React.FC<{
               setEdgeKeyVisibility(key as EdgeId, isVisible)
             }
             onNodeOpacityChange={(key, opacity) => {
-              const newConfig = { ...nodeLegendConfig };
-              newConfig[key].opacity = opacity;
-              setNodeLegendConfig(newConfig);
+              setNodeKeyOpacity(key as NodeId, opacity);
             }}
             onEdgeOpacityChange={(key, opacity) => {
               const newConfig = { ...edgeLegendConfig };
