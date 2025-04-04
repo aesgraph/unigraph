@@ -15,6 +15,8 @@ export type Position = {
 export type DisplayConfigData = {
   color: string;
   isVisible: boolean;
+  opacity?: number;
+  
 };
 
 export type DisplayConfig = { [key: string]: DisplayConfigData };

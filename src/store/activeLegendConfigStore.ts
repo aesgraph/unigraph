@@ -25,6 +25,8 @@ export type ActiveLegendConfigState = {
   getNodeLegendConfig: () => DisplayConfig;
   setEdgeLegendConfig: (config: DisplayConfig) => void;
   getEdgeLegendConfig: () => DisplayConfig;
+  setNodeKeyOpacity: (key: NodeId, opacity: number) => void;
+  getNodeKeyOpacity: (key: NodeId) => number;
   setNodeKeyVisibility: (key: NodeId, isVisible: boolean) => void;
   getNodeKeyVisibility: (key: NodeId) => boolean;
   setEdgeKeyVisibility: (key: EdgeId, isVisible: boolean) => void;
@@ -65,6 +67,22 @@ const useActiveLegendConfigStore = create(
         state.edgeLegendConfig = config;
         state.edgeLegendUpdateTime = Date.now();
       }),
+    setNodeKeyOpacity: (key, opacity) =>
+      set((state) => {
+        if (state.nodeLegendConfig[key]?.opacity !== opacity) {
+          state.nodeLegendConfig[key] = {
+            ...state.nodeLegendConfig[key],
+            opacity,
+          };
+          state.nodeLegendUpdateTime = Date.now();
+        }
+      }
+    ),
+    getNodeKeyOpacity: (key: NodeId): number => {
+      return get().nodeLegendConfig[key]?.opacity ?? 1;
+    },
+
+
     setNodeKeyVisibility: (key, isVisible) =>
       set((state) => {
         if (state.nodeLegendConfig[key]?.isVisible !== isVisible) {
@@ -148,6 +166,15 @@ export const setNodeKeyVisibility = (key: NodeId, isVisible: boolean) => {
 
 export const getNodeVisibility = (key: NodeId) => {
   return useActiveLegendConfigStore.getState().getNodeKeyVisibility(key);
+};
+
+export const setNodeKeyOpacity = (key: NodeId, opacity: number) => {
+  useActiveLegendConfigStore.getState().setNodeKeyOpacity(key, opacity);
+};
+
+
+export const getNodeOpacity = (key: NodeId) => {
+  return useActiveLegendConfigStore.getState().getNodeKeyOpacity(key);
 };
 
 export const getEdgeVisibility = (key: EdgeId) => {
