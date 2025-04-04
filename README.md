@@ -1,9 +1,7 @@
 ![V0 Progress](https://img.shields.io/github/milestones/progress/aesgraph/unigraph/1?label=V0%3A%20full%20product%20demo&color=blue)
 [![codecov](https://codecov.io/gh/aesgraph/unigraph/branch/main/graph/badge.svg)](https://codecov.io/gh/aesgraph/unigraph)
-![Discord](https://img.shields.io/discord/1347095524737679380?color=9cf) 
+![Discord](https://img.shields.io/discord/1347095524737679380?color=9cf)
 [![Build](https://github.com/aesgraph/unigraph/actions/workflows/build.yml/badge.svg)](https://github.com/aesgraph/unigraph/actions)
-
-
 
 # Unigraph
 
@@ -14,14 +12,16 @@ Unigraph is a general solution for web-based client-side interaction with Graphs
 Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph
 model, allowing for highly flexible and interactive representations of complex structured data.
 
-### [Live Demo](<https://unigraph.vercel.app/>) <br>
-#### [Notes and documentation](<https://aesgraph.github.io/unigraph/>)
+### [Live Demo](https://unigraph.vercel.app/) <br>
+
+#### [Notes and documentation](https://aesgraph.github.io/unigraph/)
 
 #
 
 ### Getting started
 
 <ins>Running the app locally</ins><br>
+
 1. `git clone https://github.com/aesgraph/unigraph.git`
 2. `cd unigraph`
 3. `npm install`<br>
@@ -29,7 +29,8 @@ model, allowing for highly flexible and interactive representations of complex s
 5. Open http://localhost:3000/
 
 <ins>Documentation: Serving Locally</ins><br>
-_For developing and previewing documentation locally before pushing_<br>
+_For developing and previewing documentation locally_<br>
+
 1. `brew install ruby`
 2. `gem install jekyll bundler`
 3. `cd docs`
