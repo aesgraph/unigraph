@@ -8,4 +8,12 @@
   <body>
     <div id="root"></div>
   </body>
+  <script>
+    // This is used for the desktop GUI to turn off the splash screen and let it load
+    window.isDomLoaded = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      window.isDomLoaded = true;
+    });
+  </script>
 </html>
