@@ -18,15 +18,27 @@ model, allowing for highly flexible and interactive representations of complex s
 
 #
 
-### Getting started
+### Getting started with the browser version
 
-<ins>Running the app locally</ins><br>
+<ins>Running the app locally through the browser</ins><br>
 
 1. `git clone https://github.com/aesgraph/unigraph.git`
 2. `cd unigraph`
 3. `npm install`<br>
 4. `npm start`<br>
 5. Open http://localhost:3000/
+
+### Getting started with the Desktop GUI
+
+<ins>Running the desktop app locally</ins><br>
+
+1. `git clone https://github.com/aesgraph/unigraph.git`
+2. `cd unigraph-desktop`
+3. `npm install`<br>
+4. `npm run dev`<br>
+5. Wait for the GUI splash screen loader, and desktop version to complete loading uniqgraph
+
+### Getting started with the Documentation locally
 
 <ins>Documentation: Serving Locally</ins><br>
 _For developing and previewing documentation locally_<br>
