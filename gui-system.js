@@ -1,9 +1,11 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 
 let POLLING_INTERVAL = 500;
 let splash;
 let mainWindow;
+
+app.setName('Unigraph');
 
 function createWindow() { // Make the splash screen
   splash = new BrowserWindow({
@@ -15,9 +17,46 @@ function createWindow() { // Make the splash screen
   });
 
   splash.loadFile(path.join(__dirname, 'splash.html')); // Load the splash screen
+  Menu.setApplicationMenu(null);
 
+  const template = [ // Custom menu
+    {
+      label: 'Unigraph',
+      submenu: [
+        {
+          label: 'Quit Unigraph',
+          accelerator: process.platform === 'darwin' ? 'Cmd+Q' : 'Ctrl+Q', // Add keyboard shortcut to exit
+          click: () => {
+            app.quit();
+          }
+        }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Toggle DevTools',
+          accelerator: process.platform === 'darwin' ? 'Cmd+Alt+I' : 'Ctrl+Shift+I',
+          click: () => {
+            if (mainWindow) {
+              mainWindow.webContents.openDevTools();
+            }
+          }
+        }
+      ]
+    }
+  ];
+
+  if (process.platform === 'win32' || process.platform === 'linux') { // For windows and linux use File label
+    template[0].label = 'File';
+  }
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 
   mainWindow = new BrowserWindow({ // Make the main window
+    title: "Unigraph",
     width: 1200,
     height: 800,
     backgroundColor: '#000',
@@ -28,7 +67,6 @@ function createWindow() { // Make the splash screen
   });
 
   mainWindow.loadURL('http://localhost:3000');
-
 
   const checkDomLoaded = setInterval(() => { // Check for dom loaded and then remove the splash
     mainWindow.webContents.executeJavaScript('window.isDomLoaded')
