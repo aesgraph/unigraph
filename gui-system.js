@@ -1,17 +1,46 @@
 const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
+const http = require('http');
 
-let POLLING_INTERVAL = 500;
+const mainWindowUrl = 'http://localhost:3000';
+const yellowSystemPrint = '\x1b[35mGUI SYSTEM:\x1b[0m';
+const unableToLoadHtml = '<h1 style="color:red;">Could not load app.</h1>';
+const POLLING_INTERVAL = 1000;
+const WINDOW_URL_TIMEOUT = 3000;
+const WINDOW_URL_POLLING_INTERVAL = 500;
 let splash;
 let mainWindow;
+
+function waitForMainSystemUrl(urlChecking) { // Handle the main window url to ensure it's loaded at the right time
+  return new Promise(function(resolve, reject) {
+    const start = Date.now();
+
+    const check = () => {
+      const requesting = http.get(urlChecking, function() {
+        resolve();
+      });
+
+      requesting.on('error', function() {
+        if (Date.now() - start > WINDOW_URL_TIMEOUT) {
+          reject(new Error('timed out waiting for main window'));
+        } else {
+          setTimeout(check, WINDOW_URL_POLLING_INTERVAL);
+        }
+      });
+    };
+
+    check();
+  });
+}
 
 app.setName('Unigraph');
 
 function createWindow() { // Make the splash screen
   splash = new BrowserWindow({
     width: 300,
-    height: 100,
+    height: 90,
     frame: true,
+    resizable: false,
     transparent: false,
     alwaysOnTop: true
   });
@@ -66,27 +95,34 @@ function createWindow() { // Make the splash screen
     },
   });
 
-  mainWindow.loadURL('http://localhost:3000');
+  waitForMainSystemUrl(mainWindowUrl).then(() => {
+    mainWindow.loadURL(mainWindowUrl);
+  }).catch(err => {
+    console.log(`${yellowSystemPrint} server not ready on time: ${err}`);
+    mainWindow.loadURL(`data:text/html, ${encodeURIComponent(unableToLoadHtml)}`);
+  });
+
+  mainWindow.webContents.setMaxListeners(30);
 
   const checkDomLoaded = setInterval(() => { // Check for dom loaded and then remove the splash
     mainWindow.webContents.executeJavaScript('window.isDomLoaded')
       .then(isDomLoaded => {
-        console.log('Polling dom loaded:', isDomLoaded);
+        console.log(`${yellowSystemPrint} polling dom was: ${isDomLoaded}`);
 
         if (isDomLoaded) {
           clearInterval(checkDomLoaded);
-          console.log('Dom is loaded');
+          console.log(`${yellowSystemPrint} dom is loaded`);
           if (splash && !splash.isDestroyed()) {
             splash.close(); // Exit the splash screen
           }
 
         } else {
-            console.log('DOM not loaded yet...');
+          console.log(`${yellowSystemPrint} dom not loaded yet`);
             mainWindow.reload();
         }
       })
       .catch(error => {
-        console.error('Error checking DOM loaded:', error);
+        console.log(`${yellowSystemPrint} error checking dom: ${error}`);
       });
   }, POLLING_INTERVAL);
 }
@@ -98,4 +134,3 @@ app.whenReady().then(() => {
     if (process.platform !== 'darwin') app.quit();
   });
 });
-
