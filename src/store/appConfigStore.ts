@@ -189,6 +189,14 @@ export const getForceGraph3dOptions = () => {
   return useAppConfigStore.getState().forceGraph3dOptions;
 };
 
+export const getReactFlowInstance = () => {
+  return useAppConfigStore.getState().reactFlowInstance;
+};
+
+export const getForceGraph3dInstance = () => {
+  return useAppConfigStore.getState().forceGraphInstance;
+};
+
 export const setActiveLayout = (activeLayout: LayoutEngineOption | string) => {
   useAppConfigStore.setState(() => ({
     activeLayout,
