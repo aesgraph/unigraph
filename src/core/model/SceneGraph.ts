@@ -16,6 +16,10 @@ import { IEntity } from "./entity/abstractEntity";
 import { EntityCache } from "./entity/entityCache";
 import { EdgesContainer, Graph, NodesContainer } from "./Graph";
 import { NodeId } from "./Node";
+import {
+  SceneGraphSerializer,
+  SerializedSceneGraph,
+} from "./SerializedSceneGraph";
 import { validateSceneGraph } from "./validateSceneGraph";
 
 export interface ISceneGraph {
@@ -374,6 +378,52 @@ export class SceneGraph {
     } catch (error) {
       console.error("Error parsing SceneGraph from JSON:", error);
       return new SceneGraph(); // Return empty graph on error
+    }
+  }
+
+  /**
+   * Convert this SceneGraph to a serializable object suitable for workers
+   */
+  toSerialized(): SerializedSceneGraph {
+    return {
+      graph: SceneGraphSerializer.serializeGraph(this.getGraph()),
+      displayConfig: this.getDisplayConfig(),
+    };
+  }
+
+  /**
+   * Populate this SceneGraph from serialized data
+   */
+  fromSerialized(serialized: SerializedSceneGraph): void {
+    const graph = this.getGraph();
+
+    // Clear existing graph
+    graph.getNodes().forEach((node) => graph.removeNode(node.getId()));
+
+    // Add nodes from serialized data
+    serialized.graph.nodes.forEach((nodeData) => {
+      graph.createNode({
+        id: nodeData.id,
+        label: nodeData.label,
+        type: nodeData.type,
+        position: nodeData.position,
+        ...nodeData.data,
+      });
+    });
+
+    // Add edges from serialized data
+    serialized.graph.edges.forEach((edgeData) => {
+      graph.createEdge(edgeData.source, edgeData.target, {
+        id: edgeData.id,
+        label: edgeData.label,
+        type: edgeData.type,
+        ...edgeData.data,
+      });
+    });
+
+    // Set display config if provided
+    if (serialized.displayConfig) {
+      this.setDisplayConfig(serialized.displayConfig);
     }
   }
 }

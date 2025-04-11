@@ -10,13 +10,11 @@ import {
   rightFooterContent,
 } from "../../configs/RightSidebarConfig";
 import { findNodeInForceGraph } from "../../core/force-graph/forceGraphHelpers";
-import { LayoutEngineOption } from "../../core/layouts/LayoutEngine";
 import { DisplayManager } from "../../core/model/DisplayManager";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { flyToNode } from "../../core/webgl/webglHelpers";
 import Sidebar from "../../Sidebar";
 import { Filter } from "../../store/activeFilterStore";
-import { Layout } from "../../store/activeLayoutStore";
 import { ResetNodeAndEdgeLegends } from "../../store/activeLegendConfigStore";
 import useAppConfigStore from "../../store/appConfigStore";
 import { getSelectedNodeId } from "../../store/graphInteractionStore";
@@ -50,7 +48,6 @@ interface WorkspaceProps {
   onSearchResult: (nodeIds: string[]) => void;
   onHighlight: (nodeId: string) => void;
   onApplyForceGraphConfig: (config: any) => void;
-  applyNewLayout: (layout: LayoutEngineOption) => void;
   renderLayoutModeRadio: () => React.ReactNode;
   showFilterWindow: () => void;
   showFilterManager: () => void;
@@ -60,7 +57,6 @@ interface WorkspaceProps {
   showLoadSceneGraphWindow: () => void;
   showSaveSceneGraphDialog: () => void;
   showLayoutManager: (mode: "save" | "load") => void;
-  handleLoadLayout: (layout: Layout) => void;
   handleFitToView: (activeView: string) => void;
   handleShowEntityTables: () => void;
   handleLoadSceneGraph: (sceneGraph: SceneGraph) => void;
@@ -79,7 +75,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   onSearchResult,
   onHighlight,
   onApplyForceGraphConfig,
-  applyNewLayout,
   renderLayoutModeRadio,
   showFilterWindow,
   showFilterManager,
@@ -89,7 +84,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   showLoadSceneGraphWindow,
   showSaveSceneGraphDialog,
   showLayoutManager,
-  handleLoadLayout,
   handleFitToView,
   handleShowEntityTables,
   handleLoadSceneGraph,
@@ -159,8 +153,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
           top: 0,
         }}
         menuItems={createDefaultLeftMenus({
-          onLayoutChange: (layout: LayoutEngineOption) =>
-            applyNewLayout(layout),
           activeLayout: activeLayout,
           physicsMode:
             forceGraph3dOptions.layout === "Physics" &&
@@ -177,12 +169,10 @@ const Workspace: React.FC<WorkspaceProps> = ({
           onShowLoadSceneGraphWindow: showLoadSceneGraphWindow,
           onShowSaveSceneGraphDialog: showSaveSceneGraphDialog,
           showLayoutManager: (mode: "save" | "load") => showLayoutManager(mode),
-          handleLoadLayout: handleLoadLayout,
           activeView: activeView, // Make sure this is correctly passed
           activeFilter: activeFilter,
           handleLoadSceneGraph: handleLoadSceneGraph,
           handleSetActiveFilter: handleSetActiveFilter,
-          applyNewLayout: applyNewLayout,
         })}
         isDarkMode={isDarkMode}
         footer={leftFooterContent}
@@ -206,11 +196,9 @@ const Workspace: React.FC<WorkspaceProps> = ({
     showPathAnalysis,
     showLoadSceneGraphWindow,
     showSaveSceneGraphDialog,
-    handleLoadLayout,
     activeFilter,
     handleLoadSceneGraph,
     handleSetActiveFilter,
-    applyNewLayout,
     showLayoutManager,
   ]);
 

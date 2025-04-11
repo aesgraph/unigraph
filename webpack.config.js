@@ -63,6 +63,16 @@ module.exports = {
           },
         ],
       },
+      // Handle Web Workers
+      {
+        test: /\.worker\.ts$/,
+        use: {
+          loader: "worker-loader",
+          options: {
+            inline: "no-fallback",
+          },
+        },
+      },
     ],
   },
   resolve: {

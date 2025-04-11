@@ -16,7 +16,6 @@ import { LayoutEngineOptionLabels } from "../../core/layouts/LayoutEngine";
 import { NodePositionData } from "../../core/layouts/layoutHelpers";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import useActiveLayoutStore, {
-  getLayoutByName,
   Layout,
   saveLayout,
 } from "../../store/activeLayoutStore";
@@ -24,6 +23,7 @@ import useAppConfigStore, {
   getCurrentSceneGraph,
 } from "../../store/appConfigStore";
 import { addNotification } from "../../store/notificationStore";
+import { applyLayoutAndTriggerAppUpdate } from "../../store/sceneGraphHooks";
 import styles from "./LayoutManager.module.css";
 
 interface LayoutManagerV2Props {
@@ -71,7 +71,6 @@ const OptionsMenu: React.FC<OptionsMenuProps> = ({
 };
 
 const LayoutManagerV2: React.FC<LayoutManagerV2Props> = ({
-  onLayoutSelected,
   applyPredefinedLayout,
   onSaveCurrentLayout,
   onShowLayoutManager,
@@ -80,13 +79,13 @@ const LayoutManagerV2: React.FC<LayoutManagerV2Props> = ({
   currentPositions,
 }) => {
   const { savedLayouts, deleteLayout } = useActiveLayoutStore();
-  const [activeLayout, setActiveLayout] = useState<Layout | null>(null);
   const [editingLayoutId, setEditingLayoutId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [optionsMenu, setOptionsMenu] = useState<{
     id: string;
     buttonRect: DOMRect | null;
   } | null>(null);
+  const { currentLayoutResult } = useActiveLayoutStore();
 
   // Add state for active tab
   const [activeTab, setActiveTab] = useState<
@@ -101,40 +100,24 @@ const LayoutManagerV2: React.FC<LayoutManagerV2Props> = ({
     (state) => state.activeView === "ForceGraph3d"
   );
 
-  // Get current active layout
-  const currentActiveLayout = useAppConfigStore((state) => state.activeLayout);
-
   useEffect(() => {
-    if (currentActiveLayout) {
-      setActiveLayout(getLayoutByName(currentActiveLayout));
-    }
-  }, [currentActiveLayout]);
+    setSelectedPredefinedLayout(currentLayoutResult?.layoutType || "Custom");
+  }, [currentLayoutResult]);
 
   // Convert savedLayouts object to array for rendering
   const layoutsList = Object.values(savedLayouts).sort(
     (a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)
   );
 
-  // Handle layout selection
-  const handleSelectLayout = (layout: Layout) => {
-    onLayoutSelected(layout);
-    setActiveLayout(layout);
-    addNotification({
-      message: `Layout "${layout.name}" applied`,
-      type: "success",
-      duration: 3000,
-    });
-  };
-
   // Handle predefined layout selection
   const handleSelectPredefinedLayout = (layoutName: string) => {
     setSelectedPredefinedLayout(layoutName);
     applyPredefinedLayout(layoutName);
-    addNotification({
-      message: `Layout "${layoutName}" applied`,
-      type: "success",
-      duration: 3000,
-    });
+    // addNotification({
+    //   message: `Layout "${layoutName}" applied`,
+    //   type: "success",
+    //   duration: 3000,
+    // });
   };
 
   const handleStartEdit = (e: React.MouseEvent, layout: Layout) => {
@@ -220,8 +203,6 @@ const LayoutManagerV2: React.FC<LayoutManagerV2Props> = ({
       };
 
       saveLayout(layout);
-      setActiveLayout(layout);
-      onLayoutSelected(layout);
       addNotification({
         message: `Layout "${name}" saved`,
         type: "success",
@@ -250,11 +231,6 @@ const LayoutManagerV2: React.FC<LayoutManagerV2Props> = ({
           (l) => l.name === layoutId
         );
         deleteLayout(layoutId);
-
-        // If the deleted layout was active, clear it
-        if (activeLayout?.name === layoutId) {
-          setActiveLayout(null);
-        }
 
         addNotification({
           message: `Layout "${layout?.name || layoutId}" deleted`,
@@ -361,8 +337,8 @@ const LayoutManagerV2: React.FC<LayoutManagerV2Props> = ({
               layoutsList.map((layout) => (
                 <div
                   key={layout.name}
-                  className={`project-item ${activeLayout?.name === layout.name ? "selected" : ""}`}
-                  onClick={() => handleSelectLayout(layout)}
+                  className={`project-item ${currentLayoutResult?.layoutType === layout.name ? "selected" : ""}`}
+                  onClick={() => applyLayoutAndTriggerAppUpdate(layout)}
                 >
                   <div className="project-icon">
                     <Grid size={18} />

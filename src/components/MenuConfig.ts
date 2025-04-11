@@ -29,10 +29,7 @@ import { transitionToConfig } from "../core/force-graph/dynamics/transition";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
 import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
-import {
-  Compute_Layout,
-  LayoutEngineOption,
-} from "../core/layouts/LayoutEngine";
+import { Compute_Layout } from "../core/layouts/LayoutEngine";
 import { DisplayManager } from "../core/model/DisplayManager";
 import { SceneGraph } from "../core/model/SceneGraph";
 import {
@@ -47,7 +44,6 @@ import {
 } from "../data/graphs/blobMesh";
 import { demoSongAnnotations } from "../mp3/data";
 import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
-import { Layout } from "../store/activeLayoutStore";
 import {
   getActiveView,
   getCurrentSceneGraph,
@@ -55,6 +51,10 @@ import {
   setShowEntityDataCard,
 } from "../store/appConfigStore";
 import { clearDocuments, getAllDocuments } from "../store/documentStore";
+import {
+  applyLayoutAndTriggerAppUpdate,
+  computeLayoutAndTriggerUpdateForCurrentSceneGraph,
+} from "../store/sceneGraphHooks";
 import {
   getLeftSidebarConfig,
   getRightSidebarConfig,
@@ -69,46 +69,28 @@ import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 //   saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), "renderConfig.json");
 // };
 
-const graphVizMenuActions = (
-  applyNewLayout: (
-    layoutTyp: LayoutEngineOption,
-    sceneGraph: SceneGraph
-  ) => void,
-  sceneGraph: SceneGraph
-): IMenuConfig => {
+const graphVizMenuActions = (): IMenuConfig => {
   return Object.entries(GraphvizLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
-      action: () => applyNewLayout(label as GraphvizLayoutType, sceneGraph),
+      action: () => computeLayoutAndTriggerUpdateForCurrentSceneGraph(label),
     };
     return acc;
   }, {} as IMenuConfig);
 };
 
-const graphologyMenuActions = (
-  applyNewLayout: (
-    layoutTyp: LayoutEngineOption,
-    sceneGraph: SceneGraph
-  ) => void,
-  sceneGraph: SceneGraph
-): IMenuConfig => {
+const graphologyMenuActions = (): IMenuConfig => {
   return Object.entries(GraphologyLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
-      action: () => applyNewLayout(label as GraphologyLayoutType, sceneGraph),
+      action: () => computeLayoutAndTriggerUpdateForCurrentSceneGraph(label),
     };
     return acc;
   }, {} as IMenuConfig);
 };
 
-const customLayoutMenuActions = (
-  applyNewLayout: (
-    layoutTyp: LayoutEngineOption,
-    sceneGraph: SceneGraph
-  ) => void,
-  sceneGraph: SceneGraph
-): IMenuConfig => {
+const customLayoutMenuActions = (): IMenuConfig => {
   return Object.entries(CustomLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
-      action: () => applyNewLayout(label as CustomLayoutType, sceneGraph),
+      action: () => computeLayoutAndTriggerUpdateForCurrentSceneGraph(label),
     };
     return acc;
   }, {} as IMenuConfig);
@@ -119,15 +101,10 @@ export interface IMenuConfigCallbacks {
   handleFitToView: (activeView: string) => void;
   GraphMenuActions: () => { [key: string]: { action: () => void } };
   SimulationMenuActions: () => { [key: string]: { action: () => void } };
-  applyNewLayout: (
-    layoutType: LayoutEngineOption,
-    sceneGraph: SceneGraph
-  ) => void;
   setShowNodeTable: (show: boolean) => void;
   setShowEdgeTable: (show: boolean) => void;
   showLayoutManager: (mode: "save" | "load") => void;
   showFilterWindow: () => void;
-  handleLoadLayout: (layout: Layout) => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
   showChatGptImporter: () => void;
 }
@@ -207,29 +184,20 @@ export class MenuConfig {
             action: () => {
               const positions = extractPositionsFromNodes(this.sceneGraph);
               this.sceneGraph.setNodePositions(positions);
-              this.callbacks.handleLoadLayout({
+              applyLayoutAndTriggerAppUpdate({
                 name: "reloadedPositions",
                 positions,
               });
             },
           },
           Graphviz: {
-            submenu: graphVizMenuActions(
-              this.callbacks.applyNewLayout,
-              this.sceneGraph
-            ),
+            submenu: graphVizMenuActions(),
           },
           Graphology: {
-            submenu: graphologyMenuActions(
-              this.callbacks.applyNewLayout,
-              this.sceneGraph
-            ),
+            submenu: graphologyMenuActions(),
           },
           Custom: {
-            submenu: customLayoutMenuActions(
-              this.callbacks.applyNewLayout,
-              this.sceneGraph
-            ),
+            submenu: customLayoutMenuActions(),
           },
         },
       },
