@@ -39,6 +39,7 @@ import YasguiPanel from "./components/YasguiPanel";
 
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
 import SaveSceneGraphDialog from "./components/common/SaveSceneGraphDialog";
+import LegendManager from "./components/LegendManager";
 import LexicalEditorV2 from "./components/LexicalEditor";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import { AppContextProvider } from "./context/AppContext";
@@ -104,6 +105,7 @@ import useActiveLegendConfigStore, {
   setEdgeLegendConfig,
   SetNodeAndEdgeLegendsForOnlyVisibleEntities,
   setNodeKeyColor,
+  setNodeKeyOpacity,
   setNodeKeyVisibility,
   setNodeLegendConfig,
 } from "./store/activeLegendConfigStore";
@@ -1044,10 +1046,10 @@ const AppContent: React.FC<{
   //   [currentSceneGraph, forceGraphInstance, activeView]
   // );
 
+  const [showLegendManager, setShowLegendManager] = useState(false); // State for LegendManager
+
   const menuConfigInstance = useMemo(() => {
     const menuConfigCallbacks: IMenuConfigCallbacks = {
-      handleImportConfig,
-      handleFitToView,
       GraphMenuActions,
       SimulationMenuActions,
       setShowNodeTable: setShowEntityTables,
@@ -1059,6 +1061,9 @@ const AppContent: React.FC<{
         setShowSceneGraphDetailView({ show: true, readOnly });
       },
       showChatGptImporter: () => setShowChatGptImporter(true),
+      handleImportConfig,
+      handleFitToView,
+      showLegendManager: () => setShowLegendManager(true), // Add callback
     };
     return new MenuConfig(
       menuConfigCallbacks,
@@ -1075,6 +1080,7 @@ const AppContent: React.FC<{
     setShowEntityTables,
     setShowLayoutManager,
     setShowSceneGraphDetailView,
+    setShowLegendManager,
   ]);
 
   const menuConfig = useMemo(
@@ -1804,7 +1810,73 @@ const AppContent: React.FC<{
             {activeView in simulations && getSimulation(activeView)}
           </div>
         </Workspace>
-        {maybeRenderSaveSceneGraphWindow}
+        {showLegendManager && (
+          <LegendManager
+            sceneGraph={currentSceneGraph}
+            nodeLegendConfig={nodeLegendConfig}
+            edgeLegendConfig={edgeLegendConfig}
+            onNodeLegendChange={(key, color) => setNodeKeyColor(key as NodeId, color)}
+            onEdgeLegendChange={(key, color) => setEdgeKeyColor(key as EdgeId, color)}
+            onNodeVisibilityChange={(key, isVisible) =>
+              setNodeKeyVisibility(key as NodeId, isVisible)
+            }
+            onEdgeVisibilityChange={(key, isVisible) =>
+              setEdgeKeyVisibility(key as EdgeId, isVisible)
+            }
+            onNodeOpacityChange={(key, opacity) => {
+              setNodeKeyOpacity(key as NodeId, opacity);
+            }}
+            onEdgeOpacityChange={(key, opacity) => {
+              const newConfig = { ...edgeLegendConfig };
+              newConfig[key].opacity = opacity;
+              setEdgeLegendConfig(newConfig);
+            }}
+            onClose={() => setShowLegendManager(false)}
+            isDarkMode={isDarkMode}
+            onAddNewType={(type, color) => {
+              const newConfig = { ...nodeLegendConfig };
+              newConfig[type] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              setNodeLegendConfig(newConfig);
+              
+              // Update display config
+              const displayConfig = currentSceneGraph.getDisplayConfig();
+              displayConfig.nodeConfig.types[type] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              currentSceneGraph.setDisplayConfig(displayConfig);
+            }}
+            onAddNewTag={(tag, color) => {
+              const newConfig = { ...nodeLegendConfig };
+              newConfig[tag] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              setNodeLegendConfig(newConfig);
+              
+              // Update display config
+              const displayConfig = currentSceneGraph.getDisplayConfig();
+              displayConfig.nodeConfig.tags[tag] = { 
+                color, 
+                isVisible: true,
+                opacity: 1 
+              };
+              currentSceneGraph.setDisplayConfig(displayConfig);
+            }}
+          />
+        )}
+        {showSaveSceneGraphDialog && (
+          <SaveSceneGraphDialog
+            sceneGraph={currentSceneGraph}
+            onClose={() => setShowSaveSceneGraphDialog(false)}
+          />
+        )}
         {getShowEntityDataCard() && getHoveredNodeIds().size > 0 && (
           <EntityDataDisplayCard
             entityData={currentSceneGraph
