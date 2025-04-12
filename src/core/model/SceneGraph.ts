@@ -11,11 +11,12 @@ import { DocumentState } from "../../store/documentStore";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { NodePositionData, Position } from "../layouts/layoutHelpers";
 import { ObjectOf } from "./../../App";
-import { EdgeId } from "./Edge";
+import { Edge, EdgeId } from "./Edge";
 import { IEntity } from "./entity/abstractEntity";
 import { EntityCache } from "./entity/entityCache";
+import { EntityIds } from "./entity/entityIds";
 import { EdgesContainer, Graph, NodesContainer } from "./Graph";
-import { NodeId } from "./Node";
+import { Node, NodeId } from "./Node";
 import {
   SceneGraphSerializer,
   SerializedSceneGraph,
@@ -259,6 +260,16 @@ export class SceneGraph {
     return this.data.displayConfig?.nodePositions?.[nodeId];
   }
 
+  getVisibleNodes(): EntityIds<NodeId> {
+    const nodeIds = new EntityIds<NodeId>();
+    this.data.graph.getNodes().forEach((node) => {
+      if (this.getVisibility(node)) {
+        nodeIds.add(node.getId());
+      }
+    });
+    return nodeIds;
+  }
+
   // Todo: precache this, make it afap.
   getColor(entity: IEntity): string {
     if (entity.getEntityType() === "node") {
@@ -295,7 +306,10 @@ export class SceneGraph {
   }
 
   // Cursed bulk of code
-  getVisibility(entity: IEntity): boolean {
+  getVisibility(entity: Node | Edge): boolean {
+    if (!entity.isVisible()) {
+      return false;
+    }
     if (entity.getEntityType() === "node") {
       if (this.data.displayConfig.mode === "type") {
         return RenderingManager.getVisibilityByType(

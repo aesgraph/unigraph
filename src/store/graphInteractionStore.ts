@@ -33,12 +33,21 @@ const useGraphInteractionStore = create<GraphInteractionState>((set, get) => ({
   selectedNodeIds: new EntityIds(),
   selectedEdgeIds: new EntityIds(),
 
-  setHoveredNodeId: (nodeId) =>
-    set({ hoveredNodeIds: nodeId ? new EntityIds([nodeId]) : new EntityIds() }),
+  setHoveredNodeId: (nodeId) => {
+    if (nodeId == null && getHoveredNodeIds().size === 0) {
+      return;
+    }
+    // console.log("setting to ", nodeId);
+    set({ hoveredNodeIds: nodeId ? new EntityIds([nodeId]) : new EntityIds() });
+  },
+
   setHoveredEdgeId: (edgeId) =>
     set({ hoveredEdgeIds: edgeId ? new EntityIds([edgeId]) : new EntityIds() }),
-  setHoveredNodeIds: (nodeIds) =>
-    set({ hoveredNodeIds: new EntityIds(nodeIds) }),
+  setHoveredNodeIds: (nodeIds) => {
+    // console.log("setting to ", nodeIds);
+    set({ hoveredNodeIds: new EntityIds(nodeIds) });
+  },
+
   setHoveredEdgeIds: (edgeIds) =>
     set({ hoveredEdgeIds: new EntityIds(edgeIds) }),
 
@@ -53,10 +62,13 @@ const useGraphInteractionStore = create<GraphInteractionState>((set, get) => ({
   getHoveredNodeIds: () => get().hoveredNodeIds,
   getHoveredEdgeIds: () => get().hoveredEdgeIds,
 
-  setSelectedNodeId: (nodeId) =>
+  setSelectedNodeId: (nodeId) => {
+    console.log("setting selected node to ", nodeId);
     set({
       selectedNodeIds: nodeId ? new EntityIds([nodeId]) : new EntityIds(),
-    }),
+    });
+  },
+
   getSelectedNodeId: () => {
     const selectedNodes = Array.from(get().selectedNodeIds);
     return selectedNodes.length === 1 ? selectedNodes[0] : null;
@@ -69,8 +81,11 @@ const useGraphInteractionStore = create<GraphInteractionState>((set, get) => ({
     set({
       selectedEdgeIds: edgeId ? new EntityIds([edgeId]) : new EntityIds(),
     }),
-  setSelectedNodeIds: (nodeIds) =>
-    set({ selectedNodeIds: new EntityIds(nodeIds) }),
+  setSelectedNodeIds: (nodeIds) => {
+    console.log("setting selected nodes to ", nodeIds);
+    set({ selectedNodeIds: new EntityIds(nodeIds) });
+  },
+
   setSelectedEdgeIds: (edgeIds) =>
     set({ selectedEdgeIds: new EntityIds(edgeIds) }),
   clearSelections: () =>

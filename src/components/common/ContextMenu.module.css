@@ -5,7 +5,10 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   padding: 0.5rem 0;
   z-index: 10000;
-  width: 10rem;
+  min-width: 10rem; /* Minimum width */
+  max-width: 20rem; /* Optional: Set a maximum width */
+  width: auto; /* Allow the width to adjust dynamically */
+  white-space: nowrap; /* Prevent text wrapping */
 }
 
 .contextMenu.dark {
@@ -30,7 +33,6 @@
   color: black;
 }
 
-/* Fix the selector specificity by targeting the parent dark class */
 .contextMenu.dark .contextMenuItem:hover {
   background: #555;
   color: white;
@@ -49,6 +51,58 @@
   color: inherit;
 }
 
-.contextMenuItem.dark:hover .submenuIndicator {
-  color: inherit;
+/* Grid layout styles */
+.gridMenu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Default 3 columns */
+  gap: 2px;
+  padding: 2px;
+  max-width: 400px;
+  min-width: 200px;
+}
+
+.gridMenuItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2px;
+  border-radius: 4px;
+  white-space: normal;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.gridMenuItem:hover {
+  background: #f0f0f0;
+  color: black;
+}
+
+.contextMenu.dark .gridMenuItem:hover {
+  background: #555;
+  color: white;
+}
+
+/* Information item styles */
+.informationItem {
+  color: #777 !important;
+  font-style: italic;
+  cursor: default !important;
+  pointer-events: none; /* Disable hover effects */
+  user-select: text; /* Allow text selection */
+}
+
+.dark .informationItem {
+  color: #aaa !important;
+}
+
+.informationItem:hover {
+  background: transparent !important;
+  color: #777 !important;
+}
+
+.dark .informationItem:hover {
+  background: transparent !important;
+  color: #aaa !important;
 }

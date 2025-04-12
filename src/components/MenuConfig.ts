@@ -72,7 +72,11 @@ import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 const graphVizMenuActions = (): IMenuConfig => {
   return Object.entries(GraphvizLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
-      action: () => computeLayoutAndTriggerUpdateForCurrentSceneGraph(label),
+      action: () =>
+        computeLayoutAndTriggerUpdateForCurrentSceneGraph(
+          label,
+          getCurrentSceneGraph().getVisibleNodes()
+        ),
     };
     return acc;
   }, {} as IMenuConfig);
@@ -81,7 +85,11 @@ const graphVizMenuActions = (): IMenuConfig => {
 const graphologyMenuActions = (): IMenuConfig => {
   return Object.entries(GraphologyLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
-      action: () => computeLayoutAndTriggerUpdateForCurrentSceneGraph(label),
+      action: () =>
+        computeLayoutAndTriggerUpdateForCurrentSceneGraph(
+          label,
+          getCurrentSceneGraph().getVisibleNodes()
+        ),
     };
     return acc;
   }, {} as IMenuConfig);
@@ -90,7 +98,11 @@ const graphologyMenuActions = (): IMenuConfig => {
 const customLayoutMenuActions = (): IMenuConfig => {
   return Object.entries(CustomLayoutType).reduce((acc, [_key, label]) => {
     acc[label] = {
-      action: () => computeLayoutAndTriggerUpdateForCurrentSceneGraph(label),
+      action: () =>
+        computeLayoutAndTriggerUpdateForCurrentSceneGraph(
+          label,
+          getCurrentSceneGraph().getVisibleNodes()
+        ),
     };
     return acc;
   }, {} as IMenuConfig);

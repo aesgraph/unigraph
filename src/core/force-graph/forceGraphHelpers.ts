@@ -7,7 +7,7 @@ import {
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EdgeId } from "../model/Edge";
 import { EntityIds } from "../model/entity/entityIds";
-import { NodeId } from "../model/Node";
+import { Node, NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { exportGraphDataForReactFlow } from "../react-flow/exportGraphDataForReactFlow";
 
@@ -41,7 +41,8 @@ export const extractPositionDataFromForceGraphInstance = (
 export const updateVisibleEntitiesInForceGraphInstance = (
   instance: ForceGraph3DInstance,
   sceneGraph: SceneGraph,
-  layoutMode: ForceGraph3dLayoutMode = "Physics"
+  layoutMode: ForceGraph3dLayoutMode = "Physics",
+  layoutPositions?: NodePositionData
 ): void => {
   const currentVisibleNodesInForceGraph = instance
     .graphData()
@@ -90,15 +91,32 @@ export const updateVisibleEntitiesInForceGraphInstance = (
     newEdgeList.map((link) => (link as any).id)
   );
 
+  const getPositionOfNode = (node: Node) => {
+    if (layoutMode === "Layout") {
+      if (layoutPositions && layoutPositions[node.getId()]) {
+        return layoutPositions[node.getId()];
+      }
+      return {
+        x: node.getPosition().x,
+        y: node.getPosition().y,
+        z: node.getPosition().z,
+      };
+    }
+    return { x: Math.random() * 5, y: Math.random() * 5, z: Math.random() * 5 };
+  };
+
   visibleNodes.forEach((node) => {
     if (existingNodes.has(node.getId())) {
       return;
     }
     newNodeList.push({
       id: node.getId(),
-      x: layoutMode === "Layout" ? node.getPosition().x : Math.random() * 5,
-      y: layoutMode === "Layout" ? node.getPosition().y : Math.random() * 5,
-      z: layoutMode === "Layout" ? node.getPosition().z : Math.random() * 5,
+      x:
+        layoutMode === "Layout" ? getPositionOfNode(node).x : Math.random() * 5,
+      y:
+        layoutMode === "Layout" ? getPositionOfNode(node).y : Math.random() * 5,
+      z:
+        layoutMode === "Layout" ? getPositionOfNode(node).z : Math.random() * 5,
     });
   });
 
@@ -150,4 +168,24 @@ export const syncMissingNodesAndEdgesInForceGraph = (
 
   // Refresh the visualization
   instance.refresh();
+};
+
+export const getNodePositionDataFromForceGraphInstance = (
+  instance: ForceGraph3DInstance,
+  nodeIds?: EntityIds<NodeId>
+): NodePositionData => {
+  const nodePositions: NodePositionData = {};
+  instance.graphData().nodes.forEach((node) => {
+    if (nodeIds && !nodeIds.has(node.id as NodeId)) {
+      return;
+    }
+    if (node.id !== undefined && node.x !== undefined && node.y !== undefined) {
+      nodePositions[node.id] = {
+        x: node.fx ?? node.x,
+        y: node.fy ?? node.y,
+        z: node.fz ?? node.z,
+      };
+    }
+  });
+  return nodePositions;
 };

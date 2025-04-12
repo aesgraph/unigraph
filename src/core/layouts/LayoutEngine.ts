@@ -6,6 +6,9 @@ import {
   startLayoutJob,
   updateLayoutJobProgress,
 } from "../../store/activeLayoutStore";
+import { EntityIds } from "../model/entity/entityIds";
+import { Graph } from "../model/Graph";
+import { NodeId } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 import { computeCustomLayout, CustomLayoutType } from "./CustomLayoutEngine";
 import {
@@ -16,31 +19,7 @@ import {
   GraphvizLayoutEngine,
   GraphvizLayoutType,
 } from "./GraphvizLayoutEngine";
-import { NodePositionData } from "./layoutHelpers";
-
-export enum PresetLayoutType {
-  Preset = "Preset",
-  NodePositions = "NodePositions", // Use the positions stored in the graph nodes
-}
-
-export type LayoutEngineOption =
-  | GraphvizLayoutType
-  | GraphologyLayoutType
-  | CustomLayoutType
-  | PresetLayoutType;
-
-export const LayoutEngineOptionLabels = [
-  ...Object.values(GraphvizLayoutType),
-  ...Object.values(GraphologyLayoutType),
-  ...Object.values(CustomLayoutType),
-  ...Object.values(PresetLayoutType),
-];
-
-export interface ILayoutEngineResult {
-  positions: NodePositionData;
-  svg?: string;
-  layoutType: LayoutEngineOption | string;
-}
+import { ILayoutEngineResult, LayoutEngineOption } from "./layoutEngineTypes";
 
 // Map to store pending layout computations by ID
 const pendingComputations = new Map<
@@ -58,10 +37,9 @@ let layoutWorker: Worker | null = null;
 function getLayoutWorker(): Worker {
   if (!layoutWorker) {
     try {
-      // Use the worker-loader syntax that webpack understands
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const LayoutWorker = require("./LayoutWorker.ts");
-      layoutWorker = new LayoutWorker() as Worker;
+      layoutWorker = new Worker(new URL("./LayoutWorker.ts", import.meta.url), {
+        type: "module",
+      });
 
       // Set up message handler
       layoutWorker!.onmessage = (e: MessageEvent) => {
@@ -132,7 +110,8 @@ export class LayoutEngine {
 
   public static async safeComputeLayout(
     sceneGraph: SceneGraph,
-    layoutType: LayoutEngineOption
+    layoutType: LayoutEngineOption,
+    nodeIds?: EntityIds<NodeId>
   ): Promise<ILayoutEngineResult | null> {
     // Reset if there's a stale computation running for too long
     const jobStatus = selectLayoutJobStatus();
@@ -155,10 +134,32 @@ export class LayoutEngine {
     LayoutEngine.isComputingSafeLayout = true;
     console.log("Computing layout using worker...");
     const startTime = Date.now();
+    let sceneGraphRef = sceneGraph;
 
     try {
+      // Check if a specific nodeIds filter is provide
+      if (nodeIds && nodeIds.size > 0) {
+        const filteredNodes = sceneGraph
+          .getGraph()
+          .getNodes()
+          .shallowCopy()
+          .filter((node) => nodeIds.has(node.getId()));
+        const filteredEdges = sceneGraph
+          .getGraph()
+          .getEdgesConnectedToNodes(filteredNodes.getIds());
+        const filteredGraph = new Graph({
+          nodes: filteredNodes,
+          edges: filteredEdges,
+        });
+        console.log("filtered graph is ", filteredGraph);
+        sceneGraphRef = new SceneGraph({
+          graph: filteredGraph,
+          displayConfig: sceneGraph.getDisplayConfig(),
+        });
+      }
+
       const result = await LayoutEngine.computeLayoutWithWorker(
-        sceneGraph,
+        sceneGraphRef,
         layoutType
       );
       return result;
@@ -178,7 +179,7 @@ export class LayoutEngine {
       }
 
       // Only fallback to main thread for non-cancellation errors
-      return await LayoutEngine.computeLayout(sceneGraph, layoutType);
+      return await LayoutEngine.computeLayout(sceneGraphRef, layoutType);
     } finally {
       const endTime = Date.now();
       console.log(
@@ -324,10 +325,15 @@ export class LayoutEngine {
 // Update exported function to fully handle errors and cancellation
 export const Compute_Layout = async (
   sceneGraph: SceneGraph,
-  layoutType: LayoutEngineOption
+  layoutType: LayoutEngineOption,
+  nodeSelection?: EntityIds<NodeId>
 ): Promise<ILayoutEngineResult | null> => {
   try {
-    return await LayoutEngine.safeComputeLayout(sceneGraph, layoutType);
+    return await LayoutEngine.safeComputeLayout(
+      sceneGraph,
+      layoutType,
+      nodeSelection
+    );
   } catch (error) {
     console.error("Layout computation failed or was cancelled:", error);
 

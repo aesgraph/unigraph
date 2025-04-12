@@ -19,7 +19,7 @@ import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
 import {
   LayoutEngineOption,
   PresetLayoutType,
-} from "../core/layouts/LayoutEngine";
+} from "../core/layouts/layoutEngineTypes";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
 import styles from "../Sidebar.module.css";
@@ -29,7 +29,10 @@ import {
   applyReactFlowConfig,
   getReactFlowConfig,
 } from "../store/reactFlowConfigStore";
-import { computeLayoutAndTriggerAppUpdate } from "../store/sceneGraphHooks";
+import {
+  clearFiltersOnAppInstance,
+  computeLayoutAndTriggerAppUpdate,
+} from "../store/sceneGraphHooks";
 import { getSectionWidth } from "../store/workspaceConfigStore";
 
 const allLayoutLabels = [
@@ -63,7 +66,6 @@ export const createDefaultLeftMenus = ({
   initialForceGraphConfig,
   onShowFilter,
   onShowFilterManager,
-  onClearFilters,
   onShowPathAnalysis,
   showLayoutManager,
   handleLoadLayout,
@@ -127,7 +129,8 @@ export const createDefaultLeftMenus = ({
           applyPredefinedLayout={(layoutName: string) =>
             computeLayoutAndTriggerAppUpdate(
               getCurrentSceneGraph(),
-              layoutName as LayoutEngineOption
+              layoutName as LayoutEngineOption,
+              getCurrentSceneGraph().getVisibleNodes()
             )
           }
         />
@@ -169,7 +172,7 @@ export const createDefaultLeftMenus = ({
               Load
             </button>
             <button
-              onClick={onClearFilters}
+              onClick={clearFiltersOnAppInstance}
               className={styles.submenuButton}
               style={{ flex: "1", minWidth: "70px" }}
             >
@@ -183,7 +186,7 @@ export const createDefaultLeftMenus = ({
               }}
               onShowFilter={onShowFilter}
               onShowFilterManager={onShowFilterManager}
-              onClearFilters={onClearFilters}
+              onClearFilters={clearFiltersOnAppInstance}
             />
           }
         </div>

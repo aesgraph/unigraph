@@ -10,14 +10,16 @@ import {
   rightFooterContent,
 } from "../../configs/RightSidebarConfig";
 import { findNodeInForceGraph } from "../../core/force-graph/forceGraphHelpers";
-import { DisplayManager } from "../../core/model/DisplayManager";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { flyToNode } from "../../core/webgl/webglHelpers";
 import Sidebar from "../../Sidebar";
-import { Filter } from "../../store/activeFilterStore";
-import { ResetNodeAndEdgeLegends } from "../../store/activeLegendConfigStore";
 import useAppConfigStore from "../../store/appConfigStore";
 import { getSelectedNodeId } from "../../store/graphInteractionStore";
+import { useMouseControlsStore } from "../../store/mouseControlsStore";
+import {
+  applyActiveFilterToAppInstance,
+  clearFiltersOnAppInstance,
+} from "../../store/sceneGraphHooks";
 import useWorkspaceConfigStore, {
   defaultSectionWidth,
   getSectionWidth,
@@ -60,7 +62,6 @@ interface WorkspaceProps {
   handleFitToView: (activeView: string) => void;
   handleShowEntityTables: () => void;
   handleLoadSceneGraph: (sceneGraph: SceneGraph) => void;
-  handleSetActiveFilter: (filter: Filter) => void;
 }
 
 const Workspace: React.FC<WorkspaceProps> = ({
@@ -87,7 +88,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
   handleFitToView,
   handleShowEntityTables,
   handleLoadSceneGraph,
-  handleSetActiveFilter,
 }) => {
   const { showToolbar, leftSidebarConfig, rightSidebarConfig } =
     useWorkspaceConfigStore();
@@ -95,7 +95,9 @@ const Workspace: React.FC<WorkspaceProps> = ({
   const { activeView, activeLayout, forceGraph3dOptions, forceGraphInstance } =
     useAppConfigStore();
 
-  const { setActiveFilter, activeFilter } = useAppConfigStore();
+  const { controlMode } = useMouseControlsStore();
+
+  const { activeFilter } = useAppConfigStore();
 
   const renderUniappToolbar = useMemo(() => {
     if (!showToolbar) {
@@ -131,13 +133,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
     simulations,
   ]);
 
-  const clearFilters = React.useCallback(() => {
-    DisplayManager.setAllVisible(currentSceneGraph.getGraph());
-    console.log("calling");
-    ResetNodeAndEdgeLegends(currentSceneGraph);
-    setActiveFilter(null);
-  }, [currentSceneGraph, setActiveFilter]);
-
   const renderLeftSideBar = useMemo(() => {
     if (!leftSidebarConfig.isVisible) {
       return null;
@@ -164,7 +159,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
           sceneGraph: currentSceneGraph,
           onShowFilter: showFilterWindow,
           onShowFilterManager: showFilterManager,
-          onClearFilters: clearFilters,
           onShowPathAnalysis: showPathAnalysis,
           onShowLoadSceneGraphWindow: showLoadSceneGraphWindow,
           onShowSaveSceneGraphDialog: showSaveSceneGraphDialog,
@@ -172,7 +166,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
           activeView: activeView, // Make sure this is correctly passed
           activeFilter: activeFilter,
           handleLoadSceneGraph: handleLoadSceneGraph,
-          handleSetActiveFilter: handleSetActiveFilter,
+          handleSetActiveFilter: applyActiveFilterToAppInstance,
         })}
         isDarkMode={isDarkMode}
         footer={leftFooterContent}
@@ -192,13 +186,11 @@ const Workspace: React.FC<WorkspaceProps> = ({
     currentSceneGraph,
     showFilterWindow,
     showFilterManager,
-    clearFilters,
     showPathAnalysis,
     showLoadSceneGraphWindow,
     showSaveSceneGraphDialog,
     activeFilter,
     handleLoadSceneGraph,
-    handleSetActiveFilter,
     showLayoutManager,
   ]);
 
@@ -285,6 +277,14 @@ const Workspace: React.FC<WorkspaceProps> = ({
           rightFooterContent(isOpen, {
             onFitToView: () => handleFitToView(activeView),
             onViewEntities: () => handleShowEntityTables(),
+            onClearFilters: () => clearFiltersOnAppInstance(),
+            details: {
+              sceneGraphName: currentSceneGraph.name,
+              activeLayout: activeLayout,
+              activeFilter: activeFilter?.name,
+              activeView: activeView,
+              mouseControls: controlMode,
+            },
           })
         }
       />
@@ -295,13 +295,17 @@ const Workspace: React.FC<WorkspaceProps> = ({
     rightSidebarConfig.minimal,
     activeView,
     isDarkMode,
+    selectedNodeId,
     renderLayoutModeRadio,
     renderNodeLegend,
     renderEdgeLegend,
+    forceGraphInstance,
+    currentSceneGraph.name,
+    activeLayout,
+    activeFilter?.name,
+    controlMode,
     handleFitToView,
     handleShowEntityTables,
-    selectedNodeId,
-    forceGraphInstance,
   ]);
 
   const _renderSidebarPanel = (menu: MenuItem, isActive: boolean) => {

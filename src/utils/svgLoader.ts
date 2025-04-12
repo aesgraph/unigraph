@@ -1,6 +1,6 @@
 import { AppConfig } from "../AppConfig";
 import { GET_DEFAULT_RENDERING_CONFIG } from "../controllers/RenderingManager";
-import { PresetLayoutType } from "../core/layouts/LayoutEngine";
+import { PresetLayoutType } from "../core/layouts/layoutEngineTypes";
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { Graph } from "../core/model/Graph";
 import { ISceneGraphMetadata, SceneGraph } from "../core/model/SceneGraph";

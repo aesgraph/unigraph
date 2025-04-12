@@ -1,6 +1,4 @@
 import { RootGraphModel, SubgraphModel } from "ts-graphviz";
-import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
-import { LayoutEngine, LayoutEngineOption } from "../core/layouts/LayoutEngine";
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { Node } from "../core/model/Node";
 import { SceneGraph } from "../core/model/SceneGraph";
@@ -110,13 +108,6 @@ export const compute3DBoxLayout = (sceneGraph: SceneGraph) => {
 
   return positions;
 };
-
-export async function _computeSceneGraphLayout(
-  sceneGraph: SceneGraph,
-  layoutType: LayoutEngineOption = GraphvizLayoutType.Graphviz_dot
-): Promise<GraphvizOutput> {
-  return LayoutEngine.computeLayout(sceneGraph, layoutType);
-}
 
 // Function to check if a cluster exists and create it if it doesn't
 export const requireCluster = (

@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./ContextMenu.module.css";
+
+export type ContextMenuDisplayMode = "list" | "grid";
 
 export interface ContextMenuItem {
   label: string;
   action?: () => void;
   submenu?: ContextMenuItem[];
+  displayMode?: ContextMenuDisplayMode; // Controls how submenu is displayed
+  gridColumns?: number; // Number of columns for grid layout
+  information?: boolean; // New prop to mark item as informational (non-clickable)
 }
 
 export interface ContextMenuProps {
@@ -13,6 +18,8 @@ export interface ContextMenuProps {
   items: ContextMenuItem[];
   onClose: () => void;
   isDarkMode?: boolean;
+  displayMode?: ContextMenuDisplayMode; // Allow specifying grid vs list mode
+  gridColumns?: number; // Allow custom grid columns
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -21,13 +28,19 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   items,
   onClose,
   isDarkMode,
+  displayMode = "list",
+  gridColumns = 3,
 }) => {
-  const [submenu, setSubmenu] = useState<ContextMenuItem[] | null>(null);
-  const [submenuPosition, setSubmenuPosition] = useState<{
-    x: number;
-    y: number;
+  const [activeSubmenu, setActiveSubmenu] = useState<{
+    items: ContextMenuItem[];
+    position: { x: number; y: number };
+    displayMode?: ContextMenuDisplayMode;
+    gridColumns?: number;
   } | null>(null);
 
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -40,58 +53,112 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     return () => document.removeEventListener("click", handleClickOutside);
   }, [onClose]);
 
+  // Handle item mouse enter - open submenu
   const handleItemMouseEnter = (
     item: ContextMenuItem,
     event: React.MouseEvent
   ) => {
-    if (item.submenu) {
-      const rect = (event.target as HTMLElement).getBoundingClientRect();
-      setSubmenu(item.submenu);
-      setSubmenuPosition({ x: rect.right, y: rect.top });
+    // Don't process submenu for information items
+    if (item.information) {
+      setActiveSubmenu(null);
+      return;
+    }
+
+    if (item.submenu && item.submenu.length > 0) {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+      setActiveSubmenu({
+        items: item.submenu,
+        position: { x: rect.right, y: rect.top },
+        displayMode: item.displayMode,
+        gridColumns: item.gridColumns,
+      });
     } else {
-      setSubmenu(null);
+      setActiveSubmenu(null);
     }
   };
 
+  // Handle mouse leave - close submenu
+  const handleMouseLeave = () => {
+    // We only close if we're not moving to a submenu
+    // Let the submenus manage their own state
+  };
+
+  // Handle item click
   const handleItemClick = (item: ContextMenuItem) => {
+    // Don't process clicks for information items
+    if (item.information) {
+      return;
+    }
+
     if (!item.submenu) {
       item.action?.();
       onClose();
     }
   };
 
+  // Get correct class names based on display mode
+  const getMenuClassNames = () => {
+    return `${styles.contextMenu} ${displayMode === "grid" ? styles.gridMenu : ""} ${isDarkMode ? styles.dark : ""}`;
+  };
+
+  // Render items based on display mode
+  const renderItems = () => {
+    return items.map((item, index) => {
+      // Determine class name based on item type and display mode
+      const baseClass =
+        displayMode === "grid" ? styles.gridMenuItem : styles.contextMenuItem;
+      const itemClass = item.information
+        ? `${baseClass} ${styles.informationItem}`
+        : baseClass;
+
+      return (
+        <div
+          key={index}
+          className={itemClass}
+          onMouseEnter={(e) => handleItemMouseEnter(item, e)}
+          onClick={() => handleItemClick(item)}
+        >
+          {item.label}
+          {item.submenu && displayMode !== "grid" && !item.information && (
+            <span className={styles.submenuIndicator}>▶</span>
+          )}
+        </div>
+      );
+    });
+  };
+
+  // Calculate styles for grid mode
+  const gridStyle =
+    displayMode === "grid"
+      ? { gridTemplateColumns: `repeat(${gridColumns}, 1fr)` }
+      : {};
+
   return (
     <>
       <div
-        className={`${styles.contextMenu} ${isDarkMode ? styles.dark : ""}`}
+        ref={menuRef}
+        className={getMenuClassNames()}
         style={{
           position: "fixed",
           left: x,
           top: y,
           zIndex: 10000,
+          ...gridStyle,
         }}
+        onMouseLeave={handleMouseLeave}
       >
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className={styles.contextMenuItem}
-            onMouseEnter={(e) => handleItemMouseEnter(item, e)}
-            onClick={() => handleItemClick(item)}
-          >
-            {item.label}
-            {item.submenu && (
-              <span className={styles.submenuIndicator}>▶</span>
-            )}
-          </div>
-        ))}
+        {renderItems()}
       </div>
-      {submenu && submenuPosition && (
+
+      {activeSubmenu && (
         <ContextMenu
-          x={submenuPosition.x}
-          y={submenuPosition.y}
-          items={submenu}
+          x={activeSubmenu.position.x}
+          y={activeSubmenu.position.y}
+          items={activeSubmenu.items}
           onClose={onClose}
           isDarkMode={isDarkMode}
+          displayMode={activeSubmenu.displayMode || "list"}
+          gridColumns={activeSubmenu.gridColumns || 3}
         />
       )}
     </>

@@ -9,7 +9,7 @@ import {
   GraphvizLayoutEngine,
   GraphvizLayoutType,
 } from "./GraphvizLayoutEngine";
-import { ILayoutEngineResult, LayoutEngineOption } from "./LayoutEngine";
+import { ILayoutEngineResult, LayoutEngineOption } from "./layoutEngineTypes";
 
 // Define message format for the worker
 interface LayoutWorkerMessage {

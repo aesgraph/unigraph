@@ -90,9 +90,12 @@ export class EntitiesContainer<
   }
 
   public getAll(
-    ids: EntityIds<T>,
+    ids: EntityIds<T> | T[],
     strict: boolean = true
   ): EntitiesContainer<T, V> {
+    if (ids instanceof Array) {
+      ids = new EntityIds(ids);
+    }
     const container = new EntitiesContainer<T, V>();
     ids.toArray().forEach((id) => {
       if (this.has(id)) {
@@ -200,6 +203,10 @@ export class EntitiesContainer<
     return new EntitiesContainer<T, V>(
       this.entities.map((entity) => entity.deepCopy())
     );
+  }
+
+  public shallowCopy(): EntitiesContainer<T, V> {
+    return new EntitiesContainer<T, V>(this.entities);
   }
 
   public getDatas(): any[] {

@@ -3,7 +3,7 @@ import { ObjectOf } from "../App";
 import {
   ILayoutEngineResult,
   LayoutEngineOption,
-} from "../core/layouts/LayoutEngine";
+} from "../core/layouts/layoutEngineTypes";
 import { NodePositionData } from "../core/layouts/layoutHelpers";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { getActiveLayout, setActiveLayout } from "./appConfigStore";

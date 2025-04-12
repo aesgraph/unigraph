@@ -38,7 +38,12 @@ import ChatGptImporter from "./components/tools/ChatGptImporter";
 import YasguiPanel from "./components/YasguiPanel";
 
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
+import { getMultiNodeContextMenuItems } from "./components/common/multiNodeContextMenuItems";
 import SaveSceneGraphDialog from "./components/common/SaveSceneGraphDialog";
+import SelectionBox from "./components/common/SelectionBox";
+import { getSaveAsNewFilterMenuItem } from "./components/common/sharedContextMenuItems";
+import { getNodeContextMenuItems } from "./components/common/singleNodeContextMenuItems";
+import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
 import LexicalEditorV2 from "./components/LexicalEditor";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import { AppContextProvider } from "./context/AppContext";
@@ -52,7 +57,6 @@ import {
   RenderingManager__DisplayMode,
 } from "./controllers/RenderingManager";
 import {
-  attachRepulsiveForce,
   bindEventsToGraphInstance,
   createForceGraph,
   updateNodePositions,
@@ -61,16 +65,17 @@ import {
 import { syncMissingNodesAndEdgesInForceGraph } from "./core/force-graph/forceGraphHelpers";
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
 import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
+import { Compute_Layout } from "./core/layouts/LayoutEngine";
 import {
-  Compute_Layout,
   LayoutEngineOption,
   LayoutEngineOptionLabels,
   PresetLayoutType,
-} from "./core/layouts/LayoutEngine";
+} from "./core/layouts/layoutEngineTypes";
 import { NodePositionData } from "./core/layouts/layoutHelpers";
 import { DisplayManager } from "./core/model/DisplayManager";
 import { EdgeId } from "./core/model/Edge";
 import { Entity } from "./core/model/entity/abstractEntity";
+import { EntityIds } from "./core/model/entity/entityIds";
 import { getGraphStatistics, GraphStastics } from "./core/model/GraphBuilder";
 import { NodeDataArgs, NodeId } from "./core/model/Node";
 import { SceneGraph } from "./core/model/SceneGraph";
@@ -87,7 +92,6 @@ import {
   getSceneGraph,
 } from "./data/DemoSceneGraphs";
 import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
-import { bfsQuery, processYasguiResults } from "./helpers/yasguiHelpers";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 import { Filter, loadFiltersFromSceneGraph } from "./store/activeFilterStore";
@@ -109,6 +113,7 @@ import useActiveLegendConfigStore, {
 } from "./store/activeLegendConfigStore";
 import useAppConfigStore, {
   getActiveView,
+  getCurrentSceneGraph,
   getForceGraphInstance,
   getLegendMode,
   getPreviousView,
@@ -123,7 +128,7 @@ import {
   useDocumentStore,
 } from "./store/documentStore";
 import { IForceGraphRenderConfig } from "./store/forceGraphConfigStore";
-import useGraphInteractionStore, {
+import {
   clearSelections,
   getHoveredNodeIds,
   getSelectedNodeId,
@@ -136,7 +141,12 @@ import useGraphInteractionStore, {
   setHoveredNodeIds,
   setSelectedNodeId,
 } from "./store/graphInteractionStore";
+import { useMouseControlsStore } from "./store/mouseControlsStore";
 import { addNotification } from "./store/notificationStore";
+import {
+  applyActiveFilterToAppInstance,
+  filterSceneGraphToOnlyVisibleNodes,
+} from "./store/sceneGraphHooks";
 import useWorkspaceConfigStore, {
   getLeftSidebarConfig,
   getRightSidebarConfig,
@@ -187,6 +197,7 @@ const getSimulations = (
 };
 
 const initialSceneGraph = new SceneGraph();
+let initialSceneGraphLoaded: boolean = false;
 
 export type RenderingView =
   | "Graphviz"
@@ -242,7 +253,7 @@ const AppContent: React.FC<{
     edgeLegendUpdateTime,
   } = useActiveLegendConfigStore();
 
-  const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
+  // const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
 
   const { activeFilter, setActiveFilter } = useAppConfigStore();
 
@@ -406,41 +417,6 @@ const AppContent: React.FC<{
     []
   );
 
-  const handleSetActiveFilterPreset = useCallback(
-    (filter: Filter) => {
-      DisplayManager.applyVisibilityFromFilterRulesToGraph(
-        currentSceneGraph.getGraph(),
-        filter.filterRules
-      );
-      SetNodeAndEdgeLegendsForOnlyVisibleEntities(
-        currentSceneGraph,
-        legendMode,
-        filter.filterRules
-      );
-      setActiveFilter(filter);
-    },
-    [currentSceneGraph, legendMode, setActiveFilter]
-  );
-
-  const handleSetVisibleNodes = useCallback(
-    (nodeIds: string[]) => {
-      handleSetActiveFilterPreset({
-        name: "node id selection",
-        filterRules: [
-          {
-            id: "node id selection",
-            operator: "include",
-            ruleMode: "entities",
-            conditions: {
-              nodes: nodeIds,
-            },
-          },
-        ],
-      });
-    },
-    [handleSetActiveFilterPreset]
-  );
-
   let isComputing = false;
   const safeComputeLayout = useCallback(
     async (
@@ -523,24 +499,28 @@ const AppContent: React.FC<{
     []
   );
 
+  // Update the context menu state to use a unified approach with nodeIds array
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
-    nodeId: NodeId | undefined;
+    nodeIds?: NodeId[];
   } | null>(null);
 
   const [isNodeEditorOpen, setIsNodeEditorOpen] = useState(false);
 
-  const handleNodeRightClick = useCallback(
-    (event: MouseEvent | React.MouseEvent, nodeId: string | null) => {
+  // Unified handler for right-clicks on nodes (single or multiple)
+  const handleNodesRightClick = useCallback(
+    (event: MouseEvent | React.MouseEvent, nodeIds: EntityIds<NodeId>) => {
       event.preventDefault();
-      if (nodeId) {
-        setContextMenu({
-          x: event.clientX,
-          y: event.clientY,
-          nodeId: nodeId as NodeId,
-        });
-      }
+      event.stopPropagation();
+
+      if (nodeIds.size === 0) return;
+
+      setContextMenu({
+        x: event.clientX,
+        y: event.clientY,
+        nodeIds: nodeIds.toArray(),
+      });
     },
     []
   );
@@ -551,7 +531,6 @@ const AppContent: React.FC<{
       setContextMenu({
         x: event.clientX,
         y: event.clientY,
-        nodeId: undefined,
       });
     },
     []
@@ -607,7 +586,7 @@ const AppContent: React.FC<{
     bindEventsToGraphInstance(
       newInstance,
       currentSceneGraph,
-      handleNodeRightClick,
+      handleNodesRightClick,
       handleBackgroundRightClick
     );
 
@@ -622,7 +601,7 @@ const AppContent: React.FC<{
     currentSceneGraph,
     forceGraph3dOptions.layout,
     setForceGraphInstance,
-    handleNodeRightClick,
+    handleNodesRightClick,
     handleBackgroundRightClick,
   ]);
 
@@ -667,10 +646,11 @@ const AppContent: React.FC<{
         clearGraphFromUrl();
       }
       clearSelections();
-      safeComputeLayout(
-        graph,
-        graph.getData().defaultAppConfig?.activeLayout ?? null
-      ).then(() => {
+      const layoutToLoad =
+        !initialSceneGraphLoaded && defaultActiveLayout
+          ? defaultActiveLayout
+          : (graph.getData().defaultAppConfig?.activeLayout ?? null);
+      safeComputeLayout(graph, layoutToLoad).then(() => {
         setCurrentSceneGraph(graph);
         if (graph.getData().defaultAppConfig) {
           setAppConfig(graph.getData().defaultAppConfig!);
@@ -717,6 +697,7 @@ const AppContent: React.FC<{
 
         const tock = Date.now();
         console.log("TOTAL TIME", tock - tick);
+        initialSceneGraphLoaded = true;
         addNotification({
           message: `Loaded SceneGraph: ${graph.getMetadata().name}`,
           type: "success",
@@ -727,6 +708,7 @@ const AppContent: React.FC<{
     [
       clearGraphFromUrl,
       clearUrlOfQueryParams,
+      defaultActiveLayout,
       forceGraphInstance,
       handleDisplayConfigChanged,
       safeComputeLayout,
@@ -1215,8 +1197,8 @@ const AppContent: React.FC<{
               setTimeout(() => handleReactFlowFitView(), 100);
             }
           }}
-          onNodeContextMenu={(event, node) =>
-            handleNodeRightClick(event, node.id)
+          onNodesContextMenu={(event, nodeIds) =>
+            handleNodesRightClick(event, nodeIds)
           }
           onBackgroundContextMenu={(event) => handleBackgroundRightClick(event)}
           onNodeDragStop={(event, node, nodes) => {
@@ -1263,7 +1245,7 @@ const AppContent: React.FC<{
     reactFlowInstance,
     setReactFlowInstance,
     handleReactFlowFitView,
-    handleNodeRightClick,
+    handleNodesRightClick,
     handleBackgroundRightClick,
     graphModelUpdateTime,
   ]);
@@ -1336,7 +1318,8 @@ const AppContent: React.FC<{
       ForceGraphManager.refreshForceGraphInstance(
         forceGraphInstance,
         currentSceneGraph,
-        forceGraph3dOptions.layout
+        forceGraph3dOptions.layout,
+        currentLayoutResult?.positions
       );
     }
   }, [
@@ -1347,8 +1330,9 @@ const AppContent: React.FC<{
     activeFilter,
     currentSceneGraph,
     forceGraphInstance,
-    selectedNodeIds,
-    selectedEdgeIds,
+    currentLayoutResult,
+    // selectedNodeIds, //not sure why I had these here to begin with. can prob remove now
+    // selectedEdgeIds,
   ]);
 
   useEffect(() => {
@@ -1523,103 +1507,66 @@ const AppContent: React.FC<{
         label: "Create Node",
         action: handleCreateNode,
       },
+      getSaveAsNewFilterMenuItem(
+        getCurrentSceneGraph().getVisibleNodes(),
+        "Save Visible as New Filter"
+      ),
     ],
     [handleCreateNode]
   );
 
-  const getNodeContextMenuItems = useCallback(
-    (nodeId: NodeId): ContextMenuItem[] => [
-      {
-        label: "Focus Node",
-        action: () => {
-          if (forceGraphInstance) {
-            const node = forceGraphInstance
-              .graphData()
-              .nodes.find((n) => n.id === nodeId);
-            if (node) {
-              flyToNode(forceGraphInstance, node);
-            }
-          }
-        },
-      },
-      {
-        label: "Expand around Node",
-        action: () => {
-          if (forceGraphInstance) {
-            attachRepulsiveForce(forceGraphInstance, nodeId);
-          }
-        },
-      },
-      {
-        label: "Select Node",
-        action: () => setSelectedNodeId(nodeId),
-      },
-      {
-        label: "Hide Node",
-        action: () => {
-          // Implement hide node functionality
-          console.log("Hide node:", nodeId);
-        },
-      },
-      {
-        label: "Find path",
-        submenu: [
-          {
-            label: "to...",
-            action: () => {
-              setPathAnalysisConfig({
-                startNode: nodeId,
-                endNode: undefined,
-              });
-              setShowPathAnalysis(true);
-            },
-          },
-          {
-            label: "from...",
-            action: () => {
-              setPathAnalysisConfig({
-                startNode: undefined,
-                endNode: nodeId,
-              });
-              setShowPathAnalysis(true);
-            },
-          },
-        ],
-      },
-      {
-        label: "Edit",
-        action: () => {
-          setEditingNodeId(nodeId);
-          setIsNodeEditorOpen(true);
-        },
-      },
-      {
-        label: "Edit JSON",
-        action: () => {
-          setJsonEditEntity(currentSceneGraph.getGraph().getNode(nodeId));
-        },
-      },
-      {
-        label: "Query dbpedia",
-        action: () => {
-          bfsQuery(nodeId.replace(" ", "_"), 200, 150, 500).then((results) =>
-            processYasguiResults(results, currentSceneGraph)
-          );
-        },
-      },
-    ],
+  // Wrapper for the imported node context menu items function with App-specific context
+  const getNodeContextMenuItemsWithAppContext = useCallback(
+    (nodeId: NodeId): ContextMenuItem[] => {
+      return getNodeContextMenuItems(
+        nodeId,
+        currentSceneGraph,
+        forceGraphInstance,
+        setEditingNodeId,
+        setIsNodeEditorOpen,
+        setJsonEditEntity,
+        setSelectedNodeId,
+        (config) =>
+          setPathAnalysisConfig({
+            startNode: config.startNode!,
+            endNode: config.endNode,
+          }),
+        setShowPathAnalysis,
+        applyActiveFilterToAppInstance
+      );
+    },
     [currentSceneGraph, forceGraphInstance, setShowPathAnalysis]
   );
 
+  // Add multi-node operations to create a subgraph, hide multiple nodes, etc.
+  const getMultiNodeContextMenuItemsWithAppContext = useCallback(
+    (nodeIds: NodeId[]): ContextMenuItem[] => {
+      return getMultiNodeContextMenuItems(
+        nodeIds,
+        currentSceneGraph,
+        applyActiveFilterToAppInstance,
+        () => setContextMenu(null)
+      );
+    },
+    [currentSceneGraph]
+  );
+
+  // Update the existing getContextMenuItems function to handle multi-node selection
   const getContextMenuItems = useCallback(
-    (nodeId: NodeId | undefined): ContextMenuItem[] => {
-      if (nodeId) {
-        return getNodeContextMenuItems(nodeId);
-      } else {
+    (nodeIds?: NodeId[]): ContextMenuItem[] => {
+      if (!nodeIds || nodeIds.length === 0) {
         return getBackgroundRightClickContextMenuItems();
+      } else if (nodeIds.length === 1) {
+        return getNodeContextMenuItemsWithAppContext(nodeIds[0]);
+      } else {
+        return getMultiNodeContextMenuItemsWithAppContext(nodeIds);
       }
     },
-    [getNodeContextMenuItems, getBackgroundRightClickContextMenuItems]
+    [
+      getBackgroundRightClickContextMenuItems,
+      getNodeContextMenuItemsWithAppContext,
+      getMultiNodeContextMenuItemsWithAppContext,
+    ]
   );
 
   const pathAnalysisWizard = useMemo(() => {
@@ -1753,6 +1700,8 @@ const AppContent: React.FC<{
     );
   };
 
+  const controlMode = useMouseControlsStore((state) => state.controlMode);
+
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
       <div
@@ -1778,14 +1727,13 @@ const AppContent: React.FC<{
           renderNodeLegend={renderNodeLegend}
           renderEdgeLegend={renderEdgeLegend}
           showLoadSceneGraphWindow={() => setShowLoadSceneGraphWindow(true)}
-          showSaveSceneGraphDialog={() => setShowSaveSceneGraphDialog(true)} // Pass the correct handler
+          showSaveSceneGraphDialog={() => setShowSaveSceneGraphDialog(true)}
           showLayoutManager={(mode: "save" | "load") =>
             setShowLayoutManager({ mode, show: true })
           }
           handleFitToView={handleFitToView}
           handleShowEntityTables={() => setShowEntityTables(true)}
           handleLoadSceneGraph={handleLoadSceneGraph}
-          handleSetActiveFilter={handleSetActiveFilterPreset}
         >
           {/* Main content */}
           <div style={{ height: "100%", position: "relative" }}>
@@ -1830,7 +1778,7 @@ const AppContent: React.FC<{
           <ContextMenu
             x={contextMenu.x}
             y={contextMenu.y}
-            items={getContextMenuItems(contextMenu.nodeId)}
+            items={getContextMenuItems(contextMenu.nodeIds)}
             onClose={() => setContextMenu(null)}
             isDarkMode={isDarkMode}
           />
@@ -1917,7 +1865,9 @@ const AppContent: React.FC<{
             sceneGraph={currentSceneGraph}
             onClose={() => setShowFilter(false)}
             onApplyFilter={(selectedIds) => {
-              handleSetVisibleNodes(selectedIds);
+              filterSceneGraphToOnlyVisibleNodes(
+                new EntityIds<NodeId>(selectedIds as NodeId[])
+              );
               setShowFilter(false);
             }}
             isDarkMode={isDarkMode}
@@ -1949,6 +1899,9 @@ const AppContent: React.FC<{
             />
           </div>
         )}
+        {activeView === "ForceGraph3d" && controlMode === "multiselection" && (
+          <SelectionBox />
+        )}
       </div>
     </AppContextProvider>
   );
@@ -1960,8 +1913,6 @@ interface AppProps {
   defaultActiveView?: string;
   defaultActiveLayout?: string;
 }
-
-import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
 
 const App: React.FC<AppProps> = ({
   defaultGraph,

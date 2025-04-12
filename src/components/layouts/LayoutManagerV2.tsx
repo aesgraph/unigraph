@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import "../../components/projects/ProjectManager.css";
-import { LayoutEngineOptionLabels } from "../../core/layouts/LayoutEngine";
+import { LayoutEngineOptionLabels } from "../../core/layouts/layoutEngineTypes";
 import { NodePositionData } from "../../core/layouts/layoutHelpers";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import useActiveLayoutStore, {

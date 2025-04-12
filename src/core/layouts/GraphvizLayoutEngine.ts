@@ -6,6 +6,7 @@ import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphvi
 import { SceneGraph } from "../model/SceneGraph";
 import {
   NodePositionData,
+  scalePositionsByFactor,
   translateToPositiveCoordinates,
 } from "./layoutHelpers";
 
@@ -61,6 +62,7 @@ export class GraphvizLayoutEngine {
       }
     }
     positions = translateToPositiveCoordinates(positions);
+    positions = scalePositionsByFactor(positions, 1.4);
     if (svg == "") {
       throw new Error("No SVG generated from Graphviz");
     }

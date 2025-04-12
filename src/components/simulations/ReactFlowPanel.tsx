@@ -49,7 +49,10 @@ interface ReactFlowPanelProps {
   nodes: Node[];
   edges: Edge[];
   onLoad?: (instance: ReactFlowInstance) => void;
-  onNodeContextMenu?: (event: React.MouseEvent, node: Node) => void;
+  onNodesContextMenu?: (
+    event: React.MouseEvent,
+    nodeIds: EntityIds<NodeId>
+  ) => void; // Unified context menu handler
   onBackgroundContextMenu?: (
     event: React.MouseEvent<Element, MouseEvent>
   ) => void;
@@ -87,13 +90,25 @@ nodeStyles.textContent = `
     outline: 2px solid ${MOUSE_HOVERED_NODE_COLOR} !important;
     outline-offset: 2px;
   }
+  
+  /* Make the selection rectangle not capture mouse events */
+  .react-flow__nodesselection-rect {
+    pointer-events: none !important;
+    z-index: 0 !important;
+  }
+  
+  /* Ensure nodes remain clickable even when inside selection */
+  .react-flow__node {
+    pointer-events: all !important;
+    z-index: 10 !important;
+  }
 `;
 
 const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   nodes: initialNodes,
   edges: initialEdges,
   onLoad,
-  onNodeContextMenu,
+  onNodesContextMenu, // Just need the unified prop
   onBackgroundContextMenu,
   onNodeDragStop,
 }) => {
@@ -173,6 +188,31 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
       );
     }
   }, []);
+
+  // Unified handler for node context menu events (single or multi)
+  const handleNodeContextMenu = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      // Prevent default browser context menu
+      event.preventDefault();
+      event.stopPropagation();
+
+      const selectedNodeIds = getSelectedNodeIds();
+
+      // If we have multiple nodes selected and the right-clicked node is part of that selection
+      if (selectedNodeIds.size > 1 && selectedNodeIds.has(node.id as NodeId)) {
+        // Pass all selected nodes to the handler
+        if (onNodesContextMenu) {
+          onNodesContextMenu(event, selectedNodeIds);
+        }
+      } else {
+        // For a single node, create an EntityIds with just this node
+        if (onNodesContextMenu) {
+          onNodesContextMenu(event, new EntityIds([node.id as NodeId]));
+        }
+      }
+    },
+    [onNodesContextMenu]
+  );
 
   // Handle selection change in ReactFlow
   const handleSelectionChange = useCallback(
@@ -358,7 +398,9 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
           onEdgesChange={handleEdgesChange}
           onNodeDragStop={onNodeDragStop}
           onInit={handleInit} // Use the properly typed handler
-          onNodeContextMenu={onNodeContextMenu}
+          onNodeContextMenu={(event, node) =>
+            handleNodeContextMenu(event, node)
+          }
           onPaneContextMenu={(event) =>
             onBackgroundContextMenu?.(
               event as React.MouseEvent<Element, MouseEvent>

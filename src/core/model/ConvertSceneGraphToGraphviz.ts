@@ -5,7 +5,7 @@ import {
 } from "../../controllers/RenderingManager";
 import { getNodeIsVisible } from "../../store/activeLegendConfigStore";
 import { GraphvizLayoutType } from "../layouts/GraphvizLayoutEngine";
-import { LayoutEngineOption } from "../layouts/LayoutEngine";
+import { LayoutEngineOption } from "../layouts/layoutEngineTypes";
 import { Graph } from "./Graph";
 
 export const ConvertSceneGraphToGraphviz = (

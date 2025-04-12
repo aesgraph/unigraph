@@ -1,6 +1,6 @@
 import { RenderingManager__DisplayMode } from "./controllers/RenderingManager";
 import { CustomLayoutType } from "./core/layouts/CustomLayoutEngine";
-import { LayoutEngineOption } from "./core/layouts/LayoutEngine";
+import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
 import { Filter } from "./store/activeFilterStore";
 import { ISidebarConfig } from "./store/workspaceConfigStore";
 // import { SceneGraph } from "./core/model/SceneGraph";

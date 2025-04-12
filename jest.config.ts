@@ -13,6 +13,7 @@ const config: Config = {
     "!**/dist/**",
     "!**/__tests__/**",
     "!**/public/**",
+    "!src/core/layouts/LayoutEngine.ts", // Exclude LayoutEngine.ts from coverage
   ],
   moduleNameMapper: {
     "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.ts",

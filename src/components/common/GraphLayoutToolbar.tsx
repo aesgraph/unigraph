@@ -5,7 +5,7 @@ import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutEngine";
 import {
   LayoutEngineOption,
   PresetLayoutType,
-} from "../../core/layouts/LayoutEngine";
+} from "../../core/layouts/layoutEngineTypes";
 import "./GraphLayoutToolbar.css";
 
 interface GraphLayoutToolbarProps {

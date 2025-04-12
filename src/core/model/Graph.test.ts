@@ -22,7 +22,7 @@ describe("Graph", () => {
   });
 
   it("should not create an edge between non-existent nodes in strict mode", () => {
-    graph = new Graph(true);
+    graph = new Graph({ strict: true });
     expect(() => graph.createEdge("node1", "node2")).toThrow(
       "Cannot create edge between non-existent nodes in strict mode: node1 -> node2"
     );
@@ -35,7 +35,7 @@ describe("Graph", () => {
   });
 
   it("should not add an existing node in strict mode", () => {
-    graph = new Graph(true);
+    graph = new Graph({ strict: true });
     const node = new Node({ id: "node1", label: "Node 1" });
     graph.addNode(node);
     expect(() => graph.addNode(node)).toThrow(
@@ -52,7 +52,7 @@ describe("Graph", () => {
   });
 
   it("should not remove a non-existent node in strict mode", () => {
-    graph = new Graph(true);
+    graph = new Graph({ strict: true });
     expect(() => graph.removeNode("node1" as NodeId)).toThrow(
       "Cannot remove non-existent node in strict mode: node1"
     );
@@ -69,7 +69,7 @@ describe("Graph", () => {
   });
 
   it("should not add an existing edge in strict mode", () => {
-    graph = new Graph(true);
+    graph = new Graph({ strict: true });
     const edge = new Edge({
       source: "node1" as NodeId,
       target: "node2" as NodeId,
@@ -92,7 +92,7 @@ describe("Graph", () => {
   });
 
   it("should not remove a non-existent edge in strict mode", () => {
-    graph = new Graph(true);
+    graph = new Graph({ strict: true });
     expect(() => graph.removeEdge("node1:::node2" as EdgeId)).toThrow(
       "Cannot remove non-existent edge in strict mode: node1-node2"
     );

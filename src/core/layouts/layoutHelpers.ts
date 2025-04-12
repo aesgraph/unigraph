@@ -1,6 +1,8 @@
 import Graph from "graphology";
 import { ObjectOf } from "../../App";
+import { EntitiesContainer } from "../model/entity/entitiesContainer";
 import { Graph as MGraph } from "../model/Graph";
+import { Node, NodeId } from "../model/Node";
 
 export type Position = { x: number; y: number; z?: number };
 export type Dimensions = { width: number; height: number }; //for now this is 2d only
@@ -119,6 +121,102 @@ export function scalePositions(
   });
   return scaled;
 }
+
+export const scalePositionsByFactor = (
+  positions: NodePositionData,
+  scaleFactor: number
+): NodePositionData => {
+  const scaled: NodePositionData = {};
+  Object.entries(positions).forEach(([id, pos]) => {
+    scaled[id] = {
+      x: pos.x * scaleFactor,
+      y: pos.y * scaleFactor,
+      z: pos.z !== undefined ? pos.z * scaleFactor : 0,
+    };
+  });
+  return scaled;
+};
+
+export const centerPositionsAroundPoint = (
+  positions: NodePositionData,
+  centerPoint: { x: number; y: number; z?: number }
+): NodePositionData => {
+  // Calculate center of graph
+  let sumX = 0,
+    sumY = 0,
+    sumZ = 0;
+  const nodes = Object.values(positions);
+  nodes.forEach((pos) => {
+    sumX += pos.x;
+    sumY += pos.y;
+    sumZ += pos.z ?? 0;
+  });
+  const centerX = sumX / nodes.length;
+  const centerY = sumY / nodes.length;
+  const centerZ = sumZ / nodes.length;
+  // Center the graph
+  const offsetX = centerPoint.x - centerX;
+  const offsetY = centerPoint.y - centerY;
+  const offsetZ = centerPoint.z !== undefined ? centerPoint.z - centerZ : 0;
+  const centered: NodePositionData = {};
+  Object.entries(positions).forEach(([id, pos]) => {
+    centered[id] = {
+      x: pos.x + offsetX,
+      y: pos.y + offsetY,
+      z: pos.z !== undefined ? pos.z + offsetZ : 0,
+    };
+  });
+  return centered;
+};
+
+export const getCenterPointOfNodes = (
+  nodes: EntitiesContainer<NodeId, Node>
+) => {
+  let sumX = 0,
+    sumY = 0,
+    sumZ = 0;
+  nodes.forEach((node) => {
+    sumX += node.getPosition().x;
+    sumY += node.getPosition().y;
+    sumZ += node.getPosition().z ?? 0;
+  });
+  const centerX = sumX / nodes.size();
+  const centerY = sumY / nodes.size();
+  const centerZ = sumZ / nodes.size();
+
+  return { x: centerX, y: centerY, z: centerZ };
+};
+
+export const getCenterPointOfNodePositionData = (
+  positions: NodePositionData
+): { x: number; y: number; z?: number } => {
+  let sumX = 0,
+    sumY = 0,
+    sumZ = 0;
+  const nodes = Object.values(positions);
+  nodes.forEach((pos) => {
+    sumX += pos.x;
+    sumY += pos.y;
+    sumZ += pos.z ?? 0;
+  });
+  const centerX = sumX / nodes.length;
+  const centerY = sumY / nodes.length;
+  const centerZ = sumZ / nodes.length;
+  return { x: centerX, y: centerY, z: centerZ };
+};
+
+export const filterNodePositionsToSelection = (
+  positions: NodePositionData,
+  selectedNodeIds: NodeId[]
+): NodePositionData => {
+  const filtered: NodePositionData = {};
+  Object.entries(positions).forEach(([id, pos]) => {
+    if (selectedNodeIds.includes(id as NodeId)) {
+      filtered[id] = pos;
+    }
+  });
+  return filtered;
+};
 
 export function centerPositions(positions: NodePositionData): NodePositionData {
   // Calculate center of graph

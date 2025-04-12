@@ -2,7 +2,7 @@ import { ForceGraph3DInstance } from "3d-force-graph";
 import { ReactFlowInstance } from "@xyflow/react";
 import { create } from "zustand";
 import { RenderingManager__DisplayMode } from "../controllers/RenderingManager";
-import { LayoutEngineOption } from "../core/layouts/LayoutEngine";
+import { LayoutEngineOption } from "../core/layouts/layoutEngineTypes";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { ActiveView, AppConfig, DEFAULT_APP_CONFIG } from "./../AppConfig";
 import { Filter } from "./activeFilterStore";

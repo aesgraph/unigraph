@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { LayoutEngineOption } from "./core/layouts/LayoutEngine";
+import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
 import { persistentStore } from "./core/storage/PersistentStoreManager";
 import "./index.css";
 import {

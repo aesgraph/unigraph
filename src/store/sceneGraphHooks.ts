@@ -1,13 +1,41 @@
+import { ForceGraphManager } from "../core/force-graph/ForceGraphManager";
+import { Compute_Layout } from "../core/layouts/LayoutEngine";
 import {
-  Compute_Layout,
   ILayoutEngineResult,
   LayoutEngineOption,
   LayoutEngineOptionLabels,
   PresetLayoutType,
-} from "../core/layouts/LayoutEngine";
+} from "../core/layouts/layoutEngineTypes";
+import {
+  centerPositionsAroundPoint,
+  filterNodePositionsToSelection,
+} from "../core/layouts/layoutHelpers";
+import { DisplayManager } from "../core/model/DisplayManager";
+import { EntityIds } from "../core/model/entity/entityIds";
+import { NodeId } from "../core/model/Node";
 import { SceneGraph } from "../core/model/SceneGraph";
-import { Layout, setCurrentLayoutResult } from "./activeLayoutStore";
-import { getCurrentSceneGraph } from "./appConfigStore";
+import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
+import { getCenterPointOfNodePositionData } from "./../core/layouts/layoutHelpers";
+import { Filter } from "./activeFilterStore";
+import {
+  getCurrentLayoutResult,
+  Layout,
+  setCurrentLayoutResult,
+} from "./activeLayoutStore";
+import {
+  ResetNodeAndEdgeLegends,
+  SetNodeAndEdgeLegendsForOnlyVisibleEntities,
+} from "./activeLegendConfigStore";
+import {
+  getCurrentSceneGraph,
+  getForceGraphInstance,
+  getLegendMode,
+  setActiveFilter,
+} from "./appConfigStore";
+import {
+  getMouseControlMode,
+  toggleMouseControlMode,
+} from "./mouseControlsStore";
 
 export async function applyLayoutAndTriggerAppUpdate(layout: Layout) {
   const sceneGraph = getCurrentSceneGraph();
@@ -26,7 +54,8 @@ export async function applyLayoutAndTriggerAppUpdate(layout: Layout) {
 
 export async function computeLayoutAndTriggerAppUpdate(
   sceneGraph: SceneGraph,
-  layout: LayoutEngineOption
+  layout: LayoutEngineOption,
+  nodeSelection?: EntityIds<NodeId>
 ): Promise<ILayoutEngineResult | null> {
   if (
     layout != null &&
@@ -44,18 +73,50 @@ export async function computeLayoutAndTriggerAppUpdate(
     );
     return null;
   }
-  const output = await Compute_Layout(sceneGraph, layout as LayoutEngineOption);
+  const output = await Compute_Layout(
+    sceneGraph,
+    layout as LayoutEngineOption,
+    nodeSelection
+  );
   if (output && Object.keys(output.positions).length > 0) {
-    sceneGraph.setNodePositions(output.positions);
+    // sceneGraph.setNodePositions(output.positions); //@todo: see if i can remove this
+    if (nodeSelection && nodeSelection.size > 0) {
+      const currentNodePositions =
+        getCurrentLayoutResult()?.positions ||
+        extractPositionsFromNodes(sceneGraph);
+
+      const filteredPositions = filterNodePositionsToSelection(
+        currentNodePositions,
+        nodeSelection.toArray()
+      );
+
+      const currentNodeSelectionCenterPoint =
+        getCenterPointOfNodePositionData(filteredPositions);
+      output.positions = centerPositionsAroundPoint(
+        output.positions,
+        currentNodeSelectionCenterPoint
+      );
+
+      for (const [key, position] of Object.entries(output.positions)) {
+        currentNodePositions[key] = position;
+      }
+      output.positions = currentNodePositions;
+    }
+
     setCurrentLayoutResult(output);
   }
   return output;
 }
 
 export async function computeLayoutAndTriggerUpdateForCurrentSceneGraph(
-  layout: LayoutEngineOption
+  layout: LayoutEngineOption,
+  nodeSelection?: EntityIds<NodeId>
 ): Promise<ILayoutEngineResult | null> {
-  return computeLayoutAndTriggerAppUpdate(getCurrentSceneGraph(), layout);
+  return computeLayoutAndTriggerAppUpdate(
+    getCurrentSceneGraph(),
+    layout,
+    nodeSelection
+  );
 }
 
 // export const activeViewFitView = () => {
@@ -65,3 +126,69 @@ export async function computeLayoutAndTriggerUpdateForCurrentSceneGraph(
 //     zoomToFit(getForceGraphInstance()!, 1);
 //   }
 // };
+
+export const applyActiveFilterToAppInstance = (filter: Filter) => {
+  const currentSceneGraph = getCurrentSceneGraph();
+  DisplayManager.applyVisibilityFromFilterRulesToGraph(
+    currentSceneGraph.getGraph(),
+    filter.filterRules
+  );
+  SetNodeAndEdgeLegendsForOnlyVisibleEntities(
+    currentSceneGraph,
+    getLegendMode(),
+    filter.filterRules
+  );
+  setActiveFilter(filter);
+};
+
+export const filterSceneGraphToOnlyVisibleNodes = (
+  nodeIds: EntityIds<NodeId>
+) => {
+  applyActiveFilterToAppInstance({
+    name: "node id selection",
+    filterRules: [
+      {
+        id: "node id selection",
+        operator: "include",
+        ruleMode: "entities",
+        conditions: {
+          nodes: nodeIds.toArray(),
+        },
+      },
+    ],
+  });
+};
+
+export const hideVisibleNodes = (nodeIds: EntityIds<NodeId>) => {
+  applyActiveFilterToAppInstance({
+    name: "hide selected nodes",
+    filterRules: [
+      {
+        id: "hide selected nodes",
+        operator: "exclude",
+        ruleMode: "entities",
+        conditions: {
+          nodes: nodeIds.toArray(),
+        },
+      },
+    ],
+  });
+};
+
+export const toggleForceGraphMouseControls = () => {
+  toggleMouseControlMode();
+  const forceGraphInstance = getForceGraphInstance();
+  if (forceGraphInstance) {
+    ForceGraphManager.updateMouseControlMode(
+      forceGraphInstance,
+      getMouseControlMode()
+    );
+  }
+};
+
+export const clearFiltersOnAppInstance = () => {
+  const currentSceneGraph = getCurrentSceneGraph();
+  DisplayManager.setAllVisible(currentSceneGraph.getGraph());
+  ResetNodeAndEdgeLegends(currentSceneGraph);
+  setActiveFilter(null);
+};

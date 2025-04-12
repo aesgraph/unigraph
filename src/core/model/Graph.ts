@@ -14,19 +14,35 @@ export type EdgeIds = EntityIds<EdgeId>;
 export type NodesContainer = EntitiesContainer<NodeId, Node>;
 export type EdgesContainer = EntitiesContainer<EdgeId, Edge>;
 
+type GraphArgs = {
+  strict?: boolean;
+  nodes?: NodesContainer;
+  edges?: EdgesContainer;
+};
+
 export class Graph {
   private nodes: NodesContainer;
   private edges: EdgesContainer;
   private strict: boolean = false; // if true, do not implicitly create nodes when adding edges
 
-  constructor(strict: boolean = false) {
-    this.nodes = new EntitiesContainer();
-    this.edges = new EntitiesContainer();
-    this.strict = strict;
+  constructor(args?: GraphArgs) {
+    this.nodes = args?.nodes ?? new EntitiesContainer();
+    this.edges = args?.edges ?? new EntitiesContainer();
+    this.strict = args?.strict !== undefined ? args.strict : false;
   }
 
   setStrictMode(strict: boolean): void {
     this.strict = strict;
+  }
+
+  public getFilteredGraph(nodeIds: NodeIds): Graph {
+    const nodes = this.nodes.filter((node) => nodeIds.has(node.getId()));
+    const edges = this.getAllEdgesConnectingBetween(nodeIds);
+    return new Graph({
+      nodes,
+      edges,
+      strict: this.strict,
+    });
   }
 
   static createNode(args: NodeDataArgs): Node {
@@ -260,14 +276,27 @@ export class Graph {
     return this.nodes.filterByType(type);
   }
 
-  getEdgesTo(nodeId: string): Edge[] {
-    return this.edges.filter((edge) => edge.getTarget() === nodeId).toArray();
+  getEdgesTo(nodeIds: NodeId | EntityIds<NodeId>): Edge[] {
+    if (typeof nodeIds === "string") {
+      nodeIds = new EntityIds([nodeIds]);
+    }
+    return this.edges.filter((edge) => nodeIds.has(edge.getTarget())).toArray();
   }
 
-  getEdgesFrom(nodeId: string): Edge[] {
+  getEdgesFrom(nodeIds: NodeId | EntityIds<NodeId>): Edge[] {
+    if (typeof nodeIds === "string") {
+      nodeIds = new EntityIds([nodeIds]);
+    }
+    console.log(
+      this.edges
+        .filter((edge) => {
+          return nodeIds.has(edge.getSource());
+        })
+        .toArray()
+    );
     return this.edges
       .filter((edge) => {
-        return edge.getSource() === nodeId;
+        return nodeIds.has(edge.getSource());
       })
       .toArray();
   }
@@ -301,6 +330,11 @@ export class Graph {
       const isSource = nodeIds.has(edge.getSource());
       const isTarget = nodeIds.has(edge.getTarget());
       if (mode === "both") {
+        if (mode === "both" && nodeIds.size === 1) {
+          console.warn(
+            "getEdgesConnectedToNodes: nodeIds.size is 1 and mode is both, this will not return any edges"
+          );
+        }
         return isSource && isTarget;
       } else if (mode === "from") {
         return isSource;

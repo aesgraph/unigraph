@@ -65,6 +65,16 @@ module.exports = {
       },
       // Handle Web Workers
       {
+        test: /\.worker\.(js|ts)$/, // Support both .worker.js and .worker.ts
+        use: {
+          loader: "worker-loader",
+          options: {
+            inline: "no-fallback",
+          },
+        },
+      },
+      // Handle Web Workers
+      {
         test: /\.worker\.ts$/,
         use: {
           loader: "worker-loader",
