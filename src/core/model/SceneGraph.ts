@@ -1,4 +1,4 @@
-import { AppConfig } from "../../AppConfig";
+import { AppConfig, DEFAULT_APP_CONFIG } from "../../AppConfig";
 import {
   CLONE_RENDERING_CONFIG,
   GET_DEFAULT_RENDERING_CONFIG,
@@ -61,6 +61,7 @@ export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
     entityCache: new EntityCache(),
     committed_DisplayConfig: CLONE_RENDERING_CONFIG(displayConfig),
     documents: {},
+    defaultAppConfig: DEFAULT_APP_CONFIG(),
   };
 };
 

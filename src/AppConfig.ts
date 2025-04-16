@@ -37,7 +37,7 @@ export const DEFAULT_APP_CONFIG = (): AppConfig => {
     forceGraph3dOptions: {
       layout: "Physics",
     },
-    activeLayout: CustomLayoutType.Random,
+    activeLayout: CustomLayoutType.Circular,
     legendMode: "type",
     activeFilter: null,
   };
