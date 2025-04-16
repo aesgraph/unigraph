@@ -104,7 +104,7 @@ const useAppConfigStore = create<AppState>((set) => ({
   },
   activeLayout: DEFAULTS.activeLayout,
   isDarkMode: false,
-  selectedSimulation: "Lumina",
+  selectedSimulation: "AccretionDisk",
   legendMode: DEFAULTS.legendMode,
 
   setActiveView: (activeView: ActiveView) =>

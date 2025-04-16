@@ -13,7 +13,9 @@ import useActiveFilterStore, {
   Filter,
   saveFilter,
 } from "../../store/activeFilterStore";
-import useAppConfigStore from "../../store/appConfigStore";
+import useAppConfigStore, {
+  getCurrentSceneGraph,
+} from "../../store/appConfigStore";
 import { addNotification } from "../../store/notificationStore"; // Add import for notifications
 import "../projects/ProjectManager.css"; // Import ProjectManager styles
 import "./FilterManagerV2.css";
@@ -154,30 +156,37 @@ const FilterManagerV2: React.FC<FilterManagerV2Props> = ({
   };
 
   const handleSaveCurrent = () => {
-    if (!activeFilter) {
+    // Prompt user for filter name
+    const filterName = prompt("Enter a name for this filter:", "New Filter");
+    if (!filterName) {
       addNotification({
-        message: "No active filter to save",
-        type: "warning",
+        message: "Filter name is required",
+        type: "error",
         duration: 3000,
       });
       return;
     }
-
-    // Show save dialog or use a prompt for simplicity
-    const name = prompt(
-      "Enter a name for this filter:",
-      activeFilter.name || "My Filter"
-    );
-    if (!name) return;
-
-    const filter: Filter = {
-      ...activeFilter,
-      name: `filter-${Date.now()}`,
+    // Create a new filter with the provided name
+    const newFilter: Filter = {
+      name: filterName,
+      filterRules: [
+        {
+          id: "node selection",
+          operator: "include",
+          ruleMode: "entities",
+          conditions: {
+            nodes: getCurrentSceneGraph().getVisibleNodes().toArray(),
+          },
+        },
+      ],
     };
 
-    useActiveFilterStore.getState().saveFilter(filter);
+    // Save the filter
+    saveFilter(newFilter);
+
+    // Notify user
     addNotification({
-      message: `Filter "${name}" saved`,
+      message: `Filter "${filterName}" saved successfully`,
       type: "success",
       duration: 3000,
     });

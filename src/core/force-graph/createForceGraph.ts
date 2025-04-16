@@ -24,6 +24,7 @@ import {
 import {
   getHoveredEdgeIds,
   getHoveredNodeIds,
+  getSelectedEdgeIds,
   getSelectedNodeId,
   getSelectedNodeIds,
   setHoveredEdgeId,
@@ -326,6 +327,7 @@ export const bindEventsToGraphInstance = (
   graph: ForceGraph3DInstance,
   sceneGraph: SceneGraph,
   onNodesRightClick?: (event: MouseEvent, nodeIds: EntityIds<NodeId>) => void,
+  onEdgesRightClick?: (event: MouseEvent, edgeIds: EntityIds<EdgeId>) => void,
   onBackgroundRightClick?: (event: MouseEvent) => void
 ) => {
   graph.onNodeClick((node) => {
@@ -378,6 +380,23 @@ export const bindEventsToGraphInstance = (
   // });
   graph.onEngineTick(() => {
     // zoomToFit(graph, 100, 1.2);
+  });
+
+  graph.onLinkRightClick((link, event) => {
+    if (link == null) {
+      return;
+    }
+    console.log("link right clicked", link);
+    let rightClickList = new EntityIds<EdgeId>();
+    const selectedEdgeIds = getSelectedEdgeIds();
+    if (selectedEdgeIds.has((link as any).id as EdgeId)) {
+      rightClickList = selectedEdgeIds;
+    }
+    rightClickList = new EntityIds([(link as any).id as EdgeId]);
+    if (event && onEdgesRightClick) {
+      event.preventDefault();
+      onEdgesRightClick(event, rightClickList); // Match the new signature
+    }
   });
 
   // Update right-click handling

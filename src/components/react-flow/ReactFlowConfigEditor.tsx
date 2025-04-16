@@ -27,6 +27,7 @@ export interface ReactFlowRenderConfig {
   backgroundSize?: number;
   snapToGrid?: boolean;
   snapGrid?: [number, number];
+  showEdgeLabels?: boolean;
 }
 
 export const DEFAULT_REACTFLOW_CONFIG: ReactFlowRenderConfig = {
@@ -42,6 +43,7 @@ export const DEFAULT_REACTFLOW_CONFIG: ReactFlowRenderConfig = {
   backgroundSize: 1,
   snapToGrid: false,
   snapGrid: [15, 15],
+  showEdgeLabels: false,
 };
 
 const formSchema: FormSchema = {
@@ -139,6 +141,11 @@ const formSchema: FormSchema = {
   snapToGrid: {
     validate: () => null,
     label: "Snap to Grid",
+    type: "checkbox",
+  },
+  showEdgeLabels: {
+    validate: () => null,
+    label: "Show Edge Labels",
     type: "checkbox",
   },
 };

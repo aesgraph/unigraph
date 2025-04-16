@@ -148,48 +148,14 @@ export const createDefaultLeftMenus = ({
       ),
       label: "Filters",
       content: (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              padding: "8px",
-              flexWrap: "wrap",
-            }}
-          >
-            <button
-              onClick={onShowFilter}
-              className={styles.submenuButton}
-              style={{ flex: "1", minWidth: "70px" }}
-            >
-              Create
-            </button>
-            <button
-              onClick={onShowFilterManager}
-              className={styles.submenuButton}
-              style={{ flex: "1", minWidth: "70px" }}
-            >
-              Load
-            </button>
-            <button
-              onClick={clearFiltersOnAppInstance}
-              className={styles.submenuButton}
-              style={{ flex: "1", minWidth: "70px" }}
-            >
-              Clear
-            </button>
-          </div>
-          {
-            <FilterManagerV2
-              onFilterSelected={(filter: FFilter | null) => {
-                handleSetActiveFilter(filter);
-              }}
-              onShowFilter={onShowFilter}
-              onShowFilterManager={onShowFilterManager}
-              onClearFilters={clearFiltersOnAppInstance}
-            />
-          }
-        </div>
+        <FilterManagerV2
+          onFilterSelected={(filter: FFilter | null) => {
+            handleSetActiveFilter(filter);
+          }}
+          onShowFilter={onShowFilter}
+          onShowFilterManager={onShowFilterManager}
+          onClearFilters={clearFiltersOnAppInstance}
+        />
       ),
     },
     {

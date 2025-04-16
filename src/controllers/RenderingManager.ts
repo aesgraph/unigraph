@@ -91,6 +91,7 @@ export const GET_DEFAULT_RENDERING_CONFIG = (
     nodeConfig: { types: nodeTypeConfig, tags: nodeTagConfig },
     edgeConfig: { types: edgeTypeConfig, tags: edgeTagConfig },
     mode: "type",
+    nodePositions: starterConfig?.nodePositions,
   };
 };
 

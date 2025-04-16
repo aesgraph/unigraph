@@ -48,6 +48,7 @@ export const exportGraphDataForReactFlow = (
   const initialVisibleEdges = sceneGraph
     .getGraph()
     .getEdgesConnectedToNodes(new EntityIds(nodes.map((node) => node.id)));
+  console.log("initialVisibleEdges", initialVisibleEdges);
 
   const edges = Array.from(initialVisibleEdges)
     .filter((edge) => getEdgeIsVisible(edge))

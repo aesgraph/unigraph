@@ -103,7 +103,7 @@ export class SceneGraph {
   }
 
   refreshDisplayConfig() {
-    const newRenderingConfig = GET_DEFAULT_RENDERING_CONFIG(
+    const newRenderingConfig: RenderingConfig = GET_DEFAULT_RENDERING_CONFIG(
       this.getGraph(),
       this.getDisplayConfig()
     );

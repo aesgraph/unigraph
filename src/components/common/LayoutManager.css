@@ -14,10 +14,11 @@
 .layout-manager {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  width: 400px;
+  padding: 12px; /* Reduce padding */
+  width: 300px; /* Adjust width for narrow side panels */
   max-height: 80vh;
   overflow-y: auto;
+  font-size: 14px; /* Reduce font size */
 }
 
 .layout-manager.dark {
@@ -29,11 +30,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px; /* Reduce spacing */
 }
 
 .layout-manager-header h2 {
   margin: 0;
+  font-size: 16px; /* Reduce header font size */
 }
 
 .close-button {
@@ -46,15 +48,16 @@
 
 .input-group {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 6px; /* Reduce spacing */
+  margin-bottom: 8px; /* Reduce spacing */
 }
 
 .input-group input {
   flex: 1;
-  padding: 8px;
+  padding: 6px; /* Reduce input padding */
   border-radius: 4px;
   border: 1px solid #ccc;
+  font-size: 12px; /* Reduce font size */
 }
 
 .dark .input-group input {
@@ -64,15 +67,24 @@
 }
 
 .layouts-list {
-  margin-top: 10px;
+  margin-top: 8px; /* Reduce spacing */
+  padding: 0; /* Remove horizontal padding */
 }
 
 .layout-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
+  padding: 8px 4px; /* Reduce horizontal padding */
   border-bottom: 1px solid #eee;
+}
+
+.layout-item .project-name {
+  font-size: 14px; /* Reduce font size */
+}
+
+.layout-item .project-dates {
+  font-size: 12px; /* Reduce font size */
 }
 
 .dark .layout-item {
@@ -88,7 +100,8 @@
 .no-layouts {
   color: #666;
   text-align: center;
-  padding: 20px;
+  padding: 16px; /* Reduce padding */
+  font-size: 14px; /* Reduce font size */
 }
 
 .dark .no-layouts {

@@ -82,7 +82,7 @@ const useGraphInteractionStore = create<GraphInteractionState>((set, get) => ({
       selectedEdgeIds: edgeId ? new EntityIds([edgeId]) : new EntityIds(),
     }),
   setSelectedNodeIds: (nodeIds) => {
-    console.log("setting selected nodes to ", nodeIds);
+    // console.log("setting selected nodes to ", nodeIds);
     set({ selectedNodeIds: new EntityIds(nodeIds) });
   },
 

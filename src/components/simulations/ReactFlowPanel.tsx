@@ -22,12 +22,17 @@ import {
 } from "../../core/force-graph/createForceGraph";
 import { NodeId } from "../../core/model/Node";
 import { EntityIds } from "../../core/model/entity/entityIds";
-import useAppConfigStore from "../../store/appConfigStore";
+import useAppConfigStore, {
+  getCurrentSceneGraph,
+  getLegendMode,
+} from "../../store/appConfigStore";
 import { useDocumentStore } from "../../store/documentStore";
 import useGraphInteractionStore, {
   getSelectedNodeId,
   getSelectedNodeIds,
+  setHoveredEdgeId,
   setHoveredNodeId,
+  setSelectedEdgeId,
   setSelectedNodeId,
   setSelectedNodeIds,
 } from "../../store/graphInteractionStore";
@@ -41,7 +46,9 @@ import useWorkspaceConfigStore, {
 import CustomNode from "../CustomNode";
 
 import "@xyflow/react/dist/style.css";
+import { RenderingManager } from "../../controllers/RenderingManager";
 import { EdgeId } from "../../core/model/Edge";
+import { getEdgeLegendConfig } from "../../store/activeLegendConfigStore";
 import ResizerNode from "../resizerNode";
 
 // Remove the custom Node interface that was causing the type conflict
@@ -52,6 +59,10 @@ interface ReactFlowPanelProps {
   onNodesContextMenu?: (
     event: React.MouseEvent,
     nodeIds: EntityIds<NodeId>
+  ) => void; // Unified context menu handler
+  onEdgesContextMenu?: (
+    event: React.MouseEvent,
+    edgeIds: EntityIds<EdgeId>
   ) => void; // Unified context menu handler
   onBackgroundContextMenu?: (
     event: React.MouseEvent<Element, MouseEvent>
@@ -109,6 +120,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   edges: initialEdges,
   onLoad,
   onNodesContextMenu, // Just need the unified prop
+  onEdgesContextMenu, // Just need the unified prop
   onBackgroundContextMenu,
   onNodeDragStop,
 }) => {
@@ -116,7 +128,8 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
   const selectionChangeRef = useRef(false);
 
-  const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
+  const { selectedNodeIds, selectedEdgeIds, hoveredEdgeIds } =
+    useGraphInteractionStore();
   const { getActiveSection } = useWorkspaceConfigStore();
   const { setActiveDocument } = useDocumentStore();
   const { setActiveView, activeView } = useAppConfigStore();
@@ -174,6 +187,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
 
     // Set this node as the selected node in the global store
     setSelectedNodeId(node.id as NodeId);
+    setSelectedEdgeId(null);
 
     // Open the node details panel
     // setRightActiveSection("node-details");
@@ -184,6 +198,35 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
         currentNodes.map((n) => ({
           ...n,
           selected: n.id === node.id,
+        }))
+      );
+    }
+  }, []);
+
+  // Custom edge click handler that sets the selected edge and deselects nodes
+  const handleEdgeClick = useCallback((event: React.MouseEvent, edge: Edge) => {
+    event.stopPropagation();
+    selectionChangeRef.current = true;
+
+    // Set this edge as the selected edge in the global store
+    setSelectedEdgeId(edge.id as EdgeId);
+
+    // Clear node selection in the global store
+    setSelectedNodeId(null);
+
+    // Update the ReactFlow nodes and edges directly to reflect selection state
+    if (reactFlowInstance.current) {
+      reactFlowInstance.current.setNodes((currentNodes) =>
+        currentNodes.map((n) => ({
+          ...n,
+          selected: false, // Deselect all nodes
+        }))
+      );
+
+      reactFlowInstance.current.setEdges((currentEdges) =>
+        currentEdges.map((e) => ({
+          ...e,
+          selected: e.id === edge.id, // Select only the clicked edge
         }))
       );
     }
@@ -256,11 +299,52 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
     setHoveredNodeId(null);
   }, []);
 
+  // Handle edge hover
+  const handleEdgeMouseEnter = useCallback(
+    (event: React.MouseEvent, edge: Edge) => {
+      // console.log("Edge mouse enter:", edge.id);
+      setHoveredEdgeId(edge.id as EdgeId);
+    },
+    []
+  );
+
+  const handleEdgeMouseLeave = useCallback(() => {
+    // console.log("Edge mouse leave");
+    setHoveredEdgeId(null);
+  }, []);
+
+  // Unified handler for edge context menu events
+  const handleEdgeContextMenu = useCallback(
+    (event: React.MouseEvent, edge: Edge) => {
+      // Prevent default browser context menu
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Set the right-clicked edge as selected
+      setSelectedEdgeId(edge.id as EdgeId);
+
+      // If we have multiple nodes selected and the right-clicked node is part of that selection
+      if (selectedEdgeIds.size > 1 && selectedEdgeIds.has(edge.id as EdgeId)) {
+        // Pass all selected nodes to the handler
+        if (onEdgesContextMenu) {
+          onEdgesContextMenu(event, selectedEdgeIds);
+        }
+      } else {
+        // For a single node, create an EntityIds with just this node
+        if (onEdgesContextMenu) {
+          onEdgesContextMenu(event, new EntityIds([edge.id as EdgeId]));
+        }
+      }
+    },
+    [onEdgesContextMenu, selectedEdgeIds]
+  );
+
   // Handle background click to clear selection - update this to properly clear all selections
   const handlePaneClick = useCallback(() => {
     // Clear selection in global store for both single and multi-select
     setSelectedNodeId(null);
     setSelectedNodeIds(new EntityIds([]));
+    setSelectedEdgeId(null);
 
     // Update the ReactFlow nodes directly to clear selection state
     if (reactFlowInstance.current) {
@@ -369,6 +453,105 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
     [setActiveDocument, activeView, setActiveView]
   );
 
+  const handleConnect = useCallback(
+    (params: { source: string; target: string }) => {
+      const { source, target } = params;
+      const sceneGraph = getCurrentSceneGraph();
+      const _edge = sceneGraph
+        .getGraph()
+        .createEdgeIfMissing(source, target, { type: "default" });
+      sceneGraph.refreshDisplayConfig();
+      sceneGraph.notifyGraphChanged();
+    },
+    []
+  );
+
+  // Add this effect to update edge styling when hover state changes
+  useEffect(() => {
+    // Update the ReactFlow edges directly to show hover and selection state
+    if (reactFlowInstance.current) {
+      reactFlowInstance.current.setEdges((currentEdges) =>
+        currentEdges.map((e) => {
+          const isHovered = hoveredEdgeIds.has(e.id as EdgeId);
+          const isSelected = selectedEdgeIds.has(e.id as EdgeId);
+          const edge = getCurrentSceneGraph()
+            .getGraph()
+            .getEdge(e.id as EdgeId);
+
+          return {
+            ...e,
+            label: reactFlowConfig.showEdgeLabels
+              ? edge.getType() || edge.getId() || "edge"
+              : undefined,
+            labelStyle: reactFlowConfig.showEdgeLabels
+              ? {
+                  fontSize: reactFlowConfig.edgeFontSize,
+                  fill: RenderingManager.getColor(
+                    edge,
+                    getEdgeLegendConfig(),
+                    getLegendMode()
+                  ), //"black",
+                  fontWeight: isHovered || isSelected ? "bold" : "normal",
+                }
+              : undefined,
+            style: {
+              ...e.style,
+              stroke: isHovered
+                ? MOUSE_HOVERED_NODE_COLOR
+                : isSelected
+                  ? SELECTED_NODE_COLOR
+                  : RenderingManager.getColor(
+                      edge,
+                      getEdgeLegendConfig(),
+                      getLegendMode()
+                    ),
+              strokeWidth:
+                isHovered || isSelected ? 3 : reactFlowConfig.edgeStrokeWidth,
+            },
+          };
+        })
+      );
+    }
+  }, [
+    hoveredEdgeIds,
+    selectedEdgeIds,
+    reactFlowConfig.edgeStrokeWidth,
+    reactFlowConfig.edgeFontSize,
+    reactFlowConfig.showEdgeLabels, // React to changes in showEdgeLabels
+  ]);
+
+  // Update edges when initialEdges or showEdgeLabels change
+  useEffect(() => {
+    const processedEdges = initialEdges.map((edge) => {
+      const originalEdge = getCurrentSceneGraph()
+        .getGraph()
+        .getEdge(edge.id as EdgeId);
+      return {
+        ...edge,
+        label: reactFlowConfig.showEdgeLabels
+          ? originalEdge.getType() || originalEdge.getId() || "edge"
+          : undefined,
+        labelStyle: reactFlowConfig.showEdgeLabels
+          ? {
+              fontSize: reactFlowConfig.edgeFontSize,
+              fill: RenderingManager.getColor(
+                originalEdge,
+                getEdgeLegendConfig(),
+                getLegendMode()
+              ), //"black",
+            }
+          : undefined,
+      };
+    });
+
+    setEdges(processedEdges);
+  }, [
+    initialEdges,
+    setEdges,
+    reactFlowConfig.showEdgeLabels,
+    reactFlowConfig.edgeFontSize,
+  ]);
+
   return (
     <div
       style={{
@@ -410,8 +593,13 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
           onNodeMouseEnter={handleNodeMouseEnter}
           onNodeMouseLeave={handleNodeMouseLeave}
           onNodeClick={handleNodeClick}
+          onEdgeClick={handleEdgeClick}
           onSelectionChange={handleSelectionChange}
           onNodeDoubleClick={handleNodeDoubleClick}
+          onConnect={handleConnect} // Add the connection handler
+          onEdgeMouseEnter={handleEdgeMouseEnter} // Add edge hover handler
+          onEdgeMouseLeave={handleEdgeMouseLeave} // Add edge hover leave handler
+          onEdgeContextMenu={handleEdgeContextMenu} // Add edge context menu handler
           fitView={true}
           minZoom={0.1}
           maxZoom={500}

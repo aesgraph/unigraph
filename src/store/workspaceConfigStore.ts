@@ -15,11 +15,11 @@ export interface SectionWidthConfig {
 
 // Default widths for specific sections
 const defaultSectionWidths: SectionWidthConfig = {
-  projects: 500, // Wider default for Projects section
-  layouts: 300,
-  filters: 500,
-  analysis: 300,
-  displaySettings: 350,
+  projects: 300, // Wider default for Projects section
+  layouts: 250,
+  filters: 250,
+  analysis: 250,
+  displaySettings: 250,
   "chatgpt-import": 400,
   // Add other sections as needed
 };
