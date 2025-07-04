@@ -18,6 +18,8 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
     height: data.dimensions?.height || 50,
   });
 
+  console.log("RENDERING RESIZER NODE", data.label);
+
   // Add effect to update dimensions when props change
   useEffect(() => {
     if (data.dimensions) {
@@ -53,7 +55,10 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
         }}
       />
       <Handle type="target" position={Position.Left} />
-      <div>{data.label}</div>
+      <div style={{ fontWeight: "bold" }}>{data.label}</div>
+      <div style={{ fontSize: "0.9em", color: "#555" }}>
+        {data?.description}
+      </div>
       <Handle type="source" position={Position.Right} />
     </div>
   );

@@ -107,6 +107,10 @@ export class EntitiesContainer<
     return container;
   }
 
+  public first(): V | undefined {
+    return this.entities.length > 0 ? this.entities[0] : undefined;
+  }
+
   public isEmpty(): boolean {
     return this.entities.length === 0;
   }

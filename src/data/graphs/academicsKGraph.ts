@@ -1,3 +1,4 @@
+import { DEFAULT_APP_CONFIG } from "../../AppConfig";
 import { mergeIntoSceneGraph } from "../../core/model/mergeSceneGraphs";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { thinkers1 } from "./thinkers1Graph";
@@ -15,6 +16,10 @@ export const demo_sceneGraph_academicsKG = () => {
     metadata: {
       name: "AcademicsKG",
       description: "A graph of academics, their works, and relationships.",
+    },
+    defaultAppConfig: {
+      ...DEFAULT_APP_CONFIG(),
+      activeView: "storyCard",
     },
   });
 };

@@ -1,0 +1,217 @@
+/* Styles for defined terms */
+.defined-term {
+  color: #0066cc;
+  text-decoration: underline dotted;
+  cursor: pointer;
+  border-bottom: 1px dotted #0066cc;
+  transition: background-color 0.2s;
+  position: relative; /* Ensure relative positioning for absolute popup */
+}
+
+.defined-term:hover {
+  background-color: rgba(0, 102, 204, 0.1);
+}
+
+/* Definition popup styles */
+.definition-popup {
+  position: fixed; /* Try fixed positioning instead of absolute */
+  z-index: 1000; /* Ensure very high z-index */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  max-width: 300px;
+  min-width: 200px; /* Ensure a minimum width */
+  margin-bottom: 10px; /* Add some spacing below */
+  transform: translate(
+    -50%,
+    -100%
+  ); /* Center horizontally and position above */
+  animation: fadeIn 0.2s ease;
+}
+
+.definition-popup:after {
+  content: "";
+  position: absolute;
+  bottom: -8px; /* Position it just below the popup */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white; /* Arrow color matching popup background */
+}
+
+.definition-popup:before {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid #ccc; /* Arrow outline matching popup border */
+}
+
+.definition-popup.dragging {
+  opacity: 0.9;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.definition-popup h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-weight: 600;
+  cursor: grab;
+  padding: 4px 20px 4px 0; /* Space for close button */
+}
+
+.definition-popup h4:active {
+  cursor: grabbing;
+}
+
+.definition-popup-header {
+  margin: -10px -15px 10px -15px;
+  padding: 8px 15px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #eee;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  cursor: grab;
+}
+
+.definition-popup-header:active {
+  cursor: grabbing;
+}
+
+.definition-popup p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.definition-popup-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.definition-popup-close:hover {
+  color: #333;
+  background-color: #eaeaea;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Additional markdown content styling */
+.markdown-content .defined-term {
+  font-weight: 500;
+}
+
+/* Style tables in markdown content better */
+.markdown-content table,
+.markdown-excerpt table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-content td,
+.markdown-excerpt td {
+  padding: 0;
+  padding-bottom: 20px;
+  vertical-align: top;
+}
+
+.markdown-content td img,
+.markdown-excerpt td img {
+  display: block;
+  margin: 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-content td p,
+.markdown-excerpt td p {
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}
+
+.markdown-content td p:first-child,
+.markdown-excerpt td p:first-child {
+  margin-top: 0;
+}
+
+/* Completely revise excerpt styling */
+.markdown-excerpt {
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #5d6d7e;
+  max-height: 300px !important;
+  overflow: hidden !important;
+}
+
+.markdown-excerpt table {
+  margin: 0;
+  width: 100%;
+}
+
+.markdown-excerpt td {
+  vertical-align: top;
+  padding: 0 10px 0 0;
+}
+
+.markdown-excerpt td:first-child {
+  width: 40%;
+  min-width: 100px;
+}
+
+.markdown-excerpt td img {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+}
+
+.markdown-excerpt::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px; /* More gradual fade */
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Make excerpt fill the height of the child card
+.child-card .markdown-excerpt {
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+} */

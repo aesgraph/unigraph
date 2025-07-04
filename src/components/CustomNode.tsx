@@ -59,7 +59,12 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
       }}
     >
       <Handle type="target" position={Position.Left} />
-      <div>{nodeData.label}</div>
+      <div style={{ fontWeight: "bold" }}>
+        {nodeData.userData?.name ?? nodeData.id}
+      </div>
+      <div style={{ fontSize: "0.9em", color: "#555" }}>
+        {nodeData.userData?.description}
+      </div>
       <Handle type="source" position={Position.Right} />
       <div
         style={{

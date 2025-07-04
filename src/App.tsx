@@ -46,6 +46,7 @@ import { getNodeContextMenuItems } from "./components/common/singleNodeContextMe
 import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
 import LexicalEditorV2 from "./components/LexicalEditor";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
+import StoryCardApp from "./components/StoryCardApp";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -193,6 +194,8 @@ const getSimulations = (
     // imageSegmenter: <ImageSegmenter />,
     // timelineTestbed: <TimelineTestbed annotations={solvay_annotations} />,
     // canvasSelection: <CanvasSelection />,
+    // storyCard: <AnimatedStoryCardDemo3 />,
+    storyCard: <StoryCardApp sceneGraph={sceneGraph} />,
   };
 };
 
@@ -749,18 +752,15 @@ const AppContent: React.FC<{
         } else {
           graph = graphGenerator;
         }
-
         handleLoadSceneGraph(graph, clearUrlOfQueryParams);
         setActiveProjectId(null); // Clear project ID since this is a demo graph
-
         // Update the URL query parameter
         const url = new URL(window.location.href);
         url.searchParams.set("graph", key);
         url.searchParams.delete("svgUrl");
         window.history.pushState({}, "", url.toString());
-        // eslint-disable-next-line unused-imports/no-unused-vars
       } catch (err) {
-        console.error(`Graph ${key} not found`);
+        console.error(`Graph ${key} not found: ${err}`);
         console.log(`Available graphs are: ${getAllDemoSceneGraphKeys()}`);
         handleLoadSceneGraph(new SceneGraph(), true);
         return;
@@ -1119,6 +1119,10 @@ const AppContent: React.FC<{
       position: nodePositions[node.id] || { x: 200, y: 200 },
       type: "resizerNode", // Use the custom node type
       data: {
+        description: currentSceneGraph
+          .getGraph()
+          .getNode(node.id as NodeId)
+          .getDescription(),
         label: currentSceneGraph
           .getGraph()
           .getNode(node.id as NodeId)

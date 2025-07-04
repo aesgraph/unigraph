@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const ESLintPlugin = require("eslint-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -102,9 +103,28 @@ module.exports = {
     new ESLintPlugin({
       extensions: ["js", "jsx", "ts", "tsx"],
     }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "public",
+          to: "",
+          globOptions: {
+            ignore: ["**/index.html"], // Avoid overwriting index.html if it's handled separately
+          },
+        },
+      ],
+    }),
   ],
   devServer: {
-    static: "./dist",
+    static: [
+      {
+        directory: path.resolve(__dirname, "public"),
+        publicPath: "/", // serve at root
+      },
+      {
+        directory: path.resolve(__dirname, "dist"),
+      },
+    ],
     port: 3000,
   },
 };
