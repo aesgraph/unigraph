@@ -3,7 +3,11 @@ import { supabase } from "../../utils/supabaseClient";
 import ProfileDropdown from "./ProfileDropdown";
 
 // Simple generic profile SVG icon with blue border
-const GenericProfileIcon = ({ style = {} }: { style?: React.CSSProperties }) => (
+const GenericProfileIcon = ({
+  style = {},
+}: {
+  style?: React.CSSProperties;
+}) => (
   <svg
     width="32"
     height="32"
@@ -167,7 +171,8 @@ const SignInButton: React.FC<SignInButtonProps> = ({
           backgroundColor: "#fff",
           position: "relative",
           overflow: "hidden",
-          transition: "transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1)",
+          transition:
+            "transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1)",
           ...style,
         }}
         title={user ? "Profile" : "Sign In"}
@@ -195,7 +200,13 @@ const SignInButton: React.FC<SignInButtonProps> = ({
         >
           {/* Generic icon shown while avatar is loading or if there's an error */}
           {(!user || !avatarUrl || !avatarLoaded) && (
-            <div style={{ position: avatarUrl ? "absolute" : "static", width: "100%", height: "100%" }}>
+            <div
+              style={{
+                position: avatarUrl ? "absolute" : "static",
+                width: "100%",
+                height: "100%",
+              }}
+            >
               <GenericProfileIcon style={{ width: "100%", height: "100%" }} />
             </div>
           )}
