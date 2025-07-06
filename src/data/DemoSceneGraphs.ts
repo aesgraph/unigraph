@@ -17,14 +17,19 @@ import {
   demo_SceneGraph_e8petrieProjection,
   demo_SceneGraph_e8petrieProjection_421t2b6,
 } from "./graphs/Gallery_Demos/demo_SceneGraph_e8petrieProjection";
+import demo_SceneGraph_FactorGraph from "./graphs/Gallery_Demos/demo_SceneGraph_FactorGraph";
+import demo_SceneGraph_FactorGraph_ComplexExpansion from "./graphs/Gallery_Demos/demo_SceneGraph_FactorGraph_ComplexExpansion";
 import { demo_SceneGraph_ImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_ImageGallery";
 import { demo_SceneGraph_Numbers_Story } from "./graphs/Gallery_Demos/demo_scenegraph_numbers_story";
+import { demo_SceneGraph_PhylogeneticTree } from "./graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree";
 import { demo_SceneGraph_SolvayConference } from "./graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
 import { demo_SceneGraph_StackedImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { demo_SceneGraph_StackedGalleryTransparent } from "./graphs/Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
 import { demo_SceneGraph_Thinking } from "./graphs/Gallery_Demos/demo_SceneGraph_Thinking";
+import { demo_SceneGraph_TreeOfLife } from "./graphs/Gallery_Demos/demo_SceneGraph_TreeOfLife";
 import { demo_SceneGraph_StoryCards } from "./graphs/Gallery_Demos/demo_story_cards.tsx";
 import { demo_Unigraph_Applications } from "./graphs/Gallery_Demos/demo_unigraph_applications";
+import { demo_Wikipedia_Articles } from "./graphs/Gallery_Demos/demo_wikipedia_articles";
 import { graphManagementWorkflowDiagram } from "./graphs/graphManagementWorkflow";
 import { graphManagementWorkflowDiagram2 } from "./graphs/graphManagementWorkflow2";
 import { randomBigGraph } from "./graphs/randomBig";
@@ -80,6 +85,11 @@ export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
       "Demo Story Cards": () => demo_SceneGraph_StoryCards(),
       numbers: () => demo_SceneGraph_Numbers_Story(),
       unigraphApplications: () => demo_Unigraph_Applications(),
+      wikipediaDemo: () => demo_Wikipedia_Articles(),
+      factorGraph: () => demo_SceneGraph_FactorGraph(),
+      complexFactorGraph: () => demo_SceneGraph_FactorGraph_ComplexExpansion(),
+      phylogeneticTree: () => demo_SceneGraph_PhylogeneticTree(),
+      treeOfLife: () => demo_SceneGraph_TreeOfLife(),
     },
   },
   Base: {

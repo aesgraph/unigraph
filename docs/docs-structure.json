@@ -1,0 +1,404 @@
+{
+  "path": "/",
+  "type": "directory",
+  "children": [
+    {
+      "path": "_sass",
+      "type": "directory",
+      "children": [
+        {
+          "path": "_sass/custom",
+          "type": "directory",
+          "children": []
+        }
+      ]
+    },
+    {
+      "path": "aesgraph",
+      "type": "directory",
+      "children": [
+        {
+          "path": "aesgraph/index.md",
+          "type": "file",
+          "name": "index.md"
+        }
+      ]
+    },
+    {
+      "path": "applets",
+      "type": "directory",
+      "children": [
+        {
+          "path": "applets/applets.md",
+          "type": "file",
+          "name": "applets.md"
+        }
+      ]
+    },
+    {
+      "path": "assets",
+      "type": "directory",
+      "children": [
+        {
+          "path": "assets/css",
+          "type": "directory",
+          "children": []
+        },
+        {
+          "path": "assets/images",
+          "type": "directory",
+          "children": [
+            {
+              "path": "assets/images/loadFromSvg",
+              "type": "directory",
+              "children": []
+            },
+            {
+              "path": "assets/images/loadMermaidjs",
+              "type": "directory",
+              "children": []
+            },
+            {
+              "path": "assets/images/unigraphDesign",
+              "type": "directory",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backgroundAndMotivation.md",
+      "type": "file",
+      "name": "backgroundAndMotivation.md"
+    },
+    {
+      "path": "capabilities",
+      "type": "directory",
+      "children": [
+        {
+          "path": "capabilities/copilot.md",
+          "type": "file",
+          "name": "copilot.md"
+        },
+        {
+          "path": "capabilities/index.md",
+          "type": "file",
+          "name": "index.md"
+        },
+        {
+          "path": "capabilities/toDot.md",
+          "type": "file",
+          "name": "toDot.md"
+        }
+      ]
+    },
+    {
+      "path": "coreConcepts",
+      "type": "directory",
+      "children": [
+        {
+          "path": "coreConcepts/coreConcepts.md",
+          "type": "file",
+          "name": "coreConcepts.md"
+        }
+      ]
+    },
+    {
+      "path": "developmentNotes",
+      "type": "directory",
+      "children": [
+        {
+          "path": "developmentNotes/developmentMilestones.md",
+          "type": "file",
+          "name": "developmentMilestones.md"
+        },
+        {
+          "path": "developmentNotes/index.md",
+          "type": "file",
+          "name": "index.md"
+        },
+        {
+          "path": "developmentNotes/renderingAttributes.md",
+          "type": "file",
+          "name": "renderingAttributes.md"
+        },
+        {
+          "path": "developmentNotes/technicalDetailsAndPlanning.md",
+          "type": "file",
+          "name": "technicalDetailsAndPlanning.md"
+        },
+        {
+          "path": "developmentNotes/v0_designDecisions.md",
+          "type": "file",
+          "name": "v0_designDecisions.md"
+        }
+      ]
+    },
+    {
+      "path": "examples",
+      "type": "directory",
+      "children": [
+        {
+          "path": "examples/chatsWithCopilot",
+          "type": "directory",
+          "children": [
+            {
+              "path": "examples/chatsWithCopilot/e8PetrieWalkthrough.md",
+              "type": "file",
+              "name": "e8PetrieWalkthrough.md"
+            },
+            {
+              "path": "examples/chatsWithCopilot/index.md",
+              "type": "file",
+              "name": "index.md"
+            }
+          ]
+        },
+        {
+          "path": "examples/index.md",
+          "type": "file",
+          "name": "index.md"
+        }
+      ]
+    },
+    {
+      "path": "index.md",
+      "type": "file",
+      "name": "index.md"
+    },
+    {
+      "path": "overview",
+      "type": "directory",
+      "children": [
+        {
+          "path": "overview/currentProjects.md",
+          "type": "file",
+          "name": "currentProjects.md"
+        },
+        {
+          "path": "overview/goals.md",
+          "type": "file",
+          "name": "goals.md"
+        },
+        {
+          "path": "overview/introductoryIdeas",
+          "type": "directory",
+          "children": [
+            {
+              "path": "overview/introductoryIdeas/deepTyping.md",
+              "type": "file",
+              "name": "deepTyping.md"
+            },
+            {
+              "path": "overview/introductoryIdeas/humanCentric.md",
+              "type": "file",
+              "name": "humanCentric.md"
+            }
+          ]
+        },
+        {
+          "path": "overview/motivation.md",
+          "type": "file",
+          "name": "motivation.md"
+        },
+        {
+          "path": "overview/overview.md",
+          "type": "file",
+          "name": "overview.md"
+        },
+        {
+          "path": "overview/terminology.md",
+          "type": "file",
+          "name": "terminology.md"
+        }
+      ]
+    },
+    {
+      "path": "quickGuides",
+      "type": "directory",
+      "children": [
+        {
+          "path": "quickGuides/importingFromDot.md",
+          "type": "file",
+          "name": "importingFromDot.md"
+        },
+        {
+          "path": "quickGuides/importingFromMermaid.md",
+          "type": "file",
+          "name": "importingFromMermaid.md"
+        },
+        {
+          "path": "quickGuides/loadingFromSvg.md",
+          "type": "file",
+          "name": "loadingFromSvg.md"
+        },
+        {
+          "path": "quickGuides/quickGuides.md",
+          "type": "file",
+          "name": "quickGuides.md"
+        }
+      ]
+    },
+    {
+      "path": "unigraphTheory",
+      "type": "directory",
+      "children": [
+        {
+          "path": "unigraphTheory/apiForApis.md",
+          "type": "file",
+          "name": "apiForApis.md"
+        },
+        {
+          "path": "unigraphTheory/dataDiscovery.md",
+          "type": "file",
+          "name": "dataDiscovery.md"
+        },
+        {
+          "path": "unigraphTheory/index.md",
+          "type": "file",
+          "name": "index.md"
+        }
+      ]
+    },
+    {
+      "path": "useCases",
+      "type": "directory",
+      "children": [
+        {
+          "path": "useCases/dataAnalytics.md",
+          "type": "file",
+          "name": "dataAnalytics.md"
+        },
+        {
+          "path": "useCases/index.md",
+          "type": "file",
+          "name": "index.md"
+        },
+        {
+          "path": "useCases/researchAndCollaboration.md",
+          "type": "file",
+          "name": "researchAndCollaboration.md"
+        },
+        {
+          "path": "useCases/scientificApplications",
+          "type": "directory",
+          "children": [
+            {
+              "path": "useCases/scientificApplications/chemistryToolkit.md",
+              "type": "file",
+              "name": "chemistryToolkit.md"
+            },
+            {
+              "path": "useCases/scientificApplications/circuitDesignToolkit.md",
+              "type": "file",
+              "name": "circuitDesignToolkit.md"
+            },
+            {
+              "path": "useCases/scientificApplications/crystallographyToolkit.md",
+              "type": "file",
+              "name": "crystallographyToolkit.md"
+            },
+            {
+              "path": "useCases/scientificApplications/imageLabelingToolkit.md",
+              "type": "file",
+              "name": "imageLabelingToolkit.md"
+            },
+            {
+              "path": "useCases/scientificApplications/index.md",
+              "type": "file",
+              "name": "index.md"
+            }
+          ]
+        },
+        {
+          "path": "useCases/semanticTechnology",
+          "type": "directory",
+          "children": [
+            {
+              "path": "useCases/semanticTechnology/dataDiscovery.md",
+              "type": "file",
+              "name": "dataDiscovery.md"
+            },
+            {
+              "path": "useCases/semanticTechnology/knowledgeGraph.md",
+              "type": "file",
+              "name": "knowledgeGraph.md"
+            },
+            {
+              "path": "useCases/semanticTechnology/messaging.md",
+              "type": "file",
+              "name": "messaging.md"
+            },
+            {
+              "path": "useCases/semanticTechnology/ontology.md",
+              "type": "file",
+              "name": "ontology.md"
+            },
+            {
+              "path": "useCases/semanticTechnology/semanticTech.md",
+              "type": "file",
+              "name": "semanticTech.md"
+            }
+          ]
+        },
+        {
+          "path": "useCases/softwareDevelopmentUsecase.md",
+          "type": "file",
+          "name": "softwareDevelopmentUsecase.md"
+        },
+        {
+          "path": "useCases/systemDiagramming.md",
+          "type": "file",
+          "name": "systemDiagramming.md"
+        }
+      ]
+    },
+    {
+      "path": "userGuide",
+      "type": "directory",
+      "children": [
+        {
+          "path": "userGuide/analysis.md",
+          "type": "file",
+          "name": "analysis.md"
+        },
+        {
+          "path": "userGuide/definitions.md",
+          "type": "file",
+          "name": "definitions.md"
+        },
+        {
+          "path": "userGuide/fileManagement.md",
+          "type": "file",
+          "name": "fileManagement.md"
+        },
+        {
+          "path": "userGuide/filters.md",
+          "type": "file",
+          "name": "filters.md"
+        },
+        {
+          "path": "userGuide/layouts.md",
+          "type": "file",
+          "name": "layouts.md"
+        },
+        {
+          "path": "userGuide/navigation.md",
+          "type": "file",
+          "name": "navigation.md"
+        },
+        {
+          "path": "userGuide/userGuide.md",
+          "type": "file",
+          "name": "userGuide.md"
+        },
+        {
+          "path": "userGuide/views.md",
+          "type": "file",
+          "name": "views.md"
+        }
+      ]
+    }
+  ]
+}

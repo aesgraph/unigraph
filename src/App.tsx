@@ -47,6 +47,8 @@ import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationD
 import LexicalEditorV2 from "./components/LexicalEditor";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import StoryCardApp from "./components/StoryCardApp";
+import WikipediaArticleViewer from "./components/WikipediaArticleViewer";
+import WikipediaArticleViewer_FactorGraph from "./components/WikipediaArticleViewer_FactorGraph";
 import { AppContextProvider } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -196,6 +198,19 @@ const getSimulations = (
     // canvasSelection: <CanvasSelection />,
     // storyCard: <AnimatedStoryCardDemo3 />,
     storyCard: <StoryCardApp sceneGraph={sceneGraph} />,
+    wikipediaViewer: (
+      <WikipediaArticleViewer
+        initialArticle="Factor graph"
+        highlightKeywords={["the"]}
+        customTerms={{ representing: "yep" }}
+        sceneGraph={sceneGraph}
+      />
+    ),
+    factorGraph: (
+      <WikipediaArticleViewer_FactorGraph
+        highlightKeywords={["efficient computations"]}
+      />
+    ),
   };
 };
 
@@ -1107,7 +1122,9 @@ const AppContent: React.FC<{
 
     if (currentSceneGraph.getDisplayConfig().nodePositions === undefined) {
       console.log("Cannot render nodes without positions");
-      return;
+      console.log("Extracting from node data...");
+      const nodePositions = extractPositionsFromNodes(currentSceneGraph);
+      currentSceneGraph.setNodePositions(nodePositions);
     }
 
     const data = exportGraphDataForReactFlow(currentSceneGraph);
@@ -1764,6 +1781,7 @@ const AppContent: React.FC<{
               .getNode(Array.from(getHoveredNodeIds())[0] as NodeId)}
           />
         )}
+
         {/* {getSelectedNodeId() && forceGraphInstance && (
           <NodeDisplayCard
             nodeId={getSelectedNodeId()!}

@@ -3,15 +3,9 @@ import "katex/dist/katex.min.css";
 import { marked } from "marked";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import "./MarkdownViewer.css"; // Import CSS file
-
-// Define interfaces for our popup
-interface DefinitionPopup {
-  term: string;
-  definition: string;
-  position: { x: number; y: number };
-  isDragging?: boolean;
-}
+import { replaceUnigraphUrlsWithLocalhost } from "../../utils/urlUtils";
+import { DefinitionPopup, DefinitionPopupData } from "./DefinitionPopup";
+import "./MarkdownViewer.css";
 
 interface MarkdownViewerProps {
   filename: string;
@@ -33,7 +27,7 @@ function MarkdownViewer({
   const [error, setError] = useState<string | null>(null);
   const [terms, setTerms] = useState<Record<string, string>>({});
   const [activeDefinition, setActiveDefinition] =
-    useState<DefinitionPopup | null>(null);
+    useState<DefinitionPopupData | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
@@ -210,35 +204,99 @@ function MarkdownViewer({
       return processed;
     };
 
-    // Fix the path construction
+    // Fix the path construction to handle both docs/ and storyCardFiles/ paths
     const normalizedFilename = filename.startsWith("/")
       ? filename.substring(1)
       : filename;
-    const filePath = normalizedFilename.endsWith(".md")
-      ? `/storyCardFiles/${normalizedFilename}`
-      : `/storyCardFiles/${normalizedFilename}.md`;
+
+    let filePath;
+
+    // Check if the path explicitly starts with docs/
+    if (normalizedFilename.startsWith("docs/")) {
+      // Use the path as is for docs folder
+      filePath = `/${normalizedFilename}`;
+    }
+    // Check if the path explicitly starts with public/
+    else if (normalizedFilename.startsWith("public/")) {
+      // Strip "public/" prefix for fetching
+      filePath = `/${normalizedFilename.substring(7)}`;
+    }
+    // Default case: use storyCardFiles/ folder
+    else {
+      filePath = normalizedFilename.endsWith(".md")
+        ? `/storyCardFiles/${normalizedFilename}`
+        : `/storyCardFiles/${normalizedFilename}.md`;
+    }
 
     console.log(`Attempting to fetch markdown from: ${filePath}`);
+
+    // Track attempted alternate paths to avoid duplicates
+    const attemptedPaths = new Set<string>();
+    attemptedPaths.add(filePath);
 
     // Try loading the file or use overrideMarkdown if provided
     (overrideMarkdown
       ? Promise.resolve(overrideMarkdown)
-      : fetch(filePath).then((res) => {
+      : (async () => {
+          const res = await fetch(filePath);
           if (!res.ok) {
-            // Try alternate path
-            const alternatePath = `/storyCards/${normalizedFilename}${
+            // Try a limited set of alternates without excessive retries
+            let lastError: Error | null = new Error(
+              `Initial path ${filePath} failed`
+            );
+
+            // Only try these alternates if we haven't already
+            const alternates = [];
+
+            // Try docs/ prefix if not already trying
+            if (!normalizedFilename.startsWith("docs/")) {
+              const docsPath = `/docs/${normalizedFilename}${
+                !normalizedFilename.endsWith(".md") ? ".md" : ""
+              }`;
+              if (!attemptedPaths.has(docsPath)) {
+                attemptedPaths.add(docsPath);
+                alternates.push(docsPath);
+              }
+            }
+
+            // Try storyCards/ folder if not the initial path
+            const storyCardsPath = `/storyCards/${normalizedFilename}${
               !normalizedFilename.endsWith(".md") ? ".md" : ""
             }`;
-            console.log(`First path failed, trying: ${alternatePath}`);
-            return fetch(alternatePath).then((altRes) => {
-              if (!altRes.ok) {
-                throw new Error(`Failed to load markdown from both paths`);
+            if (!attemptedPaths.has(storyCardsPath)) {
+              attemptedPaths.add(storyCardsPath);
+              alternates.push(storyCardsPath);
+            }
+
+            for (const alternatePath of alternates) {
+              console.log(`Trying alternate path: ${alternatePath}`);
+              try {
+                const altRes = await fetch(alternatePath);
+                if (!altRes.ok) {
+                  throw new Error(`Failed to load from ${alternatePath}`);
+                }
+                return await altRes.text();
+              } catch (e) {
+                lastError = e instanceof Error ? e : new Error(String(e));
+                console.error(
+                  `Error loading alternate path ${lastError}:`,
+                  lastError
+                );
               }
-              return altRes.text();
-            });
+            }
+
+            // Final fallback - return a friendly error message as markdown
+            console.error(
+              `Failed to load markdown from any path for ${filename}`
+            );
+            return `# File Not Found\n\nThe requested file \`${filename}\` could not be loaded.\n\n**Paths attempted:**\n${Array.from(
+              attemptedPaths
+            )
+              .map((p) => `- \`${p}\``)
+              .join("\n")}`;
           }
           return res.text();
-        })
+        })()
     )
       .then((markdown) => {
         // Parse frontmatter to extract metadata including terms
@@ -256,24 +314,38 @@ function MarkdownViewer({
           ? processedMarkdown.split("</td>")[0] + "</td></tr></table>" // Only keep first table row with image
           : processedMarkdown;
 
-        // Parse markdown to HTML
-        const parsed = marked.parse(finalContent);
-        if (parsed instanceof Promise) {
-          parsed.then((htmlStr) => {
-            // Apply image styles to the parsed HTML
-            setHtml(imageStyle ? applyImageStyles(htmlStr) : htmlStr);
+        // Parse markdown to HTML using marked
+        let parsed: string | Promise<string>;
+        try {
+          parsed = marked.parse(finalContent);
+          if (parsed instanceof Promise) {
+            parsed.then((htmlStr) => {
+              // Apply image styles and replace Unigraph URLs
+              const styledHtml = imageStyle
+                ? applyImageStyles(htmlStr)
+                : htmlStr;
+              const finalHtml = replaceUnigraphUrlsWithLocalhost(styledHtml);
+              setHtml(finalHtml);
+              setLoading(false);
+            });
+          } else {
+            // Apply image styles and replace Unigraph URLs
+            const styledHtml = imageStyle ? applyImageStyles(parsed) : parsed;
+            const finalHtml = replaceUnigraphUrlsWithLocalhost(styledHtml);
+            setHtml(finalHtml);
             setLoading(false);
-          });
-        } else {
-          // Apply image styles to the parsed HTML
-          setHtml(imageStyle ? applyImageStyles(parsed) : parsed);
+          }
+        } catch (parseError) {
+          console.error("Error parsing markdown:", parseError);
+          setError(`Error parsing markdown: ${parseError}`);
           setLoading(false);
         }
       })
       .catch((err) => {
+        // Improve error display
         console.error("Error loading markdown:", err);
         setError(
-          `Error loading markdown: ${
+          `Unable to load content for "${filename}". ${
             err instanceof Error ? err.message : String(err)
           }`
         );
@@ -440,7 +512,13 @@ function MarkdownViewer({
   }
 
   if (error) {
-    return <div className="markdown-error">{error}</div>;
+    return (
+      <div className="markdown-error">
+        <h3>Error Loading Content</h3>
+        <p>{error}</p>
+        <p>Please check that the file exists and the path is correct.</p>
+      </div>
+    );
   }
 
   return (
@@ -481,32 +559,12 @@ function MarkdownViewer({
 
       {activeDefinition &&
         createPortal(
-          <div
-            ref={popupRef}
-            className={`definition-popup ${activeDefinition.isDragging ? "dragging" : ""}`}
-            style={{
-              position: "absolute",
-              top: `${activeDefinition.position.y}px`,
-              left: `${activeDefinition.position.x}px`,
-              zIndex: 1000,
-              cursor: activeDefinition.isDragging ? "grabbing" : "grab",
-              transform: "translate(-50%, -100%)",
-            }}
-          >
-            <h4
-              onMouseDown={handleMouseDown}
-              className="definition-popup-header"
-            >
-              {activeDefinition.term}
-            </h4>
-            <p>{activeDefinition.definition}</p>
-            <button
-              className="definition-popup-close"
-              onClick={() => setActiveDefinition(null)}
-            >
-              ×
-            </button>
-          </div>,
+          <DefinitionPopup
+            popup={activeDefinition}
+            onClose={() => setActiveDefinition(null)}
+            onMouseDown={handleMouseDown}
+            popupRef={popupRef as React.RefObject<HTMLDivElement>}
+          />,
           document.body
         )}
     </div>

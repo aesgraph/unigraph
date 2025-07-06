@@ -9,7 +9,7 @@ export interface StoryCard {
   id: string;
   title: string;
   description: string;
-  markdownFile?: string; // Path to markdown file relative to public/storyCardFiles
+  markdownFile?: string; // Path to markdown file - can be absolute (public/storyCardFiles/file.md, docs/file.md) or relative
   metadata?: {
     tags?: string[];
     author?: string;

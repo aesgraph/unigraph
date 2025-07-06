@@ -56,6 +56,7 @@ export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
       linkWidth: 2,
       linkOpacity: 0.3,
       chargeStrength: -30,
+      backgroundColor: "rgb(0, 0, 0)",
     },
     metadata: {},
     entityCache: new EntityCache(),

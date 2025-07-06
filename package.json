@@ -11,7 +11,8 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "doc-server": "cd docs && bundle exec jekyll serve --livereload",
     "doc-server-build": "cd docs && bundle exec jekyll build",
-    "doc-server-clean": "cd docs && bundle exec jekyll clean"
+    "doc-server-clean": "cd docs && bundle exec jekyll clean",
+    "generate-docs": "node scripts/generate-docs-structure.js"
   },
   "keywords": [],
   "author": "",

@@ -13,9 +13,58 @@ const StoryCardPreview: React.FC<StoryCardPreviewProps> = ({
   onClick,
   markdownContent,
 }) => {
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+  const [titleFontSize, setTitleFontSize] = React.useState(1); // Default size in rem
+
+  // Adjust font size based on container size after the component mounts
+  React.useEffect(() => {
+    const resizeTitle = () => {
+      if (!titleRef.current) return;
+
+      // Get the container width and height
+      const container = titleRef.current.parentElement;
+      if (!container) return;
+
+      const maxHeight = 24 * 2; // Approx 3 lines (assuming line-height of ~1.5 with 1rem font)
+
+      // Start with initial font size
+      let fontSize = 1.2;
+      titleRef.current.style.fontSize = `${fontSize}rem`;
+      titleRef.current.style.whiteSpace = "normal"; // Allow wrapping for measurement
+
+      // Decrease font size until title fits in 3 lines or less
+      while (titleRef.current.scrollHeight > maxHeight && fontSize > 0.6) {
+        fontSize -= 0.05;
+        titleRef.current.style.fontSize = `${fontSize}rem`;
+      }
+
+      setTitleFontSize(fontSize);
+    };
+
+    // Initial sizing
+    resizeTitle();
+
+    // Handle window resize
+    window.addEventListener("resize", resizeTitle);
+    return () => {
+      window.removeEventListener("resize", resizeTitle);
+    };
+  }, [node.title]);
+
   return (
     <div key={node.id} className="child-card" onClick={onClick}>
-      <h3 className="child-card-title">{node.title}</h3>
+      <h3
+        ref={titleRef}
+        className="child-card-title"
+        style={{
+          fontSize: `${titleFontSize}rem`,
+          lineHeight: 1.2,
+          maxHeight: `${1.2 * 3}em`, // 3 lines max
+          overflow: "hidden",
+        }}
+      >
+        {node.title}
+      </h3>
 
       <div
         style={{

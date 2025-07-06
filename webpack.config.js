@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const ESLintPlugin = require("eslint-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const DocsDirectoryPlugin = require("./scripts/DocsDirectoryPlugin");
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -64,6 +65,19 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.csv$/,
+        include: path.resolve(__dirname, "public/data"),
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "data/",
+            },
+          },
+        ],
+      },
       // Handle Web Workers
       {
         test: /\.worker\.(js|ts)$/, // Support both .worker.js and .worker.ts
@@ -112,7 +126,18 @@ module.exports = {
             ignore: ["**/index.html"], // Avoid overwriting index.html if it's handled separately
           },
         },
+        {
+          from: "docs",
+          to: "docs",
+        },
       ],
+    }),
+    new DocsDirectoryPlugin({
+      docsPath: path.resolve(__dirname, "docs"),
+      outputPath: path.resolve(__dirname, "docs/docs-structure.json"),
+      throttleTime: 30000, // Only rebuild at most once per 30 seconds
+      watchForChanges: true,
+      includeFiles: true, // Include files in the docs structure
     }),
   ],
   devServer: {
@@ -123,6 +148,10 @@ module.exports = {
       },
       {
         directory: path.resolve(__dirname, "dist"),
+      },
+      {
+        directory: path.resolve(__dirname, "docs"),
+        publicPath: "/docs",
       },
     ],
     port: 3000,
