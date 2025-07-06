@@ -29,6 +29,8 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
 
   // Track user session and avatar
   const [user, setUser] = useState<any>(null);
+  const [avatarError, setAvatarError] = useState(false);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
 
   // Add state for dropdown
   const [showDropdown, setShowDropdown] = useState(false);
@@ -40,11 +42,15 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
 
   useEffect(() => {
     // Get current user from Supabase
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user));
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data?.user);
+      setAvatarError(false); // Reset error state when user changes
+    });
     // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
+        setAvatarError(false); // Reset error state when user changes
       }
     );
     return () => {
@@ -55,11 +61,30 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
   // Check if current view is a simulation
   const isSimulation = simulationList.includes(activeView);
 
-  // Get avatar URL if available
-  const avatarUrl =
-    user?.user_metadata?.avatar_url ||
-    user?.identities?.[0]?.identity_data?.avatar_url ||
-    null;
+  // More reliable avatar URL extraction with console logging for debugging
+  const getAvatarUrl = () => {
+    if (!user) return null;
+
+    // Try different possible locations for avatar URL
+    const avatarUrl =
+      user?.user_metadata?.avatar_url ||
+      user?.user_metadata?.picture ||
+      user?.identities?.[0]?.identity_data?.avatar_url ||
+      user?.identities?.[0]?.identity_data?.picture;
+
+    // Log for debugging
+    console.log("User data:", user);
+    console.log("Avatar URL found:", avatarUrl);
+
+    return avatarUrl && !avatarError ? avatarUrl : null;
+  };
+
+  const avatarUrl = getAvatarUrl();
+
+  // Reset avatar loaded state when URL changes
+  useEffect(() => {
+    setAvatarLoaded(false);
+  }, [avatarUrl]);
 
   return (
     <div className="tab-container">
@@ -131,6 +156,7 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
           cursor: "pointer",
           backgroundColor: "#fff",
           position: "relative",
+          overflow: "hidden", // Ensure image doesn't overflow the circle
         }}
         title={user ? "Profile" : "Sign In"}
         onClick={() => {
@@ -141,21 +167,56 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
           }
         }}
       >
-        {user && avatarUrl ? (
-          <img
-            src={avatarUrl}
-            alt="Profile"
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              objectFit: "cover",
-              display: "block",
-            }}
-          />
-        ) : (
-          <GenericProfileIcon />
-        )}
+        {/* Use a container div for the avatar to ensure proper sizing */}
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
+          {/* Show generic icon while avatar is loading or if there's an error */}
+          {(!user || !avatarUrl || !avatarLoaded) && (
+            <div style={{ position: avatarUrl ? "absolute" : "static" }}>
+              <GenericProfileIcon />
+            </div>
+          )}
+
+          {/* Avatar image with improved handling */}
+          {user && avatarUrl && (
+            <img
+              src={avatarUrl}
+              alt="Profile"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+                opacity: avatarLoaded ? 1 : 0,
+                transition: "opacity 0.2s ease-in-out",
+                position: "absolute",
+                top: 0,
+                left: 0,
+              }}
+              onLoad={() => {
+                console.log("Avatar image loaded successfully");
+                setAvatarLoaded(true);
+                setAvatarError(false);
+              }}
+              onError={(e) => {
+                console.error("Avatar image failed to load:", avatarUrl);
+                // Log the error event for more details
+                console.error("Error event:", e);
+                setAvatarError(true);
+                setAvatarLoaded(false);
+              }}
+            />
+          )}
+        </div>
+
         {/* Dropdown for logout */}
         {user && showDropdown && (
           <div
