@@ -141,7 +141,13 @@ const SignInButton: React.FC<SignInButtonProps> = ({
     if (!showDropdown) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (buttonRef.current && !buttonRef.current.contains(e.target as Node)) {
+      // Only close if the click is outside BOTH the button and the panel
+      const panel = document.getElementById("profile-dropdown-panel");
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target as Node) &&
+        (!panel || !panel.contains(e.target as Node))
+      ) {
         setShowDropdown(false);
       }
     };
@@ -242,7 +248,8 @@ const SignInButton: React.FC<SignInButtonProps> = ({
       <ProfileDropdown
         isVisible={!!user && showDropdown}
         onSignOut={handleSignOut}
-        buttonRef={buttonRef as React.RefObject<HTMLButtonElement>}
+        // Add an id to the panel for outside click detection
+        panelId="profile-dropdown-panel"
       />
     </div>
   );
