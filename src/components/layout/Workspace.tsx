@@ -140,6 +140,28 @@ const Workspace: React.FC<WorkspaceProps> = ({
     if (sidebarDisabledViews.includes(activeView)) {
       return null;
     }
+
+    const config = createDefaultLeftMenus({
+      activeLayout: activeLayout,
+      physicsMode:
+        forceGraph3dOptions.layout === "Physics" &&
+        activeView === "ForceGraph3d",
+      isDarkMode,
+      onApplyForceGraphConfig: onApplyForceGraphConfig,
+      initialForceGraphConfig: currentSceneGraph.getForceGraphRenderConfig(),
+      sceneGraph: currentSceneGraph,
+      onShowFilter: showFilterWindow,
+      onShowFilterManager: showFilterManager,
+      onShowPathAnalysis: showPathAnalysis,
+      onShowLoadSceneGraphWindow: showLoadSceneGraphWindow,
+      onShowSaveSceneGraphDialog: showSaveSceneGraphDialog,
+      showLayoutManager: (mode: "save" | "load") => showLayoutManager(mode),
+      activeView: activeView, // Make sure this is correctly passed
+      activeFilter: activeFilter,
+      handleLoadSceneGraph: handleLoadSceneGraph,
+      handleSetActiveFilter: applyActiveFilterToAppInstance,
+    });
+
     return (
       <Sidebar
         position="left"
@@ -147,27 +169,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
           height: "100%",
           top: 0,
         }}
-        menuItems={createDefaultLeftMenus({
-          activeLayout: activeLayout,
-          physicsMode:
-            forceGraph3dOptions.layout === "Physics" &&
-            activeView === "ForceGraph3d",
-          isDarkMode,
-          onApplyForceGraphConfig: onApplyForceGraphConfig,
-          initialForceGraphConfig:
-            currentSceneGraph.getForceGraphRenderConfig(),
-          sceneGraph: currentSceneGraph,
-          onShowFilter: showFilterWindow,
-          onShowFilterManager: showFilterManager,
-          onShowPathAnalysis: showPathAnalysis,
-          onShowLoadSceneGraphWindow: showLoadSceneGraphWindow,
-          onShowSaveSceneGraphDialog: showSaveSceneGraphDialog,
-          showLayoutManager: (mode: "save" | "load") => showLayoutManager(mode),
-          activeView: activeView, // Make sure this is correctly passed
-          activeFilter: activeFilter,
-          handleLoadSceneGraph: handleLoadSceneGraph,
-          handleSetActiveFilter: applyActiveFilterToAppInstance,
-        })}
+        menuItems={config.mainMenus}
+        bottomElements={config.bottomElements}
         isDarkMode={isDarkMode}
         footer={leftFooterContent}
         minimal={leftSidebarConfig.minimal}

@@ -23,6 +23,7 @@ interface SidebarProps {
   position: "left" | "right";
   title?: string;
   menuItems: MenuItem[];
+  bottomElements?: React.ReactNode; // Added property for bottom elements
   onToggle?: () => void;
   isDarkMode?: boolean;
   content?: React.ReactNode;
@@ -47,6 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   position,
   title = "Unigraph",
   menuItems,
+  bottomElements, // Add the new prop
   onToggle,
   isDarkMode,
   content,
@@ -361,6 +363,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             </nav>
           )}
         </div>
+
+        {/* Render bottom elements if provided */}
+        {bottomElements && (
+          <div className={styles.bottomElements}>{bottomElements}</div>
+        )}
 
         {footer && typeof footer === "function" ? (
           <div className={styles.sidebarFooter}>{footer(isOpen)}</div>

@@ -636,3 +636,11 @@
 .numberInputContainer {
   width: 60px; /* Reduce from 80px to 60px for better fit in narrower panel */
 }
+
+/* Add this to your existing styles */
+.bottomElements {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+}

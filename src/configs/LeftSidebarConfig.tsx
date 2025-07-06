@@ -8,6 +8,7 @@ import {
   Share2,
 } from "lucide-react";
 import React from "react";
+import SignInButton from "../components/common/SignInButton";
 import FilterManagerV2 from "../components/filters/FilterManagerV2";
 import ForceGraphRenderConfigEditor from "../components/force-graph/ForceGraphRenderConfigEditor";
 import LayoutManagerV2 from "../components/layouts/LayoutManagerV2";
@@ -57,6 +58,11 @@ export interface MenuItem {
   subMenus?: SubMenuItem[];
 }
 
+export interface SidebarConfig {
+  mainMenus: MenuItem[];
+  bottomElements?: React.ReactNode;
+}
+
 export const createDefaultLeftMenus = ({
   sceneGraph,
   onLayoutChange,
@@ -73,14 +79,15 @@ export const createDefaultLeftMenus = ({
   activeFilter,
   handleLoadSceneGraph,
   handleSetActiveFilter,
-  currentPositions, // Make sure to pass this from the parent,
-}: any) => {
+  currentPositions, // Make sure to pass this from the parent
+  includeBottomElements = true, // Flag to control if bottom elements are included
+}: any): SidebarConfig => {
   // Ensure case consistency by converting to lowercase for comparison
   const normalizedActiveView = activeView ? activeView.toLowerCase() : "";
   const isForceGraph3D = normalizedActiveView === "forcegraph3d";
   const isReactFlow = normalizedActiveView === "reactflow";
 
-  return [
+  const mainMenuItems = [
     // Add the Projects section at the top with its custom width
     {
       id: "projects",
@@ -252,16 +259,53 @@ export const createDefaultLeftMenus = ({
       })(),
     },
   ];
+
+  // Create bottom elements with a SignInButton
+  const bottomElements = includeBottomElements ? (
+    <div className={styles.sidebarBottomElements}>
+      <div
+        className={styles.bottomElement}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          marginTop: "auto",
+        }}
+      >
+        <SignInButton
+          style={{
+            margin: 0,
+            width: 24,
+            height: 24,
+            minWidth: 24,
+            minHeight: 24,
+            boxShadow: "none",
+          }}
+          size={24}
+          onSignOut={() => window.location.reload()}
+        />
+      </div>
+    </div>
+  ) : null;
+
+  return {
+    mainMenus: mainMenuItems,
+    bottomElements,
+  };
 };
 
-export const leftFooterContent = (isOpen: boolean) => (
-  <a
-    href="https://aesgraph.github.io/unigraph/"
-    target="_blank"
-    rel="noopener noreferrer"
-    className={styles.footerLink}
-  >
-    <BookOpen size={20} className={styles.footerIcon} />
-    {isOpen && <span className={styles.footerText}>Documentation</span>}
-  </a>
-);
+export const leftFooterContent = (isOpen: boolean) => {
+  return (
+    <div className={styles.menuItem}>
+      <a
+        href="https://aesgraph.github.io/unigraph/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.footerLink}
+      >
+        <BookOpen size={20} className={styles.footerIcon} />
+        {isOpen && <span className={styles.footerText}>Documentation</span>}
+      </a>
+    </div>
+  );
+};
