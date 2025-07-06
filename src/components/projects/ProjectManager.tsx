@@ -15,6 +15,12 @@ import {
   Save,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import {
+  getProject,
+  listProjects,
+  saveProjectToSupabase,
+  toSceneGraph,
+} from "../../api/supabaseProjects";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { loadSceneGraphFromFile } from "../../core/serializers/sceneGraphLoader";
 import { StoredSceneGraphInfo } from "../../core/storage/IPersistentStore";
@@ -145,8 +151,23 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
     setError(null);
 
     try {
-      const projectList = await persistentStore.listSceneGraphs();
-      setProjects(projectList);
+      // Replace local persistentStore with Supabase fetch
+      // You may need to import listProjectsFromSupabase from your API
+      // import { listProjectsFromSupabase } from "../../api/supabaseProjects";
+      const projectList = await listProjects();
+      const sceneGraphInfos: StoredSceneGraphInfo[] = projectList.map(
+        (project) =>
+          ({
+            id: (project.id as string) || "",
+            name: project.name,
+            description: project.description || "",
+            lastModified: project?.updated_at ? Number(project.updated_at) : "",
+            createdAt: project.created_at ? Number(project.created_at) : "",
+            // thumbnailUrl: project.thumbnail_url || "",
+            // tags: project.tags || [],
+          }) as StoredSceneGraphInfo
+      );
+      setProjects(sceneGraphInfos);
     } catch (err) {
       console.error("Error loading projects:", err);
       setError("Failed to load projects");
@@ -168,6 +189,12 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
           activeProjectId,
           currentSceneGraph
         );
+        // Save to Supabase as well
+        try {
+          await saveProjectToSupabase(currentSceneGraph);
+        } catch (e) {
+          console.warn("Supabase save failed:", e);
+        }
         console.log(`Updated existing project: ${activeProjectId}`);
         await loadProjects();
         addNotification({
@@ -205,6 +232,13 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
         createThumbnail: true,
       });
 
+      // Save to Supabase as well
+      try {
+        await saveProjectToSupabase(currentSceneGraph);
+      } catch (e) {
+        console.warn("Supabase save failed:", e);
+      }
+
       setActiveProjectId(id);
       await loadProjects(); // Refresh the list
       setActiveTab("myProjects"); // Switch to My Projects tab
@@ -228,15 +262,19 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
   // Load a project from persistent storage
   const handleLoadProject = async (projectId: string) => {
     try {
-      const sceneGraph = await persistentStore.loadSceneGraph(projectId);
-
-      if (sceneGraph) {
-        setActiveProjectId(projectId);
-        setSelectedDemoId(null);
-        onProjectSelected(sceneGraph);
-      } else {
+      // Load project from Supabase
+      const project = await getProject({ id: projectId });
+      if (!project || !project.data) {
         setError("Project not found");
+        return;
       }
+      // Reconstruct SceneGraph from serialized data
+      const sceneGraph = toSceneGraph(project);
+      console.log("Loaded project:", projectId, sceneGraph);
+
+      setActiveProjectId(projectId);
+      setSelectedDemoId(null);
+      onProjectSelected(sceneGraph);
     } catch (err) {
       console.error("Error loading project:", err);
       setError("Failed to load project");

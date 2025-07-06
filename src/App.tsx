@@ -12,6 +12,7 @@ import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
   IPathArgs,
 } from "./components/analysis/PathAnalysisWizard";
+import CommandPalette from "./components/commandPalette/CommandPalette";
 import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
 import EntityDataDisplayCard from "./components/common/EntityDataDisplayCard";
 import EntityJsonEditorDialog from "./components/common/EntityJsonEditorDialog";
@@ -92,6 +93,7 @@ import {
   getSceneGraph,
 } from "./data/DemoSceneGraphs";
 import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
+import { useCommandPalette } from "./hooks/useCommandPalette";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
 import AudioAnnotator from "./mp3/AudioAnnotator";
 import { Filter, loadFiltersFromSceneGraph } from "./store/activeFilterStore";
@@ -1709,6 +1711,12 @@ const AppContent: React.FC<{
         style={{ margin: 0, padding: 0 }}
         onMouseMove={handleMouseMove}
       >
+        <CommandPalette
+          isOpen={false}
+          commands={[]}
+          onClose={() => {}}
+          onExecuteCommand={() => {}}
+        />
         <Workspace
           menuConfig={menuConfig}
           currentSceneGraph={currentSceneGraph}
@@ -1920,8 +1928,18 @@ const App: React.FC<AppProps> = ({
   defaultActiveView,
   defaultActiveLayout,
 }) => {
+  // Initialize the command palette
+  const { isOpen, setIsOpen, commands, executeCommand } = useCommandPalette();
+
   return (
     <MousePositionProvider>
+      {/* Add the CommandPalette component */}
+      <CommandPalette
+        isOpen={isOpen}
+        commands={commands}
+        onClose={() => setIsOpen(false)}
+        onExecuteCommand={executeCommand}
+      />
       <AppContent
         defaultGraph={defaultGraph}
         svgUrl={svgUrl}

@@ -413,7 +413,8 @@ export class SceneGraph {
     const graph = this.getGraph();
 
     // Clear existing graph
-    graph.getNodes().forEach((node) => graph.removeNode(node.getId()));
+    graph.getNodes().clear();
+    graph.getEdges().clear();
 
     // Add nodes from serialized data
     serialized.graph.nodes.forEach((nodeData) => {
