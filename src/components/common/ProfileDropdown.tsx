@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface ProfileDropdownProps {
   isVisible: boolean;
@@ -21,11 +21,53 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   isSignedIn = true,
   onSignIn,
 }) => {
+  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+
   if (!isVisible) return null;
 
   // Panel background: more neutral/dark grey for both modes
   const panelBg = isDarkMode ? "#23272f" : "#eceff1";
   const borderColor = isDarkMode ? "#444" : "#cfd8dc";
+
+  // Helper function to get button styles with hover effects
+  const getButtonStyles = (buttonType: string, baseColor: string) => {
+    const isHovered = hoveredButton === buttonType;
+    const baseBg = isDarkMode ? "#23272f" : "#fff";
+    const hoverBg = isDarkMode ? "#2d3748" : "#f8f9fa";
+
+    // Determine border color on hover based on button type
+    let hoverBorderColor = baseColor;
+    if (isHovered) {
+      if (buttonType === "logout") {
+        hoverBorderColor = "#e53935"; // Red for logout
+      } else if (isDarkMode) {
+        hoverBorderColor = "#666"; // Light gray for dark mode
+      } else {
+        hoverBorderColor = "#1976d2"; // Blue for light mode
+      }
+    }
+
+    return {
+      width: "100%",
+      padding: "10px 0",
+      background: isHovered ? hoverBg : baseBg,
+      border: `1px solid ${hoverBorderColor}`,
+      borderRadius: 7,
+      textAlign: "center" as const,
+      cursor: "pointer",
+      fontSize: 15,
+      color: baseColor,
+      outline: "none",
+      fontWeight: buttonType === "signIn" ? 600 : "normal",
+      transition:
+        "background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease",
+      boxShadow: isHovered
+        ? isDarkMode
+          ? `0 0 0 1px rgba(255,255,255,0.1), 0 2px 8px rgba(0,0,0,0.3)`
+          : `0 0 0 1px rgba(25,118,210,0.2), 0 2px 8px rgba(0,0,0,0.1)`
+        : "none",
+    };
+  };
 
   return (
     <div
@@ -83,7 +125,9 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             transition: "background 0.15s, border 0.15s",
             position: "relative",
           }}
-          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={
+            isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+          }
         >
           <div
             style={{
@@ -94,7 +138,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               position: "absolute",
               left: isDarkMode ? 16 : 2,
               top: 1.5,
-              transition: "left 0.18s cubic-bezier(.4,0,.2,1), background 0.18s",
+              transition:
+                "left 0.18s cubic-bezier(.4,0,.2,1), background 0.18s",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -118,59 +163,31 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         {isSignedIn ? (
           <>
             <button
-              style={{
-                width: "100%",
-                padding: "10px 0",
-                background: isDarkMode ? "#23272f" : "#fff",
-                border: "1px solid #bdbdbd",
-                borderRadius: 7,
-                textAlign: "center",
-                cursor: "pointer",
-                fontSize: 15,
-                color: isDarkMode ? "#e2e8f0" : "#222",
-                outline: "none",
-                transition: "background 0.15s",
-              }}
+              style={getButtonStyles(
+                "switchAccount",
+                isDarkMode ? "#e2e8f0" : "#222"
+              )}
               onClick={onSwitchAccount}
+              onMouseEnter={() => setHoveredButton("switchAccount")}
+              onMouseLeave={() => setHoveredButton(null)}
             >
               Switch Account
             </button>
             <button
-              style={{
-                width: "100%",
-                padding: "10px 0",
-                background: isDarkMode ? "#23272f" : "#fff",
-                border: "1px solid #bdbdbd",
-                borderRadius: 7,
-                textAlign: "center",
-                cursor: "pointer",
-                fontSize: 15,
-                color: "#e53935",
-                outline: "none",
-                transition: "background 0.15s",
-              }}
+              style={getButtonStyles("logout", "#e53935")}
               onClick={onSignOut}
+              onMouseEnter={() => setHoveredButton("logout")}
+              onMouseLeave={() => setHoveredButton(null)}
             >
               Log out
             </button>
           </>
         ) : (
           <button
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              background: isDarkMode ? "#23272f" : "#fff",
-              border: "1px solid #1976d2",
-              borderRadius: 7,
-              textAlign: "center",
-              cursor: "pointer",
-              fontSize: 15,
-              color: "#1976d2",
-              outline: "none",
-              fontWeight: 600,
-              transition: "background 0.15s",
-            }}
+            style={getButtonStyles("signIn", "#1976d2")}
             onClick={onSignIn}
+            onMouseEnter={() => setHoveredButton("signIn")}
+            onMouseLeave={() => setHoveredButton(null)}
           >
             Sign In
           </button>
