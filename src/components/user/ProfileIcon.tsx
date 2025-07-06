@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
-import ProfileDropdown from "./ProfileDropdown";
+import UserSettingsPanel from "./UserSettingsPanel";
 
 // Simple generic profile SVG icon with blue border
 const GenericProfileIcon = ({
@@ -27,7 +27,7 @@ const GenericProfileIcon = ({
   </svg>
 );
 
-interface SignInButtonProps {
+interface ProfileIconProps {
   className?: string;
   style?: React.CSSProperties;
   size?: number; // Size in pixels
@@ -36,10 +36,10 @@ interface SignInButtonProps {
 }
 
 /**
- * A reusable sign-in button that handles user authentication state
+ * A reusable profile icon component that handles user authentication state
  * and displays the user's avatar when signed in
  */
-const SignInButton: React.FC<SignInButtonProps> = ({
+const ProfileIcon: React.FC<ProfileIconProps> = ({
   className = "",
   style = {},
   size = 32,
@@ -101,7 +101,7 @@ const SignInButton: React.FC<SignInButtonProps> = ({
   // Handle sign out - improved with better error handling
   const handleSignOut = async () => {
     try {
-      console.log("SignInButton: Sign out initiated");
+      console.log("ProfileIcon: Sign out initiated");
       setShowDropdown(false);
 
       // Sign out from Supabase
@@ -111,7 +111,7 @@ const SignInButton: React.FC<SignInButtonProps> = ({
         throw error;
       }
 
-      console.log("SignInButton: Supabase signout successful");
+      console.log("ProfileIcon: Supabase signout successful");
 
       // Reset user state
       setUser(null);
@@ -124,7 +124,7 @@ const SignInButton: React.FC<SignInButtonProps> = ({
 
       return true;
     } catch (error) {
-      console.error("SignInButton: Error signing out:", error);
+      console.error("ProfileIcon: Error signing out:", error);
       return false;
     }
   };
@@ -248,7 +248,7 @@ const SignInButton: React.FC<SignInButtonProps> = ({
         </div>
       </button>
 
-      <ProfileDropdown
+      <UserSettingsPanel
         isVisible={showDropdown}
         onSignOut={handleSignOut}
         onSignIn={handleSignIn}
@@ -259,4 +259,4 @@ const SignInButton: React.FC<SignInButtonProps> = ({
   );
 };
 
-export default SignInButton;
+export default ProfileIcon;

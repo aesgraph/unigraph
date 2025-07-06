@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getSelectedNodeIds } from "../../store/graphInteractionStore";
-import SignInButton from "../common/SignInButton";
+import ProfileIcon from "../user/ProfileIcon";
 
 interface GraphViewTabsProps {
   activeView: string;
@@ -77,8 +77,8 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
         Sim
       </button>
 
-      {/* Use the new SignInButton component */}
-      <SignInButton
+      {/* Use the new ProfileIcon component */}
+      <ProfileIcon
         style={{
           marginLeft: 12,
           marginRight: 16,

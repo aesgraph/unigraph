@@ -8,12 +8,12 @@ import {
   Share2,
 } from "lucide-react";
 import React from "react";
-import SignInButton from "../components/common/SignInButton";
 import FilterManagerV2 from "../components/filters/FilterManagerV2";
 import ForceGraphRenderConfigEditor from "../components/force-graph/ForceGraphRenderConfigEditor";
 import LayoutManagerV2 from "../components/layouts/LayoutManagerV2";
 import ProjectManager from "../components/projects/ProjectManager"; // Import the new component
 import ReactFlowConfigEditor from "../components/react-flow/ReactFlowConfigEditor";
+import ProfileIcon from "../components/user/ProfileIcon";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
 import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
@@ -260,7 +260,7 @@ export const createDefaultLeftMenus = ({
     },
   ];
 
-  // Create bottom elements with a SignInButton
+  // Create bottom elements with a ProfileIcon
   const bottomElements = includeBottomElements ? (
     <div className={styles.sidebarBottomElements}>
       <div
@@ -274,7 +274,7 @@ export const createDefaultLeftMenus = ({
           width: "100%", // Ensure full width for proper centering
         }}
       >
-        <SignInButton
+        <ProfileIcon
           style={{
             margin: 0,
             width: 30,

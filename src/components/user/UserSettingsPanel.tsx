@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-interface ProfileDropdownProps {
+interface UserSettingsPanelProps {
   isVisible: boolean;
   onSignOut?: () => void;
   onSwitchAccount?: () => void;
@@ -11,7 +11,7 @@ interface ProfileDropdownProps {
   onSignIn?: () => void;
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
+const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
   isVisible,
   onSignOut,
   onSwitchAccount,
@@ -197,4 +197,4 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   );
 };
 
-export default ProfileDropdown;
+export default UserSettingsPanel;
