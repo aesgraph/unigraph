@@ -2,11 +2,13 @@ import React from "react";
 
 interface ProfileDropdownProps {
   isVisible: boolean;
-  onSignOut: () => void;
+  onSignOut?: () => void;
   onSwitchAccount?: () => void;
   onToggleDarkMode?: () => void;
   isDarkMode?: boolean;
   panelId?: string;
+  isSignedIn?: boolean;
+  onSignIn?: () => void;
 }
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
@@ -16,6 +18,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   onToggleDarkMode,
   isDarkMode = false,
   panelId,
+  isSignedIn = true,
+  onSignIn,
 }) => {
   if (!isVisible) return null;
 
@@ -44,6 +48,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
         alignItems: "stretch",
       }}
     >
+      {/* Theme toggle row */}
       <div
         style={{
           padding: "0 18px 8px 18px",
@@ -78,9 +83,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             transition: "background 0.15s, border 0.15s",
             position: "relative",
           }}
-          aria-label={
-            isDarkMode ? "Switch to light mode" : "Switch to dark mode"
-          }
+          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
         >
           <div
             style={{
@@ -91,8 +94,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               position: "absolute",
               left: isDarkMode ? 16 : 2,
               top: 1.5,
-              transition:
-                "left 0.18s cubic-bezier(.4,0,.2,1), background 0.18s",
+              transition: "left 0.18s cubic-bezier(.4,0,.2,1), background 0.18s",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -104,6 +106,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
           </div>
         </button>
       </div>
+      {/* Auth-related actions */}
       <div
         style={{
           padding: "0 14px",
@@ -112,42 +115,66 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
           gap: 8,
         }}
       >
-        <button
-          style={{
-            width: "100%",
-            padding: "10px 0",
-            background: isDarkMode ? "#23272f" : "#fff",
-            border: "1px solid #bdbdbd",
-            borderRadius: 7,
-            textAlign: "center",
-            cursor: "pointer",
-            fontSize: 15,
-            color: isDarkMode ? "#e2e8f0" : "#222",
-            outline: "none",
-            transition: "background 0.15s",
-          }}
-          onClick={onSwitchAccount}
-        >
-          Switch Account
-        </button>
-        <button
-          style={{
-            width: "100%",
-            padding: "10px 0",
-            background: isDarkMode ? "#23272f" : "#fff",
-            border: "1px solid #bdbdbd",
-            borderRadius: 7,
-            textAlign: "center",
-            cursor: "pointer",
-            fontSize: 15,
-            color: "#e53935",
-            outline: "none",
-            transition: "background 0.15s",
-          }}
-          onClick={onSignOut}
-        >
-          Log out
-        </button>
+        {isSignedIn ? (
+          <>
+            <button
+              style={{
+                width: "100%",
+                padding: "10px 0",
+                background: isDarkMode ? "#23272f" : "#fff",
+                border: "1px solid #bdbdbd",
+                borderRadius: 7,
+                textAlign: "center",
+                cursor: "pointer",
+                fontSize: 15,
+                color: isDarkMode ? "#e2e8f0" : "#222",
+                outline: "none",
+                transition: "background 0.15s",
+              }}
+              onClick={onSwitchAccount}
+            >
+              Switch Account
+            </button>
+            <button
+              style={{
+                width: "100%",
+                padding: "10px 0",
+                background: isDarkMode ? "#23272f" : "#fff",
+                border: "1px solid #bdbdbd",
+                borderRadius: 7,
+                textAlign: "center",
+                cursor: "pointer",
+                fontSize: 15,
+                color: "#e53935",
+                outline: "none",
+                transition: "background 0.15s",
+              }}
+              onClick={onSignOut}
+            >
+              Log out
+            </button>
+          </>
+        ) : (
+          <button
+            style={{
+              width: "100%",
+              padding: "10px 0",
+              background: isDarkMode ? "#23272f" : "#fff",
+              border: "1px solid #1976d2",
+              borderRadius: 7,
+              textAlign: "center",
+              cursor: "pointer",
+              fontSize: 15,
+              color: "#1976d2",
+              outline: "none",
+              fontWeight: 600,
+              transition: "background 0.15s",
+            }}
+            onClick={onSignIn}
+          >
+            Sign In
+          </button>
+        )}
       </div>
     </div>
   );

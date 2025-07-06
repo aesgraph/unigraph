@@ -95,6 +95,9 @@ const SignInButton: React.FC<SignInButtonProps> = ({
     setAvatarLoaded(false);
   }, [avatarUrl]);
 
+  // Track sign-in state
+  const isSignedIn = !!user;
+
   // Handle sign out - improved with better error handling
   const handleSignOut = async () => {
     try {
@@ -126,14 +129,15 @@ const SignInButton: React.FC<SignInButtonProps> = ({
     }
   };
 
-  // Handle button click
+  // Handle button click: always open the panel
   const handleButtonClick = () => {
-    if (user) {
-      setShowDropdown((v) => !v);
-    } else {
-      window.location.href = "/signin";
-      onSignIn();
-    }
+    setShowDropdown((v) => !v);
+  };
+
+  // Sign in handler for the panel
+  const handleSignIn = () => {
+    window.location.href = "/signin";
+    onSignIn();
   };
 
   // Close dropdown when clicking outside
@@ -244,11 +248,11 @@ const SignInButton: React.FC<SignInButtonProps> = ({
         </div>
       </button>
 
-      {/* Use the ProfileDropdown component with the improved signout handler */}
       <ProfileDropdown
-        isVisible={!!user && showDropdown}
+        isVisible={showDropdown}
         onSignOut={handleSignOut}
-        // Add an id to the panel for outside click detection
+        onSignIn={handleSignIn}
+        isSignedIn={isSignedIn}
         panelId="profile-dropdown-panel"
       />
     </div>
