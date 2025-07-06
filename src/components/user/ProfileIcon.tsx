@@ -140,6 +140,12 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
     onSignIn();
   };
 
+  // Switch account handler - navigate to signin without logging out
+  const handleSwitchAccount = () => {
+    setShowDropdown(false);
+    window.location.href = "/signin";
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     if (!showDropdown) return;
@@ -251,6 +257,7 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
       <UserSettingsPanel
         isVisible={showDropdown}
         onSignOut={handleSignOut}
+        onSwitchAccount={handleSwitchAccount}
         onSignIn={handleSignIn}
         isSignedIn={isSignedIn}
         panelId="profile-dropdown-panel"

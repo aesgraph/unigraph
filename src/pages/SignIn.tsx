@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { supabase } from "../utils/supabaseClient";
 
@@ -9,6 +9,18 @@ const providers = [
 
 export default function SignIn() {
   const [hovered, setHovered] = useState<string | null>(null);
+  const [isAlreadySignedIn, setIsAlreadySignedIn] = useState(false);
+
+  // Check if user is already signed in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setIsAlreadySignedIn(!!user);
+    };
+    checkAuth();
+  }, []);
 
   const handleSignIn = async (provider: string) => {
     await supabase.auth.signInWithOAuth({
@@ -17,6 +29,10 @@ export default function SignIn() {
         redirectTo: window.location.origin + "/",
       },
     });
+  };
+
+  const handleBackToApp = () => {
+    window.location.href = "/";
   };
 
   return (
@@ -52,8 +68,38 @@ export default function SignIn() {
             color: "#444",
           }}
         >
-          Sign in
+          {isAlreadySignedIn ? "Switch Account" : "Sign in"}
         </h2>
+
+        {isAlreadySignedIn && (
+          <div style={{ marginBottom: 24 }}>
+            <button
+              onClick={handleBackToApp}
+              style={{
+                padding: "8px 16px",
+                borderRadius: 6,
+                border: "1px solid #e5e7eb",
+                background: "#fff",
+                color: "#666",
+                fontWeight: 500,
+                fontSize: 14,
+                cursor: "pointer",
+                transition: "background 0.15s, border 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f8f9fa";
+                e.currentTarget.style.borderColor = "#d1d5db";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#fff";
+                e.currentTarget.style.borderColor = "#e5e7eb";
+              }}
+            >
+              ← Back to App
+            </button>
+          </div>
+        )}
+
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {providers.map((p) => (
             <button
