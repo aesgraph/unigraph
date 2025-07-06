@@ -268,20 +268,22 @@ export const createDefaultLeftMenus = ({
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "center", // Center horizontally
           marginTop: "auto",
+          marginBottom: "16px", // Add bottom margin
+          width: "100%", // Ensure full width for proper centering
         }}
       >
         <SignInButton
           style={{
             margin: 0,
-            width: 24,
-            height: 24,
-            minWidth: 24,
-            minHeight: 24,
+            width: 30,
+            height: 30,
+            minWidth: 30,
+            minHeight: 30,
             boxShadow: "none",
           }}
-          size={24}
+          size={30}
           onSignOut={() => window.location.reload()}
         />
       </div>
