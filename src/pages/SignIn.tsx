@@ -27,6 +27,13 @@ export default function SignIn() {
       provider: provider as "google" | "github",
       options: {
         redirectTo: window.location.origin + "/",
+        queryParams:
+          provider === "google"
+            ? {
+                prompt: "select_account",
+                access_type: "offline",
+              }
+            : undefined,
       },
     });
   };
