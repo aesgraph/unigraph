@@ -2,9 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
 import ProfileDropdown from "./ProfileDropdown";
 
-// Simple generic profile SVG icon
-const GenericProfileIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+// Simple generic profile SVG icon with blue border
+const GenericProfileIcon = ({ style = {} }: { style?: React.CSSProperties }) => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    style={{
+      display: "block",
+      borderRadius: "50%",
+      boxShadow: "0 0 0 2px #1976d2, 0 0 4px 0 rgba(25,118,210,0.18)",
+      background: "#fff",
+      ...style,
+    }}
+  >
     <circle cx="16" cy="16" r="16" fill="#e0e0e0" />
     <circle cx="16" cy="13" r="6" fill="#bdbdbd" />
     <ellipse cx="16" cy="24" rx="8" ry="5" fill="#bdbdbd" />
@@ -143,7 +155,6 @@ const SignInButton: React.FC<SignInButtonProps> = ({
           padding: 0,
           border: "none",
           background: "none",
-          boxShadow: "0 0 0 2px #1976d2",
           borderRadius: "50%",
           width: size,
           height: size,
@@ -156,10 +167,20 @@ const SignInButton: React.FC<SignInButtonProps> = ({
           backgroundColor: "#fff",
           position: "relative",
           overflow: "hidden",
+          transition: "transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1)",
           ...style,
         }}
         title={user ? "Profile" : "Sign In"}
         onClick={handleButtonClick}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "scale(1.05)";
+          e.currentTarget.style.boxShadow =
+            "0 0 0 2px #1976d2, 0 0 12px 2px rgba(25,118,210,0.35)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "";
+          e.currentTarget.style.boxShadow = "";
+        }}
       >
         {/* Avatar container */}
         <div
@@ -174,8 +195,8 @@ const SignInButton: React.FC<SignInButtonProps> = ({
         >
           {/* Generic icon shown while avatar is loading or if there's an error */}
           {(!user || !avatarUrl || !avatarLoaded) && (
-            <div style={{ position: avatarUrl ? "absolute" : "static" }}>
-              <GenericProfileIcon />
+            <div style={{ position: avatarUrl ? "absolute" : "static", width: "100%", height: "100%" }}>
+              <GenericProfileIcon style={{ width: "100%", height: "100%" }} />
             </div>
           )}
 
@@ -192,8 +213,6 @@ const SignInButton: React.FC<SignInButtonProps> = ({
                 opacity: avatarLoaded ? 1 : 0,
                 transition: "opacity 0.2s ease-in-out",
                 position: "absolute",
-                // top: 0,
-                // left: 0,
               }}
               onLoad={() => {
                 setAvatarLoaded(true);
