@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { SceneGraph } from "../core/model/SceneGraph";
 import {
   fixWikipediaLinks,
   replaceUnigraphUrlsWithLocalhost,
@@ -8,7 +9,6 @@ import { DefinitionPopup, DefinitionPopupData } from "./common/DefinitionPopup";
 import StaticHtmlComponent from "./common/StaticHtmlComponent";
 import TextBasedContextMenu from "./common/TextBasedContextMenu";
 import { saveAnnotationToSceneGraph } from "./common/saveAnnotationToSceneGraph";
-import { SceneGraph } from "../core/model/SceneGraph";
 
 // Add a utility function to extract article title from Wikipedia URLs
 const extractWikipediaTitle = (url: string): string | null => {
@@ -438,7 +438,12 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
     // Save to scene graph if available, otherwise use the default onAnnotate
     if (sceneGraph) {
       try {
-        const node = saveAnnotationToSceneGraph(text, surroundingHtml, sceneGraph);
+        const node = saveAnnotationToSceneGraph(
+          text,
+          surroundingHtml,
+          { type: "wikipedia", resource_id: currentArticle },
+          sceneGraph
+        );
         console.log("Created annotation node:", node);
       } catch (error) {
         console.error("Failed to save annotation to scene graph:", error);

@@ -21,6 +21,7 @@ export interface TextBasedContextMenuProps {
  */
 const TextBasedContextMenu: React.FC<TextBasedContextMenuProps> = ({
   position,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   selectedText,
   items,
   onClose,
