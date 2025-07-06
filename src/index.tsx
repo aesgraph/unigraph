@@ -4,6 +4,7 @@ import App from "./App";
 import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
 import { persistentStore } from "./core/storage/PersistentStoreManager";
 import "./index.css";
+import SignIn from "./pages/SignIn";
 import {
   setActiveLayout,
   setActiveSceneGraph,
@@ -45,6 +46,14 @@ const initializeApp = async () => {
   if (!rootElement) return;
 
   const root = ReactDOM.createRoot(rootElement);
+
+  // --- Add this block for /signin route ---
+  if (window.location.pathname === "/signin") {
+    root.render(<SignIn />);
+    return;
+  }
+  // --- End block ---
+
   const urlParams = new URLSearchParams(window.location.search);
 
   // Get graph from URL or most recent project

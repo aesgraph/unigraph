@@ -10,13 +10,19 @@ export function serializeSceneGraphToJson(sceneGraph: SceneGraph): string {
 
 export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
   const malformedSceneGraphData = JSON.parse(json);
-  console.log("MALFORMED", malformedSceneGraphData);
+  // Parse the data field if it's a string
+  if (typeof malformedSceneGraphData.data === "string") {
+    malformedSceneGraphData.data = JSON.parse(malformedSceneGraphData.data);
+  }
+
+  console.log("malformedSceneGraphData is ", malformedSceneGraphData);
+
   const graph = new Graph();
 
   type NodeDataArgsAndId = NodeDataArgs & { id: string };
   type EdgeDataArgsAndId = EdgeDataArgs & { id: string };
 
-  malformedSceneGraphData.data.graph.nodes.forEach(
+  malformedSceneGraphData.data.data.graph.nodes.forEach(
     (node: NodeDataArgsAndId) => {
       graph.createNode(node);
     }
@@ -25,16 +31,16 @@ export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
   console.log("sceneGraphData is ", malformedSceneGraphData);
   console.log("sceneGraphData is ", malformedSceneGraphData.data);
 
-  malformedSceneGraphData.data.graph.edges.forEach(
+  malformedSceneGraphData.data.data.graph.edges.forEach(
     (edge: EdgeDataArgsAndId) => {
       graph.createEdge(edge.source, edge.target, edge);
     }
   );
 
-  delete malformedSceneGraphData.data.entityCache; //@todo fix this hack. entitycache entities need to be loaded into properly
-  delete malformedSceneGraphData.data.appState; //@todo fix this hack. appState entities need to be loaded into properly
+  delete malformedSceneGraphData.data.data.entityCache; //@todo fix this hack. entitycache entities need to be loaded into properly
+  delete malformedSceneGraphData.data.data.appState; //@todo fix this hack. appState entities need to be loaded into properly
 
-  console.log(malformedSceneGraphData.data.displayConfig);
+  console.log(malformedSceneGraphData.data.data.displayConfig);
 
   return new SceneGraph({
     ...malformedSceneGraphData.data,
