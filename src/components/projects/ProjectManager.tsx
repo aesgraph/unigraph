@@ -161,7 +161,9 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
             id: (project.id as string) || "",
             name: project.name,
             description: project.description || "",
-            lastModified: project?.updated_at ? Number(project.updated_at) : "",
+            lastModified: project?.last_updated_at
+              ? Number(project.last_updated_at)
+              : "",
             createdAt: project.created_at ? Number(project.created_at) : "",
             // thumbnailUrl: project.thumbnail_url || "",
             // tags: project.tags || [],

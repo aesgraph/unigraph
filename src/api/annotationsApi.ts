@@ -6,10 +6,10 @@ export interface Annotation {
   title: string;
   data: any;
   created_at?: string;
-  last_updated_at?: string;
+  last_updated_at?: string | null;
   user_id: string;
-  parent_resource_type: string;
-  parent_resource_id: string;
+  parent_resource_type?: string | null;
+  parent_resource_id?: string | null;
 }
 
 // Save (upsert) an annotation

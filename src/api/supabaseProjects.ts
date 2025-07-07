@@ -1,3 +1,4 @@
+import uuid4 from "uuid4";
 import { SceneGraph } from "../core/model/SceneGraph";
 import {
   deserializeSceneGraphFromJson,
@@ -6,13 +7,13 @@ import {
 import { supabase } from "../utils/supabaseClient";
 
 export interface SupabaseProject {
-  id?: string;
+  id: string;
   name: string;
-  description?: string;
-  data: any;
-  user_id?: string;
+  description?: string | null;
   created_at?: string;
-  updated_at?: string;
+  last_updated_at?: string | null;
+  user_id: string;
+  data: any;
 }
 
 export async function saveProjectToSupabase(sceneGraph: SceneGraph) {
@@ -22,15 +23,16 @@ export async function saveProjectToSupabase(sceneGraph: SceneGraph) {
   if (userError || !userData?.user?.id) throw new Error("User not logged in");
 
   const project: SupabaseProject = {
+    id: uuid4(),
     name: metadata.name || "Untitled",
-    description: metadata.description || "",
+    description: metadata.description || null,
     data: sceneGraph ? serializeSceneGraphToJson(sceneGraph) : sceneGraph,
     user_id: userData.user.id,
   };
-  // Insert the project directly since name is unique and conflicts are avoided
+  // Upsert the project by id
   const { data, error } = await supabase
     .from("projects")
-    .insert([project])
+    .upsert([project], { onConflict: "id" })
     .select();
   if (error) throw error;
   return data?.[0];
@@ -44,9 +46,9 @@ export async function listProjects(): Promise<Omit<SupabaseProject, "data">[]> {
   // Select all columns except 'data'
   const { data, error } = await supabase
     .from("projects")
-    .select("id, name, description, user_id, created_at, updated_at")
+    .select("id, name, description, user_id, created_at, last_updated_at")
     .eq("user_id", userData.user.id)
-    .order("updated_at", { ascending: false });
+    .order("last_updated_at", { ascending: false });
 
   if (error) throw error;
   return data || [];
@@ -73,7 +75,6 @@ export async function getProject(params: {
 
   if (!result) throw new Error("Query result is undefined");
   const { data, error } = await result.single();
-  console.log("getProject result:", data, error);
   if (error) throw error;
   return (data as SupabaseProject) || null;
 }
@@ -88,7 +89,7 @@ export const toSceneGraph = (project: SupabaseProject): SceneGraph => {
 
   sceneGraph.setMetadata({
     name: project.name,
-    description: project.description,
+    description: project.description || undefined,
   });
   return sceneGraph;
 };
