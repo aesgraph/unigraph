@@ -1,4 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
+import { loadAnnotations } from "../api/annotationsApi";
 import {
   attachSimulation,
   updateNodePositions,
@@ -63,6 +64,7 @@ import {
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
 import { runConversationsAnalysis } from "../utils/runConversationsAnalysis";
+import { supabase } from "../utils/supabaseClient";
 import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
 
 // const handleExportConfig = (sceneGraph: SceneGraph) => {
@@ -217,6 +219,19 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "Load annotations": {
+            action: () => {
+              supabase.auth.getUser().then(({ data, error }) => {
+                if (error || !data?.user) {
+                  // Handle error or not signed in
+                  return;
+                }
+                console.log("Loading annotations for user:", data.user.id);
+                loadAnnotations(data.user.id, this.sceneGraph);
+                this.sceneGraph.notifyGraphChanged();
+              });
+            },
+          },
           "TEST: Conversation Analysis": {
             action: () => {
               // Get the current SceneGraph

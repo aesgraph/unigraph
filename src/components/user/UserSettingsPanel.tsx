@@ -25,8 +25,8 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
 
   if (!isVisible) return null;
 
-  // Panel background: more neutral/dark grey for both modes
-  const panelBg = isDarkMode ? "#23272f" : "#eceff1";
+  // Panel background: pleasant, neutral grey for both modes
+  const panelBg = "#4a5568";
   const borderColor = isDarkMode ? "#444" : "#cfd8dc";
 
   // Helper function to get button styles with hover effects

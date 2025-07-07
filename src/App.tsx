@@ -631,7 +631,8 @@ const AppContent: React.FC<{
     (displayConfig: RenderingConfig) => {
       console.log(
         "notified changed",
-        currentSceneGraph.getGraph().getEdges().getTypes()
+        currentSceneGraph.getGraph().getNodes(),
+        currentSceneGraph.getGraph().getEdges()
       );
       SetCurrentDisplayConfigOf(
         currentSceneGraph.getDisplayConfig(),
@@ -1354,6 +1355,7 @@ const AppContent: React.FC<{
     currentSceneGraph,
     forceGraphInstance,
     currentLayoutResult,
+    graphModelUpdateTime,
     // selectedNodeIds, //not sure why I had these here to begin with. can prob remove now
     // selectedEdgeIds,
   ]);

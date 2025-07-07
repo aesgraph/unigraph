@@ -17,7 +17,6 @@ const GenericProfileIcon = ({
       display: "block",
       borderRadius: "50%",
       boxShadow: "0 0 0 2px #1976d2, 0 0 4px 0 rgba(25,118,210,0.18)",
-      background: "#fff",
       ...style,
     }}
   >
