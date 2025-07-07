@@ -22,6 +22,8 @@ export const AnnotationCard: React.FC<AnnotationCardProps> = ({
     imageUrl = "",
   } = annotation.data || {};
 
+  console.log("annotation", annotation);
+
   const [title, setTitle] = useState(annotation.title);
   const [primaryComment, setPrimaryComment] = useState(comment);
   const [secondary, setSecondary] = useState(secondaryComment);
