@@ -1,5 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { loadAnnotations } from "../api/annotationsApi";
+import { loadAnnotationsToSceneGraph } from "../api/annotationsApi";
 import {
   attachSimulation,
   updateNodePositions,
@@ -227,8 +227,7 @@ export class MenuConfig {
                   return;
                 }
                 console.log("Loading annotations for user:", data.user.id);
-                loadAnnotations(data.user.id, this.sceneGraph);
-                this.sceneGraph.notifyGraphChanged();
+                loadAnnotationsToSceneGraph(data.user.id, this.sceneGraph);
               });
             },
           },

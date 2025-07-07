@@ -54,21 +54,38 @@ export async function getAnnotation(id: string) {
   return data;
 }
 
-export const loadAnnotations = async (
+export const loadAnnotationsToSceneGraph = async (
   userId: string,
   sceneGraph: SceneGraph
 ) => {
+  console.log("Loading annotations for user:", userId);
   const annotations = await listAnnotations({
     userId,
   });
   annotations.forEach((annotation) => {
-    sceneGraph.getGraph().createNodeIfMissing(annotation.id, {
-      id: annotation.id,
-      type: "annotation",
-      label: annotation.title,
-      userData: annotation.data,
-    });
+    const annotationNode = sceneGraph
+      .getGraph()
+      .createNodeIfMissing(annotation.id, {
+        id: annotation.id,
+        type: "annotation",
+        label: annotation.title,
+        userData: annotation.data,
+      });
+    const parentResourceNode = sceneGraph
+      .getGraph()
+      .createNodeIfMissing(annotation.parent_resource_id, {
+        id: annotation.parent_resource_id,
+        type: annotation.parent_resource_type || "resource",
+        label: annotation.parent_resource_id,
+        userData: {},
+      });
+    sceneGraph
+      .getGraph()
+      .createEdgeIfMissing(annotationNode.getId(), parentResourceNode.getId(), {
+        type: "annotation-parent",
+      });
   });
+
   sceneGraph.refreshDisplayConfig();
   sceneGraph.notifyGraphChanged();
 };

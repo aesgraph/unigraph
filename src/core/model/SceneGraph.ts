@@ -250,6 +250,18 @@ export class SceneGraph {
     this.listeners?.onPositionsChanged?.(positions);
   }
 
+  setNodePosition(nodeId: NodeId, position: Position, notify: boolean = true) {
+    if (!this.data.displayConfig.nodePositions) {
+      this.data.displayConfig.nodePositions = {};
+    }
+    this.data.displayConfig.nodePositions[nodeId] = position;
+    if (notify) {
+      this.listeners?.onPositionsChanged?.(
+        this.data.displayConfig.nodePositions
+      );
+    }
+  }
+
   getNode(nodeId: NodeId) {
     return this.data.graph.getNode(nodeId);
   }

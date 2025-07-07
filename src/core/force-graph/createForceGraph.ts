@@ -138,6 +138,10 @@ export const createForceGraph = (
       }
     })
     .onNodeDragEnd((node, _translate: any) => {
+      if (node == undefined || node.id == undefined) {
+        setIsDraggingNode(false);
+        return;
+      }
       // console.log("translate end is ", translate);
       const selectedNodeIds = getSelectedNodeIds();
       let positions: NodePositionData = {};
@@ -146,7 +150,7 @@ export const createForceGraph = (
           graph,
           selectedNodeIds
         );
-      } else {
+      } else if (node.id) {
         positions[node.id as NodeId] = {
           x: node.fx! ?? node.x ?? 0,
           y: node.fy! ?? node.y ?? 0,
@@ -164,11 +168,11 @@ export const createForceGraph = (
             z: pos.z,
           });
 
-        sceneGraph.getDisplayConfig().nodePositions![id as NodeId] = {
+        sceneGraph.setNodePosition(id as NodeId, {
           x: pos.x,
           y: -pos.y,
           z: pos.z,
-        };
+        });
       });
       setIsDraggingNode(false);
     });
