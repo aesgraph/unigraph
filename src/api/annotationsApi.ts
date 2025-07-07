@@ -3,10 +3,28 @@ import { SceneGraph } from "../core/model/SceneGraph";
 import { getForceGraph3dInstance } from "../store/appConfigStore";
 import { supabase } from "../utils/supabaseClient";
 
+export interface TextSelectionAnnotationData {
+  selected_text?: string;
+  comment: string;
+  secondary_comment?: string;
+  tags?: string[];
+  page_url?: string;
+  type: "text_selection";
+}
+
+export interface ImageAnnotationData {
+  image_url: string;
+  comment: string;
+  secondary_comment?: string;
+  tags?: string[];
+  page_url?: string;
+  type: "image";
+}
+
 export interface Annotation {
   id: string;
   title: string;
-  data: any;
+  data: TextSelectionAnnotationData | ImageAnnotationData;
   created_at?: string;
   last_updated_at?: string | null;
   user_id: string;
@@ -64,6 +82,7 @@ export const loadAnnotationsToSceneGraph = async (
   const annotations = await listAnnotations({
     userId,
   });
+  console.log("annotations retrieved:", annotations);
   annotations.forEach((annotation) => {
     const annotationNode = sceneGraph
       .getGraph()
@@ -71,7 +90,7 @@ export const loadAnnotationsToSceneGraph = async (
         id: annotation.id,
         type: "annotation",
         label: annotation.title,
-        userData: annotation.data,
+        userData: annotation,
       });
     const parentResourceNode = sceneGraph
       .getGraph()
@@ -79,7 +98,7 @@ export const loadAnnotationsToSceneGraph = async (
         id: annotation.parent_resource_id,
         type: annotation.parent_resource_type || "resource",
         label: annotation.parent_resource_id,
-        userData: {},
+        userData: annotation,
       });
     sceneGraph
       .getGraph()

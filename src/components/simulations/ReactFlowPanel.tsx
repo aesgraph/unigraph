@@ -69,7 +69,7 @@ const AnnotationNode = (props: any) => {
   console.log("valid annotation", annotation);
   return (
     <div style={{ minWidth: 320, maxWidth: 480 }}>
-      <AnnotationCard annotation={annotation} readOnly />
+      <AnnotationCard annotation={annotation} />
     </div>
   );
 };

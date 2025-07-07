@@ -1,324 +1,304 @@
-import React, { useState } from "react";
-import { Annotation } from "../../api/annotationsApi";
+import React from "react";
+import {
+  Annotation,
+  ImageAnnotationData,
+  TextSelectionAnnotationData,
+} from "../../api/annotationsApi";
 
 interface AnnotationCardProps {
   annotation: Annotation;
-  onSave?: (updated: Annotation) => void;
-  readOnly?: boolean;
+  style?: React.CSSProperties;
+  compact?: boolean;
 }
 
-export const AnnotationCard: React.FC<AnnotationCardProps> = ({
+const tagStyle: React.CSSProperties = {
+  display: "inline-block",
+  background: "#e3e8f0",
+  color: "#1976d2",
+  borderRadius: 6,
+  fontSize: 11,
+  padding: "2px 8px",
+  marginRight: 4,
+  marginBottom: 2,
+  fontWeight: 500,
+  letterSpacing: 0.2,
+};
+
+function isImageAnnotationData(data: any): data is ImageAnnotationData {
+  return (
+    !!data && typeof data.image_url === "string" && data.image_url.length > 0
+  );
+}
+
+function isTextSelectionAnnotationData(
+  data: any
+): data is TextSelectionAnnotationData {
+  return (
+    !!data && typeof data.comment === "string" && !isImageAnnotationData(data)
+  );
+}
+
+const AnnotationCard: React.FC<AnnotationCardProps> = ({
   annotation,
-  onSave,
-  readOnly = false,
+  style = {},
+  compact = false,
 }) => {
-  // Extract fields from annotation.data
-  const {
-    comment = "",
-    secondaryComment = "",
-    tags = [],
-    pageUrl = "",
-    selectedText = "",
-    imageUrl = "",
-  } = annotation.data || {};
+  console.log("Rendering AnnotationCard for:", annotation);
+  const { data, title, created_at } = annotation;
+  const tags = Array.isArray(data?.tags) ? data.tags : [];
 
-  console.log("annotation", annotation);
-
-  const [title, setTitle] = useState(annotation.title);
-  const [primaryComment, setPrimaryComment] = useState(comment);
-  const [secondary, setSecondary] = useState(secondaryComment);
-  const [tagList, setTagList] = useState<string[]>(tags);
-  const [showSecondary, setShowSecondary] = useState(!!secondaryComment);
-
-  // Tag input logic
-  const [tagInput, setTagInput] = useState("");
-  const addTag = () => {
-    if (tagInput.trim() && !tagList.includes(tagInput.trim())) {
-      setTagList([...tagList, tagInput.trim()]);
-      setTagInput("");
-    }
-  };
-  const removeTag = (idx: number) => {
-    setTagList(tagList.filter((_, i) => i !== idx));
-  };
-
-  const handleSave = () => {
-    if (onSave) {
-      onSave({
-        ...annotation,
-        title,
-        data: {
-          ...annotation.data,
-          comment: primaryComment,
-          secondaryComment: secondary,
-          tags: tagList,
-        },
-      });
-    }
-  };
+  // Defensive: fallback for missing/empty data
+  if (!data) {
+    return (
+      <div
+        style={{
+          background: "#fff",
+          border: "1.5px solid #d1d5db",
+          borderRadius: 10,
+          boxShadow: "0 2px 8px 0 rgba(25, 118, 210, 0.07)",
+          padding: "14px 18px",
+          minWidth: 160,
+          maxWidth: 260,
+          width: "fit-content",
+          fontFamily: "inherit",
+          fontSize: 13,
+          color: "#222",
+          ...style,
+        }}
+      >
+        <div
+          style={{
+            fontWeight: 600,
+            fontSize: 15,
+            color: "#1976d2",
+          }}
+        >
+          {title || "Annotation"}
+        </div>
+        <div
+          style={{
+            color: "#888",
+            fontSize: 13,
+            marginTop: 6,
+          }}
+        >
+          No annotation data.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
       style={{
-        background: "#fafbfc",
+        background: "#fff",
+        border: "1.5px solid #d1d5db",
         borderRadius: 10,
-        boxShadow: "0 2px 12px rgba(0,0,0,0.1)",
-        border: "1px solid #e0e0e0",
-        maxWidth: 480,
-        margin: "0 auto",
-        padding: 0,
-        fontFamily: "Segoe UI, Arial, sans-serif",
+        boxShadow: "0 2px 8px 0 rgba(25, 118, 210, 0.07)",
+        padding: compact ? "8px 10px" : "14px 18px",
+        minWidth: 160,
+        maxWidth: 260,
+        width: "fit-content",
+        fontFamily: "inherit",
+        fontSize: 13,
+        color: "#222",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        ...style,
       }}
     >
-      <div style={{ padding: "18px 18px 0 18px" }}>
-        <h3 style={{ textAlign: "center", marginBottom: 8, color: "#222" }}>
-          {readOnly ? "View Annotation" : "Edit Annotation"}
-        </h3>
-        <div style={{ fontSize: 12, color: "#666", marginBottom: 4 }}>
-          {pageUrl && (
-            <div>
-              <b>Page:</b>{" "}
-              <a href={pageUrl} target="_blank" rel="noopener noreferrer">
-                {pageUrl}
-              </a>
-            </div>
-          )}
-        </div>
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt="Annotated"
-            style={{
-              display: "block",
-              maxWidth: "100%",
-              maxHeight: 180,
-              marginBottom: 12,
-              borderRadius: 6,
-              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-              border: "1px solid #e0e0e0",
-              objectFit: "contain",
-            }}
-          />
-        )}
-        {selectedText && (
-          <div
-            style={{
-              background: "#f5f5f5",
-              padding: 7,
-              borderRadius: 4,
-              marginBottom: 8,
-              fontSize: 13,
-              border: "1px solid #e0e0e0",
-            }}
-          >
-            {selectedText}
-          </div>
-        )}
-        <label style={{ fontWeight: 500, fontSize: 13, marginBottom: 2 }}>
-          Title
-        </label>
-        <input
-          type="text"
-          value={title}
-          disabled={readOnly}
-          onChange={(e) => setTitle(e.target.value)}
-          style={{
-            width: "100%",
-            marginBottom: 8,
-            fontSize: 14,
-            padding: "5px 7px",
-            borderRadius: 4,
-            border: "1px solid #d0d0d0",
-            background: readOnly ? "#f5f5f5" : "#fff",
-          }}
-        />
-        <label style={{ fontWeight: 500, fontSize: 13, marginBottom: 2 }}>
-          Annotation
-        </label>
-        <textarea
-          value={primaryComment}
-          disabled={readOnly}
-          onChange={(e) => setPrimaryComment(e.target.value)}
-          style={{
-            width: "100%",
-            minHeight: 80,
-            maxHeight: 220,
-            marginBottom: 8,
-            fontSize: 13,
-            padding: "5px 7px",
-            borderRadius: 4,
-            border: "1px solid #d0d0d0",
-            background: readOnly ? "#f5f5f5" : "#fff",
-            resize: "vertical",
-          }}
-        />
-        <div style={{ marginBottom: 8 }}>
-          <button
-            type="button"
-            style={{
-              background: "none",
-              border: "none",
-              color: "#1976d2",
-              cursor: "pointer",
-              fontSize: 12,
-              padding: 0,
-              marginBottom: 2,
-              textAlign: "left",
-              textDecoration: showSecondary ? "underline" : "none",
-            }}
-            onClick={() => setShowSecondary((v) => !v)}
-            disabled={readOnly}
-          >
-            {showSecondary
-              ? "- Hide secondary comment"
-              : "+ Add secondary comment"}
-          </button>
-          {showSecondary && (
-            <div>
-              <label
-                style={{
-                  fontWeight: 500,
-                  fontSize: 13,
-                  marginBottom: 2,
-                  display: "block",
-                }}
-              >
-                Secondary Comment
-              </label>
-              <textarea
-                value={secondary}
-                disabled={readOnly}
-                onChange={(e) => setSecondary(e.target.value)}
-                style={{
-                  width: "100%",
-                  minHeight: 40,
-                  maxHeight: 120,
-                  marginBottom: 8,
-                  fontSize: 13,
-                  padding: "5px 7px",
-                  borderRadius: 4,
-                  border: "1px solid #d0d0d0",
-                  background: readOnly ? "#f5f5f5" : "#fff",
-                  resize: "vertical",
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <label style={{ fontWeight: 500, fontSize: 13, marginBottom: 2 }}>
-          Tags
-          <span style={{ fontWeight: "normal", color: "#888", fontSize: 11 }}>
-            {" "}
-            (comma or Enter to separate)
-          </span>
-        </label>
+      {/* Title */}
+      {title && (
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            minHeight: 36,
-            border: "1px solid #d0d0d0",
-            borderRadius: 4,
-            background: "#fff",
-            padding: "3px 5px",
-            marginBottom: 8,
-            boxSizing: "border-box",
+            fontWeight: 600,
+            fontSize: 15,
+            marginBottom: 2,
+            color: "#1976d2",
+            whiteSpace: "pre-line",
+            wordBreak: "break-word",
           }}
         >
-          {tagList.map((tag, idx) => (
-            <span
-              key={tag}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                background: "#e3eafc",
-                color: "#1976d2",
-                borderRadius: 12,
-                padding: "2px 8px 2px 8px",
-                margin: "2px 4px 2px 0",
-                fontSize: 12,
-                fontWeight: 500,
-                cursor: "default",
-              }}
-            >
-              {tag}
-              {!readOnly && (
-                <span
-                  style={{
-                    marginLeft: 6,
-                    color: "#888",
-                    cursor: "pointer",
-                    fontSize: 13,
-                    fontWeight: "bold",
-                    userSelect: "none",
-                  }}
-                  onClick={() => removeTag(idx)}
-                >
-                  ×
-                </span>
-              )}
-            </span>
-          ))}
-          {!readOnly && (
-            <input
-              type="text"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === ",") {
-                  e.preventDefault();
-                  addTag();
-                }
-              }}
-              onBlur={addTag}
-              placeholder="e.g. machine learning"
-              style={{
-                flex: "1 1 60px",
-                minWidth: 60,
-                margin: "2px 0",
-                border: "none",
-                outline: "none",
-                background: "transparent",
-                fontSize: 13,
-              }}
-              autoComplete="off"
-            />
-          )}
-        </div>
-      </div>
-      {!readOnly && (
-        <div
-          style={{
-            flexShrink: 0,
-            padding: "12px 18px 12px 18px",
-            background: "#fafbfc",
-            textAlign: "center",
-            boxShadow: "0 -2px 8px rgba(0,0,0,0.03)",
-          }}
-        >
-          <button
-            onClick={handleSave}
-            style={{
-              padding: "6px 20px",
-              fontSize: 14,
-              borderRadius: 6,
-              border: "none",
-              background: "#1976d2",
-              color: "#fff",
-              cursor: "pointer",
-              margin: "0 auto",
-              display: "block",
-              marginTop: 8,
-              marginBottom: 4,
-              boxShadow: "0 1px 2px rgba(25,118,210,0.08)",
-              transition: "background 0.15s",
-            }}
-          >
-            Save
-          </button>
+          {title}
         </div>
       )}
+
+      {/* Image annotation */}
+      {isImageAnnotationData(data) && (
+        <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "4px 0",
+            }}
+          >
+            <img
+              src={data.image_url}
+              alt="annotation"
+              style={{
+                maxWidth: compact ? 80 : 120,
+                maxHeight: compact ? 60 : 90,
+                borderRadius: 6,
+                border: "1px solid #e0e0e0",
+                objectFit: "cover",
+                background: "#f5f6fa",
+                display: "block",
+              }}
+            />
+          </div>
+          {data.comment && (
+            <div
+              style={{
+                color: "#333",
+                fontSize: 13,
+                margin: "2px 0",
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {data.comment}
+            </div>
+          )}
+          {data.secondary_comment && data.secondary_comment.trim() && (
+            <div
+              style={{
+                color: "#888",
+                fontSize: 12,
+                fontStyle: "italic",
+                marginTop: 2,
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {data.secondary_comment}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Text annotation */}
+      {isTextSelectionAnnotationData(data) && (
+        <>
+          {data.selected_text && (
+            <div
+              style={{
+                background: "#f5f6fa",
+                borderLeft: "3px solid #1976d2",
+                borderRadius: 5,
+                padding: "6px 10px",
+                fontStyle: "italic",
+                color: "#444",
+                fontSize: 13,
+                marginBottom: 2,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {data.selected_text}
+            </div>
+          )}
+          {data.comment && (
+            <div
+              style={{
+                color: "#333",
+                fontSize: 13,
+                margin: "2px 0",
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {data.comment}
+            </div>
+          )}
+          {data.secondary_comment && data.secondary_comment.trim() && (
+            <div
+              style={{
+                color: "#888",
+                fontSize: 12,
+                fontStyle: "italic",
+                marginTop: 2,
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
+            >
+              {data.secondary_comment}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Tags */}
+      {tags.length > 0 && (
+        <div style={{ marginTop: 2, marginBottom: 2 }}>
+          {tags.map((tag, i) => (
+            <span key={i} style={tagStyle}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Page URL */}
+      {data.page_url && (
+        <a
+          href={data.page_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "#1976d2",
+            fontSize: 12,
+            textDecoration: "underline",
+            marginTop: 2,
+            marginBottom: 2,
+            wordBreak: "break-all",
+            display: "block",
+            maxWidth: 200,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {data.page_url.replace(/^https?:\/\//, "").slice(0, 40)}
+          {data.page_url.length > 40 ? "..." : ""}
+        </a>
+      )}
+
+      {/* Footer */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: 2,
+        }}
+      >
+        {created_at && (
+          <span style={{ color: "#aaa", fontSize: 11 }}>
+            {new Date(created_at).toLocaleDateString()}
+          </span>
+        )}
+        <span
+          style={{
+            background: "#f5f6fa",
+            color: "#1976d2",
+            fontSize: 10,
+            borderRadius: 4,
+            padding: "1px 6px",
+            marginLeft: "auto",
+            fontWeight: 500,
+            letterSpacing: 0.3,
+          }}
+        >
+          {isImageAnnotationData(data)
+            ? "Image"
+            : isTextSelectionAnnotationData(data)
+              ? "Text"
+              : ""}
+        </span>
+      </div>
     </div>
   );
 };
