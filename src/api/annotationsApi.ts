@@ -1,4 +1,6 @@
+import { ForceGraphManager } from "../core/force-graph/ForceGraphManager";
 import { SceneGraph } from "../core/model/SceneGraph";
+import { getForceGraph3dInstance } from "../store/appConfigStore";
 import { supabase } from "../utils/supabaseClient";
 
 export interface Annotation {
@@ -85,7 +87,17 @@ export const loadAnnotationsToSceneGraph = async (
         type: "annotation-parent",
       });
   });
-
+  sceneGraph.setForceGraphRenderConfig({
+    ...sceneGraph.getForceGraphRenderConfig(),
+    nodeTextLabels: true,
+  });
+  if (getForceGraph3dInstance()) {
+    ForceGraphManager.applyForceGraphRenderConfig(
+      getForceGraph3dInstance()!,
+      sceneGraph.getForceGraphRenderConfig(),
+      sceneGraph
+    );
+  }
   sceneGraph.refreshDisplayConfig();
   sceneGraph.notifyGraphChanged();
 };
