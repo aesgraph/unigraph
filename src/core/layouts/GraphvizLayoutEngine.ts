@@ -1,5 +1,6 @@
 import { Graphviz } from "@hpcc-js/wasm";
 import { toDot } from "ts-graphviz";
+import { v4 as uuidv4 } from "uuid";
 import { parseGraphvizPositions } from "../../controllers/graphvisJsonParser";
 import { GraphvizOutput } from "../../controllers/graphvizHelpers";
 import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphviz";
@@ -23,29 +24,32 @@ export enum GraphvizLayoutType {
   Graphviz_nop2 = "nop2",
 }
 
-// export const graphvizLayoutLabels: Record<GraphvizLayoutType, string> = {
-//   [GraphvizLayoutType.Graphviz_circo]: "Circo",
-//   [GraphvizLayoutType.Graphviz_dot]: "Dot",
-//   [GraphvizLayoutType.Graphviz_fdp]: "Fdp",
-//   [GraphvizLayoutType.Graphviz_sfdp]: "Sfdp",
-//   [GraphvizLayoutType.Graphviz_neato]: "Neato",
-//   [GraphvizLayoutType.Graphviz_osage]: "Osage",
-//   [GraphvizLayoutType.Graphviz_patchwork]: "Patchwork",
-//   [GraphvizLayoutType.Graphviz_twopi]: "Twopi",
-//   [GraphvizLayoutType.Graphviz_nop]: "nop",
-//   [GraphvizLayoutType.Graphviz_nop2]: "nop2",
-// };
-
 export class GraphvizLayoutEngine {
   public static async computeLayout(
     sceneGraph: SceneGraph,
     layoutType: GraphvizLayoutType
   ): Promise<GraphvizOutput> {
+    // --- UUID remapping logic start ---
+    // Map original node ids to UUIDs
+    const graph = sceneGraph.getGraph();
+    const nodeIdMap: Record<string, string> = {};
+    graph
+      .getNodes()
+      .getIds()
+      .forEach((nodeId: string) => {
+        nodeIdMap[nodeId] = uuidv4();
+      });
+
+    // Helper to get UUID for a node id
+    const getUuid = (id: string) => nodeIdMap[id] || id;
+
+    // Convert scene graph to Graphviz DOT using UUIDs as node ids
     const dot = toDot(
       ConvertSceneGraphToGraphviz(
-        sceneGraph.getGraph(),
+        graph,
         { ...sceneGraph.getDisplayConfig(), nodePositions: undefined },
-        layoutType
+        layoutType,
+        getUuid // Pass a function to remap node ids to UUIDs
       )
     );
 
@@ -55,10 +59,18 @@ export class GraphvizLayoutEngine {
       await graphviz.layout(dot, "json", layoutType)
     );
     const out = parseGraphvizPositions(jsonPositions);
+
+    // Remap positions from UUIDs back to original node ids
     let positions: NodePositionData = {};
     if (out) {
+      // Reverse the nodeIdMap for lookup
+      const uuidToNodeId: Record<string, string> = {};
+      for (const [orig, uuid] of Object.entries(nodeIdMap)) {
+        uuidToNodeId[uuid] = orig;
+      }
       for (const o of out) {
-        positions[o.id] = { x: o.x, y: -o.y };
+        const origId = uuidToNodeId[o.id] || o.id;
+        positions[origId] = { x: o.x, y: -o.y };
       }
     }
     positions = translateToPositiveCoordinates(positions);
@@ -66,27 +78,7 @@ export class GraphvizLayoutEngine {
     if (svg == "") {
       throw new Error("No SVG generated from Graphviz");
     }
-    console.log("success");
-    // return normalize
     return { svg, positions };
-
-    // Write DOT file to temporary directory
-    // const dotFilePath = join(tmpdir(), "graph.dot");
-    // writeFileSync(dotFilePath, dot);
-
-    // Run Graphviz layout engine
-    // const outputFilePath = join(tmpdir(), "graph-pos.dot");
-    // execSync(
-    //   `dot -K${layoutType.toLowerCase()} -Tdot -o ${outputFilePath} ${dotFilePath}`
-    // );
-
-    // Read the output DOT file
-    // const outputDot = readFileSync(outputFilePath, "utf-8");
-
-    // Extract positions from the output DOT file
-    // const positions = this.extractPositionsFromDot(outputDot);
-
-    // return normalizePositions(positions);
   }
 
   private convertToDot(graph: any): string {
