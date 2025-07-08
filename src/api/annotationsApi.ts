@@ -1,6 +1,5 @@
-import { ForceGraphManager } from "../core/force-graph/ForceGraphManager";
 import { SceneGraph } from "../core/model/SceneGraph";
-import { getForceGraph3dInstance } from "../store/appConfigStore";
+import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
 import { supabase } from "../utils/supabaseClient";
 
 export interface TextSelectionAnnotationData {
@@ -92,31 +91,34 @@ export const loadAnnotationsToSceneGraph = async (
         label: annotation.title,
         userData: annotation,
       });
-    const parentResourceNode = sceneGraph
-      .getGraph()
-      .createNodeIfMissing(annotation.parent_resource_id, {
-        id: annotation.parent_resource_id,
-        type: annotation.parent_resource_type || "resource",
-        label: annotation.parent_resource_id,
-        userData: annotation,
-      });
-    sceneGraph
-      .getGraph()
-      .createEdgeIfMissing(annotationNode.getId(), parentResourceNode.getId(), {
-        type: "annotation-parent",
-      });
+    // const parentResourceNode = sceneGraph
+    //   .getGraph()
+    //   .createNodeIfMissing(annotation.parent_resource_id, {
+    //     id: annotation.parent_resource_id,
+    //     type: annotation.parent_resource_type || "resource",
+    //     label: annotation.parent_resource_id,
+    //     userData: annotation,
+    //   });
+    // sceneGraph
+    //   .getGraph()
+    //   .createEdgeIfMissing(annotationNode.getId(), parentResourceNode.getId(), {
+    //     type: "annotation-parent",
+    //   });
   });
   sceneGraph.setForceGraphRenderConfig({
     ...sceneGraph.getForceGraphRenderConfig(),
     nodeTextLabels: true,
   });
-  if (getForceGraph3dInstance()) {
-    ForceGraphManager.applyForceGraphRenderConfig(
-      getForceGraph3dInstance()!,
-      sceneGraph.getForceGraphRenderConfig(),
-      sceneGraph
-    );
-  }
-  sceneGraph.refreshDisplayConfig();
+  // if (getForceGraph3dInstance()) {
+  //   ForceGraphManager.applyForceGraphRenderConfig(
+  //     getForceGraph3dInstance()!,
+  //     sceneGraph.getForceGraphRenderConfig(),
+  //     sceneGraph
+  //   );
+  // }
+  const positions = extractPositionsFromNodes(sceneGraph);
+  console.log("Extracted positions from nodes:", positions);
+  // sceneGraph.setNodePositions(positions);
+  // sceneGraph.refreshDisplayConfig();
   sceneGraph.notifyGraphChanged();
 };

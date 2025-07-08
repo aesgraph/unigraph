@@ -123,6 +123,7 @@ async function handleComputeLayout(
           sceneGraph,
           layoutType as GraphvizLayoutType
         );
+        console.log("it was called here", output);
         checkCancellation();
         result = { ...output, layoutType: layoutType as GraphvizLayoutType };
       } else if (

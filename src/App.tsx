@@ -443,6 +443,7 @@ const AppContent: React.FC<{
       sceneGraph: SceneGraph,
       layout: LayoutEngineOption | string | null
     ) => {
+      console.log("Computing layout for", layout);
       // Get layout result directly from store when needed
       if (Object.keys(getSavedLayouts()).includes(layout as string)) {
         console.log("Skipping layout computation for saved layout", layout);
@@ -513,6 +514,7 @@ const AppContent: React.FC<{
       //   output.svg = svg;
       // }
       sceneGraph.getDisplayConfig().svg = output.svg;
+      console.log("setting current layout result", output);
       setCurrentLayoutResult(output);
       isComputing = false;
     },
@@ -631,6 +633,7 @@ const AppContent: React.FC<{
     (displayConfig: RenderingConfig) => {
       console.log(
         "notified changed",
+        currentSceneGraph,
         currentSceneGraph.getGraph().getNodes(),
         currentSceneGraph.getGraph().getEdges()
       );

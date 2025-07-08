@@ -128,6 +128,7 @@ export class Graph {
 
   getNode(id: NodeId): Node {
     if (!this.nodes.has(id)) {
+      console.log("nodes are ", this.nodes);
       throw Error("Unable to find node with id: " + id);
       console.warn("DEBUG: creating node with id: " + id);
       console.log(this.nodes);

@@ -44,9 +44,10 @@ export interface ISceneGraphMetadata {
 }
 
 export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
-  const displayConfig = GET_DEFAULT_RENDERING_CONFIG(new Graph());
+  const graph = new Graph();
+  const displayConfig = GET_DEFAULT_RENDERING_CONFIG(graph);
   return {
-    graph: new Graph(),
+    graph: graph,
     displayConfig: displayConfig,
     forceGraphDisplayConfig: {
       nodeTextLabels: false,

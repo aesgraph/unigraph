@@ -68,16 +68,38 @@ export class GraphvizLayoutEngine {
       for (const [orig, uuid] of Object.entries(nodeIdMap)) {
         uuidToNodeId[uuid] = orig;
       }
+      console.log("out is ", out);
       for (const o of out) {
         const origId = uuidToNodeId[o.id] || o.id;
-        positions[origId] = { x: o.x, y: -o.y };
+        // Ensure x and y are valid numbers
+        const x = typeof o.x === "number" && isFinite(o.x) ? o.x : 0;
+        const y = typeof o.y === "number" && isFinite(o.y) ? -o.y : 0;
+        positions[origId] = { x, y };
       }
     }
     positions = translateToPositiveCoordinates(positions);
     positions = scalePositionsByFactor(positions, 1.4);
+
+    // Sanitize all positions before returning
+    for (const key in positions) {
+      if (
+        typeof positions[key].x !== "number" ||
+        !isFinite(positions[key].x)
+      ) {
+        positions[key].x = 0;
+      }
+      if (
+        typeof positions[key].y !== "number" ||
+        !isFinite(positions[key].y)
+      ) {
+        positions[key].y = 0;
+      }
+    }
+
     if (svg == "") {
       throw new Error("No SVG generated from Graphviz");
     }
+    console.log("it was called here", { svg, positions });
     return { svg, positions };
   }
 
