@@ -40,10 +40,10 @@ import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
 import CustomNode from "../CustomNode";
-import AnnotationCard from "../annotations/AnnotationCard";
 
 import "@xyflow/react/dist/style.css";
 import { EdgeId } from "../../core/model/Edge";
+import ResizableAnnotationCard from "../annotations/ResizableAnnotationCard";
 import ResizerNode from "../resizerNode";
 
 // Remove the custom Node interface that was causing the type conflict
@@ -67,11 +67,7 @@ const AnnotationNode = (props: any) => {
   const annotation: Annotation | undefined = props.data?.annotation;
   if (!annotation) return <div>Invalid annotation</div>;
   console.log("valid annotation", annotation);
-  return (
-    <div style={{ minWidth: 320, maxWidth: 480 }}>
-      <AnnotationCard annotation={annotation} />
-    </div>
-  );
+  return <ResizableAnnotationCard annotation={annotation} />;
 };
 
 const nodeTypes = {

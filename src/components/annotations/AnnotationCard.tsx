@@ -96,15 +96,16 @@ const AnnotationCard: React.FC<AnnotationCardProps> = ({
         borderRadius: 10,
         boxShadow: "0 2px 8px 0 rgba(25, 118, 210, 0.07)",
         padding: compact ? "8px 10px" : "14px 18px",
-        minWidth: 160,
-        maxWidth: 260,
-        width: "fit-content",
+        minWidth: 0, // allow shrinking
+        maxWidth: "100%", // allow to fit parent
+        width: "100%", // fill parent container
         fontFamily: "inherit",
         fontSize: 13,
         color: "#222",
         display: "flex",
         flexDirection: "column",
         gap: 6,
+        boxSizing: "border-box",
         ...style,
       }}
     >
