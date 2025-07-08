@@ -41,6 +41,29 @@ const ResizableAnnotationCard: React.FC<ResizableAnnotationCardProps> = ({
     }
   }, [dimensions?.width, dimensions?.height, dimensions]);
 
+  // Handler for resizing (live update)
+  const handleResize = (_event: ResizeDragEvent, params: ResizeParams) => {
+    setSize({
+      width: params.width as number,
+      height: params.height as number,
+    });
+  };
+
+  // Handler for resize end
+  const handleResizeEnd = (_event: ResizeDragEvent, params: ResizeParams) => {
+    const newSize = {
+      width: params.width as number,
+      height: params.height as number,
+    };
+    setSize(newSize);
+    onResizeEnd?.(
+      params.x as number,
+      params.y as number,
+      newSize.width,
+      newSize.height
+    );
+  };
+
   return (
     <div
       style={{
@@ -54,19 +77,8 @@ const ResizableAnnotationCard: React.FC<ResizableAnnotationCardProps> = ({
       <NodeResizer
         minWidth={MIN_WIDTH}
         minHeight={MIN_HEIGHT}
-        onResizeEnd={(_event: ResizeDragEvent, params: ResizeParams) => {
-          const newSize = {
-            width: params.width as number,
-            height: params.height as number,
-          };
-          setSize(newSize);
-          onResizeEnd?.(
-            params.x as number,
-            params.y as number,
-            newSize.width,
-            newSize.height
-          );
-        }}
+        onResize={handleResize}
+        onResizeEnd={handleResizeEnd}
         isVisible
         color="#1976d2"
         lineStyle={{ borderStyle: "dashed" }}
