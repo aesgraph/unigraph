@@ -55,7 +55,9 @@ const StoryCard: React.FC<StoryCardProps> = ({
                 node={child}
                 onClick={() => onSelectChild && onSelectChild(child)}
                 markdownContent={
-                  child.markdownFile ? markdownContents[child.markdownFile] : undefined
+                  child.markdownFile
+                    ? markdownContents[child.markdownFile]
+                    : undefined
                 }
               />
             ))}
