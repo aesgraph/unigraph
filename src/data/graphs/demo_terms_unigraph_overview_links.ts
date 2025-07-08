@@ -1,4 +1,4 @@
-import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutType";
 import { mergeIntoSceneGraph } from "../../core/model/mergeSceneGraphs";
 import { NodeId } from "../../core/model/Node";
 import { SceneGraph } from "../../core/model/SceneGraph";

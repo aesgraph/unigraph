@@ -152,6 +152,7 @@ export const getSavedLayouts = () => {
 
 // Layout result actions
 export const setCurrentLayoutResult = (result: ILayoutEngineResult | null) => {
+  console.log("setting current layout result", result);
   useActiveLayoutStore.getState().setCurrentLayoutResult(result);
 };
 

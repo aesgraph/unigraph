@@ -1,5 +1,5 @@
 import { RenderingManager__DisplayMode } from "./controllers/RenderingManager";
-import { CustomLayoutType } from "./core/layouts/CustomLayoutEngine";
+import { GraphvizLayoutType } from "./core/layouts/GraphvizLayoutType";
 import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
 import { Filter } from "./store/activeFilterStore";
 import { ISidebarConfig } from "./store/workspaceConfigStore";
@@ -29,15 +29,15 @@ export type AppConfig = {
 
 export const DEFAULT_APP_CONFIG = (): AppConfig => {
   return {
-    activeView: "ForceGraph3d",
+    activeView: "ReactFlow",
     activeSceneGraph: "AcademicsKG",
     windows: {
       showEntityDataCard: false,
     },
     forceGraph3dOptions: {
-      layout: "Physics",
+      layout: "Layout",
     },
-    activeLayout: CustomLayoutType.Circular,
+    activeLayout: GraphvizLayoutType.Graphviz_dot,
     legendMode: "type",
     activeFilter: null,
   };

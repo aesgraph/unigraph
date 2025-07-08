@@ -90,6 +90,7 @@ export const loadAnnotationsToSceneGraph = async (
         type: "annotation",
         label: annotation.title,
         userData: annotation,
+        position: { x: 0, y: 0 },
       });
     // const parentResourceNode = sceneGraph
     //   .getGraph()
@@ -118,7 +119,9 @@ export const loadAnnotationsToSceneGraph = async (
   // }
   const positions = extractPositionsFromNodes(sceneGraph);
   console.log("Extracted positions from nodes:", positions);
-  // sceneGraph.setNodePositions(positions);
-  // sceneGraph.refreshDisplayConfig();
+  //
+  sceneGraph.refreshDisplayConfig();
+  sceneGraph.setNodePositions(positions);
+  console.log("sceneGraph after loading annotations", sceneGraph);
   sceneGraph.notifyGraphChanged();
 };

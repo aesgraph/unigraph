@@ -16,7 +16,7 @@ import ReactFlowConfigEditor from "../components/react-flow/ReactFlowConfigEdito
 import ProfileIcon from "../components/user/ProfileIcon";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";
 import {
   LayoutEngineOption,
   PresetLayoutType,

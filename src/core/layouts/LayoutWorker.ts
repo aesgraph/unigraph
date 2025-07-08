@@ -5,10 +5,8 @@ import {
   GraphologyLayoutEngine,
   GraphologyLayoutType,
 } from "./GraphologyLayoutEngine";
-import {
-  GraphvizLayoutEngine,
-  GraphvizLayoutType,
-} from "./GraphvizLayoutEngine";
+import { GraphvizLayoutEngine } from "./GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "./GraphvizLayoutType";
 import { ILayoutEngineResult, LayoutEngineOption } from "./layoutEngineTypes";
 
 // Define message format for the worker

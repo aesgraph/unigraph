@@ -593,6 +593,8 @@ const AppContent: React.FC<{
   const initializeForceGraph = useCallback(() => {
     console.log(
       "Creating new force graph instance...",
+      currentSceneGraph.getDisplayConfig(),
+      getActiveLayoutResult()?.positions,
       currentSceneGraph.getDisplayConfig().nodePositions ??
         getActiveLayoutResult()?.positions,
       forceGraph3dOptions.layout
@@ -687,10 +689,11 @@ const AppContent: React.FC<{
           GetCurrentDisplayConfigOf(graph.getDisplayConfig(), "Edge")
         );
         setGraphStatistics(getGraphStatistics(graph.getGraph()));
-
+        console.log("binding listeners to new graph", graph);
         graph.bindListeners({
           onDisplayConfigChanged: handleDisplayConfigChanged,
           onGraphChanged: (g) => {
+            console.log("graph changed", g);
             setGraphStatistics(getGraphStatistics(g));
             if (forceGraphInstance) {
               syncMissingNodesAndEdgesInForceGraph(forceGraphInstance, graph);

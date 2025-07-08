@@ -1,4 +1,4 @@
-import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutType";
 import { Graph } from "../../core/model/Graph";
 import { SceneGraph } from "../../core/model/SceneGraph";
 

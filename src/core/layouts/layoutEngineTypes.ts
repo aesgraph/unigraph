@@ -1,6 +1,6 @@
 import { CustomLayoutType } from "./CustomLayoutEngine";
 import { GraphologyLayoutType } from "./GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "./GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "./GraphvizLayoutType";
 import { NodePositionData } from "./layoutHelpers";
 
 export enum PresetLayoutType {

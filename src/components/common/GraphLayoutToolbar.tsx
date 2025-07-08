@@ -1,7 +1,7 @@
 import React from "react";
 import { CustomLayoutType } from "../../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../../core/layouts/GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutType";
 import {
   LayoutEngineOption,
   PresetLayoutType,

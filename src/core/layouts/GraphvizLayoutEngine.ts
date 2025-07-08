@@ -5,24 +5,12 @@ import { parseGraphvizPositions } from "../../controllers/graphvisJsonParser";
 import { GraphvizOutput } from "../../controllers/graphvizHelpers";
 import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphviz";
 import { SceneGraph } from "../model/SceneGraph";
+import { GraphvizLayoutType } from "./GraphvizLayoutType";
 import {
   NodePositionData,
   scalePositionsByFactor,
   translateToPositiveCoordinates,
 } from "./layoutHelpers";
-
-export enum GraphvizLayoutType {
-  Graphviz_circo = "circo",
-  Graphviz_dot = "dot",
-  Graphviz_fdp = "fdp",
-  Graphviz_sfdp = "sfdp",
-  Graphviz_neato = "neato",
-  Graphviz_osage = "osage",
-  Graphviz_patchwork = "patchwork",
-  Graphviz_twopi = "twopi",
-  Graphviz_nop = "nop",
-  Graphviz_nop2 = "nop2",
-}
 
 export class GraphvizLayoutEngine {
   public static async computeLayout(
@@ -82,16 +70,10 @@ export class GraphvizLayoutEngine {
 
     // Sanitize all positions before returning
     for (const key in positions) {
-      if (
-        typeof positions[key].x !== "number" ||
-        !isFinite(positions[key].x)
-      ) {
+      if (typeof positions[key].x !== "number" || !isFinite(positions[key].x)) {
         positions[key].x = 0;
       }
-      if (
-        typeof positions[key].y !== "number" ||
-        !isFinite(positions[key].y)
-      ) {
+      if (typeof positions[key].y !== "number" || !isFinite(positions[key].y)) {
         positions[key].y = 0;
       }
     }

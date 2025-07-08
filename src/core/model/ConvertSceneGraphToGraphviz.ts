@@ -4,7 +4,7 @@ import {
   RenderingManager,
 } from "../../controllers/RenderingManager";
 import { getNodeIsVisible } from "../../store/activeLegendConfigStore";
-import { GraphvizLayoutType } from "../layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../layouts/GraphvizLayoutType";
 import { LayoutEngineOption } from "../layouts/layoutEngineTypes";
 import { Graph } from "./Graph";
 

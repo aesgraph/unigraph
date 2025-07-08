@@ -29,7 +29,7 @@ import { createSongVisualizationTimeline } from "../core/force-graph/dynamics/so
 import { transitionToConfig } from "../core/force-graph/dynamics/transition";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";
 import { Compute_Layout } from "../core/layouts/LayoutEngine";
 import { DisplayManager } from "../core/model/DisplayManager";
 import { SceneGraph } from "../core/model/SceneGraph";
@@ -228,6 +228,7 @@ export class MenuConfig {
                 }
                 console.log("Loading annotations for user:", data.user.id);
                 loadAnnotationsToSceneGraph(data.user.id, this.sceneGraph);
+                console.log("Annotations loaded", this.sceneGraph);
               });
             },
           },
