@@ -1,5 +1,8 @@
+import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
+import { setActiveView } from "../store/appConfigStore";
+import { computeLayoutAndTriggerAppUpdate } from "../store/sceneGraphHooks";
 import { supabase } from "../utils/supabaseClient";
 
 export interface TextSelectionAnnotationData {
@@ -123,5 +126,11 @@ export const loadAnnotationsToSceneGraph = async (
   sceneGraph.refreshDisplayConfig();
   sceneGraph.setNodePositions(positions);
   console.log("sceneGraph after loading annotations", sceneGraph);
+  setActiveView("ReactFlow");
+  computeLayoutAndTriggerAppUpdate(
+    sceneGraph,
+    GraphvizLayoutType.Graphviz_dot,
+    undefined // No specific node selection for now)
+  );
   sceneGraph.notifyGraphChanged();
 };
