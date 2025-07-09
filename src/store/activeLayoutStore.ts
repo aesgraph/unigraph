@@ -152,7 +152,11 @@ export const getSavedLayouts = () => {
 
 // Layout result actions
 export const setCurrentLayoutResult = (result: ILayoutEngineResult | null) => {
-  console.log("setting current layout result", result);
+  console.log("before", JSON.parse(JSON.stringify(result)));
+  console.log("setting current layout result to", result);
+  // if (result) {
+  //   result.positions = JSON.parse((result as any).serialization || "{}"); // Ensure positions are parsed correctly
+  // }
   useActiveLayoutStore.getState().setCurrentLayoutResult(result);
 };
 

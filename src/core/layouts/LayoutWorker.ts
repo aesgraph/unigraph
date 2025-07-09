@@ -121,7 +121,7 @@ async function handleComputeLayout(
           sceneGraph,
           layoutType as GraphvizLayoutType
         );
-        console.log("it was called here", output);
+        console.log("it was obtained by LayoutWorker", output);
         checkCancellation();
         result = { ...output, layoutType: layoutType as GraphvizLayoutType };
       } else if (
@@ -148,6 +148,7 @@ async function handleComputeLayout(
 
     clearInterval(progressInterval);
     activeComputations.delete(id);
+    console.log("returning result here", result);
     return result!;
   } catch (error) {
     clearInterval(progressInterval);
@@ -172,7 +173,6 @@ self.onmessage = async (e: MessageEvent<LayoutWorkerMessage>) => {
       // Start the computation
       try {
         const result = await handleComputeLayout(message);
-
         // Send complete result back
         self.postMessage({
           id: message.id,

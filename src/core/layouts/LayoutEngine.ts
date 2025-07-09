@@ -23,7 +23,7 @@ import { ILayoutEngineResult, LayoutEngineOption } from "./layoutEngineTypes";
 const pendingComputations = new Map<
   string,
   {
-    resolve: (result: ILayoutEngineResult) => void;
+    resolve_layout: (result: ILayoutEngineResult) => void;
     reject: (error: Error) => void;
   }
 >();
@@ -43,6 +43,7 @@ function getLayoutWorker(): Worker {
       layoutWorker!.onmessage = (e: MessageEvent) => {
         const response = e.data;
         const pendingComputation = pendingComputations.get(response.id);
+        console.log("response here is ", JSON.parse(JSON.stringify(response)));
 
         // Handle different message types
         if (response.type === "progress") {
@@ -66,7 +67,7 @@ function getLayoutWorker(): Worker {
           if (response.error) {
             pendingComputation.reject(new Error(response.error));
           } else {
-            pendingComputation.resolve(response.result);
+            pendingComputation.resolve_layout(response.result);
           }
           pendingComputations.delete(response.id);
         }
@@ -160,7 +161,6 @@ export class LayoutEngine {
         sceneGraphRef,
         layoutType
       );
-      console.log("received result from worker (raw):", result);
       // Add a check for NaN
       if (result && result.positions) {
         for (const key in result.positions) {
@@ -264,7 +264,7 @@ export class LayoutEngine {
 
         // Store the callbacks
         pendingComputations.set(workerId, {
-          resolve: (result) => {
+          resolve_layout: (result) => {
             console.log("Layout computation resolved:", workerId);
             finishLayoutJob();
             resolve(result);

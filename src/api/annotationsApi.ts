@@ -92,19 +92,19 @@ export const loadAnnotationsToSceneGraph = async (
         userData: annotation,
         position: { x: 0, y: 0 },
       });
-    // const parentResourceNode = sceneGraph
-    //   .getGraph()
-    //   .createNodeIfMissing(annotation.parent_resource_id, {
-    //     id: annotation.parent_resource_id,
-    //     type: annotation.parent_resource_type || "resource",
-    //     label: annotation.parent_resource_id,
-    //     userData: annotation,
-    //   });
-    // sceneGraph
-    //   .getGraph()
-    //   .createEdgeIfMissing(annotationNode.getId(), parentResourceNode.getId(), {
-    //     type: "annotation-parent",
-    //   });
+    const parentResourceNode = sceneGraph
+      .getGraph()
+      .createNodeIfMissing(annotation.parent_resource_id, {
+        id: annotation.parent_resource_id,
+        type: annotation.parent_resource_type || "resource",
+        label: annotation.parent_resource_id,
+        userData: annotation,
+      });
+    sceneGraph
+      .getGraph()
+      .createEdgeIfMissing(annotationNode.getId(), parentResourceNode.getId(), {
+        type: "annotation-parent",
+      });
   });
   sceneGraph.setForceGraphRenderConfig({
     ...sceneGraph.getForceGraphRenderConfig(),

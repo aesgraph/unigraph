@@ -43,7 +43,7 @@ const AnnotationCard: React.FC<AnnotationCardProps> = ({
   style = {},
   compact = false,
 }) => {
-  console.log("Rendering AnnotationCard for:", annotation);
+  // console.log("Rendering AnnotationCard for:", annotation);
   const { data, title, created_at } = annotation;
   const tags = Array.isArray(data?.tags) ? data.tags : [];
 

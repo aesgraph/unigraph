@@ -66,7 +66,7 @@ interface ReactFlowPanelProps {
 const AnnotationNode = (props: any) => {
   const annotation: Annotation | undefined = props.data?.annotation;
   if (!annotation) return <div>Invalid annotation</div>;
-  console.log("valid annotation", annotation);
+  // console.log("valid annotation", annotation);
   return <ResizableAnnotationCard annotation={annotation} />;
 };
 

@@ -81,7 +81,6 @@ export class GraphvizLayoutEngine {
     if (svg == "") {
       throw new Error("No SVG generated from Graphviz");
     }
-    console.log("it was called here", { svg, positions });
     return { svg, positions };
   }
 
