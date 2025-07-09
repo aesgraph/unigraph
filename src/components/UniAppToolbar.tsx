@@ -23,7 +23,7 @@ interface UniAppToolbarProps {
   isDarkMode?: boolean;
   onHighlight?: (nodeId: string) => void;
   activeView: string;
-  onViewChange: (view: string) => void;
+  onViewChange: (view: string, fitToView: boolean) => void;
   selectedSimulation: string;
   simulationList: string[];
   style?: React.CSSProperties;

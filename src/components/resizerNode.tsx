@@ -18,7 +18,7 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
     height: data.dimensions?.height || 50,
   });
 
-  console.log("RENDERING RESIZER NODE", data.label);
+  // console.log("RENDERING RESIZER NODE", data.label);
 
   // Add effect to update dimensions when props change
   useEffect(() => {

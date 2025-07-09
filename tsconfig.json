@@ -10,7 +10,8 @@
     "outDir": "./dist",
     "lib": ["ES2021", "DOM"],
     "typeRoots": ["./node_modules/@types", "./types"],
-    "inlineSourceMap": true
+    "inlineSources": true,
+    "sourceMap": true
   },
   "include": ["src/**/*", "src/declaration.d.ts"]
 }

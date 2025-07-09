@@ -27,9 +27,11 @@ import {
   SetNodeAndEdgeLegendsForOnlyVisibleEntities,
 } from "./activeLegendConfigStore";
 import {
+  getActiveView,
   getCurrentSceneGraph,
   getForceGraphInstance,
   getLegendMode,
+  getReactFlowInstance,
   setActiveFilter,
 } from "./appConfigStore";
 import {
@@ -198,4 +200,15 @@ export const clearFiltersOnAppInstance = () => {
   DisplayManager.setAllVisible(currentSceneGraph.getGraph());
   ResetNodeAndEdgeLegends(currentSceneGraph);
   setActiveFilter(null);
+};
+
+export const handleReactFlowFitView = (
+  padding: number = 0.1,
+  duration: number = 0
+) => {
+  if (getActiveView() === "ReactFlow" && getReactFlowInstance()) {
+    setTimeout(() => {
+      getReactFlowInstance()?.fitView({ padding, duration });
+    }, 0);
+  }
 };

@@ -30,6 +30,8 @@ export type AppConfigActions = {
   setShowEntityDataCard: (showEntityDataCard: boolean) => void;
   setLegendMode: (legendMode: RenderingManager__DisplayMode) => void;
   getLegendMode: () => RenderingManager__DisplayMode;
+  setAutoFitView: (enabled: boolean) => void;
+  getAutoFitView: () => boolean;
 };
 
 export type AppState = AppConfig &
@@ -37,6 +39,7 @@ export type AppState = AppConfig &
     isDarkMode: boolean;
     selectedSimulation: string;
     previousView: string | null;
+    autoFitView: boolean;
 
     activeProjectId: string | null;
     getActiveProjectId: () => string | null;
@@ -106,6 +109,7 @@ const useAppConfigStore = create<AppState>((set) => ({
   isDarkMode: false,
   selectedSimulation: "Lumina",
   legendMode: DEFAULTS.legendMode,
+  autoFitView: true,
 
   setActiveView: (activeView: ActiveView) =>
     set({ previousView: useAppConfigStore.getState().activeView, activeView }),
@@ -135,6 +139,8 @@ const useAppConfigStore = create<AppState>((set) => ({
     set({ legendMode }),
   getLegendMode: (): RenderingManager__DisplayMode =>
     useAppConfigStore.getState().legendMode,
+  setAutoFitView: (autoFitView: boolean) => set({ autoFitView }),
+  getAutoFitView: (): boolean => useAppConfigStore.getState().autoFitView,
 }));
 
 export const setActiveView = (activeView: ActiveView) => {
@@ -317,6 +323,16 @@ export const setPreviousView = (previousView: string | null) => {
 };
 export const getPreviousView = () => {
   return useAppConfigStore.getState().previousView;
+};
+
+export const setAutoFitView = (autoFitView: boolean) => {
+  useAppConfigStore.setState(() => ({
+    autoFitView,
+  }));
+};
+
+export const getAutoFitView = () => {
+  return useAppConfigStore.getState().autoFitView;
 };
 
 export default useAppConfigStore;

@@ -3,7 +3,7 @@ import { getSelectedNodeIds } from "../../store/graphInteractionStore";
 
 interface GraphViewTabsProps {
   activeView: string;
-  onViewChange: (view: string) => void;
+  onViewChange: (view: string, fitToView: boolean) => void;
   simulationList: string[];
   selectedSimulation: string;
 }
@@ -31,7 +31,7 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
         <button
           className={`tab ${activeView === "Editor" ? "active" : ""}`}
           style={{ maxWidth: "10px" }}
-          onClick={() => onViewChange("Editor")}
+          onClick={() => onViewChange("Editor", true)}
         >
           Editor
         </button>
@@ -39,39 +39,39 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
       <button
         className={`tab ${activeView === "Yasgui" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("Yasgui")}
+        onClick={() => onViewChange("Yasgui", true)}
       >
         Yasgui
       </button>
       <button
         className={`tab ${activeView === "Gallery" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("Gallery")}
+        onClick={() => onViewChange("Gallery", true)}
       >
         Gallery
       </button>
       <button
         className={`tab ${activeView === "Graphviz" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("Graphviz")}
+        onClick={() => onViewChange("Graphviz", true)}
       >
         Graphviz
       </button>
       <button
         className={`tab ${activeView === "ForceGraph3d" ? "active" : ""}`}
-        onClick={() => onViewChange("ForceGraph3d")}
+        onClick={() => onViewChange("ForceGraph3d", true)}
       >
         3D
       </button>
       <button
         className={`tab ${activeView === "ReactFlow" ? "active" : ""}`}
-        onClick={() => onViewChange("ReactFlow")}
+        onClick={() => onViewChange("ReactFlow", true)}
       >
         Flow
       </button>
       <button
         className={`tab ${isSimulation ? "active" : ""}`}
-        onClick={() => onViewChange(selectedSimulation)}
+        onClick={() => onViewChange(selectedSimulation, true)}
       >
         Sim
       </button>

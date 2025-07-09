@@ -1,8 +1,15 @@
 import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
-import { setActiveView } from "../store/appConfigStore";
-import { computeLayoutAndTriggerAppUpdate } from "../store/sceneGraphHooks";
+import {
+  getActiveView,
+  getAutoFitView,
+  setAutoFitView,
+} from "../store/appConfigStore";
+import {
+  computeLayoutAndTriggerAppUpdate,
+  handleReactFlowFitView,
+} from "../store/sceneGraphHooks";
 import { supabase } from "../utils/supabaseClient";
 
 export interface TextSelectionAnnotationData {
@@ -81,56 +88,73 @@ export const loadAnnotationsToSceneGraph = async (
   sceneGraph: SceneGraph
 ) => {
   console.log("Loading annotations for user:", userId);
-  const annotations = await listAnnotations({
-    userId,
-  });
-  console.log("annotations retrieved:", annotations);
-  annotations.forEach((annotation) => {
-    const annotationNode = sceneGraph
-      .getGraph()
-      .createNodeIfMissing(annotation.id, {
-        id: annotation.id,
-        type: "annotation",
-        label: annotation.title,
-        userData: annotation,
-        position: { x: 0, y: 0 },
-      });
-    const parentResourceNode = sceneGraph
-      .getGraph()
-      .createNodeIfMissing(annotation.parent_resource_id, {
-        id: annotation.parent_resource_id,
-        type: annotation.parent_resource_type || "resource",
-        label: annotation.parent_resource_id,
-        userData: annotation,
-      });
-    sceneGraph
-      .getGraph()
-      .createEdgeIfMissing(annotationNode.getId(), parentResourceNode.getId(), {
-        type: "annotation-parent",
-      });
-  });
-  sceneGraph.setForceGraphRenderConfig({
-    ...sceneGraph.getForceGraphRenderConfig(),
-    nodeTextLabels: true,
-  });
-  // if (getForceGraph3dInstance()) {
-  //   ForceGraphManager.applyForceGraphRenderConfig(
-  //     getForceGraph3dInstance()!,
-  //     sceneGraph.getForceGraphRenderConfig(),
-  //     sceneGraph
-  //   );
-  // }
-  const positions = extractPositionsFromNodes(sceneGraph);
-  console.log("Extracted positions from nodes:", positions);
-  //
-  sceneGraph.refreshDisplayConfig();
-  sceneGraph.setNodePositions(positions);
-  console.log("sceneGraph after loading annotations", sceneGraph);
-  setActiveView("ReactFlow");
-  computeLayoutAndTriggerAppUpdate(
-    sceneGraph,
-    GraphvizLayoutType.Graphviz_dot,
-    undefined // No specific node selection for now)
-  );
-  sceneGraph.notifyGraphChanged();
+
+  // Disable auto-fitview and set processing flag to prevent ReactFlow updates
+  const wasAutoFitViewEnabled = getAutoFitView();
+  setAutoFitView(false);
+
+  try {
+    const annotations = await listAnnotations({
+      userId,
+    });
+    console.log("annotations retrieved:", annotations);
+    annotations.forEach((annotation) => {
+      const annotationNode = sceneGraph
+        .getGraph()
+        .createNodeIfMissing(annotation.id, {
+          id: annotation.id,
+          type: "annotation",
+          label: annotation.title,
+          userData: annotation,
+          position: { x: 0, y: 0 },
+        });
+      const parentResourceNode = sceneGraph
+        .getGraph()
+        .createNodeIfMissing(annotation.parent_resource_id, {
+          id: annotation.parent_resource_id,
+          type: annotation.parent_resource_type || "resource",
+          label: annotation.parent_resource_id,
+          userData: annotation,
+        });
+      sceneGraph
+        .getGraph()
+        .createEdgeIfMissing(
+          annotationNode.getId(),
+          parentResourceNode.getId(),
+          {
+            type: "annotation-parent",
+          }
+        );
+    });
+    sceneGraph.setForceGraphRenderConfig({
+      ...sceneGraph.getForceGraphRenderConfig(),
+      nodeTextLabels: true,
+    });
+    // if (getForceGraph3dInstance()) {
+    //   ForceGraphManager.applyForceGraphRenderConfig(
+    //     getForceGraph3dInstance()!,
+    //     sceneGraph.getForceGraphRenderConfig(),
+    //     sceneGraph
+    //   );
+    // }
+    const positions = extractPositionsFromNodes(sceneGraph);
+    console.log("Extracted positions from nodes:", positions);
+    //
+    sceneGraph.refreshDisplayConfig();
+    // sceneGraph.setNodePositions(positions);
+    console.log("sceneGraph after loading annotations", sceneGraph);
+    if (getActiveView() === "ReactFlow") {
+      await computeLayoutAndTriggerAppUpdate(
+        sceneGraph,
+        GraphvizLayoutType.Graphviz_dot,
+        undefined // No specific node selection for now)
+      );
+    }
+
+    sceneGraph.notifyGraphChanged();
+  } finally {
+    // Restore the original auto-fitview setting and clear processing flag
+    setAutoFitView(wasAutoFitViewEnabled);
+    handleReactFlowFitView(0.1);
+  }
 };

@@ -118,6 +118,7 @@ import useActiveLegendConfigStore, {
 } from "./store/activeLegendConfigStore";
 import useAppConfigStore, {
   getActiveView,
+  getAutoFitView,
   getCurrentSceneGraph,
   getForceGraphInstance,
   getLegendMode,
@@ -351,7 +352,7 @@ const AppContent: React.FC<{
 
   const handleReactFlowFitView = useCallback(
     (padding: number = 0.1, duration: number = 0) => {
-      if (activeView === "ReactFlow" && reactFlowInstance) {
+      if (activeView === "ReactFlow" && reactFlowInstance && getAutoFitView()) {
         setTimeout(() => {
           reactFlowInstance.fitView({ padding, duration });
         }, 0);
@@ -389,19 +390,19 @@ const AppContent: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout]);
 
-  useEffect(() => {
-    if (activeView === "ReactFlow" && reactFlowInstance) {
-      if (getPreviousView() !== "Editor") {
-        handleReactFlowFitView();
-      }
-    }
-  }, [
-    nodeLegendConfig,
-    edgeLegendConfig,
-    activeView,
-    handleReactFlowFitView,
-    reactFlowInstance,
-  ]);
+  // useEffect(() => {
+  //   if (activeView === "ReactFlow" && reactFlowInstance) {
+  //     if (getPreviousView() !== "Editor") {
+  //       handleReactFlowFitView();
+  //     }
+  //   }
+  // }, [
+  //   nodeLegendConfig,
+  //   edgeLegendConfig,
+  //   activeView,
+  //   handleReactFlowFitView,
+  //   reactFlowInstance,
+  // ]);
 
   const handleMouseHoverLegendItem = useCallback(
     (type: GraphEntityType) =>
@@ -814,6 +815,7 @@ const AppContent: React.FC<{
 
   const handleFitToView = useCallback(
     (activeView: string, duration: number = 0) => {
+      console.log("Fitting to view for", activeView);
       if (activeView === "Graphviz" && graphvizRef.current) {
         graphvizFitToView(graphvizRef.current);
       } else if (activeView === "ForceGraph3d" && forceGraphInstance) {
@@ -958,10 +960,12 @@ const AppContent: React.FC<{
   ]);
 
   const handleSetActiveView = useCallback(
-    (key: string) => {
+    (key: string, fitToView: boolean = false) => {
       console.log("Setting active view", key);
       setActiveView(key);
-      handleFitToView(key);
+      if (fitToView) {
+        handleFitToView(key);
+      }
       const url = new URL(window.location.href);
       url.searchParams.set("view", key);
       window.history.pushState({}, "", url.toString());
@@ -984,7 +988,7 @@ const AppContent: React.FC<{
       actions[key] = {
         action: () => {
           setSelectedSimulation(key);
-          handleSetActiveView(key);
+          handleSetActiveView(key, true);
         },
       };
     }
@@ -1225,7 +1229,10 @@ const AppContent: React.FC<{
           onLoad={(instance) => {
             if (reactFlowInstance !== instance) {
               setReactFlowInstance(instance);
-              setTimeout(() => handleReactFlowFitView(), 100);
+              console.log("React Flow instance set", instance);
+              if (getAutoFitView()) {
+                setTimeout(() => handleReactFlowFitView(), 100);
+              }
             }
           }}
           onNodesContextMenu={(event, nodeIds) =>
