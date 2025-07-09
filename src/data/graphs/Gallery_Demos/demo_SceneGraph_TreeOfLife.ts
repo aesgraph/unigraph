@@ -375,6 +375,3 @@ export const demo_SceneGraph_TreeOfLife = async (
     maxNodes,
     maxEdges
   );
-
-// Default export uses sample data with default limits
-export default async () => await createTreeOfLifeSceneGraph();
