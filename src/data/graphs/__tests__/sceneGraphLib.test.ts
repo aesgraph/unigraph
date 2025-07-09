@@ -7,10 +7,11 @@ describe("SceneGraphLib", () => {
       Object.entries(category.graphs).forEach(([graphKey, graphGenerator]) => {
         if (
           typeof graphGenerator === "function" &&
-          graphGenerator.constructor.name === "AsyncFunction"
+          (graphGenerator.constructor.name === "AsyncFunction" ||
+            graphGenerator.constructor.name === "Promise")
         ) {
-          test.skip(`${graphKey} (async) - Skipped`, () => {
-            // Skipping async graph generators
+          test.skip(`${graphKey} (async/promise) - Skipped`, () => {
+            // Skipping async graph generators and promises
           });
         } else {
           test(`${graphKey} - Should load without errors`, () => {

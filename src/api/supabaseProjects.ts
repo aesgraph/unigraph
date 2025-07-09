@@ -22,11 +22,18 @@ export async function saveProjectToSupabase(sceneGraph: SceneGraph) {
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError || !userData?.user?.id) throw new Error("User not logged in");
 
+  // Serialize to JSON string first, then parse to get the plain object
+  const serializedData = serializeSceneGraphToJson(sceneGraph);
+  const dataObject = JSON.parse(serializedData);
+  console.log("Serialized data is ", serializedData);
+
   const project: SupabaseProject = {
-    id: uuid4(),
+    id: uuid4(), // Always generate new ID for new projects
     name: metadata.name || "Untitled",
     description: metadata.description || null,
-    data: sceneGraph ? serializeSceneGraphToJson(sceneGraph) : sceneGraph,
+    created_at: new Date().toISOString(),
+    last_updated_at: new Date().toISOString(),
+    data: dataObject, // Store as plain object, not JSON string
     user_id: userData.user.id,
   };
   // Upsert the project by id
@@ -81,11 +88,13 @@ export async function getProject(params: {
 
 export const toSceneGraph = (project: SupabaseProject): SceneGraph => {
   if (!project.data) throw new Error("Project data is empty");
-  // Always pass a string to fromJSON
-  const dataStr =
-    typeof project === "string" ? project : JSON.stringify(project);
-  console.log("Deserialized sceneGraph:", dataStr);
-  const sceneGraph = deserializeSceneGraphFromJson(dataStr);
+
+  // project.data should now be a plain object, but handle both cases for backward compatibility
+  const graphData =
+    typeof project.data === "string" ? JSON.parse(project.data) : project.data;
+
+  console.log("Deserializing sceneGraph from:", graphData);
+  const sceneGraph = deserializeSceneGraphFromJson(JSON.stringify(graphData));
 
   sceneGraph.setMetadata({
     name: project.name,
