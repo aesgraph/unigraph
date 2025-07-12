@@ -398,17 +398,6 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
           </button>
           <button
             className={`${styles.tabButton} ${
-              activeTab === "File" ? styles.activeTab : ""
-            }`}
-            onClick={() => {
-              setActiveTab("File");
-              setUserSelectedTab(true);
-            }}
-          >
-            File
-          </button>
-          <button
-            className={`${styles.tabButton} ${
               activeTab === "Demos" ? styles.activeTab : ""
             }`}
             onClick={() => {
@@ -417,6 +406,17 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
             }}
           >
             Demos
+          </button>
+          <button
+            className={`${styles.tabButton} ${
+              activeTab === "File" ? styles.activeTab : ""
+            }`}
+            onClick={() => {
+              setActiveTab("File");
+              setUserSelectedTab(true);
+            }}
+          >
+            File
           </button>
           <button
             className={`${styles.tabButton} ${
