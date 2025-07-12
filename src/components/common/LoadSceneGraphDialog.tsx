@@ -226,6 +226,16 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
 
   const handleSelect = (key: string) => {
     onSelect(key);
+  };
+
+  const handleCreateNewProject = () => {
+    const newSceneGraph = new SceneGraph({
+      metadata: {
+        name: "New Project",
+        description: "A new empty project",
+      },
+    });
+    handleLoadSceneGraph(newSceneGraph);
     onClose();
   };
 
@@ -357,9 +367,18 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
       <div className={styles.dialog}>
         <div className={styles.header}>
           <h2>Load Scene Graph</h2>
-          <button onClick={onClose} className={styles.closeButton}>
-            ×
-          </button>
+          <div className={styles.headerButtons}>
+            <button
+              onClick={handleCreateNewProject}
+              className={styles.newProjectButton}
+              title="Create a new empty project"
+            >
+              New Project
+            </button>
+            <button onClick={onClose} className={styles.closeButton}>
+              ×
+            </button>
+          </div>
         </div>
         <div className={styles.tabs}>
           <button

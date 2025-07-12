@@ -35,6 +35,35 @@
   margin-bottom: 16px;
 }
 
+.headerButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.newProjectButton {
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #347bcd;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.newProjectButton:hover {
+  background: #2a62a3;
+}
+
+.dark .newProjectButton {
+  background: #4a90e2;
+}
+
+.dark .newProjectButton:hover {
+  background: #3a7bc8;
+}
+
 .header h2 {
   margin: 0;
 }
