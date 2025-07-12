@@ -363,8 +363,11 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
   );
 
   return (
-    <div className={`${styles.overlay} ${isDarkMode ? styles.dark : ""}`}>
-      <div className={styles.dialog}>
+    <div
+      className={`${styles.overlay} ${isDarkMode ? styles.dark : ""}`}
+      onClick={onClose}
+    >
+      <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2>Load Scene Graph</h2>
           <div className={styles.headerButtons}>
