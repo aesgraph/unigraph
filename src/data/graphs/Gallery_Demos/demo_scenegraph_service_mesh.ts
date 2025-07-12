@@ -1,3 +1,4 @@
+import { DEFAULT_APP_CONFIG } from "../../../AppConfig";
 import { Graph } from "../../../core/model/Graph";
 import { SceneGraph } from "../../../core/model/SceneGraph";
 
@@ -77,6 +78,13 @@ export const demo_scenegraph_service_mesh_1 = () => {
     metadata: {
       name: "Service Mesh",
       description: "A visualization of a service mesh topology.",
+    },
+    defaultAppConfig: {
+      ...DEFAULT_APP_CONFIG(),
+      activeView: "ForceGraph3d",
+      forceGraph3dOptions: {
+        layout: "Physics",
+      },
     },
   });
 };
