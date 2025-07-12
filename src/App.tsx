@@ -475,7 +475,8 @@ const AppContent = ({
   const safeComputeLayout = useCallback(
     async (
       sceneGraph: SceneGraph,
-      layout: LayoutEngineOption | string | null
+      layout: LayoutEngineOption | string | null,
+      forceGraph3dOptionsLayoutModeToSet: "Layout" | "Physics" = "Layout"
     ) => {
       console.log("Computing layout for", layout);
 
@@ -494,10 +495,13 @@ const AppContent = ({
         currentSceneGraph.setNodePositions(
           getLayoutByName(layout as string).positions
         );
-        setCurrentLayoutResult({
-          layoutType: layout!,
-          positions: getLayoutByName(layout as string).positions,
-        });
+        setCurrentLayoutResult(
+          {
+            layoutType: layout!,
+            positions: getLayoutByName(layout as string).positions,
+          },
+          forceGraph3dOptionsLayoutModeToSet
+        );
         return;
       }
       if (
@@ -520,7 +524,10 @@ const AppContent = ({
         console.log("Applying positions stored in graph nodes");
         const positions = extractPositionsFromNodes(sceneGraph);
         currentSceneGraph.setNodePositions(positions);
-        setCurrentLayoutResult({ positions, layoutType: layout });
+        setCurrentLayoutResult(
+          { positions, layoutType: layout },
+          forceGraph3dOptionsLayoutModeToSet
+        );
         isComputing = false;
         return;
       }
@@ -559,7 +566,7 @@ const AppContent = ({
       // }
       sceneGraph.getDisplayConfig().svg = output.svg;
       console.log("setting current layout result", output);
-      setCurrentLayoutResult(output);
+      setCurrentLayoutResult(output, forceGraph3dOptionsLayoutModeToSet);
       isComputing = false;
     },
     [activeView, forceGraph3dOptions.layout]
@@ -733,7 +740,14 @@ const AppContent = ({
         !initialSceneGraphLoaded && defaultActiveLayout
           ? defaultActiveLayout
           : (graph.getData().defaultAppConfig?.activeLayout ?? null);
-      safeComputeLayout(graph, layoutToLoad).then(() => {
+
+      console.log("default app config is ", graph.getData().defaultAppConfig);
+
+      safeComputeLayout(
+        graph,
+        layoutToLoad,
+        graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout
+      ).then(() => {
         setCurrentSceneGraph(graph);
         setLegendMode(graph.getDisplayConfig().mode);
         setNodeLegendConfig(

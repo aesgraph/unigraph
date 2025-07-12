@@ -43,14 +43,17 @@ export async function applyLayoutAndTriggerAppUpdate(layout: Layout) {
   const sceneGraph = getCurrentSceneGraph();
   if (layout != null && sceneGraph != null) {
     sceneGraph.setNodePositions(layout.positions);
-    setCurrentLayoutResult({
-      layoutType: LayoutEngineOptionLabels.includes(
-        layout.name as LayoutEngineOption
-      )
-        ? layout.name
-        : "Custom",
-      positions: layout.positions,
-    });
+    setCurrentLayoutResult(
+      {
+        layoutType: LayoutEngineOptionLabels.includes(
+          layout.name as LayoutEngineOption
+        )
+          ? layout.name
+          : "Custom",
+        positions: layout.positions,
+      },
+      "Layout"
+    );
   }
 }
 
@@ -112,7 +115,7 @@ export async function computeLayoutAndTriggerAppUpdate(
       output.positions = currentNodePositions;
     }
 
-    setCurrentLayoutResult(output);
+    setCurrentLayoutResult(output, "Layout");
   }
   return output;
 }
