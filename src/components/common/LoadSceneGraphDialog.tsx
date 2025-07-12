@@ -226,6 +226,7 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
 
   const handleSelect = (key: string) => {
     onSelect(key);
+    onClose();
   };
 
   const handleCreateNewProject = () => {
