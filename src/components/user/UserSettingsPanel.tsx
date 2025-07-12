@@ -102,7 +102,7 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
         <span
           style={{
             fontSize: 15,
-            color: isDarkMode ? "#e2e8f0" : "#222",
+            color: isDarkMode ? "#ffffff" : "#ffffff",
             flex: 1,
             userSelect: "none",
           }}
@@ -167,7 +167,10 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
                 "switchAccount",
                 isDarkMode ? "#e2e8f0" : "#222"
               )}
-              onClick={onSwitchAccount}
+              onClick={() => {
+                console.log("UserSettingsPanel: Switch Account button clicked");
+                onSwitchAccount?.();
+              }}
               onMouseEnter={() => setHoveredButton("switchAccount")}
               onMouseLeave={() => setHoveredButton(null)}
             >
