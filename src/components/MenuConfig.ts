@@ -199,7 +199,7 @@ export class MenuConfig {
             action: () => {
               setShowLoadSceneGraphWindow(true);
             },
-            tooltip: "cmd+shift+o",
+            tooltip: "cmd+o",
           },
           "Open manager": {
             action: () => {

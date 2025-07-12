@@ -29,7 +29,6 @@ export const getHotkeyConfig = (
   //   }),
 
   cmdOrCtrl(() => setShowLoadSceneGraphWindow(true), "o", {
-    shiftKey: true,
     description: "Open Project",
   }),
 
