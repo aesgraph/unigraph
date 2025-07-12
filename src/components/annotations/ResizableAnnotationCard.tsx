@@ -84,7 +84,15 @@ const ResizableAnnotationCard: React.FC<ResizableAnnotationCardProps> = ({
         lineStyle={{ borderStyle: "dashed" }}
       />
       <Handle type="target" position={Position.Left} />
-      <div style={{ width: "100%", height: "100%", overflow: "auto" }}>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <AnnotationCard
           annotation={annotation}
           compact={compact}
@@ -93,6 +101,8 @@ const ResizableAnnotationCard: React.FC<ResizableAnnotationCardProps> = ({
             height: "100%",
             boxSizing: "border-box",
             background: "#fff",
+            display: "flex",
+            flexDirection: "column",
           }}
         />
       </div>

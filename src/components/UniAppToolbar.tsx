@@ -4,11 +4,97 @@ import GraphSearch from "./common/GraphSearch";
 import GraphViewTabs from "./toolbar/GraphViewTabs";
 import "./UniAppToolbar.css";
 
+// Keyboard shortcut icons component
+const KeyboardShortcut: React.FC<{
+  shortcut: string;
+  useFragment?: boolean;
+}> = ({ shortcut, useFragment = false }) => {
+  const isMac = navigator.platform.toLowerCase().includes("mac");
+
+  const renderKey = (key: string) => {
+    const keyMap: { [key: string]: string } = {
+      cmd: isMac ? "⌘" : "Ctrl",
+      ctrl: "Ctrl",
+      shift: "⇧",
+      alt: "⌥",
+      p: "P",
+      s: "S",
+      o: "O",
+      n: "N",
+      f: "F",
+      e: "E",
+      r: "R",
+      t: "T",
+      w: "W",
+      h: "H",
+      j: "J",
+      k: "K",
+      l: "L",
+      z: "Z",
+      x: "X",
+      c: "C",
+      v: "V",
+      b: "B",
+      m: "M",
+      a: "A",
+      d: "D",
+      g: "G",
+      i: "I",
+      u: "U",
+      y: "Y",
+      q: "Q",
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "0": "0",
+    };
+
+    return keyMap[key.toLowerCase()] || key.toUpperCase();
+  };
+
+  const keys = shortcut.split("+").map((key) => key.trim());
+
+  if (!useFragment) {
+    // Compact Mac-style rendering - just a simple string
+    const shortcutText = keys.map((key) => renderKey(key)).join(" ");
+    return <span className="keyboard-shortcut-compact">{shortcutText}</span>;
+  }
+
+  // Full styling with individual key boxes
+  return (
+    <span className="keyboard-shortcut">
+      {keys.map((key, index) => {
+        const KeyComponent = React.Fragment;
+        const SeparatorComponent = React.Fragment;
+
+        return (
+          <KeyComponent key={index}>
+            <span className="key">{renderKey(key)}</span>
+            {index < keys.length - 1 && (
+              <SeparatorComponent>
+                <span className="separator">+</span>
+              </SeparatorComponent>
+            )}
+          </KeyComponent>
+        );
+      })}
+    </span>
+  );
+};
+
 export interface MenuItem {
   action?: () => void;
   checked?: boolean;
   onChange?: () => void;
   submenu?: IMenuConfig;
+  tooltip?: string; // Add tooltip property
+  useFragment?: boolean; // Toggle for React.Fragment usage
 }
 
 export interface IMenuConfig {
@@ -101,14 +187,40 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
                   }}
                   onClick={(e) => e.stopPropagation()}
                 />
-                {key}
+                <span className="menu-item-text">
+                  {key}
+                  {item.tooltip && (
+                    <KeyboardShortcut
+                      shortcut={item.tooltip}
+                      useFragment={item.useFragment}
+                    />
+                  )}
+                </span>
               </label>
             ) : item.action ? (
               <button onClick={(e) => handleMenuItemClick(e, item)}>
-                {key}
+                <span className="menu-item-text">
+                  {key}
+                  {item.tooltip && (
+                    <KeyboardShortcut
+                      shortcut={item.tooltip}
+                      useFragment={item.useFragment}
+                    />
+                  )}
+                </span>
               </button>
             ) : (
-              <span onClick={(e) => handleMenuItemClick(e, item)}>{key}</span>
+              <span onClick={(e) => handleMenuItemClick(e, item)}>
+                <span className="menu-item-text">
+                  {key}
+                  {item.tooltip && (
+                    <KeyboardShortcut
+                      shortcut={item.tooltip}
+                      useFragment={item.useFragment}
+                    />
+                  )}
+                </span>
+              </span>
             )}
             {item.submenu && renderMenu(item.submenu)}
           </li>

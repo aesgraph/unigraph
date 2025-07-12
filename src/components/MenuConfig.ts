@@ -51,7 +51,14 @@ import {
   getShowEntityDataCard,
   setShowEntityDataCard,
 } from "../store/appConfigStore";
+
+import {
+  setShowCommandPalette,
+  setShowLoadSceneGraphWindow,
+  setShowSaveAsNewProjectDialog,
+} from "../store/dialogStore";
 import { clearDocuments, getAllDocuments } from "../store/documentStore";
+
 import {
   applyLayoutAndTriggerAppUpdate,
   computeLayoutAndTriggerUpdateForCurrentSceneGraph,
@@ -111,6 +118,11 @@ const customLayoutMenuActions = (): IMenuConfig => {
 };
 
 export interface IMenuConfigCallbacks {
+  handleSetSceneGraph: (
+    key: string,
+    clearQueryParams?: boolean,
+    onLoaded?: (sceneGraph?: SceneGraph) => void
+  ) => void;
   handleImportConfig: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleFitToView: (activeView: string) => void;
   GraphMenuActions: () => { [key: string]: { action: () => void } };
@@ -160,6 +172,71 @@ export class MenuConfig {
 
   getConfig(): MenuConfigType {
     return {
+      Project: {
+        submenu: {
+          New: {
+            action: () => {
+              this.callbacks.handleSetSceneGraph("Empty", true, () => {
+                setShowSaveAsNewProjectDialog(true);
+              });
+            },
+            tooltip: "cmd+shift+n",
+          },
+          Save: {
+            action: () => {
+              // TODO: Implement Save project
+              console.log("Save project");
+            },
+            tooltip: "cmd+s",
+          },
+          "Save as new": {
+            action: () => {
+              setShowSaveAsNewProjectDialog(true);
+            },
+            tooltip: "cmd+shift+s",
+          },
+          Load: {
+            action: () => {
+              setShowLoadSceneGraphWindow(true);
+            },
+            tooltip: "cmd+shift+o",
+          },
+          "Open manager": {
+            action: () => {
+              // TODO: Implement Open project manager
+              console.log("Open project manager");
+            },
+          },
+        },
+      },
+      Window: {
+        submenu: {
+          "Project Detail View": {
+            action: () => {
+              // TODO: Implement Project Detail View window
+              console.log("Open Project Detail View");
+            },
+          },
+          "Entity Manager": {
+            action: () => {
+              // TODO: Implement Entity Manager window
+              console.log("Open Entity Manager");
+            },
+          },
+          "Display Manager": {
+            action: () => {
+              // TODO: Implement Display Manager window
+              console.log("Open Display Manager");
+            },
+          },
+          "Command Palette": {
+            action: () => {
+              setShowCommandPalette(true);
+            },
+            tooltip: "cmd+shift+p",
+          },
+        },
+      },
       View: {
         submenu: {
           "Fit to View": {
@@ -598,23 +675,19 @@ export class MenuConfig {
                   playConfigSequence(this.forceGraphInstance, configs);
                 },
               },
-            },
-          },
-        },
-      },
-      Funcs: {
-        submenu: {
-          "Update scenegraph entities display": {
-            action: () => {
-              DisplayManager.applyRenderingConfigToGraph(
-                this.sceneGraph.getGraph(),
-                this.sceneGraph.getDisplayConfig()
-              );
-            },
-          },
-          "Load image annotations": {
-            action: () => {
-              processImageNodesInSceneGraph(this.sceneGraph);
+              "Update scenegraph entities display": {
+                action: () => {
+                  DisplayManager.applyRenderingConfigToGraph(
+                    this.sceneGraph.getGraph(),
+                    this.sceneGraph.getDisplayConfig()
+                  );
+                },
+              },
+              "Load image annotations": {
+                action: () => {
+                  processImageNodesInSceneGraph(this.sceneGraph);
+                },
+              },
             },
           },
         },

@@ -284,7 +284,6 @@ export const createDefaultLeftMenus = ({
             boxShadow: "none",
           }}
           size={30}
-          onSignOut={() => window.location.reload()}
         />
       </div>
     </div>

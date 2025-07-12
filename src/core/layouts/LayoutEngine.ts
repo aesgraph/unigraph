@@ -43,7 +43,6 @@ function getLayoutWorker(): Worker {
       layoutWorker!.onmessage = (e: MessageEvent) => {
         const response = e.data;
         const pendingComputation = pendingComputations.get(response.id);
-        console.log("response here is ", JSON.parse(JSON.stringify(response)));
 
         // Handle different message types
         if (response.type === "progress") {
@@ -321,7 +320,6 @@ export class LayoutEngine {
         sceneGraph,
         layoutType as GraphvizLayoutType
       );
-      console.log("output here is ", output);
       return { ...output, layoutType };
     } else if (
       Object.values(CustomLayoutType).includes(layoutType as CustomLayoutType)

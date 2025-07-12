@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./TextBasedContextMenu.css";
+import "./TextBasedContextMenu.module.css";
 
 export interface TextContextMenuItem {
   id: string;

@@ -35,7 +35,7 @@
 }
 
 .menu-item ul .menu-item {
-  width: 12.5rem;
+  width: 13.5rem;
   font-size: 1rem; /* Added to ensure consistent sizing */
   padding: 0.125rem 0; /* Added padding between nested menu items */
 }
@@ -62,7 +62,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  min-width: 12.5rem;
+  min-width: 13.5rem;
 }
 
 .menu-item:hover > ul {
@@ -78,7 +78,7 @@
 
 .menu-item ul .menu-item {
   display: block;
-  width: 12.5rem;
+  width: 13.5rem;
 }
 
 /* Add arrow indicator for nested submenu items */
@@ -212,7 +212,7 @@
 }
 
 .menu-item ul .menu-item {
-  width: 12.5rem;
+  width: 13.5rem;
   font-size: 1rem; /* Added to ensure consistent sizing */
   padding: 0.125rem 0; /* Added padding between nested menu items */
 }
@@ -242,7 +242,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  min-width: 12.5rem;
+  min-width: 13.5rem;
 }
 
 .menu-item:hover > ul {
@@ -258,7 +258,7 @@
 
 .menu-item ul .menu-item {
   display: block;
-  width: 12.5rem;
+  width: 13.5rem;
 }
 
 /* Add arrow indicator for nested submenu items */
@@ -345,4 +345,49 @@
   background-color: #1a73e8;
   color: white;
   border-color: #1a73e8;
+}
+
+/* Menu item text and shortcut styling */
+.menu-item-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.keyboard-shortcut {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.keyboard-shortcut .key {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  min-width: 1.25rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.keyboard-shortcut .separator {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.625rem;
+  margin: 0 0.125rem;
+}
+
+/* Compact Mac-style keyboard shortcut */
+.keyboard-shortcut-compact {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 400;
 }

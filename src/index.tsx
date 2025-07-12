@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
-import { persistentStore } from "./core/storage/PersistentStoreManager";
 import "./index.css";
 import SignIn from "./pages/SignIn";
 import {
@@ -27,20 +26,6 @@ const getToggleOptionValue = (
   return defaultValue; //default to true
 };
 
-// Add function to get most recent project
-const getMostRecentProjectId = async (): Promise<string | undefined> => {
-  try {
-    const projects = await persistentStore.listSceneGraphs();
-    if (projects.length > 0) {
-      // Projects are already sorted by lastModified in descending order
-      return projects[0].id;
-    }
-  } catch (err) {
-    console.error("Failed to get recent projects:", err);
-  }
-  return undefined;
-};
-
 const initializeApp = async () => {
   const rootElement = document.getElementById("root");
   if (!rootElement) return;
@@ -56,9 +41,9 @@ const initializeApp = async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  // Get graph from URL or most recent project
+  // Get graph from URL only - don't auto-load most recent project
   const graphFromUrl = urlParams.get("graph") ?? undefined;
-  const graphId = graphFromUrl || (await getMostRecentProjectId());
+  const graphId = graphFromUrl; // Remove auto-loading of most recent project
 
   const svgUrl = urlParams.get("svgUrl") ?? undefined;
   const activeView = urlParams.get("view") ?? undefined;
@@ -112,6 +97,7 @@ const initializeApp = async () => {
       svgUrl={svgUrl}
       defaultActiveView={activeView}
       defaultActiveLayout={activeLayout}
+      shouldShowLoadDialog={!graphId && !svgUrl} // Show dialog when no graph or SVG URL is provided
     />
   );
 };

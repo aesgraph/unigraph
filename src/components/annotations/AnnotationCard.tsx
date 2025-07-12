@@ -130,20 +130,25 @@ const AnnotationCard: React.FC<AnnotationCardProps> = ({
         <>
           <div
             style={{
+              flex: 1,
               display: "flex",
               justifyContent: "center",
+              alignItems: "center",
               margin: "4px 0",
+              width: "100%",
+              minHeight: 40,
+              maxHeight: "100%",
             }}
           >
             <img
               src={data.image_url}
               alt="annotation"
               style={{
-                maxWidth: compact ? 80 : 120,
-                maxHeight: compact ? 60 : 90,
+                width: "100%",
+                height: "100%",
                 borderRadius: 6,
                 border: "1px solid #e0e0e0",
-                objectFit: "cover",
+                objectFit: "contain",
                 background: "#f5f6fa",
                 display: "block",
               }}

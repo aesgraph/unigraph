@@ -11,6 +11,7 @@ import {
   handleReactFlowFitView,
 } from "../store/sceneGraphHooks";
 import { supabase } from "../utils/supabaseClient";
+import { listWebpages } from "./webpagesApi";
 
 export interface TextSelectionAnnotationData {
   selected_text?: string;
@@ -98,7 +99,34 @@ export const loadAnnotationsToSceneGraph = async (
       userId,
     });
     console.log("annotations retrieved:", annotations);
+
+    // Collect unique page_urls from annotations
+    // Collect unique page_urls from annotations (handle both text and image annotations)
+    const pageUrls = Array.from(
+      new Set(
+        annotations
+          .filter((a) => {
+            return a.parent_resource_type == "webpage";
+          })
+          .map((a) => {
+            return a.parent_resource_id;
+          })
+      )
+    );
+
+    // Fetch webpages associated with these URLs
+    let webpages: any[] = [];
+    if (pageUrls.length > 0) {
+      webpages = await listWebpages({ urls: pageUrls });
+    }
+    // Map url to webpage object for quick lookup
+    const urlToWebpage = new Map<string, any>();
+    webpages.forEach((webpage) => {
+      urlToWebpage.set(webpage.url, webpage);
+    });
+
     annotations.forEach((annotation) => {
+      // Create annotation node
       const annotationNode = sceneGraph
         .getGraph()
         .createNodeIfMissing(annotation.id, {
@@ -108,6 +136,8 @@ export const loadAnnotationsToSceneGraph = async (
           userData: annotation,
           position: { x: 0, y: 0 },
         });
+
+      // Create parent resource node (if any)
       const parentResourceNode = sceneGraph
         .getGraph()
         .createNodeIfMissing(annotation.parent_resource_id, {
@@ -116,6 +146,7 @@ export const loadAnnotationsToSceneGraph = async (
           label: annotation.parent_resource_id,
           userData: annotation,
         });
+
       sceneGraph
         .getGraph()
         .createEdgeIfMissing(
@@ -125,7 +156,29 @@ export const loadAnnotationsToSceneGraph = async (
             type: "annotation-parent",
           }
         );
+
+      // If annotation has a page_url, create webpage node and edge
+      const pageUrl = annotation.parent_resource_id;
+      if (pageUrl && urlToWebpage.has(pageUrl)) {
+        const webpage = urlToWebpage.get(pageUrl);
+        const webpageNode = sceneGraph
+          .getGraph()
+          .createNodeIfMissing(webpage.id, {
+            id: webpage.id,
+            type: "webpage",
+            label: webpage.title || webpage.url,
+            userData: webpage,
+            position: { x: 0, y: 0 },
+          });
+        // Edge from annotation to webpage
+        sceneGraph
+          .getGraph()
+          .createEdgeIfMissing(annotationNode.getId(), webpageNode.getId(), {
+            type: "annotation-webpage",
+          });
+      }
     });
+
     sceneGraph.setForceGraphRenderConfig({
       ...sceneGraph.getForceGraphRenderConfig(),
       nodeTextLabels: true,
@@ -144,16 +197,21 @@ export const loadAnnotationsToSceneGraph = async (
     // sceneGraph.setNodePositions(positions);
     console.log("sceneGraph after loading annotations", sceneGraph);
     if (getActiveView() === "ReactFlow") {
-      await computeLayoutAndTriggerAppUpdate(
+      const output = await computeLayoutAndTriggerAppUpdate(
         sceneGraph,
         GraphvizLayoutType.Graphviz_dot,
         undefined // No specific node selection for now)
       );
+      if (output) {
+        sceneGraph.setNodePositions(output?.positions);
+      }
     }
 
     sceneGraph.notifyGraphChanged();
   } finally {
     // Restore the original auto-fitview setting and clear processing flag
+    sceneGraph.commitDisplayConfig();
+
     setAutoFitView(wasAutoFitViewEnabled);
     handleReactFlowFitView(0.1);
   }

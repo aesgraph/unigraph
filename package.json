@@ -39,6 +39,8 @@
     "@typescript-eslint/parser": "^8.20.0",
     "@xyflow/react": "^12.4.1",
     "3d-force-graph": "^1.76.0",
+    "ag-grid-community": "^34.0.1",
+    "ag-grid-react": "^34.0.1",
     "antd": "^5.23.3",
     "cytoscape": "^3.31.0",
     "cytoscape-dagre": "^2.5.0",

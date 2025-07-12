@@ -288,13 +288,6 @@ export class Graph {
     if (typeof nodeIds === "string") {
       nodeIds = new EntityIds([nodeIds]);
     }
-    // console.log(
-    //   this.edges
-    //     .filter((edge) => {
-    //       return nodeIds.has(edge.getSource());
-    //     })
-    //     .toArray()
-    // );
     return this.edges
       .filter((edge) => {
         return nodeIds.has(edge.getSource());

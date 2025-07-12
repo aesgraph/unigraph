@@ -40,6 +40,7 @@ import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
 import CustomNode from "../CustomNode";
+import WebpageNode from "../webpages/WebpageNode";
 
 import "@xyflow/react/dist/style.css";
 import { EdgeId } from "../../core/model/Edge";
@@ -67,13 +68,21 @@ const AnnotationNode = (props: any) => {
   const annotation: Annotation | undefined = props.data?.annotation;
   if (!annotation) return <div>Invalid annotation</div>;
   // console.log("valid annotation", annotation);
-  return <ResizableAnnotationCard annotation={annotation} />;
+  return (
+    <ResizableAnnotationCard
+      annotation={annotation}
+      dimensions={props.data?.dimensions}
+      onResizeEnd={props.data?.onResizeEnd}
+      style={props.style}
+    />
+  );
 };
 
-const nodeTypes = {
+export const nodeTypes = {
   customNode: CustomNode, // Register the custom node component
   resizerNode: ResizerNode,
-  annotationNode: AnnotationNode,
+  annotation: AnnotationNode,
+  webpage: WebpageNode,
 };
 
 // Add a style tag for selected and hovered nodes

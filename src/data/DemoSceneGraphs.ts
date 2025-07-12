@@ -22,6 +22,11 @@ import demo_SceneGraph_FactorGraph_ComplexExpansion from "./graphs/Gallery_Demos
 import { demo_SceneGraph_ImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_ImageGallery";
 import { demo_SceneGraph_Numbers_Story } from "./graphs/Gallery_Demos/demo_scenegraph_numbers_story";
 import { demo_SceneGraph_PhylogeneticTree } from "./graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree";
+import {
+  demo_scenegraph_service_mesh_1,
+  demo_scenegraph_service_mesh_2,
+  demo_scenegraph_service_mesh_3,
+} from "./graphs/Gallery_Demos/demo_scenegraph_service_mesh";
 import { demo_SceneGraph_SolvayConference } from "./graphs/Gallery_Demos/demo_SceneGraph_SolvayConference";
 import { demo_SceneGraph_StackedImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery";
 import { demo_SceneGraph_StackedGalleryTransparent } from "./graphs/Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent";
@@ -96,6 +101,14 @@ export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
     label: "Base",
     graphs: {
       Empty: () => new SceneGraph({ metadata: { name: "New SceneGraph" } }),
+    },
+  },
+  ServiceMesh: {
+    label: "Service Topologies",
+    graphs: {
+      "Service Mesh 1": () => demo_scenegraph_service_mesh_1(),
+      "Service Mesh 2": () => demo_scenegraph_service_mesh_2(),
+      "Service Mesh 3": () => demo_scenegraph_service_mesh_3(), // <-- add new demo
     },
   },
   Writings: {

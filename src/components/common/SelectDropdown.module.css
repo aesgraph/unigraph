@@ -74,7 +74,7 @@
 
 .dropdown-list {
   position: absolute; /* Change to absolute to handle positioning correctly */
-  z-index: 6000; /* Ensure this is higher than the parent */
+  z-index: 2147483647; /* Ensure this is higher than AG Grid rows */
   width: 100%;
   margin-top: 0.25rem;
   background-color: white;
@@ -96,7 +96,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   color: #333;
-  z-index: 10000;
+  z-index: 2147483647;
 }
 
 .searchable-dropdown.dark .dropdown-item {

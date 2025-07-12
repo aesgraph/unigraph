@@ -19,7 +19,10 @@ export const demo_sceneGraph_academicsKG = () => {
     },
     defaultAppConfig: {
       ...DEFAULT_APP_CONFIG(),
-      activeView: "storyCard",
+      activeView: "ForceGraph3d",
+      forceGraph3dOptions: {
+        layout: "Physics",
+      },
     },
   });
 };

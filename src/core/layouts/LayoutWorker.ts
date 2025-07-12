@@ -121,7 +121,6 @@ async function handleComputeLayout(
           sceneGraph,
           layoutType as GraphvizLayoutType
         );
-        console.log("it was obtained by LayoutWorker", output);
         checkCancellation();
         result = { ...output, layoutType: layoutType as GraphvizLayoutType };
       } else if (

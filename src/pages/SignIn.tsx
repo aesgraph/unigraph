@@ -2,6 +2,23 @@ import React, { useEffect, useState } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { supabase } from "../utils/supabaseClient";
 
+// Immediate check for authentication - runs before React renders
+if (typeof window !== "undefined" && window.opener) {
+  // This is a popup window, check auth immediately
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session?.user) {
+      console.log(
+        "SignIn: User already authenticated, closing popup immediately"
+      );
+      window.opener.postMessage(
+        { type: "SIGNED_IN", user: session.user },
+        window.location.origin
+      );
+      window.close();
+    }
+  });
+}
+
 const providers = [
   { name: "Google", id: "google", icon: <FaGoogle /> },
   { name: "GitHub", id: "github", icon: <FaGithub /> },
@@ -10,23 +27,67 @@ const providers = [
 export default function SignIn() {
   const [hovered, setHovered] = useState<string | null>(null);
   const [isAlreadySignedIn, setIsAlreadySignedIn] = useState(false);
+  const [isPopup, setIsPopup] = useState(false);
+  const [initialSession, setInitialSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Check if user is already signed in
+  // Check if this is a popup window
+  useEffect(() => {
+    const isPopupWindow = window.opener !== null;
+    setIsPopup(isPopupWindow);
+    console.log("SignIn: isPopup =", isPopupWindow);
+
+    // If this is a popup, focus it
+    if (isPopupWindow) {
+      window.focus();
+    }
+  }, []);
+
+  // Check if user is already signed in and store initial session
   useEffect(() => {
     const checkAuth = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       setIsAlreadySignedIn(!!user);
+      setInitialSession(session);
+      console.log("SignIn: Initial session =", session?.user?.id);
+
+      // If this is a popup and user is already signed in, close it immediately
+      if (user && isPopup && window.opener) {
+        console.log(
+          "SignIn: User already signed in, closing popup immediately"
+        );
+        window.opener.postMessage(
+          { type: "SIGNED_IN", user: user },
+          window.location.origin
+        );
+        window.close();
+        return; // Don't set loading to false, let the popup close
+      }
+
+      setIsLoading(false);
     };
     checkAuth();
-  }, []);
+  }, [isPopup]);
 
   const handleSignIn = async (provider: string) => {
+    console.log("SignIn: Starting OAuth with", provider);
+
+    // For popup, redirect back to the same page after OAuth
+    // For regular page, redirect to main app
+    const redirectTo = isPopup
+      ? window.location.origin + "/signin" // Stay in popup for OAuth
+      : window.location.origin + "/"; // Redirect to main app if not popup
+
     await supabase.auth.signInWithOAuth({
       provider: provider as "google" | "github",
       options: {
-        redirectTo: window.location.origin + "/",
+        redirectTo,
         queryParams:
           provider === "google"
             ? {
@@ -39,8 +100,68 @@ export default function SignIn() {
   };
 
   const handleBackToApp = () => {
-    window.location.href = "/";
+    if (isPopup && window.opener) {
+      // Send message to parent and close popup
+      window.opener.postMessage(
+        { type: "SIGNIN_CANCELLED" },
+        window.location.origin
+      );
+      window.close();
+    } else {
+      window.location.href = "/";
+    }
   };
+
+  // Listen for auth state changes to close popup only after OAuth completion
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log(
+          "SignIn: Auth state change:",
+          event,
+          "session user:",
+          session?.user?.id,
+          "initial session:",
+          initialSession?.user?.id
+        );
+
+        if (event === "SIGNED_IN" && isPopup && window.opener) {
+          // Always close popup on successful sign-in, regardless of whether it's a new sign-in
+          console.log("SignIn: Sign-in successful, closing popup");
+          window.opener.postMessage(
+            { type: "SIGNED_IN", user: session?.user },
+            window.location.origin
+          );
+          window.close();
+        }
+      }
+    );
+
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, [isPopup, initialSession]);
+
+  // Handle window close event
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (isPopup && window.opener) {
+        // Notify parent that popup was closed
+        window.opener.postMessage(
+          { type: "SIGNIN_CANCELLED" },
+          window.location.origin
+        );
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isPopup]);
+
+  // Don't render anything while loading (prevents flash)
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div

@@ -175,7 +175,6 @@ export const getNodePositionDataFromForceGraphInstance = (
   nodeIds?: EntityIds<NodeId>
 ): NodePositionData => {
   const nodePositions: NodePositionData = {};
-  console.log("nodeIds", nodeIds);
   instance.graphData().nodes.forEach((node) => {
     if (nodeIds && !nodeIds.has(node.id as NodeId)) {
       return;

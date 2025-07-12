@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { supabase } from "../../utils/supabaseClient";
+import { useUserStore } from "../../store/userStore";
 import UserSettingsPanel from "./UserSettingsPanel";
 
 // Simple generic profile SVG icon with blue border
@@ -46,56 +46,20 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
   onSignOut = () => {},
 }) => {
   // Track user session and avatar
-  const [user, setUser] = useState<any>(null);
+  const { isSignedIn, user, getAvatarUrl, signOut } = useUserStore();
   const [avatarError, setAvatarError] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Fetch and track user authentication state
-  useEffect(() => {
-    // Get current user from Supabase
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data?.user);
-      setAvatarError(false); // Reset error state when user changes
-    });
-
-    // Listen for auth changes
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-        setAvatarError(false); // Reset error state when user changes
-      }
-    );
-
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
-  }, []);
-
   // Get avatar URL with fallbacks
-  const getAvatarUrl = () => {
-    if (!user) return null;
-
-    // Try different possible locations for avatar URL
-    const avatarUrl =
-      user?.user_metadata?.avatar_url ||
-      user?.user_metadata?.picture ||
-      user?.identities?.[0]?.identity_data?.avatar_url ||
-      user?.identities?.[0]?.identity_data?.picture;
-
-    return avatarUrl && !avatarError ? avatarUrl : null;
-  };
-
   const avatarUrl = getAvatarUrl();
 
   // Reset avatar loaded state when URL changes
   useEffect(() => {
     setAvatarLoaded(false);
+    setAvatarError(false);
   }, [avatarUrl]);
-
-  // Track sign-in state
-  const isSignedIn = !!user;
 
   // Handle sign out - improved with better error handling
   const handleSignOut = async () => {
@@ -103,23 +67,13 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
       console.log("ProfileIcon: Sign out initiated");
       setShowDropdown(false);
 
-      // Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
+      // Sign out using the centralized store
+      await signOut();
 
-      if (error) {
-        throw error;
-      }
-
-      console.log("ProfileIcon: Supabase signout successful");
-
-      // Reset user state
-      setUser(null);
+      console.log("ProfileIcon: Sign out successful");
 
       // Call the provided callback
       onSignOut();
-
-      // Force page reload to ensure all auth state is cleared
-      window.location.reload();
 
       return true;
     } catch (error) {
@@ -135,14 +89,75 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
 
   // Sign in handler for the panel
   const handleSignIn = () => {
-    window.location.href = "/signin";
+    setShowDropdown(false);
+    // Open signin page as popup with better dimensions and centering
+    const width = 800;
+    const height = 600;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+
+    const popup = window.open(
+      "/signin",
+      "signin",
+      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=no,menubar=no`
+    );
+
+    if (popup) {
+      // Listen for messages from popup
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+
+        if (event.data.type === "SIGNED_IN") {
+          console.log("User signed in via popup:", event.data.user);
+          window.removeEventListener("message", handleMessage);
+        } else if (event.data.type === "SIGNIN_CANCELLED") {
+          console.log("Sign-in was cancelled");
+          window.removeEventListener("message", handleMessage);
+        }
+      };
+
+      window.addEventListener("message", handleMessage);
+    } else {
+      // Popup was blocked, fallback to redirect
+      window.location.href = "/signin";
+    }
     onSignIn();
   };
 
   // Switch account handler - navigate to signin without logging out
   const handleSwitchAccount = () => {
     setShowDropdown(false);
-    window.location.href = "/signin";
+    // Open signin page as popup with better dimensions and centering
+    const width = 400;
+    const height = 500;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+
+    const popup = window.open(
+      "/signin",
+      "signin",
+      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=no,menubar=no`
+    );
+
+    if (popup) {
+      // Listen for messages from popup
+      const handleMessage = (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+
+        if (event.data.type === "SIGNED_IN") {
+          console.log("User switched account via popup:", event.data.user);
+          window.removeEventListener("message", handleMessage);
+        } else if (event.data.type === "SIGNIN_CANCELLED") {
+          console.log("Account switch was cancelled");
+          window.removeEventListener("message", handleMessage);
+        }
+      };
+
+      window.addEventListener("message", handleMessage);
+    } else {
+      // Popup was blocked, fallback to redirect
+      window.location.href = "/signin";
+    }
   };
 
   // Close dropdown when clicking outside
@@ -214,10 +229,10 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
           }}
         >
           {/* Generic icon shown while avatar is loading or if there's an error */}
-          {(!user || !avatarUrl || !avatarLoaded) && (
+          {(!isSignedIn || !avatarUrl || !avatarLoaded || avatarError) && (
             <div
               style={{
-                position: avatarUrl ? "absolute" : "static",
+                position: avatarUrl && !avatarError ? "absolute" : "static",
                 width: "100%",
                 height: "100%",
               }}
@@ -227,7 +242,7 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
           )}
 
           {/* User avatar */}
-          {user && avatarUrl && (
+          {isSignedIn && avatarUrl && !avatarError && (
             <img
               src={avatarUrl}
               alt="Profile"
