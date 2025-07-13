@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NodeId } from "../../core/model/Node";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
@@ -10,7 +10,6 @@ interface EntityTableDialogV2Props {
   title: string;
   onClose: () => void;
   onNodeClick?: (nodeId: NodeId) => void;
-  isDarkMode?: boolean;
   sceneGraph: SceneGraph;
 }
 
@@ -19,26 +18,39 @@ const EntityTableDialogV2: React.FC<EntityTableDialogV2Props> = ({
   title,
   onClose,
   onNodeClick,
-  isDarkMode = false,
   sceneGraph,
 }) => {
+  // Add event handler for the Escape key
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => {
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [onClose]);
+
   return (
     <div
-      className={`${styles.overlay} ${isDarkMode ? styles.dark : styles.light}`}
-      onClick={(e) => e.stopPropagation()}
+      className={`${styles.overlay} ${styles.light}`}
+      onClick={(e) => {
+        // Close when clicking the overlay background
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+        e.stopPropagation();
+      }}
     >
-      <div
-        className={`${styles.dialog} ${isDarkMode ? styles.dark : styles.light}`}
-      >
+      <div className={`${styles.dialog} ${styles.light}`}>
         <div className={styles.header}>
-          <h2
-            className={`${styles.title} ${isDarkMode ? styles.dark : styles.light}`}
-          >
-            {title}
-          </h2>
+          <h2 className={`${styles.title} ${styles.light}`}>{title}</h2>
           <button
             onClick={onClose}
-            className={`${styles.closeButton} ${isDarkMode ? styles.dark : styles.light}`}
+            className={`${styles.closeButton} ${styles.light}`}
           >
             Close
           </button>
@@ -50,7 +62,7 @@ const EntityTableDialogV2: React.FC<EntityTableDialogV2Props> = ({
             onEntityClick={
               onNodeClick && ((entity) => onNodeClick(entity.getId() as NodeId))
             }
-            maxHeight="calc(90vh - 100px)"
+            maxHeight="100%" // Changed from calc(90vh - 100px) to 100%
           />
         </div>
       </div>

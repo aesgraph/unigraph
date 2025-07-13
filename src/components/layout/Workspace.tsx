@@ -243,7 +243,11 @@ const Workspace: React.FC<WorkspaceProps> = ({
                     nodeId
                   );
                   if (node) {
-                    flyToNode(forceGraphInstance!, node);
+                    flyToNode(
+                      forceGraphInstance!,
+                      node,
+                      forceGraph3dOptions.layout
+                    );
                   }
                 }
               }}
@@ -254,7 +258,11 @@ const Workspace: React.FC<WorkspaceProps> = ({
                     nodeId
                   );
                   if (node) {
-                    flyToNode(forceGraphInstance!, node);
+                    flyToNode(
+                      forceGraphInstance!,
+                      node,
+                      forceGraph3dOptions.layout
+                    );
                   }
                 }
               }}
@@ -303,6 +311,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
     renderNodeLegend,
     renderEdgeLegend,
     forceGraphInstance,
+    forceGraph3dOptions.layout,
     currentSceneGraph.name,
     activeLayout,
     activeFilter?.name,

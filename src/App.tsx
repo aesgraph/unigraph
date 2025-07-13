@@ -40,6 +40,8 @@ import SolarSystem from "./components/simulations/solarSystemSimulation";
 import ChatGptImporter from "./components/tools/ChatGptImporter";
 import YasguiPanel from "./components/YasguiPanel";
 
+import EntitiesContainerDialog from "./components/common/EntitiesContainerDialog";
+import EntityEditor from "./components/common/EntityEditor";
 import EntityTableDialogV2 from "./components/common/EntityTableDialogV2";
 import LoadSceneGraphDialog from "./components/common/LoadSceneGraphDialog";
 import { getMultiNodeContextMenuItems } from "./components/common/multiNodeContextMenuItems";
@@ -333,6 +335,68 @@ const AppContent = ({
   const [showFilterManager, setShowFilterManager] = useState(false);
 
   const [showChatGptImporter, setShowChatGptImporter] = useState(false);
+
+  // Delete dialog state
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteDialogData, setDeleteDialogData] = useState<{
+    nodeIds: NodeId[];
+    isSingleNode: boolean;
+  } | null>(null);
+
+  // EntityEditor state
+  const [entityEditorData, setEntityEditorData] = useState<{
+    entity: Entity | null;
+    isOpen: boolean;
+  } | null>(null);
+
+  // Delete dialog handlers
+  const handleShowDeleteDialog = useCallback((nodeIds: NodeId[]) => {
+    setDeleteDialogData({
+      nodeIds,
+      isSingleNode: nodeIds.length === 1,
+    });
+    setShowDeleteDialog(true);
+  }, []);
+
+  const handleDeleteConfirm = useCallback(() => {
+    if (deleteDialogData) {
+      if (deleteDialogData.isSingleNode) {
+        currentSceneGraph.getGraph().deleteNode(deleteDialogData.nodeIds[0]);
+      } else {
+        currentSceneGraph.getGraph().deleteNodes(deleteDialogData.nodeIds);
+      }
+      currentSceneGraph.notifyGraphChanged();
+      setShowDeleteDialog(false);
+      setDeleteDialogData(null);
+    }
+  }, [deleteDialogData, currentSceneGraph]);
+
+  const handleDeleteCancel = useCallback(() => {
+    setShowDeleteDialog(false);
+    setDeleteDialogData(null);
+  }, []);
+
+  // EntityEditor handlers
+  const handleEntityEditorSave = useCallback(
+    (entityId: NodeId, updatedData: any) => {
+      const entity = currentSceneGraph.getGraph().getNode(entityId);
+      if (entity) {
+        // Update the entity data
+        Object.assign(entity.getData(), updatedData);
+        currentSceneGraph.notifyGraphChanged();
+        addNotification({
+          message: "Entity updated successfully",
+          type: "success",
+          duration: 3000,
+        });
+      }
+    },
+    [currentSceneGraph]
+  );
+
+  const handleEntityEditorClose = useCallback(() => {
+    setEntityEditorData(null);
+  }, []);
 
   const _getAppConfigWithUrlOverrides = useCallback(
     (config: AppConfig) => {
@@ -1599,14 +1663,20 @@ const AppContent = ({
           .graphData()
           .nodes.find((node) => node.id === nodeId);
         if (node) {
-          flyToNode(forceGraphInstance, node);
+          flyToNode(forceGraphInstance, node, forceGraph3dOptions.layout);
           handleHighlight(nodeId);
           setSelectedNodeId(nodeId as NodeId);
           // setRightActiveSection("node-details");
         }
       }
     },
-    [activeView, forceGraphInstance, handleHighlight, zoomToNode]
+    [
+      activeView,
+      forceGraph3dOptions.layout,
+      forceGraphInstance,
+      handleHighlight,
+      zoomToNode,
+    ]
   );
 
   const handleMouseMove = useCallback(
@@ -1677,8 +1747,7 @@ const AppContent = ({
         nodeId,
         currentSceneGraph,
         forceGraphInstance,
-        setEditingNodeId,
-        setIsNodeEditorOpen,
+        setEntityEditorData,
         setJsonEditEntity,
         setSelectedNodeId,
         (config) =>
@@ -1687,10 +1756,17 @@ const AppContent = ({
             endNode: config.endNode,
           }),
         setShowPathAnalysis,
-        applyActiveFilterToAppInstance
+        applyActiveFilterToAppInstance,
+        () => setContextMenu(null),
+        (nodeId: NodeId) => handleShowDeleteDialog([nodeId])
       );
     },
-    [currentSceneGraph, forceGraphInstance, setShowPathAnalysis]
+    [
+      currentSceneGraph,
+      forceGraphInstance,
+      setShowPathAnalysis,
+      handleShowDeleteDialog,
+    ]
   );
 
   // Add multi-node operations to create a subgraph, hide multiple nodes, etc.
@@ -1700,10 +1776,11 @@ const AppContent = ({
         nodeIds,
         currentSceneGraph,
         applyActiveFilterToAppInstance,
-        () => setContextMenu(null)
+        () => setContextMenu(null),
+        handleShowDeleteDialog
       );
     },
-    [currentSceneGraph]
+    [currentSceneGraph, handleShowDeleteDialog]
   );
 
   // Update the existing getContextMenuItems function to handle multi-node selection
@@ -2004,7 +2081,11 @@ const AppContent = ({
                   .graphData()
                   .nodes.find((n) => n.id === nodeId);
                 if (node) {
-                  flyToNode(forceGraphInstance, node);
+                  flyToNode(
+                    forceGraphInstance,
+                    node,
+                    forceGraph3dOptions.layout
+                  );
                 }
               }
             }}
@@ -2024,11 +2105,14 @@ const AppContent = ({
                   .graphData()
                   .nodes.find((n) => n.id === nodeId);
                 if (node) {
-                  flyToNode(forceGraphInstance, node);
+                  flyToNode(
+                    forceGraphInstance,
+                    node,
+                    forceGraph3dOptions.layout
+                  );
                 }
               }
             }}
-            isDarkMode={isDarkMode}
             sceneGraph={currentSceneGraph}
           />
         )}
@@ -2056,6 +2140,40 @@ const AppContent = ({
               isDarkMode={isDarkMode}
             />
           </div>
+        )}
+        {showDeleteDialog && (
+          <EntitiesContainerDialog
+            isOpen={showDeleteDialog}
+            onClose={handleDeleteCancel}
+            title={
+              deleteDialogData?.isSingleNode ? "Delete Node" : "Delete Nodes"
+            }
+            description={`This action cannot be undone. The following ${deleteDialogData?.isSingleNode ? "node will" : "nodes will"} be permanently deleted:`}
+            entities={
+              deleteDialogData
+                ? deleteDialogData.nodeIds.map((id) =>
+                    currentSceneGraph.getGraph().getNode(id)
+                  )
+                : []
+            }
+            type="danger"
+            showConfirmation={true}
+            confirmLabel={
+              deleteDialogData?.isSingleNode ? "Delete Node" : "Delete Nodes"
+            }
+            cancelLabel="Cancel"
+            onConfirm={handleDeleteConfirm}
+          />
+        )}
+        {entityEditorData && (
+          <EntityEditor
+            entity={entityEditorData.entity!}
+            sceneGraph={currentSceneGraph}
+            isOpen={entityEditorData.isOpen}
+            onClose={handleEntityEditorClose}
+            onSave={handleEntityEditorSave}
+            isDarkMode={isDarkMode}
+          />
         )}
         {/* {showLayoutManager.show && (
           <LayoutManager

@@ -360,4 +360,25 @@ export class Graph {
     this.nodes.validate();
     this.edges.validate();
   }
+
+  deleteNode(nodeId: NodeId, isStrict = false): void {
+    if (!this.containsNode(nodeId)) {
+      const errorMessage = `Node ${nodeId} does not exist in the graph.`;
+      if (isStrict) {
+        throw new Error(errorMessage);
+      }
+      console.warn(errorMessage);
+      return;
+    }
+    const edgesToRemove = this.getEdgesOf(this.getNode(nodeId));
+    edgesToRemove.forEach((edge) => this.removeEdge(edge.getId()));
+    this.removeNode(nodeId);
+  }
+
+  // todo: implement delete all with rollback on failures.
+  // entity change request manager?
+  // undo and redo
+  deleteNodes(nodeIds: NodeIds | NodeId[]): void {
+    nodeIds.forEach((nodeId) => this.deleteNode(nodeId));
+  }
 }

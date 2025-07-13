@@ -11,10 +11,6 @@
   backdrop-filter: blur(8px);
 }
 
-.overlay.dark {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
 .overlay.light {
   background-color: rgba(255, 255, 255, 0.7);
 }
@@ -30,18 +26,13 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-}
-
-.dialog.dark {
-  background-color: rgba(30, 30, 30, 0.95);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-.dialog.light {
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
+/* Remove all .dark styles */
+
+/* Light mode styles only */
 .header {
   display: flex;
   justify-content: space-between;
@@ -52,13 +43,6 @@
 
 .title {
   margin: 0;
-}
-
-.title.dark {
-  color: #fff;
-}
-
-.title.light {
   color: #000;
 }
 
@@ -67,31 +51,143 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.closeButton.dark {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  transition: background-color 0.2s;
-}
-
-.closeButton.dark:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.closeButton.light {
   background-color: rgba(0, 0, 0, 0.05);
   color: #000;
   transition: background-color 0.2s;
 }
 
-.closeButton.light:hover {
+.closeButton:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
 .content {
   flex: 1;
   min-height: 0;
-  height: calc(90vh - 100px); /* Account for header and padding */
-  overflow: hidden;
+  height: 100%; /* Changed from calc(90vh - 100px) */
+  overflow: auto;
+  display: flex; /* Added */
+  flex-direction: column; /* Added */
+}
+
+/* Make sure tables inside content take up appropriate space */
+.content table {
+  margin-bottom: 0;
+}
+
+/* Remove any padding/margin that might be causing extra space */
+.content > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Light scrollbar styles for dialog content */
+.dialog,
+.content {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Webkit scrollbar styles for both axes */
+.dialog::-webkit-scrollbar,
+.content::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: #f3f4f6;
+}
+
+.dialog::-webkit-scrollbar-track,
+.content::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.dialog::-webkit-scrollbar-thumb,
+.content::-webkit-scrollbar-thumb {
+  background: #d1d5db !important;
+  border-radius: 8px;
+  border: 2px solid #f3f4f6;
+  background-clip: padding-box;
+}
+
+.dialog::-webkit-scrollbar-thumb:hover,
+.content::-webkit-scrollbar-thumb:hover {
+  background: #b0b7c3 !important;
+}
+
+.dialog::-webkit-scrollbar-corner,
+.content::-webkit-scrollbar-corner {
+  background: #f3f4f6;
+}
+
+/* Target the table component inside the content */
+.content table,
+.content div {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.content table::-webkit-scrollbar,
+.content div::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: #f3f4f6;
+}
+
+.content table::-webkit-scrollbar-track,
+.content div::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.content table::-webkit-scrollbar-thumb,
+.content div::-webkit-scrollbar-thumb {
+  background: #d1d5db !important;
+  border-radius: 8px;
+  border: 2px solid #f3f4f6;
+  background-clip: padding-box;
+}
+
+.content table::-webkit-scrollbar-thumb:hover,
+.content div::-webkit-scrollbar-thumb:hover {
+  background: #b0b7c3 !important;
+}
+
+.content table::-webkit-scrollbar-corner,
+.content div::-webkit-scrollbar-corner {
+  background: #f3f4f6;
+}
+
+/* Apply to all elements inside content with scrollbars */
+.content * {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6 !important;
+}
+
+.content *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: #f3f4f6;
+}
+
+.content *::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.content *::-webkit-scrollbar-thumb {
+  background: #d1d5db !important;
+  border-radius: 8px;
+  border: 2px solid #f3f4f6;
+  background-clip: padding-box;
+}
+
+.content *::-webkit-scrollbar-thumb:hover {
+  background: #b0b7c3 !important;
+}
+
+.content *::-webkit-scrollbar-corner {
+  background: #f3f4f6;
 }

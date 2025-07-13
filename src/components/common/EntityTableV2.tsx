@@ -5,6 +5,7 @@ import {
   themeBalham,
 } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
+import { ArrowUpLeft, Trash2 } from "lucide-react";
 import React, {
   useCallback,
   useEffect,
@@ -17,7 +18,7 @@ import { useAppContext } from "../../context/AppContext";
 import { RenderingManager } from "../../controllers/RenderingManager";
 import { Entity } from "../../core/model/entity/abstractEntity";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
-import { Node as ModelNode } from "../../core/model/Node";
+import { Node as ModelNode, NodeId } from "../../core/model/Node";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { ContextMenuItem } from "./ContextMenu";
 import EntityJsonViewer from "./EntityJsonViewer";
@@ -50,6 +51,9 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
   const [jsonViewerEntity, setJsonViewerEntity] = useState<Entity | null>(null);
 
   const { setEditingEntity, setJsonEditEntity } = useAppContext();
+
+  // Grid API reference - moved up so cell renderers can access it
+  const gridRef = useRef<AgGridReact<Entity>>(null);
 
   // Search functionality
   const searchInValue = useCallback(
@@ -176,53 +180,229 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
     },
   ];
 
-  // Actions cell renderer component
-  const ActionsCellRenderer = useCallback(
-    (props: { data: Entity }) => {
-      const handleGoTo = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        if (onEntityClick && props.data) {
-          onEntityClick(props.data);
+  // Actions cell renderer component with improved stability
+  const ActionsCellRendererComponent = React.memo((props: { data: Entity }) => {
+    const [showMoreOptions, setShowMoreOptions] = useState(false);
+    // Use a ref to track dropdown state across renders
+    const showMoreOptionsRef = useRef(showMoreOptions);
+    // Update ref when state changes
+    useEffect(() => {
+      showMoreOptionsRef.current = showMoreOptions;
+    }, [showMoreOptions]);
+
+    const [dropdownPosition, setDropdownPosition] = useState({
+      top: 0,
+      left: 0,
+      width: 0,
+    });
+    const moreOptionsRef = useRef<HTMLDivElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const handleGoTo = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (onEntityClick && props.data) {
+        onEntityClick(props.data);
+      }
+    };
+
+    const handleMoreOptionsClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setShowMoreOptions(!showMoreOptions);
+
+      // Calculate position for the portal dropdown
+      if (moreOptionsRef.current) {
+        const rect = moreOptionsRef.current.getBoundingClientRect();
+        const dropdownWidth = 200;
+        const padding = 8; // small gap from edge
+        const spaceRight = window.innerWidth - rect.right;
+        const spaceLeft = rect.left;
+        let left;
+        // Prefer right if enough space, else left, else side with more space
+        if (spaceRight >= dropdownWidth + padding) {
+          left = rect.left;
+        } else if (spaceLeft >= dropdownWidth + padding) {
+          left = rect.right - dropdownWidth;
+        } else {
+          // Not enough space either side, pick the side with more space
+          left =
+            spaceRight > spaceLeft
+              ? Math.max(rect.left, padding)
+              : Math.max(rect.right - dropdownWidth, padding);
+        }
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY,
+          left,
+          width: dropdownWidth,
+        });
+      }
+    };
+
+    // Handle click outside to close dropdown - improved to resist ForceGraph3D mousemove rerenders
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        // Only process actual mouse clicks (not mousemove events)
+        if (event.type !== "mousedown") return;
+
+        const target = event.target as Node;
+
+        // Check if the click is inside the dropdown or the trigger button
+        const isInsideDropdown = dropdownRef.current?.contains(target);
+        const isInsideTrigger = moreOptionsRef.current?.contains(target);
+
+        // Only close if click is outside both the dropdown and trigger
+        if (
+          showMoreOptionsRef.current &&
+          !isInsideDropdown &&
+          !isInsideTrigger
+        ) {
+          setShowMoreOptions(false);
         }
       };
 
-      return (
+      if (showMoreOptions) {
+        // Only listen for mousedown events (not mousemove)
+        document.addEventListener("mousedown", handleClickOutside, {
+          capture: true,
+        });
+      }
+
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside, {
+          capture: true,
+        });
+      };
+    }, [showMoreOptions]);
+
+    // Portal dropdown component
+    const DropdownPortal = () => {
+      if (!showMoreOptions) return null;
+
+      return ReactDOM.createPortal(
+        <div
+          ref={dropdownRef}
+          style={{
+            position: "fixed",
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
+            width: dropdownPosition.width,
+            zIndex: 2147483647,
+            backgroundColor: "white",
+            border: "1px solid #ddd",
+            borderRadius: "4px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            margin: 0,
+            padding: 0,
+          }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={handleGoTo}
+            style={{
+              width: "100%",
+              padding: "8px 12px",
+              border: "none",
+              background: "none",
+              textAlign: "left",
+              cursor: "pointer",
+              fontSize: "14px",
+              color: "#1976d2",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            Go to Entity
+          </button>
+        </div>,
+        document.body
+      );
+    };
+
+    return (
+      <>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "8px",
+            gap: "4px",
             width: "100%",
             height: "100%",
+            position: "relative",
+            background: "transparent",
           }}
         >
           <button
             onClick={handleGoTo}
             style={{
-              background: "#007acc",
-              color: "white",
+              background: "#f8f9fa", // AG Grid default cell background
+              color: "#1976d2", // AG Grid blue or your theme's accent
               border: "none",
-              borderRadius: "4px",
-              padding: "4px 8px",
-              fontSize: "12px",
+              borderRadius: "50%",
+              padding: "4px",
+              fontSize: "16px",
               cursor: "pointer",
-              fontWeight: "500",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background 0.2s",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#005a9e";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#007acc";
-            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#e0e0e0")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#f8f9fa")}
             title="Go to entity"
           >
-            Go to
+            <ArrowUpLeft size={16} />
           </button>
+
+          <div ref={moreOptionsRef} style={{ position: "relative" }}>
+            <button
+              onClick={handleMoreOptionsClick}
+              style={{
+                background: "#f8f9fa",
+                color: "#555",
+                border: "none",
+                borderRadius: "50%",
+                padding: "4px",
+                fontSize: "18px",
+                cursor: "pointer",
+                minWidth: "24px",
+                height: "28px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                lineHeight: 1,
+                transition: "background 0.2s",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#e0e0e0")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "#f8f9fa")
+              }
+              title="More options"
+            >
+              {"\u22EE"}
+            </button>
+          </div>
         </div>
-      );
+        <DropdownPortal />
+      </>
+    );
+  });
+
+  ActionsCellRendererComponent.displayName = "ActionsCellRendererComponent";
+
+  // Actions cell renderer callback for AG Grid
+  const ActionsCellRenderer = useCallback(
+    (props: { data: Entity }) => {
+      return <ActionsCellRendererComponent {...props} />;
     },
-    [onEntityClick]
+    [ActionsCellRendererComponent] // Remove dependency on ActionsCellRendererComponent since it's already memoized
   );
 
   // Label cell renderer component with inline editing
@@ -247,10 +427,20 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
         // Update the entity's label using the proper setter method
         props.data.setLabel(editValue);
 
-        // Trigger a refresh of the grid
+        // Force refresh the entire row to update all cell values
         if (gridRef.current?.api) {
-          gridRef.current.api.refreshCells();
+          const rowNode = gridRef.current.api.getRowNode(props.data.getId());
+          if (rowNode) {
+            // Refresh the entire row to ensure all cells get updated values
+            gridRef.current.api.refreshCells({
+              rowNodes: [rowNode],
+              force: true,
+              suppressFlash: true,
+            });
+          }
         }
+        // Update rowData state to trigger AG Grid re-render
+        setRowData(container.toArray());
       }
       setIsEditing(false);
     };
@@ -321,6 +511,12 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
   const TypeCellRendererComponent = React.memo(
     (props: { data: Entity; value: string }) => {
       const [isEditing, setIsEditing] = useState(false);
+      // Use ref to track state across renders
+      const isEditingRef = useRef(isEditing);
+      useEffect(() => {
+        isEditingRef.current = isEditing;
+      }, [isEditing]);
+
       const [editValue, setEditValue] = useState(props.value || "");
       const [dropdownPosition, setDropdownPosition] = useState({
         top: 0,
@@ -333,26 +529,32 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       // Handle click outside to close dropdown
       useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+          // Only process actual mouse clicks (not mousemove events)
+          if (event.type !== "mousedown") return;
+
           const eventTarget = event.target as Node;
           const dropdownNode = dropdownRef.current as HTMLDivElement | null;
           const cellNode = cellRef.current as HTMLDivElement | null;
-          if (
-            isEditing &&
-            dropdownNode &&
-            !dropdownNode.contains(eventTarget) &&
-            cellNode &&
-            !cellNode.contains(eventTarget)
-          ) {
+
+          // Check if the click is inside the dropdown or the cell
+          const isInsideDropdown = dropdownNode?.contains(eventTarget);
+          const isInsideCell = cellNode?.contains(eventTarget);
+
+          if (isEditingRef.current && !isInsideDropdown && !isInsideCell) {
             setIsEditing(false);
           }
         };
 
         if (isEditing) {
-          document.addEventListener("mousedown", handleClickOutside);
+          document.addEventListener("mousedown", handleClickOutside, {
+            capture: true,
+          });
         }
 
         return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
+          document.removeEventListener("mousedown", handleClickOutside, {
+            capture: true,
+          });
         };
       }, [isEditing]);
 
@@ -377,24 +579,23 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
           // Update the entity's type using the proper setter method
           props.data.setType(newType);
 
-          // Trigger a refresh of the grid
+          // Force refresh the entire row to update all cell values
           if (gridRef.current?.api) {
-            gridRef.current.api.refreshCells();
+            const rowNode = gridRef.current.api.getRowNode(props.data.getId());
+            if (rowNode) {
+              // Refresh the entire row to ensure all cells get updated values
+              gridRef.current.api.refreshCells({
+                rowNodes: [rowNode],
+                force: true,
+                suppressFlash: true,
+              });
+            }
           }
+          // Update rowData state to trigger AG Grid re-render
+          setRowData(container.toArray());
         }
         setIsEditing(false);
       };
-
-      //   const handleCancel = () => {
-      //     setEditValue(props.value || "");
-      //     setIsEditing(false);
-      //   };
-
-      //   const handleKeyDown = (e: React.KeyboardEvent) => {
-      //     if (e.key === "Escape") {
-      //       handleCancel();
-      //     }
-      //   };
 
       // Portal dropdown component
       const DropdownPortal = () => {
@@ -461,13 +662,19 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
     (props: { data: Entity; value: string }) => {
       return <TypeCellRendererComponent {...props} />;
     },
-    [TypeCellRendererComponent]
+    [TypeCellRendererComponent] // Remove dependency on TypeCellRendererComponent since it's already memoized
   );
 
   // Tags cell renderer component with portal-based dropdown
   const TagsCellRendererComponent = React.memo(
     (props: { data: Entity; value: string[] }) => {
       const [isEditing, setIsEditing] = useState(false);
+      // Use ref to track state across renders
+      const isEditingRef = useRef(isEditing);
+      useEffect(() => {
+        isEditingRef.current = isEditing;
+      }, [isEditing]);
+
       const [editValue, setEditValue] = useState(
         Array.isArray(props.value)
           ? props.value.map((tag) => ({ value: tag, label: tag, color: "" }))
@@ -484,21 +691,28 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       // Click outside to close
       useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-          if (
-            isEditing &&
-            dropdownRef.current &&
-            !dropdownRef.current.contains(event.target as Node) &&
-            cellRef.current &&
-            !cellRef.current.contains(event.target as Node)
-          ) {
+          // Only process actual mouse clicks (not mousemove events)
+          if (event.type !== "mousedown") return;
+
+          const target = event.target as Node;
+
+          // Check if the click is inside the dropdown or the cell
+          const isInsideDropdown = dropdownRef.current?.contains(target);
+          const isInsideCell = cellRef.current?.contains(target);
+
+          if (isEditingRef.current && !isInsideDropdown && !isInsideCell) {
             setIsEditing(false);
           }
         };
         if (isEditing) {
-          document.addEventListener("mousedown", handleClickOutside);
+          document.addEventListener("mousedown", handleClickOutside, {
+            capture: true,
+          });
         }
         return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
+          document.removeEventListener("mousedown", handleClickOutside, {
+            capture: true,
+          });
         };
       }, [isEditing]);
 
@@ -532,9 +746,20 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
             const entityData = props.data.getData();
             (entityData as any).tags = tagSet;
           }
+          // Force refresh the entire row to update all cell values
           if (gridRef.current?.api) {
-            gridRef.current.api.refreshCells();
+            const rowNode = gridRef.current.api.getRowNode(props.data.getId());
+            if (rowNode) {
+              // Refresh the entire row to ensure all cells get updated values
+              gridRef.current.api.refreshCells({
+                rowNodes: [rowNode],
+                force: true,
+                suppressFlash: true,
+              });
+            }
           }
+          // Update rowData state to trigger AG Grid re-render
+          setRowData(container.toArray());
         }
         setIsEditing(false);
       };
@@ -630,7 +855,36 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
     const [currentColor, setCurrentColor] = React.useState(
       colorValue || "#000000"
     );
+    const showColorPickerRef = React.useRef(showColorPicker);
     const colorPickerRef = React.useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+      showColorPickerRef.current = showColorPicker;
+    }, [showColorPicker]);
+
+    // Add click outside handler for color picker
+    React.useEffect(() => {
+      if (!showColorPicker) return;
+
+      const handleOutsideClick = (e: MouseEvent) => {
+        if (e.type !== "mousedown") return;
+
+        const target = e.target as Node;
+        const isColorPickerClick = colorPickerRef.current?.contains(target);
+
+        if (showColorPickerRef.current && !isColorPickerClick) {
+          setShowColorPicker(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleOutsideClick, {
+        capture: true,
+      });
+      return () =>
+        document.removeEventListener("mousedown", handleOutsideClick, {
+          capture: true,
+        });
+    }, [showColorPicker]);
 
     const handleColorClick = (e: React.MouseEvent) => {
       e.stopPropagation(); // Prevent table row selection
@@ -657,6 +911,21 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
         const entityData = props.data.getData();
         (entityData as any).color = newColor;
       }
+
+      // Force refresh the entire row to update all cell values
+      if (gridRef.current?.api) {
+        const rowNode = gridRef.current.api.getRowNode(props.data.getId());
+        if (rowNode) {
+          // Refresh the entire row to ensure all cells get updated values
+          gridRef.current.api.refreshCells({
+            rowNodes: [rowNode],
+            force: true,
+            suppressFlash: true,
+          });
+        }
+      }
+      // Update rowData state to trigger AG Grid re-render
+      setRowData(container.toArray());
 
       setShowColorPicker(false);
     };
@@ -731,6 +1000,69 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
     );
   };
 
+  // Delete cell renderer component
+  const DeleteCellRenderer = (props: { data: Entity }) => {
+    const handleDelete = () => {
+      if (props.data) {
+        // Use the sceneGraph.getGraph().deleteNode() method
+        try {
+          const nodeId = props.data.getId() as NodeId;
+          if (nodeId) {
+            console.log(`Deleting node: ${nodeId}`);
+            sceneGraph.getGraph().deleteNode(nodeId);
+
+            // Refresh the grid to reflect the deleted node
+            if (gridRef.current?.api) {
+              // Remove the deleted row from the grid
+              gridRef.current.api.applyTransaction({
+                remove: [props.data],
+              });
+
+              // Update rowData state to trigger AG Grid re-render
+              setRowData(container.toArray());
+            }
+            sceneGraph.notifyGraphChanged();
+          }
+        } catch (error) {
+          console.error(`Error deleting entity: ${props.data.getId()}`, error);
+        }
+      }
+    };
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <button
+          onClick={handleDelete}
+          style={{
+            background: "#f8f9fa",
+            color: "#dc3545",
+            border: "none",
+            borderRadius: "50%",
+            padding: "4px",
+            fontSize: "16px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background 0.2s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = "#ffeaea")}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "#f8f9fa")}
+          title="Delete entity"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+    );
+  };
+
   // Generate column definitions dynamically
   const columnDefs = useMemo<ColDef<any>[]>(() => {
     const COLUMN_ORDER = [
@@ -771,6 +1103,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       maxWidth: 100,
       sortable: false,
       resizable: false,
+      filter: false, // Disable filter entirely for actions column
+      floatingFilter: false, // Disable floating filter
       cellRenderer: ActionsCellRenderer,
       cellStyle: {
         display: "flex",
@@ -780,16 +1114,39 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       },
     };
 
+    // Create the delete column (rightmost)
+    const deleteColumn = {
+      headerName: "",
+      field: "delete",
+      flex: 0.3,
+      minWidth: 48,
+      maxWidth: 56,
+      sortable: false,
+      resizable: false,
+      filter: false, // Disable filter entirely for delete column
+      floatingFilter: false, // Disable floating filter
+      cellRenderer: DeleteCellRenderer,
+      cellStyle: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        padding: "4px",
+      },
+    };
+
     // Create data columns
     const dataColumns = finalColumns.map((col) => ({
       headerName: col,
-      flex: col === "label" ? 2 : col === "type" || col === "tags" ? 1.5 : 1, // Expand label, type, and tags columns
+      field: col, // Add field property to match the column name
+      flex: col === "label" ? 2 : col === "type" || col === "tags" ? 1.5 : 1,
       minWidth:
         col === "label" ? 200 : col === "type" || col === "tags" ? 180 : 120,
       maxWidth:
         col === "label" ? 500 : col === "type" || col === "tags" ? 400 : 300,
       sortable: true,
       resizable: true,
+      filter: "agTextColumnFilter", // Explicitly set filter type
+      floatingFilter: true, // Explicitly enable floating filter
       cellRenderer:
         col === "color"
           ? ColorCellRenderer
@@ -810,22 +1167,18 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       },
       filterParams: {
         filterOptions: ["contains", "equals", "startsWith", "endsWith"],
-        buttons: ["apply", "reset"],
-        closeOnApply: true,
+        buttons: ["reset"], // Remove apply button - filtering happens immediately
+        closeOnApply: false, // Don't close automatically
+        suppressAndOrCondition: true, // Simplify filter UI
+        debounceMs: 200, // Add debounce for smoother typing experience
+        applyButton: false, // No apply button needed
+        clearButton: true, // Include clear button for convenience
       },
       // Custom filter function for complex search
       filterValueGetter: (params: any) => {
         if (!params.data) return "";
         const value = (params.data.getData() as any)[col];
         return value;
-      },
-      // Custom filter function
-      filter: (params: any) => {
-        if (!params.data) return false;
-        const value = (params.data.getData() as any)[col];
-        const filterValue = params.filterValue;
-        if (!filterValue) return true;
-        return searchInValue(value, filterValue);
       },
       cellStyle: {
         display: "flex",
@@ -839,16 +1192,12 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       },
     }));
 
-    // Return actions column + data columns
-    return [actionsColumn, ...dataColumns];
-  }, [
-    container,
-    ActionsCellRenderer,
-    TypeCellRenderer,
-    TagsCellRendererComponent,
-    formatValue,
-    searchInValue,
-  ]);
+    // Return actions column + data columns + delete column
+    return [actionsColumn, ...dataColumns, deleteColumn];
+    // unfortunately there is an issue with the cell renderer dependencies
+    // and forcegraph3d causing them to rerender on every mouse move
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [container, formatValue, searchInValue]);
 
   // Default column definition
   const defaultColDef = useMemo(
@@ -857,24 +1206,39 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       resizable: true,
       minWidth: 120,
       maxWidth: 300,
-      filter: true,
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      suppressMenu: false, // Make sure filter menu is available
       filterParams: {
-        filterOptions: ["contains", "equals", "startsWith", "endsWith"],
-        buttons: ["apply", "reset"],
-        closeOnApply: true,
+        // Default filter parameters for all columns
+        buttons: ["reset"],
+        closeOnApply: false,
+        debounceMs: 200,
+        applyButton: false,
+        clearButton: true,
+        filterOptions: ["contains"],
       },
     }),
     []
   );
 
   // Convert entities to array for AG Grid
-  const rowData = useMemo(() => {
-    const data = container.toArray();
-    return data;
+  const [rowData, setRowData] = useState(container.toArray());
+
+  // Update rowData when container changes
+  useEffect(() => {
+    setRowData(container.toArray());
   }, [container]);
 
-  // Grid API reference
-  const gridRef = useRef<AgGridReact<Entity>>(null);
+  // Memoize the row style function to prevent unnecessary re-renders
+  const getRowStyle = useCallback(
+    () => ({
+      display: "flex",
+      alignItems: "center",
+      cursor: onEntityClick ? "pointer" : "default",
+    }),
+    [onEntityClick]
+  );
 
   // Handle row click - disabled to prevent window closing
   const onRowClicked = useCallback((event: any) => {
@@ -941,6 +1305,67 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
     }, 0);
   }, []);
 
+  // Prevent unnecessary grid refreshes by memoizing the grid configuration
+  const gridConfig = useMemo(
+    () => ({
+      theme: themeBalham,
+      domLayout: "normal" as const,
+      rowSelection: "single" as const,
+      animateRows: true,
+      suppressCellFocus: true,
+      enableRangeSelection: true,
+      suppressContextMenu: false,
+      allowContextMenuWithControlKey: false,
+      suppressMenuHide: false,
+      pagination: true,
+      suppressRowClickSelection: true,
+      suppressRowDeselection: true,
+      suppressHorizontalScroll: false,
+      suppressColumnVirtualisation: false,
+    }),
+    []
+  );
+
+  // Make the grid more stable against unnecessary rerenders
+  const memoizedAgGrid = useMemo(
+    () => (
+      <AgGridReact
+        ref={gridRef}
+        {...gridConfig}
+        rowData={rowData}
+        columnDefs={columnDefs}
+        defaultColDef={defaultColDef}
+        suppressMenuHide={false} // Make sure menus are visible
+        getRowStyle={getRowStyle}
+        onRowClicked={onRowClicked}
+        onCellContextMenu={onCellContextMenu}
+        onFilterChanged={onFilterChanged}
+        onModelUpdated={onModelUpdated}
+        onColumnResized={onColumnResized}
+        onGridReady={(params) => {
+          console.log("AG Grid ready with params:", params);
+          console.log("Grid API:", params.api);
+          console.log("Row data at grid ready:", rowData);
+          console.log("Column definitions at grid ready:", columnDefs);
+        }}
+        overlayNoRowsTemplate={`<span style="color:#888;">No entities found</span>`}
+        overlayLoadingTemplate={`<span style="color:#1976d2;">Loading entities...</span>`}
+      />
+    ),
+    [
+      rowData,
+      columnDefs,
+      defaultColDef,
+      getRowStyle,
+      onRowClicked,
+      onCellContextMenu,
+      onFilterChanged,
+      onModelUpdated,
+      onColumnResized,
+      gridConfig,
+    ]
+  );
+
   return (
     <div
       className={styles.container}
@@ -956,45 +1381,7 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
           e.stopPropagation();
         }}
       >
-        <AgGridReact
-          ref={gridRef}
-          theme={themeBalham}
-          rowData={rowData}
-          columnDefs={columnDefs}
-          defaultColDef={defaultColDef}
-          domLayout="normal"
-          rowSelection="single"
-          animateRows={true}
-          suppressCellFocus={true}
-          enableRangeSelection={true}
-          suppressContextMenu={false}
-          allowContextMenuWithControlKey={false}
-          suppressMenuHide={false}
-          pagination={true}
-          suppressRowClickSelection={true}
-          suppressRowDeselection={true}
-          suppressHorizontalScroll={false}
-          suppressColumnVirtualisation={false}
-          getRowStyle={() => ({
-            display: "flex",
-            alignItems: "center",
-            cursor: onEntityClick ? "pointer" : "default",
-          })}
-          onRowClicked={onRowClicked}
-          // onRowDoubleClicked={onRowDoubleClicked}
-          onCellContextMenu={onCellContextMenu}
-          onFilterChanged={onFilterChanged}
-          onModelUpdated={onModelUpdated}
-          onColumnResized={onColumnResized}
-          onGridReady={(params) => {
-            console.log("AG Grid ready with params:", params);
-            console.log("Grid API:", params.api);
-            console.log("Row data at grid ready:", rowData);
-            console.log("Column definitions at grid ready:", columnDefs);
-          }}
-          overlayNoRowsTemplate={`<span style="color:#888;">No entities found</span>`}
-          overlayLoadingTemplate={`<span style="color:#1976d2;">Loading entities...</span>`}
-        />
+        {memoizedAgGrid}
       </div>
 
       {/* Context Menu */}

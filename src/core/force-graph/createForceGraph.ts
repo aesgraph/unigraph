@@ -113,7 +113,7 @@ export const createForceGraph = (
     .backgroundColor(options.backgroundColor ?? "#1a1a1a")
     .enableNodeDrag(true)
     .onNodeClick((node) => {
-      flyToNode(graph, node);
+      flyToNode(graph, node, layout);
       console.log("node clicked");
     })
     .onNodeDrag((node, translate: any) => {
