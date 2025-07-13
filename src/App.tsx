@@ -225,7 +225,6 @@ const getSimulations = (
 };
 
 const initialSceneGraph = new SceneGraph();
-let initialSceneGraphLoaded: boolean = false;
 
 export type RenderingView =
   | "Graphviz"
@@ -806,7 +805,6 @@ const AppContent = ({
         const tock = Date.now();
         console.log("TOTAL TIME", tock - tick);
         onLoaded?.(graph);
-        initialSceneGraphLoaded = true;
         addNotification({
           message: `Loaded SceneGraph: ${graph.getMetadata().name}`,
           type: "success",
