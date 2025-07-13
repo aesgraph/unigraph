@@ -1,8 +1,8 @@
 import { Graphviz } from "@hpcc-js/wasm";
 import { toDot } from "ts-graphviz";
 import { v4 as uuidv4 } from "uuid";
-import { parseGraphvizPositions } from "../../controllers/graphvisJsonParser";
 import { GraphvizOutput } from "../../controllers/graphvizHelpers";
+import { parseGraphvizPositions } from "../../controllers/graphvizJsonParser";
 import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphviz";
 import { SceneGraph } from "../model/SceneGraph";
 import { GraphvizLayoutType } from "./GraphvizLayoutType";
