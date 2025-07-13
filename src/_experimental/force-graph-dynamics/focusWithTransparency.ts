@@ -1,7 +1,7 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 
-import { NodeId } from "../../model/Node";
-import { SceneGraph } from "../../model/SceneGraph";
+import { NodeId } from "../../core/model/Node";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 export const focusWithTransparency = (
   nodeId: NodeId,

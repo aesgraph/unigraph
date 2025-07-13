@@ -1,32 +1,32 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
+import { songAnnotation247_2_entities } from "../_experimental/force-graph-dynamics/247-2";
+import { addCluster } from "../_experimental/force-graph-dynamics/addCluster";
+import { addRandomEdges } from "../_experimental/force-graph-dynamics/addRandomEdges";
+import { addRandomNodes } from "../_experimental/force-graph-dynamics/addRandomNodes";
+import { runManagedAnimation } from "../_experimental/force-graph-dynamics/animationRunner";
+import { generateConfigsFromAnnotations } from "../_experimental/force-graph-dynamics/annotationConfigGenerator";
+import { createAnnotationNodeSpawner } from "../_experimental/force-graph-dynamics/annotationNodeSpawner";
+import { applyRandomEffects } from "../_experimental/force-graph-dynamics/applyRandomEffects";
+import { applyStaggeredEffects } from "../_experimental/force-graph-dynamics/applyStaggeredEffects";
+import { compactify } from "../_experimental/force-graph-dynamics/compactify";
+import {
+  demoConfig,
+  playConfigSequence,
+} from "../_experimental/force-graph-dynamics/configSequencePlayer";
+import { focusOnDegrees } from "../_experimental/force-graph-dynamics/focusOnDegrees";
+import { focusWithTransparency } from "../_experimental/force-graph-dynamics/focusWithTransparency";
+import { pulsateNodes } from "../_experimental/force-graph-dynamics/pulsate";
+import {
+  randomizeVisible,
+  randomizeVisibleAndPhysics,
+} from "../_experimental/force-graph-dynamics/randomizeVisible";
+import { createSongVisualizationTimeline } from "../_experimental/force-graph-dynamics/songAnnotationTransitions";
+import { transitionToConfig } from "../_experimental/force-graph-dynamics/transition";
 import { loadAnnotationsToSceneGraph } from "../api/annotationsApi";
 import {
   attachSimulation,
   updateNodePositions,
 } from "../core/force-graph/createForceGraph";
-import { songAnnotation247_2_entities } from "../core/force-graph/dynamics/247-2";
-import { addCluster } from "../core/force-graph/dynamics/addCluster";
-import { addRandomEdges } from "../core/force-graph/dynamics/addRandomEdges";
-import { addRandomNodes } from "../core/force-graph/dynamics/addRandomNodes";
-import { runManagedAnimation } from "../core/force-graph/dynamics/animationRunner";
-import { generateConfigsFromAnnotations } from "../core/force-graph/dynamics/annotationConfigGenerator";
-import { createAnnotationNodeSpawner } from "../core/force-graph/dynamics/annotationNodeSpawner";
-import { applyRandomEffects } from "../core/force-graph/dynamics/applyRandomEffects";
-import { applyStaggeredEffects } from "../core/force-graph/dynamics/applyStaggeredEffects";
-import { compactify } from "../core/force-graph/dynamics/compactify";
-import {
-  demoConfig,
-  playConfigSequence,
-} from "../core/force-graph/dynamics/configSequencePlayer";
-import { focusOnDegrees } from "../core/force-graph/dynamics/focusOnDegrees";
-import { focusWithTransparency } from "../core/force-graph/dynamics/focusWithTransparency";
-import { pulsateNodes } from "../core/force-graph/dynamics/pulsate";
-import {
-  randomizeVisible,
-  randomizeVisibleAndPhysics,
-} from "../core/force-graph/dynamics/randomizeVisible";
-import { createSongVisualizationTimeline } from "../core/force-graph/dynamics/songAnnotationTransitions";
-import { transitionToConfig } from "../core/force-graph/dynamics/transition";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
 import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";

@@ -1,7 +1,7 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { Edge } from "../../model/Edge";
-import { Node } from "../../model/Node";
-import { SceneGraph } from "../../model/SceneGraph";
+import { Edge } from "../../core/model/Edge";
+import { Node } from "../../core/model/Node";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 // Get random integer from 0 to max (inclusive)
 const getRandomInt = (max: number): number => {

@@ -1,7 +1,7 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { getRandomColorFromPalette } from "../../../utils/colorUtils";
-import { SceneGraph } from "../../model/SceneGraph";
-import { GetRandomNodeFromSceneGraph } from "../../model/utils";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { GetRandomNodeFromSceneGraph } from "../../core/model/utils";
+import { getRandomColorFromPalette } from "../../utils/colorUtils";
 
 const EDGE_TYPES = [
   "type0",

@@ -1,10 +1,10 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 
-import { RenderingManager } from "../../../controllers/RenderingManager";
-import { hexToRgba } from "../../../utils/colorUtils";
-import { getEdgesToDegree } from "../../analysis/degree";
-import { NodeId } from "../../model/Node";
-import { SceneGraph } from "../../model/SceneGraph";
+import { RenderingManager } from "../../controllers/RenderingManager";
+import { getEdgesToDegree } from "../../core/analysis/degree";
+import { NodeId } from "../../core/model/Node";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { hexToRgba } from "../../utils/colorUtils";
 
 export const focusOnDegrees = (
   nodeId: NodeId,

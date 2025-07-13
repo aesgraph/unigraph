@@ -1,5 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
+import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import { runManagedAnimation } from "./animationRunner";
 import { transitionToConfig } from "./transition";
 

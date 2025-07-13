@@ -1,5 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { SceneGraph } from "../../model/SceneGraph";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 interface PulsateOptions {
   minOpacity?: number;

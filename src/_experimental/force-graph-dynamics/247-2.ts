@@ -1,8 +1,5 @@
-import {
-  SongAnnotation,
-  SongAnnotationId,
-} from "../../../_experimental/mp3/SongAnnotation";
-import { EntitiesContainer } from "../../model/entity/entitiesContainer";
+import { SongAnnotation, SongAnnotationId } from "../mp3/SongAnnotation";
+import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
 
 export const songAnnotation247_2 = [
   {

@@ -1,6 +1,6 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { SongAnnotation } from "../../../_experimental/mp3/SongAnnotation";
-import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
+import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
+import { SongAnnotation } from "../mp3/SongAnnotation";
 import { transitionToConfig } from "./transition";
 
 interface RandomEffectsConfig {
