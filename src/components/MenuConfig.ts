@@ -72,7 +72,10 @@ import {
 } from "../store/workspaceConfigStore";
 import { runConversationsAnalysis } from "../utils/runConversationsAnalysis";
 import { supabase } from "../utils/supabaseClient";
-import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
+import {
+  IMenuConfig,
+  IMenuConfig as MenuConfigType,
+} from "./appWorkspace/UniAppToolbar";
 
 // const handleExportConfig = (sceneGraph: SceneGraph) => {
 //   saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), "renderConfig.json");

@@ -6,7 +6,7 @@ import {
   ResizeParams,
 } from "@xyflow/react";
 import React, { useEffect, useState } from "react";
-import { Webpage } from "../../api/webpagesApi";
+import { Webpage } from "../../../../api/webpagesApi";
 
 interface ResizableWebpageNodeProps {
   webpage: Webpage;

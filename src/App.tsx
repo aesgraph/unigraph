@@ -38,8 +38,11 @@ import ReactFlowPanel, {
 } from "./components/simulations/ReactFlowPanel";
 import SolarSystem from "./components/simulations/solarSystemSimulation";
 import ChatGptImporter from "./components/tools/ChatGptImporter";
-import YasguiPanel from "./components/YasguiPanel";
+import YasguiPanel from "./components/views/Yasgui/YasguiPanel";
 
+import StoryCardApp from "./components/applets/StoryCards/StoryCardApp";
+import WikipediaArticleViewer from "./components/applets/WikipediaViewer/WikipediaArticleViewer";
+import WikipediaArticleViewer_FactorGraph from "./components/applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
 import EntitiesContainerDialog from "./components/common/EntitiesContainerDialog";
 import EntityEditor from "./components/common/EntityEditor";
 import EntityTableDialogV2 from "./components/common/EntityTableDialogV2";
@@ -53,9 +56,6 @@ import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationD
 import LexicalEditorV2 from "./components/LexicalEditor";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import SaveAsNewProjectDialog from "./components/projects/SaveAsNewProjectDialog";
-import StoryCardApp from "./components/StoryCardApp";
-import WikipediaArticleViewer from "./components/WikipediaArticleViewer";
-import WikipediaArticleViewer_FactorGraph from "./components/WikipediaArticleViewer_FactorGraph";
 import { getHotkeyConfig } from "./configs/hotkeyConfig";
 import { AppContextProvider } from "./context/AppContext";
 import {

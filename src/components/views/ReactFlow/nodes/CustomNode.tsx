@@ -1,6 +1,6 @@
 import { Handle, NodeProps, Position } from "@xyflow/react";
 import React, { useCallback, useState } from "react";
-import { NodeData } from "../core/model/Node";
+import { NodeData } from "../../../../core/model/Node";
 
 const CustomNode: React.FC<NodeProps> = ({ data }) => {
   const nodeData = data as unknown as NodeData;

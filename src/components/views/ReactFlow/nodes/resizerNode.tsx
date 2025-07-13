@@ -6,7 +6,7 @@ import {
   ResizeParams,
 } from "@xyflow/react";
 import React, { memo, useEffect, useState } from "react";
-import { NodeData } from "../core/model/Node";
+import { NodeData } from "../../../../core/model/Node";
 
 export type ResizerNodeDataArgs = NodeData & {
   onResizeEnd?: (x: number, y: number, width: number, height: number) => void;

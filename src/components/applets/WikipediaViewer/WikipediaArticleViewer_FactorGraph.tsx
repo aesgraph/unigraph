@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { SceneGraph } from "../core/model/SceneGraph";
 import {
   fixWikipediaLinks,
+  getUnigraphBaseUrl,
   replaceUnigraphUrlsWithLocalhost,
-} from "../utils/urlUtils";
-import { DefinitionPopup, DefinitionPopupData } from "./common/DefinitionPopup";
-import StaticHtmlComponent from "./common/StaticHtmlComponent";
-import TextBasedContextMenu from "./common/TextBasedContextMenu";
-import { saveAnnotationToSceneGraph } from "./common/saveAnnotationToSceneGraph";
+} from "../../../utils/urlUtils";
+import {
+  DefinitionPopup,
+  DefinitionPopupData,
+} from "../../common/DefinitionPopup";
 
 // Add a utility function to extract article title from Wikipedia URLs
 const extractWikipediaTitle = (url: string): string | null => {
@@ -42,7 +42,7 @@ const highlightKeywordsFunc = (
   return result;
 };
 
-// Helper to highlight terms in HTML (wrap with span and add styling directly)
+// Helper to highlight terms in HTML (wrap with span)
 const highlightCustomTerms = (
   html: string,
   terms: Record<string, string>
@@ -58,55 +58,45 @@ const highlightCustomTerms = (
       `(?<!<span[^>]*?>)\\b(${safeTerm})\\b(?![^<]*?</span>)`,
       "g"
     );
-    // Include the styling directly in the HTML output to ensure it's always applied
     result = result.replace(
       regex,
-      `<span class="wikipedia-defined-term" data-term="$1" style="cursor: pointer; border-bottom: 2px dotted #0645ad;" title="Click to see definition">$1</span>`
+      `<span class="wikipedia-defined-term" data-term="$1">$1</span>`
     );
   });
   return result;
 };
 
-type WikipediaArticleViewerProps = {
+type WikipediaArticleViewerFactorGraphProps = {
   style?: React.CSSProperties;
   highlightKeywords?: string[];
   initialArticle?: string;
-  customTerms?: Record<string, string>;
-  onAnnotate?: (selectedText: string) => void; // Add annotation callback
-  sceneGraph?: SceneGraph; // Add sceneGraph prop
+  customTerms?: Record<string, string>; // Add property for custom term definitions
 };
 
-export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
+export const WikipediaArticleViewer_FactorGraph: React.FC<
+  WikipediaArticleViewerFactorGraphProps
+> = ({
   style = {},
   highlightKeywords = [],
-  initialArticle = "Wikipedia",
-  customTerms = {},
-  onAnnotate = (text) => console.log("Annotate text:", text), // Default implementation
-  sceneGraph,
+  initialArticle = "Factor graph",
+  customTerms = { "sum-product": "test", enabling: "test2" }, // Default to empty object
 }) => {
   const [html, setHtml] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [currentArticle, setCurrentArticle] = useState<string>(initialArticle);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Add breadcrumb history state
   const [articleHistory, setArticleHistory] = useState<string[]>([
     initialArticle,
   ]);
   const cssInjected = useRef(false);
   const language = "en";
   const popupRef = useRef<HTMLDivElement>(null);
+  const [terms] = useState<Record<string, string>>(customTerms);
   const contentRef = useRef<HTMLDivElement>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
     null
   );
-  const [activeDefinition, setActiveDefinition] =
-    useState<DefinitionPopupData | null>(null);
-
-  // Add state for context menu
-  const [contextMenuPosition, setContextMenuPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-  const [selectedText, setSelectedText] = useState<string>("");
 
   // Wikipedia CSS links for <link rel="stylesheet" ... />
   const cssLinks = [
@@ -156,17 +146,101 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
           // Fix Wikipedia relative URLs to make links work
           htmlContent = fixWikipediaLinks(htmlContent, language);
 
-          // Reduce debug logging to avoid console noise
-          if (process.env.NODE_ENV !== "production") {
-            console.log("Applying custom terms highlighting:", customTerms);
-          }
-
           // Highlight custom terms in the HTML
-          htmlContent = highlightCustomTerms(htmlContent, customTerms);
+          htmlContent = highlightCustomTerms(htmlContent, terms);
 
           // Apply keyword highlighting
           if (highlightKeywords && highlightKeywords.length > 0) {
             htmlContent = highlightKeywordsFunc(htmlContent, highlightKeywords);
+          }
+
+          // Force insert the iframe without relying on heading detection
+          const unigraphBaseUrl = getUnigraphBaseUrl();
+
+          // Only add Unigraph visualization for Factor graph article
+          if (articleTitle.toLowerCase() === "factor graph") {
+            const unigraphIframe = `
+              <div style="margin: 20px 0; display: block; width: 100%;">
+                <h4>Interactive Unigraph Visualization</h4>
+                <iframe 
+                  src="${unigraphBaseUrl}/?graph=unigraph&view=ForceGraph3d" 
+                  width="100%" 
+                  height="500" 
+                  style="border: 1px solid #ccc; display: block; margin: 0 auto; background: #fff;" 
+                  title="Unigraph unigraph"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            `;
+
+            // Find a good insertion point - either after an example heading or at a specific point in the document
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, "text/html");
+
+            console.log(
+              "Sections in article:",
+              Array.from(doc.querySelectorAll("h2, h3, h4, h5, h6")).map((el) =>
+                el.textContent?.replace(/\[.*?\]/g, "").trim()
+              )
+            );
+
+            // Try multiple approaches to find the right location
+            let insertionDone = false;
+
+            // Approach 1: Look for example heading
+            const heading = Array.from(
+              doc.querySelectorAll("h2, h3, h4, h5, h6")
+            ).find((el) => {
+              const text =
+                el.textContent
+                  ?.replace(/\[.*?\]/g, "")
+                  .trim()
+                  .toLowerCase() || "";
+              return (
+                text.includes("example factor graph") ||
+                text.includes("example of factor graph")
+              );
+            });
+
+            if (heading) {
+              console.log("Found heading:", heading.textContent);
+              const container = document.createElement("div");
+              container.innerHTML = unigraphIframe;
+              heading.insertAdjacentHTML("afterend", unigraphIframe);
+              insertionDone = true;
+              htmlContent = doc.documentElement.innerHTML;
+            }
+
+            // Approach 2: Insert after a specific paragraph
+            if (!insertionDone) {
+              // Find a paragraph containing "factor graph"
+              const paragraphs = Array.from(doc.querySelectorAll("p"));
+              const targetParagraph = paragraphs.find((p) =>
+                p.textContent?.toLowerCase().includes("factor graph")
+              );
+
+              if (targetParagraph) {
+                console.log(
+                  "Inserting after paragraph containing 'factor graph'"
+                );
+                targetParagraph.insertAdjacentHTML("afterend", unigraphIframe);
+                insertionDone = true;
+                htmlContent = doc.documentElement.innerHTML;
+              }
+            }
+
+            // Approach 3: Fallback - insert at the beginning of the article
+            if (!insertionDone) {
+              console.log("Fallback: Inserting at the beginning");
+              const firstElem = doc.querySelector(".mw-parser-output");
+              if (firstElem) {
+                firstElem.insertAdjacentHTML("afterbegin", unigraphIframe);
+                htmlContent = doc.documentElement.innerHTML;
+              } else {
+                // Last resort - just prepend to the content
+                htmlContent = unigraphIframe + htmlContent;
+              }
+            }
           }
 
           setHtml(replaceUnigraphUrlsWithLocalhost(htmlContent));
@@ -183,31 +257,19 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
         cancelled = true;
       };
     },
-    [language, highlightKeywords, customTerms]
-  );
-
-  // Memoize the fetch article function to prevent unnecessary re-creation
-  const memoizedFetchArticle = React.useMemo(
-    () => fetchWikipediaArticle,
-    [fetchWikipediaArticle]
+    [language, highlightKeywords, terms]
   );
 
   // Load the initial article
   useEffect(() => {
     let cleanupFn: (() => void) | undefined;
-    let isMounted = true;
-
-    memoizedFetchArticle(currentArticle).then((fn) => {
-      if (isMounted) {
-        cleanupFn = fn;
-      }
+    fetchWikipediaArticle(currentArticle).then((fn) => {
+      cleanupFn = fn;
     });
-
     return () => {
-      isMounted = false;
       if (cleanupFn) cleanupFn();
     };
-  }, [currentArticle, memoizedFetchArticle]);
+  }, [currentArticle, fetchWikipediaArticle]);
 
   // Navigate to a specific article with history tracking
   const navigateToArticle = (title: string) => {
@@ -244,6 +306,9 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
       }
     }
   };
+
+  const [activeDefinition, setActiveDefinition] =
+    useState<DefinitionPopupData | null>(null);
 
   // Enhanced handleMouseDown for popup dragging
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -322,30 +387,13 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
 
     if (termElements.length === 0) return;
 
-    // Only log in development mode
-    if (process.env.NODE_ENV !== "production") {
-      console.log(`Found ${termElements.length} term elements`);
-      console.log("Available terms:", customTerms);
-    }
-
     const handleTermClick = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
 
       const element = e.currentTarget as HTMLElement;
       const termText = element.getAttribute("data-term");
-
-      // Debug the clicked term only in development
-      if (process.env.NODE_ENV !== "production") {
-        console.log(
-          "Term clicked:",
-          termText,
-          "Available:",
-          customTerms[termText || ""]
-        );
-      }
-
-      if (!termText || !customTerms[termText]) return;
+      if (!termText || !terms[termText]) return;
 
       const rect = element.getBoundingClientRect();
       const positionX = rect.left + rect.width / 2 + window.scrollX;
@@ -356,7 +404,7 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
       } else {
         setActiveDefinition({
           term: termText,
-          definition: customTerms[termText],
+          definition: terms[termText],
           position: {
             x: positionX,
             y: positionY,
@@ -371,7 +419,7 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
       element.removeEventListener("click", handleTermClick as EventListener);
     });
 
-    // Setup new listeners - style is already applied in the HTML generation
+    // Setup new listeners
     termElements.forEach((element) => {
       element.addEventListener("click", handleTermClick as EventListener);
       (element as HTMLElement).onclick = (e: any) => {
@@ -399,155 +447,7 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
       });
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [html, customTerms, activeDefinition]);
-
-  // Handle context menu for text selection
-  const handleContextMenu = (e: React.MouseEvent) => {
-    const selection = window.getSelection();
-    const text = selection?.toString().trim();
-    if (text && text.length > 0) {
-      e.preventDefault(); // Prevent default browser context menu
-      e.stopPropagation(); // Stop propagation to avoid triggering other handlers
-      setSelectedText(text);
-      setContextMenuPosition({ x: e.clientX, y: e.clientY });
-    }
-  };
-
-  // Enhanced annotation handler that saves to scene graph
-  const handleAnnotate = (text: string) => {
-    if (!text.trim()) return;
-
-    // Get the surrounding HTML context if possible
-    let surroundingHtml = "";
-    const selection = window.getSelection();
-
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-
-      // Get the surrounding context - either the parent element or a few words before/after
-      const container = range.commonAncestorContainer;
-      if (container.nodeType === Node.ELEMENT_NODE) {
-        // If the container is an element, use its HTML
-        surroundingHtml = (container as Element).outerHTML;
-      } else if (container.parentElement) {
-        // If it's a text node, use the parent element's HTML
-        surroundingHtml = container.parentElement.outerHTML;
-      }
-    }
-
-    // Save to scene graph if available, otherwise use the default onAnnotate
-    if (sceneGraph) {
-      try {
-        const node = saveAnnotationToSceneGraph(
-          text,
-          surroundingHtml,
-          { type: "wikipedia", resource_id: currentArticle },
-          sceneGraph
-        );
-        console.log("Created annotation node:", node);
-      } catch (error) {
-        console.error("Failed to save annotation to scene graph:", error);
-        // Fall back to the default onAnnotate
-        onAnnotate(text);
-      }
-    } else {
-      // Use the provided onAnnotate callback
-      onAnnotate(text);
-    }
-  };
-
-  // Define context menu items - more compact without icons
-  const getContextMenuItems = () => [
-    {
-      id: "annotate",
-      label: "Annotate",
-      onClick: () => {
-        // Keep the selection intact until the action is completed
-        const currentSelection = selectedText;
-        handleAnnotate(currentSelection);
-        // Don't clear selection here - let user manage that
-      },
-    },
-    {
-      id: "copy",
-      label: "Copy",
-      onClick: () => {
-        navigator.clipboard.writeText(selectedText);
-      },
-    },
-    {
-      id: "search",
-      label: "Search Google",
-      onClick: () => {
-        window.open(
-          `https://www.google.com/search?q=${encodeURIComponent(selectedText)}`,
-          "_blank"
-        );
-      },
-    },
-  ];
-
-  // Close context menu when clicking outside
-  useEffect(() => {
-    if (!contextMenuPosition) return;
-
-    const handleClickOutside = () => {
-      setContextMenuPosition(null);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    // Also close on Escape key
-    const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setContextMenuPosition(null);
-      }
-    };
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [contextMenuPosition]);
-
-  // Handle clicks on article content
-  const handleContentClick = (e: React.MouseEvent) => {
-    // Improved click handler for term definitions
-    const target = e.target as HTMLElement;
-    if (target.classList.contains("wikipedia-defined-term")) {
-      const termText = target.getAttribute("data-term");
-      // Use customTerms directly
-      if (termText && customTerms[termText]) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        console.log("Clicked term:", termText);
-
-        const rect = target.getBoundingClientRect();
-        const positionX = rect.left + rect.width / 2 + window.scrollX;
-        const positionY = rect.top + window.scrollY - 24;
-
-        if (activeDefinition && activeDefinition.term === termText) {
-          setActiveDefinition(null);
-        } else {
-          setActiveDefinition({
-            term: termText,
-            definition: customTerms[termText],
-            position: {
-              x: positionX,
-              y: positionY,
-            },
-            isDragging: false,
-          });
-        }
-      }
-    }
-
-    // Also close the context menu when clicking
-    if (contextMenuPosition) {
-      setContextMenuPosition(null);
-    }
-  };
+  }, [html, terms, activeDefinition]);
 
   if (error) return <div style={style}>Error: {error}</div>;
   if (isLoading) return <div style={style}>Loading...</div>;
@@ -558,16 +458,10 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
         background: "#fff",
         padding: 24,
         borderRadius: 8,
-        maxWidth: "1100px", // Increased from 900px to 1100px for wider content
+        maxWidth: 900,
         margin: "0 auto",
         overflow: "auto",
-        height: "calc(100vh - 64px)",
-        maxHeight: "unset",
-        display: "flex",
-        flexDirection: "column",
-        // Add scrollbar styling
-        scrollbarWidth: "thin", // For Firefox
-        scrollbarColor: "#bbb #f1f1f1", // For Firefox: thumb and track colors
+        maxHeight: "80vh",
         ...style,
       }}
       className="mw-parser-output wikipedia-article-viewer"
@@ -578,7 +472,6 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
           marginBottom: 20,
           borderBottom: "1px solid #ddd",
           paddingBottom: 10,
-          flexShrink: 0, // Prevent header from shrinking
         }}
       >
         <h2>{currentArticle}</h2>
@@ -621,45 +514,14 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
       </div>
 
       {/* Render article content */}
-      <StaticHtmlComponent
-        contentRef={contentRef as React.RefObject<HTMLDivElement>}
-        html={html}
-        className="wikipedia-article-content"
-        style={{
-          flexGrow: 1,
-          overflowY: "auto",
-          paddingBottom: "80px",
-          // Add scrollbar styling for this element too
-          scrollbarWidth: "thin", // For Firefox
-          scrollbarColor: "#bbb #f1f1f1", // For Firefox
-        }}
-        onContextMenu={handleContextMenu}
-        onClick={handleContentClick}
-      />
-
-      {/* Render the context menu when position is available */}
-      {contextMenuPosition &&
-        createPortal(
-          <TextBasedContextMenu
-            position={contextMenuPosition}
-            selectedText={selectedText}
-            items={getContextMenuItems()}
-            onClose={() => setContextMenuPosition(null)}
-          />,
-          document.body
-        )}
-
-      {/* Setup link handlers after render */}
       <div
-        style={{ display: "none" }}
-        ref={(el) => {
-          if (!el || !contentRef.current || !html) return;
+        dangerouslySetInnerHTML={html ? { __html: html } : undefined}
+        ref={(container) => {
+          if (!container || !html) return;
 
-          // Attach click handlers to Wikipedia links
+          // Add click event listeners to all links in the container
           setTimeout(() => {
-            const container = contentRef.current;
-            if (!container) return;
-
+            // Attach click handlers to Wikipedia links
             container.querySelectorAll("a").forEach((link) => {
               // Remove existing listeners first to avoid duplicates
               link.removeEventListener(
@@ -680,7 +542,81 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
                 }
               }
             });
-          }, 300);
+
+            // Add Unigraph iframe for factor graph example if needed
+            if (currentArticle.toLowerCase() === "factor graph") {
+              // Find the target image with "Example factor graph" caption
+              const images = container.querySelectorAll("img");
+              let targetImage = null;
+
+              for (const img of Array.from(images)) {
+                // Check caption (could be in figcaption or nearby element)
+                const caption =
+                  img.closest("figure")?.querySelector("figcaption")
+                    ?.textContent ||
+                  img.alt ||
+                  img.title ||
+                  img.parentElement?.nextElementSibling?.textContent;
+
+                if (
+                  caption &&
+                  caption.toLowerCase().includes("example factor graph")
+                ) {
+                  targetImage = img;
+                  break;
+                }
+
+                // Also check parent figure or div that might contain the image
+                const parentFigure = img.closest("figure, div.thumb");
+                if (
+                  parentFigure &&
+                  parentFigure.textContent &&
+                  parentFigure.textContent
+                    .toLowerCase()
+                    .includes("example factor graph")
+                ) {
+                  targetImage = img;
+                  break;
+                }
+              }
+
+              // If we found the image or its container
+              if (targetImage) {
+                const targetContainer =
+                  targetImage.closest("figure, div.thumb") ||
+                  targetImage.parentElement;
+                if (targetContainer) {
+                  console.log("Found target image for second iframe");
+
+                  // Create second iframe using the utility function for base URL
+                  const unigraphBaseUrl = getUnigraphBaseUrl();
+
+                  const secondIframe = document.createElement("div");
+                  secondIframe.innerHTML = `
+                    <div style="margin: 20px 0; display: block; width: 100%;">
+                      <h4>Interactive Unigraph Visualization (Factor Graph Example)</h4>
+                      <iframe
+                        src="${unigraphBaseUrl}/?graph=unigraph&view=ForceGraph3d"
+                        width="100%"
+                        height="450"
+                        style="border: 1px solid #ccc; display: block; margin: 0 auto; background: #fff;"
+                        title="Unigraph Factor Graph Example"
+                        allowfullscreen>
+                      </iframe>
+                    </div>
+                  `;
+
+                  // Insert after the image container
+                  if (secondIframe.firstElementChild) {
+                    targetContainer.insertAdjacentElement(
+                      "afterend",
+                      secondIframe.firstElementChild
+                    );
+                  }
+                }
+              }
+            }
+          }, 500); // Small delay to ensure DOM is ready
         }}
       />
 
@@ -690,6 +626,7 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
             popup={activeDefinition}
             onClose={() => setActiveDefinition(null)}
             onMouseDown={handleMouseDown}
+            // Fix type: pass popupRef as RefObject<HTMLDivElement>
             popupRef={popupRef as React.RefObject<HTMLDivElement>}
           />,
           document.body
@@ -698,31 +635,4 @@ export const WikipediaArticleViewer: React.FC<WikipediaArticleViewerProps> = ({
   );
 };
 
-// Modify the scrollbar styles code to only run once
-if (!document.getElementById("wikipedia-scrollbar-styles")) {
-  const scrollbarStyles = document.createElement("style");
-  scrollbarStyles.id = "wikipedia-scrollbar-styles";
-  scrollbarStyles.textContent = `
-    .wikipedia-article-viewer::-webkit-scrollbar,
-    .wikipedia-article-content::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    .wikipedia-article-viewer::-webkit-scrollbar-track,
-    .wikipedia-article-content::-webkit-scrollbar-track {
-      background: #f1f1f1; 
-    }
-    .wikipedia-article-viewer::-webkit-scrollbar-thumb,
-    .wikipedia-article-content::-webkit-scrollbar-thumb {
-      background: #bbb; 
-      border-radius: 4px;
-    }
-    .wikipedia-article-viewer::-webkit-scrollbar-thumb:hover,
-    .wikipedia-article-content::-webkit-scrollbar-thumb:hover {
-      background: #999; 
-    }
-  `;
-  document.head.appendChild(scrollbarStyles);
-}
-
-export default React.memo(WikipediaArticleViewer);
+export default WikipediaArticleViewer_FactorGraph;

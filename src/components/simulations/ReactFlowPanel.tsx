@@ -39,13 +39,13 @@ import {
 import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
-import CustomNode from "../CustomNode";
-import WebpageNode from "../webpages/WebpageNode";
+import CustomNode from "../views/ReactFlow/nodes/CustomNode";
+import WebpageNode from "../views/ReactFlow/nodes/WebpageNode";
 
 import "@xyflow/react/dist/style.css";
 import { EdgeId } from "../../core/model/Edge";
 import ResizableAnnotationCard from "../annotations/ResizableAnnotationCard";
-import ResizerNode from "../resizerNode";
+import ResizerNode from "../views/ReactFlow/nodes/resizerNode";
 
 // Remove the custom Node interface that was causing the type conflict
 interface ReactFlowPanelProps {

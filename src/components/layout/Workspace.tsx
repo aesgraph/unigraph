@@ -25,9 +25,9 @@ import useWorkspaceConfigStore, {
   getSectionWidth,
   updateSectionWidth,
 } from "../../store/workspaceConfigStore";
+import UniAppToolbar, { IMenuConfig } from "../appWorkspace/UniAppToolbar";
 import NodeInfo from "../NodeInfo";
 import NotificationManager from "../notifications/NotificationManager";
-import UniAppToolbar, { IMenuConfig } from "../UniAppToolbar";
 import styles from "./Workspace.module.css";
 
 const sidebarDisabledViews = [

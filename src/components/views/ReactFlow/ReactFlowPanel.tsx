@@ -16,34 +16,34 @@ import {
 } from "@xyflow/react";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { SelectionMode } from "reactflow";
-import { Annotation } from "../../api/annotationsApi";
-import CustomNode from "../../components/CustomNode";
-import ResizableAnnotationCard from "../../components/annotations/ResizableAnnotationCard";
-import resizerNode from "../../components/resizerNode";
-import WebpageNode from "../../components/webpages/WebpageNode";
+import { Annotation } from "../../../api/annotationsApi";
 import {
   MOUSE_HOVERED_NODE_COLOR,
   SELECTED_NODE_COLOR,
-} from "../../core/force-graph/createForceGraph";
-import { EdgeId } from "../../core/model/Edge";
-import { NodeId } from "../../core/model/Node";
-import { EntityIds } from "../../core/model/entity/entityIds";
-import useAppConfigStore from "../../store/appConfigStore";
-import { useDocumentStore } from "../../store/documentStore";
+} from "../../../core/force-graph/createForceGraph";
+import { EdgeId } from "../../../core/model/Edge";
+import { NodeId } from "../../../core/model/Node";
+import { EntityIds } from "../../../core/model/entity/entityIds";
+import useAppConfigStore from "../../../store/appConfigStore";
+import { useDocumentStore } from "../../../store/documentStore";
 import useGraphInteractionStore, {
   getSelectedNodeId,
   getSelectedNodeIds,
   setHoveredNodeId,
   setSelectedNodeId,
   setSelectedNodeIds,
-} from "../../store/graphInteractionStore";
+} from "../../../store/graphInteractionStore";
 import {
   getReactFlowConfig,
   subscribeToReactFlowConfigChanges,
-} from "../../store/reactFlowConfigStore";
+} from "../../../store/reactFlowConfigStore";
 import useWorkspaceConfigStore, {
   setRightActiveSection,
-} from "../../store/workspaceConfigStore";
+} from "../../../store/workspaceConfigStore";
+import ResizableAnnotationCard from "../../annotations/ResizableAnnotationCard";
+import CustomNode from "./nodes/CustomNode";
+import WebpageNode from "./nodes/WebpageNode";
+import resizerNode from "./nodes/resizerNode";
 
 // Remove the custom Node interface that was causing the type conflict
 interface ReactFlowPanelProps {
