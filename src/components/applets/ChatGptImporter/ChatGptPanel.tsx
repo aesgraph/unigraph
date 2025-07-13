@@ -7,7 +7,7 @@ import { addNotification } from "../../../store/notificationStore";
 import {
   importChatGptConversation,
   importChatGptFromFile,
-} from "./chatGptImporter";
+} from "./chatGptImportUtils";
 import "./ChatGptPanel.css";
 import { importConversationsWithStructure } from "./services/conversationsImporter";
 
