@@ -1,6 +1,6 @@
-import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
-import { Graph } from "../../core/model/Graph";
-import { Node, NodeId } from "../../core/model/Node";
+import { EntitiesContainer } from "../../../../core/model/entity/entitiesContainer";
+import { Graph } from "../../../../core/model/Graph";
+import { Node, NodeId } from "../../../../core/model/Node";
 
 export interface StoryCardOptions {
   basePath?: "public" | "docs" | string;

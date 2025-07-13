@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { NodeId } from "../../../core/model/Node";
 import { SceneGraph } from "../../../core/model/SceneGraph";
 import { loadMarkdownFile } from "../../../utils/markdownLoader";
-import StoryCard from "../../cards/StoryCard";
 import { StoryNode } from "../../types/StoryTypes";
 import "./StoryCardApp.css";
+import StoryCard from "./cards/StoryCard";
 
 interface StoryCardAppProps {
   sceneGraph: SceneGraph;

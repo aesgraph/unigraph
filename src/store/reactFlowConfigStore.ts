@@ -3,7 +3,7 @@ import { immer } from "zustand/middleware/immer";
 import {
   DEFAULT_REACTFLOW_CONFIG,
   ReactFlowRenderConfig,
-} from "../components/react-flow/ReactFlowConfigEditor";
+} from "../components/views/ReactFlow/ReactFlowConfigEditor";
 
 interface ReactFlowConfigState {
   config: ReactFlowRenderConfig;

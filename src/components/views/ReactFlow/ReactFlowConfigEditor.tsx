@@ -1,6 +1,6 @@
 import { BackgroundVariant } from "@xyflow/react";
 import React, { useEffect, useState } from "react";
-import { FormFieldProps, FormSchema } from "../shared/FormSchemaTypes";
+import { FormFieldProps, FormSchema } from "../../shared/FormSchemaTypes";
 import styles from "./ReactFlowConfigEditor.module.css";
 
 interface ReactFlowConfigEditorProps {

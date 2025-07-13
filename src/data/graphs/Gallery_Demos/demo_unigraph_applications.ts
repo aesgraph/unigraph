@@ -1,6 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 import { DEFAULT_APP_CONFIG } from "../../../AppConfig";
-import { createStoryCardsFromDocsDirectory } from "../../../components/cards/utils";
+import { createStoryCardsFromDocsDirectory } from "../../../components/applets/StoryCards/cards/utils";
 import { EntitiesContainer } from "../../../core/model/entity/entitiesContainer";
 import { Graph } from "../../../core/model/Graph";
 import { createEdgesTo } from "../../../core/model/GraphUtils";

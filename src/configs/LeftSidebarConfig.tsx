@@ -12,8 +12,8 @@ import FilterManagerV2 from "../components/filters/FilterManagerV2";
 import ForceGraphRenderConfigEditor from "../components/force-graph/ForceGraphRenderConfigEditor";
 import LayoutManagerV2 from "../components/layouts/LayoutManagerV2";
 import ProjectManager from "../components/projects/ProjectManager"; // Import the new component
-import ReactFlowConfigEditor from "../components/react-flow/ReactFlowConfigEditor";
 import ProfileIcon from "../components/user/ProfileIcon";
+import ReactFlowConfigEditor from "../components/views/ReactFlow/ReactFlowConfigEditor";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
 import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";

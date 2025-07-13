@@ -1,6 +1,6 @@
 import React from "react";
-import MarkdownViewer from "../common/MarkdownViewer";
-import { StoryNode } from "../types/StoryTypes";
+import MarkdownViewer from "../../../common/MarkdownViewer";
+import { StoryNode } from "../../../types/StoryTypes";
 
 interface StoryCardPreviewContentProps {
   node: StoryNode;

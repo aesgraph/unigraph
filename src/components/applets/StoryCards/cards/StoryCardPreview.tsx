@@ -1,5 +1,5 @@
 import React from "react";
-import { StoryNode } from "../types/StoryTypes";
+import { StoryNode } from "../../../types/StoryTypes";
 import StoryCardPreviewContent from "./StoryCardPreviewContent";
 
 interface StoryCardPreviewProps {
