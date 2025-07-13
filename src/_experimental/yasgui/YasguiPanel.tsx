@@ -1,8 +1,8 @@
 import Yasgui from "@triply/yasgui";
 import "@triply/yasgui/build/yasgui.min.css";
 import React, { useEffect, useRef } from "react";
-import { SceneGraph } from "../../../core/model/SceneGraph";
-import { processYasguiResults } from "../../../helpers/yasguiHelpers";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { processYasguiResults } from "./yasguiHelpers";
 
 interface YasguiPanelProps {
   sceneGraph: SceneGraph;

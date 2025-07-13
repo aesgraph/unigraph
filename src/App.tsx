@@ -10,6 +10,7 @@ import React, {
 import ImageGallery from "./_experimental/lumina/galleryTestbed/ImageGallery";
 import ImageBoxCreator from "./_experimental/lumina/ImageBoxCreator";
 import Lumina from "./_experimental/lumina/Lumina";
+import YasguiPanel from "./_experimental/yasgui/YasguiPanel";
 import "./App.css";
 import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
@@ -30,12 +31,11 @@ import FilterManager from "./components/filters/FilterManager";
 import FilterWindow from "./components/filters/FilterWindow";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import NodeEditorWizard from "./components/NodeEditorWizard";
-import SceneGraphDetailView from "./components/SceneGraphDetailView";
-import SceneGraphTitle from "./components/SceneGraphTitle";
+import SceneGraphDetailView from "./components/sceneGraph/SceneGraphDetailView";
+import SceneGraphTitle from "./components/sceneGraph/SceneGraphTitle";
 import ReactFlowPanel, {
   nodeTypes,
 } from "./components/views/ReactFlow/ReactFlowPanel";
-import YasguiPanel from "./components/views/Yasgui/YasguiPanel";
 
 import AudioAnnotator from "./_experimental/mp3/AudioAnnotator";
 import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
@@ -57,6 +57,7 @@ import { getNodeContextMenuItems } from "./components/common/singleNodeContextMe
 import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import SaveAsNewProjectDialog from "./components/projects/SaveAsNewProjectDialog";
+import { enableZoomAndPanOnSvg } from "./components/svg/appHelpers";
 import { getHotkeyConfig } from "./configs/hotkeyConfig";
 import { AppContextProvider } from "./context/AppContext";
 import {
@@ -76,7 +77,6 @@ import {
 } from "./core/force-graph/createForceGraph";
 import { syncMissingNodesAndEdgesInForceGraph } from "./core/force-graph/forceGraphHelpers";
 import { ForceGraphManager } from "./core/force-graph/ForceGraphManager";
-import { enableZoomAndPanOnSvg } from "./core/graphviz/appHelpers";
 import { Compute_Layout } from "./core/layouts/LayoutEngine";
 import {
   LayoutEngineOption,

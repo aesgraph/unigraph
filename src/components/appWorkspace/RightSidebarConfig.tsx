@@ -19,8 +19,8 @@ import {
 } from "../../store/appConfigStore";
 import { getSelectedNodeIds } from "../../store/graphInteractionStore";
 import NodeDetailsPanel from "../NodeDetailsPanel";
-import SceneGraphInfoEditor from "../SceneGraphInfoEditor";
-import SceneGraphTitle from "../SceneGraphTitle";
+import SceneGraphInfoEditor from "../sceneGraph/SceneGraphInfoEditor";
+import SceneGraphTitle from "../sceneGraph/SceneGraphTitle";
 import ForceGraphLayoutRadio from "../views/ForceGraph3d/ForceGraphLayoutRadio";
 import styles from "./Sidebar.module.css";
 

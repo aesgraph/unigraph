@@ -1,10 +1,13 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
 import { Trash2 } from "lucide-react";
+import {
+  bfsQuery,
+  processYasguiResults,
+} from "../../_experimental/yasgui/yasguiHelpers";
 import { attachRepulsiveForce } from "../../core/force-graph/createForceGraph";
 import { NodeId } from "../../core/model/Node";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { flyToNode } from "../../core/webgl/webglHelpers";
-import { bfsQuery, processYasguiResults } from "../../helpers/yasguiHelpers";
 import { Filter } from "../../store/activeFilterStore"; // Add this import
 import { ContextMenuItem } from "./ContextMenu";
 import { getHideMenuItem, getShowSubmenuItems } from "./sharedContextMenuItems"; // Import shared menu items

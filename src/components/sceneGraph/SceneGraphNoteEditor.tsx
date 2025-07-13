@@ -1,6 +1,6 @@
 import { Edit, Save } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { SceneGraph } from "../core/model/SceneGraph";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import styles from "./SceneGraphNoteEditor.module.css";
 
 interface SceneGraphNoteEditorProps {

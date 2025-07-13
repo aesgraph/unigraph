@@ -1,7 +1,7 @@
 import { Download, Edit, Save, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { SceneGraph } from "../core/model/SceneGraph";
-import useAppConfigStore from "../store/appConfigStore";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import useAppConfigStore from "../../store/appConfigStore";
 import "./SceneGraphInfoEditor.css";
 
 interface SceneGraphInfoEditorProps {

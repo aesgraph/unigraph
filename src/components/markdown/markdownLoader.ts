@@ -1,4 +1,4 @@
-import { FailedLoadTracker } from "./failedLoadTracker";
+import { FailedLoadTracker } from "../../utils/failedLoadTracker";
 
 // Cache for successful loads to avoid refetching
 const markdownCache: Map<string, string> = new Map();

@@ -1,5 +1,5 @@
 import React from "react";
-import { useSvgSceneGraph } from "../hooks/useSvgSceneGraph";
+import { useSvgSceneGraph } from "../../hooks/useSvgSceneGraph";
 
 const SvgSceneGraphComponent: React.FC<{ svgUrl: string }> = ({ svgUrl }) => {
   const { sceneGraph, loading, error } = useSvgSceneGraph(svgUrl);

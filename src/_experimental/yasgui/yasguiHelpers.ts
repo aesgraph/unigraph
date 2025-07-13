@@ -1,6 +1,6 @@
-import { EdgeId } from "../core/model/Edge";
-import { NodeDataArgs } from "../core/model/Node";
-import { SceneGraph } from "../core/model/SceneGraph";
+import { EdgeId } from "../../core/model/Edge";
+import { NodeDataArgs } from "../../core/model/Node";
+import { SceneGraph } from "../../core/model/SceneGraph";
 
 export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
   console.log("results are ", results);
@@ -81,7 +81,7 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
 };
 
 import fetch from "node-fetch";
-import { getRandomColorFromPalette } from "../utils/colorUtils";
+import { getRandomColorFromPalette } from "../../utils/colorUtils";
 
 export async function bfsQuery(
   dbpediaId: string,
