@@ -1,5 +1,5 @@
-import { ChatMessage } from "../store/chatHistoryStore";
-import { addNotification } from "../store/notificationStore";
+import { ChatMessage } from "../../../../store/chatHistoryStore";
+import { addNotification } from "../../../../store/notificationStore";
 import { sceneGraphController } from "./sceneGraphController";
 
 const API_URL = "http://localhost:1234/v1/chat/completions";

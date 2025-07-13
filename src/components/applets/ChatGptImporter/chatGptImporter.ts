@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
-import { NodeId } from "../core/model/Node";
-import { SceneGraph } from "../core/model/SceneGraph";
-import { createDocument, updateDocument } from "../store/documentStore";
-import { addNotification } from "../store/notificationStore";
+import { NodeId } from "../../../core/model/Node";
+import { SceneGraph } from "../../../core/model/SceneGraph";
+import { createDocument, updateDocument } from "../../../store/documentStore";
+import { addNotification } from "../../../store/notificationStore";
 
 interface ChatMessage {
   role: "user" | "assistant" | "system" | "tool" | string;

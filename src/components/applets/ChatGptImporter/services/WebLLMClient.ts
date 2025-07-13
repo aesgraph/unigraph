@@ -5,7 +5,7 @@ import {
   CompletionCreateParams,
   MLCEngine,
 } from "@mlc-ai/web-llm";
-import { ChatMessage } from "../store/chatHistoryStore";
+import { ChatMessage } from "../../../../store/chatHistoryStore";
 
 export interface WebLLMClientConfig {
   model: string;

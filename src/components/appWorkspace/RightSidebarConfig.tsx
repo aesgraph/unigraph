@@ -27,7 +27,7 @@ import styles from "./Sidebar.module.css";
 // Add this import
 import { toggleForceGraphMouseControls } from "../../store/sceneGraphHooks";
 import AIChatPanel from "../ai/AIChatPanel";
-import ChatGptPanel from "../applets/ChatGptImporter/ChatGptPanel";
+import { ChatGptPanel } from "../applets/ChatGptImporter/ChatGptPanel";
 
 export interface SubMenuItem {
   label: string;

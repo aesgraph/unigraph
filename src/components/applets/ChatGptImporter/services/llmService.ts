@@ -1,4 +1,4 @@
-import { addNotification } from "../store/notificationStore";
+import { addNotification } from "../../../../store/notificationStore";
 import { WebLLMClient } from "./WebLLMClient";
 
 // Default model to use

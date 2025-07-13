@@ -1,10 +1,10 @@
 import { saveAs } from "file-saver";
-import { NodeId } from "../core/model/Node";
-import { SceneGraph } from "../core/model/SceneGraph";
+import { NodeId } from "../../../../core/model/Node";
+import { SceneGraph } from "../../../../core/model/SceneGraph";
+import { getCurrentSceneGraph } from "../../../../store/appConfigStore";
+import { addNotification } from "../../../../store/notificationStore";
 import { WebLLMClient } from "../services/WebLLMClient";
 import { getSharedLLMClient } from "../services/llmService";
-import { getCurrentSceneGraph } from "../store/appConfigStore";
-import { addNotification } from "../store/notificationStore";
 
 interface DocumentTags {
   [nodeId: string]: string[];

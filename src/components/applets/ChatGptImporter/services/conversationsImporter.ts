@@ -1,6 +1,7 @@
-import { NodeId } from "../core/model/Node";
-import { SceneGraph } from "../core/model/SceneGraph";
-import { addNotification } from "../store/notificationStore";
+import { NodeId } from "../../../../core/model/Node";
+import { SceneGraph } from "../../../../core/model/SceneGraph";
+import { addNotification } from "../../../../store/notificationStore";
+
 interface Metadata {
   summary: string;
   keywords: string[];

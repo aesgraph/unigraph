@@ -3,8 +3,8 @@
  * received from various sources including the LLM Studio service.
  */
 
-import { NodeId } from "../core/model/Node";
-import { getCurrentSceneGraph } from "../store/appConfigStore";
+import { NodeId } from "../../../../core/model/Node";
+import { getCurrentSceneGraph } from "../../../../store/appConfigStore";
 
 export interface SceneGraphCommand {
   action: string;

@@ -1,6 +1,5 @@
 import { FileJson, MessageSquare, Workflow } from "lucide-react";
 import React, { useRef, useState } from "react";
-import { importConversationsWithStructure } from "../../../services/conversationsImporter";
 import useAppConfigStore, {
   getCurrentSceneGraph,
 } from "../../../store/appConfigStore";
@@ -8,14 +7,17 @@ import { addNotification } from "../../../store/notificationStore";
 import {
   importChatGptConversation,
   importChatGptFromFile,
-} from "../../../utils/chatGptImporter";
+} from "./chatGptImporter";
 import "./ChatGptPanel.css";
+import { importConversationsWithStructure } from "./services/conversationsImporter";
 
 interface ChatGptPanelProps {
   isDarkMode?: boolean;
 }
 
-const ChatGptPanel: React.FC<ChatGptPanelProps> = ({ isDarkMode = false }) => {
+export const ChatGptPanel: React.FC<ChatGptPanelProps> = ({
+  isDarkMode = false,
+}) => {
   // Tab state
   const [activeTab, setActiveTab] = useState<"chatgpt" | "conversations">(
     "chatgpt"
@@ -413,5 +415,3 @@ const ChatGptPanel: React.FC<ChatGptPanelProps> = ({ isDarkMode = false }) => {
     </div>
   );
 };
-
-export default ChatGptPanel;

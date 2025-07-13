@@ -1,11 +1,11 @@
 import { AlertTriangle, Send, Settings, Trash2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
+import { addNotification } from "../../store/notificationStore";
 import {
   callLLMStudioAPI,
   checkLLMStudioAvailability,
-} from "../../services/llmStudioService";
-import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
-import { addNotification } from "../../store/notificationStore";
+} from "../applets/ChatGptImporter/services/llmStudioService";
 import "./AIChatPanel.css";
 
 interface AIChatPanelProps {

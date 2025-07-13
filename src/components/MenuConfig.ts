@@ -70,8 +70,8 @@ import {
   setLeftSidebarConfig,
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
-import { runConversationsAnalysis } from "../utils/runConversationsAnalysis";
 import { supabase } from "../utils/supabaseClient";
+import { runConversationsAnalysis } from "./applets/ChatGptImporter/services/runConversationsAnalysis";
 import {
   IMenuConfig,
   IMenuConfig as MenuConfigType,
