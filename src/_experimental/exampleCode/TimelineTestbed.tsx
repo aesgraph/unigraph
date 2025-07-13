@@ -5,7 +5,7 @@ import {
   CSS2DObject,
   CSS2DRenderer,
 } from "three/examples/jsm/renderers/CSS2DRenderer";
-import { Annotation } from "../../_experimental/lumina/AnnotationsList";
+import { Annotation } from "../lumina/AnnotationsList";
 
 interface TimelineTestbedProps {
   annotations?: Annotation[];

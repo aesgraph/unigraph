@@ -5,7 +5,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { SelectionBox } from "three/examples/jsm/interactive/SelectionBox";
 import { ObjectOf } from "../../App";
-import { CoordinatesDisplay } from "../../components/exampleCode/CoordinatesDisplay";
 import { WINDOW_ASPECT_RATIO } from "../../core/geometry/convertCoordinates";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { fromSelectionArea, ImageBoxData } from "../../core/types/ImageBoxData";
@@ -29,6 +28,7 @@ import {
   demo_SceneGraph_ArtCollection,
   onSubmitImage,
 } from "../../data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection";
+import { CoordinatesDisplay } from "../exampleCode/CoordinatesDisplay";
 import ImageBoxCard from "./ImageBoxCard";
 import ImageBoxWizard from "./ImageBoxWizard"; // Import the ImageBoxWizard component
 import { images } from "./images";
