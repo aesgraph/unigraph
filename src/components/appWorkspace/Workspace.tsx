@@ -1,18 +1,8 @@
 import { Info } from "lucide-react";
 import React, { useMemo } from "react";
-import {
-  createDefaultLeftMenus,
-  leftFooterContent,
-  MenuItem,
-} from "../../configs/LeftSidebarConfig";
-import {
-  createDefaultRightMenus,
-  rightFooterContent,
-} from "../../configs/RightSidebarConfig";
 import { findNodeInForceGraph } from "../../core/force-graph/forceGraphHelpers";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { flyToNode } from "../../core/webgl/webglHelpers";
-import Sidebar from "../../Sidebar";
 import useAppConfigStore from "../../store/appConfigStore";
 import { getSelectedNodeId } from "../../store/graphInteractionStore";
 import { useMouseControlsStore } from "../../store/mouseControlsStore";
@@ -27,6 +17,16 @@ import useWorkspaceConfigStore, {
 } from "../../store/workspaceConfigStore";
 import NodeInfo from "../NodeInfo";
 import NotificationManager from "../notifications/NotificationManager";
+import {
+  createDefaultLeftMenus,
+  leftFooterContent,
+  MenuItem,
+} from "./LeftSidebarConfig";
+import {
+  createDefaultRightMenus,
+  rightFooterContent,
+} from "./RightSidebarConfig";
+import Sidebar from "./Sidebar";
 import UniAppToolbar, { IMenuConfig } from "./UniAppToolbar";
 import styles from "./Workspace.module.css";
 

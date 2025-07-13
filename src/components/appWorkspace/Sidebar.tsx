@@ -13,11 +13,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styles from "./Sidebar.module.css";
-import { SubMenuItem } from "./configs/RightSidebarConfig";
 import useWorkspaceConfigStore, {
   updateSectionWidth,
-} from "./store/workspaceConfigStore";
+} from "../../store/workspaceConfigStore";
+import { SubMenuItem } from "./RightSidebarConfig";
+import styles from "./Sidebar.module.css";
 
 interface SidebarProps {
   position: "left" | "right";

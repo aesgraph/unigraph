@@ -12,22 +12,22 @@ import {
   Table2,
 } from "lucide-react";
 import React from "react";
-import ForceGraphLayoutRadio from "../components/force-graph/ForceGraphLayoutRadio";
-import NodeDetailsPanel from "../components/NodeDetailsPanel";
-import SceneGraphInfoEditor from "../components/SceneGraphInfoEditor";
-import SceneGraphTitle from "../components/SceneGraphTitle";
-import styles from "../Sidebar.module.css";
 import {
   getCurrentSceneGraph,
   getForceGraph3dLayoutMode,
   setForceGraph3dLayoutMode,
-} from "../store/appConfigStore";
-import { getSelectedNodeIds } from "../store/graphInteractionStore";
+} from "../../store/appConfigStore";
+import { getSelectedNodeIds } from "../../store/graphInteractionStore";
+import ForceGraphLayoutRadio from "../force-graph/ForceGraphLayoutRadio";
+import NodeDetailsPanel from "../NodeDetailsPanel";
+import SceneGraphInfoEditor from "../SceneGraphInfoEditor";
+import SceneGraphTitle from "../SceneGraphTitle";
+import styles from "./Sidebar.module.css";
 
 // Add this import
-import AIChatPanel from "../components/ai/AIChatPanel";
-import ChatGptPanel from "../components/tools/ChatGptPanel";
-import { toggleForceGraphMouseControls } from "../store/sceneGraphHooks";
+import { toggleForceGraphMouseControls } from "../../store/sceneGraphHooks";
+import AIChatPanel from "../ai/AIChatPanel";
+import ChatGptPanel from "../tools/ChatGptPanel";
 
 export interface SubMenuItem {
   label: string;

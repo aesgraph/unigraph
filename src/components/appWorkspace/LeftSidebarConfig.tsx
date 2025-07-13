@@ -8,33 +8,33 @@ import {
   Share2,
 } from "lucide-react";
 import React from "react";
-import FilterManagerV2 from "../components/filters/FilterManagerV2";
-import ForceGraphRenderConfigEditor from "../components/force-graph/ForceGraphRenderConfigEditor";
-import LayoutManagerV2 from "../components/layouts/LayoutManagerV2";
-import ProjectManager from "../components/projects/ProjectManager"; // Import the new component
-import ProfileIcon from "../components/user/ProfileIcon";
-import ReactFlowConfigEditor from "../components/views/ReactFlow/ReactFlowConfigEditor";
-import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
-import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";
+import { CustomLayoutType } from "../../core/layouts/CustomLayoutEngine";
+import { GraphologyLayoutType } from "../../core/layouts/GraphologyLayoutEngine";
+import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutType";
 import {
   LayoutEngineOption,
   PresetLayoutType,
-} from "../core/layouts/layoutEngineTypes";
-import { SceneGraph } from "../core/model/SceneGraph";
-import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
-import styles from "../Sidebar.module.css";
-import { Filter as FFilter } from "../store/activeFilterStore";
-import { getCurrentSceneGraph } from "../store/appConfigStore";
+} from "../../core/layouts/layoutEngineTypes";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { extractPositionsFromNodes } from "../../data/graphs/blobMesh";
+import { Filter as FFilter } from "../../store/activeFilterStore";
+import { getCurrentSceneGraph } from "../../store/appConfigStore";
 import {
   applyReactFlowConfig,
   getReactFlowConfig,
-} from "../store/reactFlowConfigStore";
+} from "../../store/reactFlowConfigStore";
 import {
   clearFiltersOnAppInstance,
   computeLayoutAndTriggerAppUpdate,
-} from "../store/sceneGraphHooks";
-import { getSectionWidth } from "../store/workspaceConfigStore";
+} from "../../store/sceneGraphHooks";
+import { getSectionWidth } from "../../store/workspaceConfigStore";
+import FilterManagerV2 from "../filters/FilterManagerV2";
+import ForceGraphRenderConfigEditor from "../force-graph/ForceGraphRenderConfigEditor";
+import LayoutManagerV2 from "../layouts/LayoutManagerV2";
+import ProjectManager from "../projects/ProjectManager"; // Import the new component
+import ProfileIcon from "../user/ProfileIcon";
+import ReactFlowConfigEditor from "../views/ReactFlow/ReactFlowConfigEditor";
+import styles from "./Sidebar.module.css";
 
 const allLayoutLabels = [
   ...Object.values(GraphvizLayoutType),
