@@ -27,7 +27,7 @@ export const demo_Unigraph_Applications = () => {
     userData: {
       title: "Interactive Harry Potter Time Travel Analysis",
       description:
-        "An interactive analysis of time travel in the Harry Potter series, allowing users to explore different timelines and outcomes based on character decisions. Unigraph allows this thing to be easily codified, shared, and extendend to arbitrary complexity.",
+        "An interactive analysis of time travel in the Harry Potter series, allowing users to explore different timelines and outcomes based on character decisions. Unigraph allows this thing to be easily codified, shared, and extended to arbitrary complexity.",
       tags: ["harry potter", "time travel", "interactive"],
     },
   });
