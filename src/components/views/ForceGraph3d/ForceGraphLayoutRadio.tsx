@@ -1,6 +1,6 @@
 import React from "react";
+import { ForceGraph3dLayoutMode } from "../../../AppConfig";
 import "./ForceGraphLayoutRadio.css";
-import { ForceGraph3dLayoutMode } from "../../AppConfig";
 
 interface ForceGraphLayoutRadioProps {
   layout: ForceGraph3dLayoutMode;

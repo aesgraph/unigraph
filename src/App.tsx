@@ -15,6 +15,8 @@ import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
   IPathArgs,
 } from "./components/analysis/PathAnalysisWizard";
+import ImageGalleryV2 from "./components/applets/ImageGallery/ImageGalleryV2";
+import ImageGalleryV3 from "./components/applets/ImageGallery/ImageGalleryV3";
 import Workspace from "./components/appWorkspace/Workspace";
 import CommandPalette from "./components/commandPalette/CommandPalette";
 import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
@@ -26,20 +28,18 @@ import Legend from "./components/common/Legend";
 import LegendModeRadio from "./components/common/LegendModeRadio";
 import FilterManager from "./components/filters/FilterManager";
 import FilterWindow from "./components/filters/FilterWindow";
-import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
-import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/SceneGraphDetailView";
 import SceneGraphTitle from "./components/SceneGraphTitle";
-import GravitySimulation3 from "./components/simulations/GravitySimulation3";
+import ChatGptImporter from "./components/tools/ChatGptImporter";
 import ReactFlowPanel, {
   nodeTypes,
-} from "./components/simulations/ReactFlowPanel";
-import SolarSystem from "./components/simulations/solarSystemSimulation";
-import ChatGptImporter from "./components/tools/ChatGptImporter";
+} from "./components/views/ReactFlow/ReactFlowPanel";
 import YasguiPanel from "./components/views/Yasgui/YasguiPanel";
 
+import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
+import SolarSystem from "./_experimental/webgl/simulations/solarSystemSimulation";
 import LexicalEditorV2 from "./components/applets/Lexical/LexicalEditor";
 import StoryCardApp from "./components/applets/StoryCards/StoryCardApp";
 import WikipediaArticleViewer from "./components/applets/WikipediaViewer/WikipediaArticleViewer";

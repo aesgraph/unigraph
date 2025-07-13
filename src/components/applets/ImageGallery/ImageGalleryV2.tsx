@@ -3,8 +3,8 @@ import * as THREE from "three";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { v4 as uuidv4 } from "uuid";
-import LayoutSwitcher from "../../_experimental/lumina/LayoutSwitcher";
-import { demo_SceneGraph_ArtCollection_Images } from "../../_experimental/lumina/images";
+import LayoutSwitcher from "../../../_experimental/lumina/LayoutSwitcher";
+import { demo_SceneGraph_ArtCollection_Images } from "../../../_experimental/lumina/images";
 
 interface ImageBox {
   id: string;

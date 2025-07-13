@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { createPlanetSystem } from "../../core/webgl/simulations/solarSystemHelpers";
+import { createPlanetSystem } from "./solarSystemHelpers";
 
 const SolarSystem = () => {
   const containerRef = useRef<HTMLDivElement>(null);

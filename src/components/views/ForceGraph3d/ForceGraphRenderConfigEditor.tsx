@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
-import { FormFieldProps, FormSchema } from "../shared/FormSchemaTypes";
+import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
+import { FormFieldProps, FormSchema } from "../../shared/FormSchemaTypes";
 import "./ForceGraphRenderConfigEditor.css";
 
 const formSchema: FormSchema = {

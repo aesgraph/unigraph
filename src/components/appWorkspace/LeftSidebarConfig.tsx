@@ -29,10 +29,10 @@ import {
 } from "../../store/sceneGraphHooks";
 import { getSectionWidth } from "../../store/workspaceConfigStore";
 import FilterManagerV2 from "../filters/FilterManagerV2";
-import ForceGraphRenderConfigEditor from "../force-graph/ForceGraphRenderConfigEditor";
 import LayoutManagerV2 from "../layouts/LayoutManagerV2";
 import ProjectManager from "../projects/ProjectManager"; // Import the new component
 import ProfileIcon from "../user/ProfileIcon";
+import ForceGraphRenderConfigEditor from "../views/ForceGraph3d/ForceGraphRenderConfigEditor";
 import ReactFlowConfigEditor from "../views/ReactFlow/ReactFlowConfigEditor";
 import styles from "./Sidebar.module.css";
 

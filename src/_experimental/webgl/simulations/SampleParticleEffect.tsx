@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
+import { applyParticleEffects } from "../../../core/webgl/simulations/applyParticleEffects";
 import practiceSvg2 from "../../assets/svgs/practice2.svg";
-import { applyParticleEffects } from "../../core/webgl/simulations/applyParticleEffects";
 
 const SampleParticleEffect: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);

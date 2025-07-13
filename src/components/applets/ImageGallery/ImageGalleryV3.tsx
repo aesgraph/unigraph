@@ -11,20 +11,20 @@ import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import AnnotationsList, {
   Annotation,
-} from "../../_experimental/lumina/AnnotationsList";
-import ImageBoxList from "../../_experimental/lumina/ImageBoxList";
-import ImageBoxWizard from "../../_experimental/lumina/ImageBoxWizard"; // Import ImageBoxWizard
-import LayoutSwitcher from "../../_experimental/lumina/LayoutSwitcher";
-import { renderLinksBetweenImageBoxes } from "../../core/layouts/imageBoxUtils";
-import { applyImageLayout } from "../../core/layouts/imageLayoutEngine";
+} from "../../../_experimental/lumina/AnnotationsList";
+import ImageBoxList from "../../../_experimental/lumina/ImageBoxList";
+import ImageBoxWizard from "../../../_experimental/lumina/ImageBoxWizard"; // Import ImageBoxWizard
+import LayoutSwitcher from "../../../_experimental/lumina/LayoutSwitcher";
+import { renderLinksBetweenImageBoxes } from "../../../core/layouts/imageBoxUtils";
+import { applyImageLayout } from "../../../core/layouts/imageLayoutEngine";
 import {
   ImageBox,
   ImageData,
   loadImageBoxesFromSceneGraph,
   loadImagesFromSceneGraph,
-} from "../../core/layouts/renderImageBox";
-import { SceneGraph } from "../../core/model/SceneGraph";
-import { ImageBoxData } from "../../core/types/ImageBoxData";
+} from "../../../core/layouts/renderImageBox";
+import { SceneGraph } from "../../../core/model/SceneGraph";
+import { ImageBoxData } from "../../../core/types/ImageBoxData";
 import ImageOptionsPanel from "./ImageOptionsPanel";
 
 interface ImageGalleryV3Props {

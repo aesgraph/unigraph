@@ -18,10 +18,10 @@ import {
   setForceGraph3dLayoutMode,
 } from "../../store/appConfigStore";
 import { getSelectedNodeIds } from "../../store/graphInteractionStore";
-import ForceGraphLayoutRadio from "../force-graph/ForceGraphLayoutRadio";
 import NodeDetailsPanel from "../NodeDetailsPanel";
 import SceneGraphInfoEditor from "../SceneGraphInfoEditor";
 import SceneGraphTitle from "../SceneGraphTitle";
+import ForceGraphLayoutRadio from "../views/ForceGraph3d/ForceGraphLayoutRadio";
 import styles from "./Sidebar.module.css";
 
 // Add this import

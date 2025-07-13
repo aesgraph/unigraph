@@ -21,7 +21,6 @@ import {
   MOUSE_HOVERED_NODE_COLOR,
   SELECTED_NODE_COLOR,
 } from "../../../core/force-graph/createForceGraph";
-import { EdgeId } from "../../../core/model/Edge";
 import { NodeId } from "../../../core/model/Node";
 import { EntityIds } from "../../../core/model/entity/entityIds";
 import useAppConfigStore from "../../../store/appConfigStore";
@@ -40,10 +39,13 @@ import {
 import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "../../../store/workspaceConfigStore";
-import ResizableAnnotationCard from "../../annotations/ResizableAnnotationCard";
 import CustomNode from "./nodes/CustomNode";
 import WebpageNode from "./nodes/WebpageNode";
-import resizerNode from "./nodes/resizerNode";
+
+import "@xyflow/react/dist/style.css";
+import { EdgeId } from "../../../core/model/Edge";
+import ResizableAnnotationCard from "../../annotations/ResizableAnnotationCard";
+import ResizerNode from "./nodes/resizerNode";
 
 // Remove the custom Node interface that was causing the type conflict
 interface ReactFlowPanelProps {
@@ -78,7 +80,7 @@ const AnnotationNode = (props: any) => {
 
 export const nodeTypes = {
   customNode: CustomNode, // Register the custom node component
-  resizerNode: resizerNode,
+  resizerNode: ResizerNode,
   annotation: AnnotationNode,
   webpage: WebpageNode,
 };
