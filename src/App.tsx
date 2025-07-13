@@ -7,6 +7,9 @@ import React, {
   useRef,
   useState,
 } from "react";
+import ImageGallery from "./_experimental/lumina/galleryTestbed/ImageGallery";
+import ImageBoxCreator from "./_experimental/lumina/ImageBoxCreator";
+import Lumina from "./_experimental/lumina/Lumina";
 import "./App.css";
 import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
@@ -25,9 +28,6 @@ import FilterWindow from "./components/filters/FilterWindow";
 import ImageGalleryV2 from "./components/imageView/ImageGalleryV2";
 import ImageGalleryV3 from "./components/imageView/ImageGalleryV3";
 import Workspace from "./components/layout/Workspace";
-import ImageGallery from "./components/lumina/galleryTestbed/ImageGallery";
-import ImageBoxCreator from "./components/lumina/ImageBoxCreator";
-import Lumina from "./components/lumina/Lumina";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/SceneGraphDetailView";
@@ -40,6 +40,7 @@ import SolarSystem from "./components/simulations/solarSystemSimulation";
 import ChatGptImporter from "./components/tools/ChatGptImporter";
 import YasguiPanel from "./components/views/Yasgui/YasguiPanel";
 
+import LexicalEditorV2 from "./components/applets/Lexical/LexicalEditor";
 import StoryCardApp from "./components/applets/StoryCards/StoryCardApp";
 import WikipediaArticleViewer from "./components/applets/WikipediaViewer/WikipediaArticleViewer";
 import WikipediaArticleViewer_FactorGraph from "./components/applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
@@ -53,7 +54,6 @@ import SelectionBox from "./components/common/SelectionBox";
 import { getSaveAsNewFilterMenuItem } from "./components/common/sharedContextMenuItems";
 import { getNodeContextMenuItems } from "./components/common/singleNodeContextMenuItems";
 import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
-import LexicalEditorV2 from "./components/LexicalEditor";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import SaveAsNewProjectDialog from "./components/projects/SaveAsNewProjectDialog";
 import { getHotkeyConfig } from "./configs/hotkeyConfig";

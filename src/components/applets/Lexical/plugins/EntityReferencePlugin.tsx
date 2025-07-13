@@ -6,10 +6,10 @@ import {
   TextNode,
 } from "lexical";
 import { useEffect } from "react";
-import { EdgeId } from "../../../core/model/Edge";
-import { EntityId } from "../../../core/model/entity/abstractEntity";
-import { NodeId } from "../../../core/model/Node";
-import { getCurrentSceneGraph } from "../../../store/appConfigStore";
+import { EdgeId } from "../../../../core/model/Edge";
+import { EntityId } from "../../../../core/model/entity/abstractEntity";
+import { NodeId } from "../../../../core/model/Node";
+import { getCurrentSceneGraph } from "../../../../store/appConfigStore";
 
 // Match [entity id] with support for spaces in the entity id - more strict pattern
 const ENTITY_REFERENCE_REGEX = /\[([^[\]]+?)\]/g;

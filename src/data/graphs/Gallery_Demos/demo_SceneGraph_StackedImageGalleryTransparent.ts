@@ -1,9 +1,9 @@
+import { demo_SceneGraph_StackedImageGalleryTransparent_images } from "../../../_experimental/lumina/images";
 import {
   demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_1,
   demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_2,
   demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3,
 } from "../../../assets/imageBoxes/demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes";
-import { demo_SceneGraph_StackedImageGalleryTransparent_images } from "../../../components/lumina/images";
 import { Graph } from "../../../core/model/Graph";
 import { SceneGraph } from "../../../core/model/SceneGraph";
 import { ImageBoxData } from "../../../core/types/ImageBoxData";

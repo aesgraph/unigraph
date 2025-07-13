@@ -7,6 +7,7 @@
  */
 
 import type { JSX } from "react";
+import React from "react";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
@@ -16,11 +17,10 @@ import {
   useBasicTypeaheadTriggerMatch,
 } from "@lexical/react/LexicalTypeaheadMenuPlugin";
 import { TextNode } from "lexical";
-import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { EntityId } from "../../../core/model/entity/abstractEntity";
-import { getCurrentSceneGraph } from "../../../store/appConfigStore";
+import { EntityId } from "../../../../core/model/entity/abstractEntity";
+import { getCurrentSceneGraph } from "../../../../store/appConfigStore";
 import { $createMentionNode } from "../nodes/MentionNode";
 
 const PUNCTUATION =

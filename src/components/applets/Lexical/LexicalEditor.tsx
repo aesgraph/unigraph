@@ -34,18 +34,18 @@ import {
 import { debounce, throttle } from "lodash";
 import React, { JSX, useEffect, useState } from "react";
 // Add this import
-import { NodeId } from "../core/model/Node";
+import { NodeId } from "../../../core/model/Node";
 import useAppConfigStore, {
   getCurrentSceneGraph,
-} from "../store/appConfigStore"; // Add this import
-import { useDocumentStore } from "../store/documentStore";
-import { addNotification } from "../store/notificationStore";
+} from "../../../store/appConfigStore";
+import useDocumentStore from "../../../store/documentStore";
+import { addNotification } from "../../../store/notificationStore";
 import "./LexicalEditor.css";
-import { MentionNode } from "./lexical/nodes/MentionNode";
-import { EntityReferenceNode } from "./lexical/plugins/EntityReferencePlugin";
-import MentionsPlugin from "./lexical/plugins/MentionsPlugin";
-import { TagPlugin } from "./lexical/plugins/TagPlugin";
-import { ToolbarPlugin } from "./lexical/plugins/ToolbarPlugin";
+import { MentionNode } from "./nodes/MentionNode";
+import { EntityReferenceNode } from "./plugins/EntityReferencePlugin";
+import MentionsPlugin from "./plugins/MentionsPlugin";
+import { TagPlugin } from "./plugins/TagPlugin";
+import { ToolbarPlugin } from "./plugins/ToolbarPlugin";
 
 // Create a separate PlaceholderPlugin component
 const PlaceholderPlugin = ({

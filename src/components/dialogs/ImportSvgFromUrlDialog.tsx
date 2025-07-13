@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { SceneGraph } from "../core/model/SceneGraph";
-import { fetchSvgSceneGraph } from "../hooks/useSvgSceneGraph";
+import { SceneGraph } from "../../core/model/SceneGraph";
+import { fetchSvgSceneGraph } from "../../hooks/useSvgSceneGraph";
 import "./ImportSvgFromUrlDialog.css";
 
 interface ImportSvgFromUrlDialogProps {
