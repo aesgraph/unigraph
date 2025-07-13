@@ -32,7 +32,6 @@ import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/SceneGraphDetailView";
 import SceneGraphTitle from "./components/SceneGraphTitle";
-import ChatGptImporter from "./components/tools/ChatGptImporter";
 import ReactFlowPanel, {
   nodeTypes,
 } from "./components/views/ReactFlow/ReactFlowPanel";
@@ -41,6 +40,7 @@ import YasguiPanel from "./components/views/Yasgui/YasguiPanel";
 import AudioAnnotator from "./_experimental/mp3/AudioAnnotator";
 import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
 import SolarSystem from "./_experimental/webgl/simulations/solarSystemSimulation";
+import ChatGptImporter from "./components/applets/ChatGptImporter/ChatGptImporter";
 import LexicalEditorV2 from "./components/applets/Lexical/LexicalEditor";
 import StoryCardApp from "./components/applets/StoryCards/StoryCardApp";
 import WikipediaArticleViewer from "./components/applets/WikipediaViewer/WikipediaArticleViewer";

@@ -1,11 +1,11 @@
 import { FileJson, UploadCloud } from "lucide-react";
 import React, { useRef, useState } from "react";
-import useAppConfigStore from "../../store/appConfigStore";
-import { addNotification } from "../../store/notificationStore";
+import useAppConfigStore from "../../../store/appConfigStore";
+import { addNotification } from "../../../store/notificationStore";
 import {
   importChatGptConversation,
   importChatGptFromFile,
-} from "../../utils/chatGptImporter";
+} from "../../../utils/chatGptImporter";
 import "./ChatGptImporter.css";
 
 interface ChatGptImporterProps {

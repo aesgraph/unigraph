@@ -1,14 +1,14 @@
 import { FileJson, MessageSquare, Workflow } from "lucide-react";
 import React, { useRef, useState } from "react";
-import { importConversationsWithStructure } from "../../services/conversationsImporter";
+import { importConversationsWithStructure } from "../../../services/conversationsImporter";
 import useAppConfigStore, {
   getCurrentSceneGraph,
-} from "../../store/appConfigStore";
-import { addNotification } from "../../store/notificationStore";
+} from "../../../store/appConfigStore";
+import { addNotification } from "../../../store/notificationStore";
 import {
   importChatGptConversation,
   importChatGptFromFile,
-} from "../../utils/chatGptImporter";
+} from "../../../utils/chatGptImporter";
 import "./ChatGptPanel.css";
 
 interface ChatGptPanelProps {
