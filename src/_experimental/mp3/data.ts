@@ -1,4 +1,4 @@
-import { EntitiesContainer } from "../core/model/entity/entitiesContainer";
+import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
 import {
   SongAnnotation,
   SongAnnotationDataArgs,

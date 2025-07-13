@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { SongAnnotationData } from "../../mp3/SongAnnotation";
+import { SongAnnotationData } from "./SongAnnotation";
 
 interface TimelineChartProps {
   annotations: SongAnnotationData[];

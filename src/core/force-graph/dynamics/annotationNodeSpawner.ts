@@ -1,5 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { SongAnnotationData } from "../../../mp3/SongAnnotation";
+import { SongAnnotationData } from "../../../_experimental/mp3/SongAnnotation";
 import { SceneGraph } from "../../model/SceneGraph";
 
 interface SpawnerConfig {

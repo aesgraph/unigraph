@@ -1,5 +1,5 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
-import { SongAnnotation } from "../../../mp3/SongAnnotation";
+import { SongAnnotation } from "../../../_experimental/mp3/SongAnnotation";
 import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
 import { transitionToConfig } from "./transition";
 

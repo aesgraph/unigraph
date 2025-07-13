@@ -43,8 +43,6 @@ import {
   extractPositionsFromNodes,
   extractPositionsFromUserData,
 } from "../data/graphs/blobMesh";
-import { demoSongAnnotations } from "../mp3/data";
-import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
 import {
   getActiveView,
   getCurrentSceneGraph,
@@ -59,6 +57,8 @@ import {
 } from "../store/dialogStore";
 import { clearDocuments, getAllDocuments } from "../store/documentStore";
 
+import { demoSongAnnotations } from "../_experimental/mp3/data";
+import { demoSongAnnotations2 } from "../_experimental/mp3/demoSongAnnotations247";
 import {
   applyLayoutAndTriggerAppUpdate,
   computeLayoutAndTriggerUpdateForCurrentSceneGraph,

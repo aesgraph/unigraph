@@ -15,11 +15,11 @@ import React, {
   useState,
 } from "react";
 import WaveSurfer from "wavesurfer.js";
-import TimelineChart from "../components/mp3/TimelineChart";
-import { getRandomColorFromPalette } from "../utils/colorUtils";
+import { getRandomColorFromPalette } from "../../utils/colorUtils";
 import "./AudioAnnotator.css";
-import { SongAnnotationData } from "./SongAnnotation";
 import { demoSongAnnotations } from "./data";
+import { SongAnnotationData } from "./SongAnnotation";
+import TimelineChart from "./TimelineChart";
 
 const gentlePalette = [
   getRandomColorFromPalette("gentle"),

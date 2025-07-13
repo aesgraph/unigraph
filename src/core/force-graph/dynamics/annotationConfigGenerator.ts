@@ -1,4 +1,4 @@
-import { SongAnnotationData } from "../../../mp3/SongAnnotation";
+import { SongAnnotationData } from "../../../_experimental/mp3/SongAnnotation";
 import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
 import { TimedConfig } from "./configSequencePlayer";
 

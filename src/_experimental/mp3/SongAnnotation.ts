@@ -3,7 +3,7 @@ import {
   EntityData,
   EntityDataArgs,
   EntityId,
-} from "../core/model/entity/abstractEntity";
+} from "../../core/model/entity/abstractEntity";
 
 export type SongAnnotationId = EntityId & { readonly kind: "songAnnotation" };
 

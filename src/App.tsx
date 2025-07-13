@@ -38,6 +38,7 @@ import ReactFlowPanel, {
 } from "./components/views/ReactFlow/ReactFlowPanel";
 import YasguiPanel from "./components/views/Yasgui/YasguiPanel";
 
+import AudioAnnotator from "./_experimental/mp3/AudioAnnotator";
 import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
 import SolarSystem from "./_experimental/webgl/simulations/solarSystemSimulation";
 import LexicalEditorV2 from "./components/applets/Lexical/LexicalEditor";
@@ -106,7 +107,6 @@ import { extractPositionsFromNodes } from "./data/graphs/blobMesh";
 import { useCommandPalette } from "./hooks/useCommandPalette";
 import { useHotkeys } from "./hooks/useHotkeys";
 import { fetchSvgSceneGraph } from "./hooks/useSvgSceneGraph";
-import AudioAnnotator from "./mp3/AudioAnnotator";
 import { Filter, loadFiltersFromSceneGraph } from "./store/activeFilterStore";
 import useActiveLayoutStore, {
   getActiveLayoutResult,
