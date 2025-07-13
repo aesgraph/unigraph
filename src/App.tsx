@@ -478,12 +478,17 @@ const AppContent = ({
       layout: LayoutEngineOption | string | null,
       forceGraph3dOptionsLayoutModeToSet: "Layout" | "Physics" = "Layout"
     ) => {
-      console.log("Computing layout for", layout);
+      console.log(
+        "Computing layout for",
+        layout,
+        "with layout mode:",
+        forceGraph3dOptionsLayoutModeToSet
+      );
 
       // Skip layout computation if we're in Physics mode for ForceGraph3D
       if (
         activeView === "ForceGraph3d" &&
-        forceGraph3dOptions.layout === "Physics"
+        forceGraph3dOptionsLayoutModeToSet === "Physics"
       ) {
         console.log("Skipping layout computation for Physics mode");
         return;
@@ -727,7 +732,8 @@ const AppContent = ({
         clearGraphFromUrl();
       }
       clearSelections();
-      // Apply scene graph's default app config immediately
+
+      // Apply scene graph's default app config immediately BEFORE layout computation
       if (graph.getData().defaultAppConfig) {
         console.log(
           "Applying scene graph app config:",
@@ -737,11 +743,15 @@ const AppContent = ({
       }
 
       const layoutToLoad =
-        !initialSceneGraphLoaded && defaultActiveLayout
-          ? defaultActiveLayout
-          : (graph.getData().defaultAppConfig?.activeLayout ?? null);
+        graph.getData().defaultAppConfig?.activeLayout ??
+        defaultActiveLayout ??
+        null;
 
-      console.log("default app config is ", graph.getData().defaultAppConfig);
+      console.log(
+        graph.getMetadata().name,
+        "default app config is ",
+        graph.getData().defaultAppConfig
+      );
 
       safeComputeLayout(
         graph,
@@ -749,6 +759,9 @@ const AppContent = ({
         graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout
       ).then(() => {
         setCurrentSceneGraph(graph);
+
+        console.log("loaded layout", layoutToLoad);
+
         setLegendMode(graph.getDisplayConfig().mode);
         setNodeLegendConfig(
           GetCurrentDisplayConfigOf(graph.getDisplayConfig(), "Node")
