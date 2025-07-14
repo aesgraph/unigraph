@@ -1,4 +1,5 @@
 import { SceneGraph } from "../core/model/SceneGraph";
+import { demo_scenegraph_ast } from "./demo-graphs/interfaceAstToSceneGraph";
 import { demo_scenegraph_unigraph_overview } from "./graphs/demo_unigraph_overview";
 // import { urlSceneGraph } from "../../hooks/useSvgSceneGraph";
 import { mergeIntoSceneGraph } from "../core/model/mergeSceneGraphs";
@@ -95,6 +96,7 @@ export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
       complexFactorGraph: () => demo_SceneGraph_FactorGraph_ComplexExpansion(),
       phylogeneticTree: () => demo_SceneGraph_PhylogeneticTree(),
       treeOfLife: () => demo_SceneGraph_TreeOfLife(),
+      ast: () => demo_scenegraph_ast(),
     },
   },
   Base: {

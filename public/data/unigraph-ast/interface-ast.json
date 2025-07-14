@@ -1,0 +1,1056 @@
+{
+  "EntityData": {
+    "properties": {
+      "id": "string",
+      "tags": "Set<string>",
+      "label": "string",
+      "type": "string",
+      "userData": "ObjectOf<any>",
+      "description": "string"
+    },
+    "references": {}
+  },
+  "IEntity": {
+    "properties": {},
+    "references": {}
+  },
+  "DisplayNodeData": {
+    "properties": {
+      "position": "Position",
+      "dimensions": "{ width: number; height: number; }",
+      "isVisible": "boolean",
+      "color": "string",
+      "size": "number",
+      "opacity": "number",
+      "fontSize": "number",
+      "fontColor": "string",
+      "shape": "\"circle\" | \"square\" | \"triangle\"",
+      "borderWidth": "number",
+      "borderColor": "string"
+    },
+    "references": {}
+  },
+  "DisplayEdgeData": {
+    "properties": {
+      "isVisible": "boolean",
+      "color": "string",
+      "size": "number",
+      "opacity": "number",
+      "drawType": "\"arrow\" | \"line\""
+    },
+    "references": {}
+  },
+  "RGB": {
+    "properties": {
+      "r": "number",
+      "g": "number",
+      "b": "number"
+    },
+    "references": {}
+  },
+  "FilterRuleDefinition": {
+    "properties": {
+      "id": "string",
+      "operator": "FilterOperator",
+      "ruleMode": "FilterRuleMode",
+      "conditions": "{ types?: string[]; tags?: string[]; nodes?: string[]; }"
+    },
+    "references": {}
+  },
+  "Filter": {
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "filterRules": "FilterRuleDefinition[]"
+    },
+    "references": {}
+  },
+  "ActiveFiltersState": {
+    "properties": {
+      "savedFilters": "ObjectOf<Filter>",
+      "saveFilter": "(filter: Filter) => void",
+      "deleteFilter": "(filterName: string) => void",
+      "getSavedFilters": "() => ObjectOf<Filter>",
+      "clearFilters": "() => void"
+    },
+    "references": {}
+  },
+  "ISidebarConfig": {
+    "properties": {
+      "isVisible": "boolean",
+      "mode": "\"collapsed\" | \"full\"",
+      "minimal": "boolean",
+      "activeSectionId": "string",
+      "panelWidth": "number"
+    },
+    "references": {}
+  },
+  "SectionWidthConfig": {
+    "properties": {},
+    "references": {}
+  },
+  "LayoutJobStatus": {
+    "properties": {
+      "isRunning": "boolean",
+      "startTime": "number",
+      "layoutType": "LayoutEngineOption",
+      "workerId": "string",
+      "progress": "number"
+    },
+    "references": {}
+  },
+  "Layout": {
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "positions": "ObjectOf<Position>",
+      "createdAt": "number",
+      "updatedAt": "number"
+    },
+    "references": {}
+  },
+  "ActiveLayoutsState": {
+    "properties": {
+      "savedLayouts": "ObjectOf<Layout>",
+      "jobStatus": "LayoutJobStatus",
+      "currentLayoutResult": "ILayoutEngineResult",
+      "saveLayout": "(layout: Layout) => void",
+      "deleteLayout": "(layoutName: string) => void",
+      "getSavedLayouts": "() => ObjectOf<Layout>",
+      "clearLayouts": "() => void",
+      "setCurrentLayoutResult": "(result: ILayoutEngineResult, forceGraph3dLayoutMode: \"Physics\" | \"Layout\") => void",
+      "getCurrentLayoutResult": "() => ILayoutEngineResult",
+      "startLayoutJob": "(layoutType: LayoutEngineOption, workerId: string) => void",
+      "updateLayoutJobProgress": "(progress: number) => void",
+      "finishLayoutJob": "() => void",
+      "cancelLayoutJob": "() => void"
+    },
+    "references": {}
+  },
+  "DocumentState": {
+    "properties": {
+      "id": "string",
+      "nodeId": "NodeId",
+      "content": "string",
+      "lexicalState": "string",
+      "lastModified": "number",
+      "tags": "string[]"
+    },
+    "references": {}
+  },
+  "DocumentStore": {
+    "properties": {
+      "documents": "Record<NodeId, DocumentState>",
+      "activeDocument": "NodeId",
+      "previousView": "string",
+      "createDocument": "(nodeId: NodeId) => void",
+      "updateDocument": "(nodeId: NodeId, content: string, lexicalState: string, tags?: string[]) => void",
+      "setActiveDocument": "(nodeId: NodeId, previousView?: string) => void",
+      "deleteDocument": "(nodeId: NodeId) => void",
+      "getDocumentByNodeId": "(nodeId: NodeId) => DocumentState",
+      "getPreviousView": "() => string",
+      "getAllDocuments": "() => Record<NodeId, DocumentState>",
+      "clearAllDocuments": "() => void"
+    },
+    "references": {}
+  },
+  "IForceGraphRenderConfig": {
+    "properties": {
+      "nodeTextLabels": "boolean",
+      "linkWidth": "number",
+      "nodeSize": "number",
+      "linkTextLabels": "boolean",
+      "nodeOpacity": "number",
+      "linkOpacity": "number",
+      "chargeStrength": "number",
+      "backgroundColor": "string",
+      "fontSize": "number",
+      "cameraPosition": "{ x: number; y: number; z: number; }",
+      "cameraTarget": "{ x: number; y: number; z: number; }",
+      "initialZoom": "number"
+    },
+    "references": {}
+  },
+  "SerializedSceneGraph": {
+    "properties": {
+      "graph": "{ nodes: { id: string; label?: string; type?: string; position?: { x: number; y: number; }; data?: Record<string, any>; }[]; edges: { id: string; source: string; target: string; label?: string; type?: string; data?: Record<...>; }[]; }",
+      "displayConfig": "RenderingConfig"
+    },
+    "references": {}
+  },
+  "ISceneGraphValidationResult": {
+    "properties": {
+      "missingNodes": "NodeId[]"
+    },
+    "references": {}
+  },
+  "ISceneGraph": {
+    "properties": {},
+    "references": {}
+  },
+  "ISceneGraphListeners": {
+    "properties": {
+      "onPositionsChanged": "(positions: ObjectOf<Position>) => void",
+      "onDisplayConfigChanged": "(config: RenderingConfig) => void",
+      "onGraphChanged": "(graph: Graph) => void"
+    },
+    "references": {}
+  },
+  "ISceneGraphMetadata": {
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "source": "string",
+      "notes": "string"
+    },
+    "references": {}
+  },
+  "IGraphvizOutput": {
+    "properties": {
+      "svg": "string",
+      "positions": "ObjectOf<Position>"
+    },
+    "references": {}
+  },
+  "INode3DPosition": {
+    "properties": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
+    "references": {}
+  },
+  "ILayoutEngineResult": {
+    "properties": {
+      "positions": "ObjectOf<Position>",
+      "svg": "string",
+      "layoutType": "string"
+    },
+    "references": {}
+  },
+  "IDisplayManagerData": {
+    "properties": {
+      "mode": "\"type\" | \"tag\"",
+      "nodeTypeColors": "{ [key: string]: string; }",
+      "edgeTypeColors": "{ [key: string]: string; }",
+      "nodeTagColors": "{ [key: string]: string; }",
+      "edgeTagColors": "{ [key: string]: string; }",
+      "nodeTypeVisibility": "{ [key: string]: boolean; }",
+      "edgeTypeVisibility": "{ [key: string]: boolean; }",
+      "nodeTagVisibility": "{ [key: string]: boolean; }",
+      "edgeTagVisibility": "{ [key: string]: boolean; }",
+      "nodePositions": "ObjectOf<Position>"
+    },
+    "references": {}
+  },
+  "ScreenCoordinates": {
+    "properties": {
+      "topLeftScreen": "Vector3",
+      "bottomRightScreen": "Vector3",
+      "width": "number",
+      "height": "number"
+    },
+    "references": {}
+  },
+  "SelectionBoxGroup": {
+    "properties": {
+      "userData": "{ anchorPoint: Vector3; box: Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>; ... 4 more ...; uuid: string; }"
+    },
+    "references": {}
+  },
+  "IForceGraph3dCameraData": {
+    "properties": {
+      "pos": "Vector3",
+      "quaternion": "any"
+    },
+    "references": {}
+  },
+  "SelectionBox": {
+    "properties": {
+      "startX": "number",
+      "startY": "number",
+      "endX": "number",
+      "endY": "number",
+      "isActive": "boolean",
+      "isAdditive": "boolean"
+    },
+    "references": {}
+  },
+  "MouseControlsState": {
+    "properties": {
+      "isDraggingNode": "boolean",
+      "setIsDraggingNode": "(isDragging: boolean) => void",
+      "controlMode": "MouseControlMode",
+      "selectionBox": "SelectionBox",
+      "setControlMode": "(mode: MouseControlMode) => void",
+      "toggleControlMode": "() => void",
+      "startSelectionBox": "(x: number, y: number, isAdditive?: boolean) => void",
+      "updateSelectionBox": "(x: number, y: number) => void",
+      "endSelectionBox": "() => void",
+      "clearSelectionBox": "() => void"
+    },
+    "references": {}
+  },
+  "Node": {
+    "properties": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
+    "references": {}
+  },
+  "GraphBounds": {
+    "properties": {
+      "min": "Vector3",
+      "max": "Vector3",
+      "center": "Vector3",
+      "radius": "number"
+    },
+    "references": {}
+  },
+  "AnimationConfig": {
+    "properties": {
+      "duration": "number",
+      "interval": "number",
+      "onComplete": "() => void",
+      "onError": "(error: any) => void"
+    },
+    "references": {}
+  },
+  "TransitionOptions": {
+    "properties": {
+      "duration": "number",
+      "easing": "(t: number) => number",
+      "onComplete": "() => void"
+    },
+    "references": {}
+  },
+  "TimedConfig": {
+    "properties": {
+      "time": "number",
+      "config": "IForceGraphRenderConfig",
+      "duration": "number"
+    },
+    "references": {}
+  },
+  "SequenceConfig": {
+    "properties": {
+      "loop": "boolean",
+      "totalDuration": "number",
+      "interval": "number",
+      "onComplete": "() => void"
+    },
+    "references": {}
+  },
+  "ConfigGeneratorOptions": {
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "minCharge": "number",
+      "maxCharge": "number",
+      "transitionDuration": "number",
+      "showLabels": "boolean"
+    },
+    "references": {}
+  },
+  "SpawnerConfig": {
+    "properties": {
+      "maxNodes": "number",
+      "spawnRadius": "number",
+      "nodeColor": "string",
+      "nodeSize": "number",
+      "fadeOutDuration": "number",
+      "linkColor": "string"
+    },
+    "references": {}
+  },
+  "RandomEffectsConfig": {
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "transitionDuration": "number"
+    },
+    "references": {}
+  },
+  "StaggeredEffectsConfig": {
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "nodeSizeTransitionDuration": "number",
+      "linkWidthTransitionDuration": "number",
+      "nodeOpacityTransitionDuration": "number",
+      "linkOpacityTransitionDuration": "number"
+    },
+    "references": {}
+  },
+  "EdgesToDegreeResult": {
+    "properties": {
+      "degreesToEdges": "Map<number, Edge[]>",
+      "edgesToDegree": "Map<EdgeId, number>"
+    },
+    "references": {}
+  },
+  "PulsateOptions": {
+    "properties": {
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "duration": "number",
+      "nodeFilter": "(node: any) => boolean"
+    },
+    "references": {}
+  },
+  "SongVisualizationConfig": {
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "transitionDuration": "number"
+    },
+    "references": {}
+  },
+  "Point": {
+    "properties": {
+      "x": "number",
+      "y": "number"
+    },
+    "references": {}
+  },
+  "Color": {
+    "properties": {
+      "r": "number",
+      "g": "number",
+      "b": "number"
+    },
+    "references": {}
+  },
+  "ConnectedComponent": {
+    "properties": {
+      "points": "Point[]",
+      "color": "Color",
+      "boundingBox": "{ minX: number; minY: number; maxX: number; maxY: number; }"
+    },
+    "references": {}
+  },
+  "Moon": {
+    "properties": {
+      "pivot": "Object3D<Object3DEventMap>",
+      "speed": "number"
+    },
+    "references": {}
+  },
+  "PlanetSystem": {
+    "properties": {
+      "pivot": "Object3D<Object3DEventMap>",
+      "moons": "Moon[]",
+      "speed": "number"
+    },
+    "references": {}
+  },
+  "BlobNodeMetadata": {
+    "properties": {
+      "id": "string",
+      "layer": "number",
+      "angle": "number",
+      "point": "{ x: number; y: number; z: number; }",
+      "isCore": "boolean"
+    },
+    "references": {}
+  },
+  "GraphvizNode": {
+    "properties": {
+      "_gvid": "number",
+      "name": "string",
+      "pos": "string",
+      "label": "string",
+      "color": "string",
+      "shape": "string",
+      "height": "string",
+      "width": "string"
+    },
+    "references": {}
+  },
+  "GraphvizJSON": {
+    "properties": {
+      "name": "string",
+      "directed": "boolean",
+      "objects": "GraphvizNode[]",
+      "bb": "string",
+      "layout": "string"
+    },
+    "references": {}
+  },
+  "NodePosition": {
+    "properties": {
+      "id": "string",
+      "x": "number",
+      "y": "number",
+      "label": "string",
+      "color": "string"
+    },
+    "references": {}
+  },
+  "Webpage": {
+    "properties": {
+      "id": "string",
+      "url": "string",
+      "user_id": "string",
+      "title": "string",
+      "html_content": "string",
+      "screenshot_url": "string",
+      "metadata": "any",
+      "created_at": "string",
+      "last_updated_at": "string"
+    },
+    "references": {}
+  },
+  "TextSelectionAnnotationData": {
+    "properties": {
+      "selected_text": "string",
+      "comment": "string",
+      "secondary_comment": "string",
+      "tags": "string[]",
+      "page_url": "string",
+      "type": "\"text_selection\""
+    },
+    "references": {}
+  },
+  "ImageAnnotationData": {
+    "properties": {
+      "image_url": "string",
+      "comment": "string",
+      "secondary_comment": "string",
+      "tags": "string[]",
+      "page_url": "string",
+      "type": "\"image\""
+    },
+    "references": {}
+  },
+  "Annotation": {
+    "properties": {
+      "id": "string",
+      "label": "string",
+      "description": "string",
+      "imageBoxId": "string",
+      "references": "string[]"
+    },
+    "references": {}
+  },
+  "Notification": {
+    "properties": {
+      "id": "string",
+      "message": "string",
+      "type": "NotificationType",
+      "duration": "number",
+      "groupId": "string"
+    },
+    "references": {}
+  },
+  "NotificationStore": {
+    "properties": {
+      "notifications": "Notification[]",
+      "addNotification": "(notification: Omit<Notification, \"id\">) => void",
+      "removeNotification": "(id: string) => void"
+    },
+    "references": {}
+  },
+  "SupabaseProject": {
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "created_at": "string",
+      "last_updated_at": "string",
+      "user_id": "string",
+      "data": "any"
+    },
+    "references": {}
+  },
+  "UpdateProjectParams": {
+    "properties": {
+      "name": "string",
+      "description": "string"
+    },
+    "references": {}
+  },
+  "ProjectActionResult": {
+    "properties": {
+      "success": "boolean",
+      "message": "string",
+      "data": "any"
+    },
+    "references": {}
+  },
+  "StoryCardOptions": {
+    "properties": {
+      "basePath": "string"
+    },
+    "references": {}
+  },
+  "IForceConsistencyResult": {
+    "properties": {
+      "nodesAdded": "Node[]"
+    },
+    "references": {}
+  },
+  "ILoadSvgToSceneGraphOptions": {
+    "properties": {
+      "forceGraphDisplayConfig": "IForceGraphRenderConfig",
+      "appConfig": "AppConfig",
+      "metadata": "ISceneGraphMetadata"
+    },
+    "references": {}
+  },
+  "RandomNodeOptions": {
+    "properties": {
+      "nodeCount": "number",
+      "nodeTypes": "string[]",
+      "nodeTags": "string[][]",
+      "labelPrefix": "string",
+      "addRandomTags": "boolean",
+      "minTagsPerNode": "number",
+      "maxTagsPerNode": "number"
+    },
+    "references": {}
+  },
+  "RandomEdgeOptions": {
+    "properties": {
+      "edgeCount": "number",
+      "edgeTypes": "string[]",
+      "edgeTags": "string[][]",
+      "labelPrefix": "string",
+      "addRandomTags": "boolean",
+      "minTagsPerEdge": "number",
+      "maxTagsPerEdge": "number",
+      "connectionDensity": "number",
+      "allowSelfLoops": "boolean",
+      "allowMultiEdges": "boolean"
+    },
+    "references": {}
+  },
+  "TreeNode": {
+    "properties": {
+      "node_id": "number",
+      "node_name": "string",
+      "child_nodes": "number",
+      "leaf_node": "number",
+      "tolorg_link": "number",
+      "extinct": "number",
+      "confidence": "number",
+      "phylesis": "number"
+    },
+    "references": {}
+  },
+  "TreeLink": {
+    "properties": {
+      "source_node_id": "number",
+      "target_node_id": "number"
+    },
+    "references": {}
+  },
+  "StoryCard": {
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "markdownFile": "string",
+      "metadata": "{ tags?: string[]; author?: string; createdAt?: string; difficulty?: number; imageUrl?: string; position?: { x: number; y: number; z: number; }; }"
+    },
+    "references": {}
+  },
+  "StoryCardEntity": {
+    "properties": {
+      "id": "string",
+      "type": "\"StoryCard\"",
+      "data": "StoryCard"
+    },
+    "references": {}
+  },
+  "SphereNodeMetadata": {
+    "properties": {
+      "id": "string",
+      "phi": "number",
+      "theta": "number",
+      "point": "{ x: number; y: number; z: number; }",
+      "isPole": "boolean",
+      "poleType": "\"north\" | \"south\""
+    },
+    "references": {}
+  },
+  "SceneGraphCategory": {
+    "properties": {
+      "label": "string",
+      "graphs": "{ [key: string]: SceneGraph | (() => SceneGraph) | (() => Promise<SceneGraph>); }"
+    },
+    "references": {}
+  },
+  "DemoSceneGraphTree": {
+    "properties": {},
+    "references": {}
+  },
+  "ILayoutManagerState": {
+    "properties": {
+      "mode": "\"save\" | \"load\"",
+      "show": "boolean"
+    },
+    "references": {}
+  },
+  "ISceneGraphDetailViewState": {
+    "properties": {
+      "show": "boolean",
+      "readOnly": "boolean"
+    },
+    "references": {}
+  },
+  "ChatMessage": {
+    "properties": {
+      "role": "string",
+      "content": "string",
+      "timestamp": "string"
+    },
+    "references": {}
+  },
+  "ChatHistoryState": {
+    "properties": {
+      "messages": "ChatMessage[]",
+      "addMessage": "(message: ChatMessage) => void",
+      "setMessages": "(messages: ChatMessage[]) => void",
+      "clearHistory": "() => void"
+    },
+    "references": {}
+  },
+  "WebLLMClientConfig": {
+    "properties": {
+      "model": "string",
+      "initProgressCallback": "(report: { progress: number; }) => void"
+    },
+    "references": {}
+  },
+  "ExtendedCompletionParams": {
+    "properties": {
+      "singleMessage": "boolean",
+      "forceNewConvo": "boolean"
+    },
+    "references": {}
+  },
+  "DocumentTags": {
+    "properties": {},
+    "references": {}
+  },
+  "AnalysisProgress": {
+    "properties": {
+      "processed": "number",
+      "total": "number",
+      "currentNodeId": "NodeId"
+    },
+    "references": {}
+  },
+  "IMenuConfigCallbacks": {
+    "properties": {
+      "handleSetSceneGraph": "(key: string, clearQueryParams?: boolean, onLoaded?: (sceneGraph?: SceneGraph) => void) => void",
+      "handleImportConfig": "(event: ChangeEvent<HTMLInputElement>) => void",
+      "handleFitToView": "(activeView: string) => void",
+      "GraphMenuActions": "() => { [key: string]: { action: () => void; }; }",
+      "SimulationMenuActions": "() => { [key: string]: { action: () => void; }; }",
+      "setShowNodeTable": "(show: boolean) => void",
+      "setShowEdgeTable": "(show: boolean) => void",
+      "showLayoutManager": "(mode: \"save\" | \"load\") => void",
+      "showFilterWindow": "() => void",
+      "showSceneGraphDetailView": "(readOnly: boolean) => void",
+      "showChatGptImporter": "() => void"
+    },
+    "references": {}
+  },
+  "ParsedConversation": {
+    "properties": {
+      "title": "string",
+      "messages": "ChatMessage[]",
+      "error": "string"
+    },
+    "references": {}
+  },
+  "Metadata": {
+    "properties": {
+      "summary": "string",
+      "keywords": "string[]",
+      "sentiment": "\"positive\" | \"negative\"",
+      "topic": "string"
+    },
+    "references": {}
+  },
+  "Conversation": {
+    "properties": {
+      "id": "number",
+      "title": "string",
+      "excerpt": "string",
+      "message_count": "number",
+      "char_length": "number",
+      "metadata": "Metadata",
+      "hash": "string",
+      "timestamp": "number"
+    },
+    "references": {}
+  },
+  "ConversationsData": {
+    "properties": {
+      "source_file": "string",
+      "conversation_count": "number",
+      "conversations": "Conversation[]",
+      "completed": "boolean"
+    },
+    "references": {}
+  },
+  "SceneGraphCommand": {
+    "properties": {
+      "action": "string",
+      "parameters": "Record<string, any>"
+    },
+    "references": {}
+  },
+  "CommandDefinition": {
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "examples": "string[]",
+      "keywords": "string[]",
+      "apiFormat": "string"
+    },
+    "references": {}
+  },
+  "LLMStudioOptions": {
+    "properties": {
+      "temperature": "number",
+      "top_p": "number",
+      "max_tokens": "number",
+      "model": "string"
+    },
+    "references": {}
+  },
+  "ResourceSpecifier": {
+    "properties": {
+      "type": "\"wikipedia\"",
+      "resource_id": "string"
+    },
+    "references": {}
+  },
+  "FormSchemaField": {
+    "properties": {
+      "validate": "(value: string | number | boolean) => string",
+      "label": "string",
+      "type": "\"number\" | \"checkbox\" | \"select\"",
+      "options": "{ value: string; label: string; }[]",
+      "min": "number",
+      "max": "number",
+      "step": "number"
+    },
+    "references": {}
+  },
+  "FormSchema": {
+    "properties": {},
+    "references": {}
+  },
+  "FormFieldProps": {
+    "properties": {
+      "name": "string",
+      "value": "string | number | boolean",
+      "error": "string",
+      "onChange": "(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void",
+      "schema": "FormSchema",
+      "isDarkMode": "boolean"
+    },
+    "references": {}
+  },
+  "StoryNode": {
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "markdownFile": "string",
+      "markdownContent": "string",
+      "children": "StoryNode[]"
+    },
+    "references": {}
+  },
+  "HotkeyAction": {
+    "properties": {
+      "key": "string",
+      "ctrlKey": "boolean",
+      "metaKey": "boolean",
+      "shiftKey": "boolean",
+      "altKey": "boolean",
+      "action": "() => void",
+      "description": "string"
+    },
+    "references": {}
+  },
+  "IForceGraphEventHandlers": {
+    "properties": {
+      "onNodeHovered": "(node: NodeId) => void",
+      "onNodeClicked": "(node: NodeId) => void",
+      "onNodeRightClick": "(event: MouseEvent, nodeId: string) => void"
+    },
+    "references": {}
+  },
+  "IForceGraphInstanceController": {
+    "properties": {
+      "setBackgroundColor": "(color: string) => void",
+      "initializeInstance": "(dom: HTMLElement, appConfig?: AppConfig) => ForceGraph3DInstance",
+      "applyFixedLayout": "(positions: ObjectOf<Position>) => void",
+      "applyConfigToForceGraph": "(config: IForceGraphRenderConfig) => void"
+    },
+    "references": {}
+  },
+  "IForceGraphNode": {
+    "properties": {
+      "id": "string | NodeId",
+      "color": "string",
+      "position": "{ x: number; y: number; z?: number; }",
+      "data": "{ label: string; color: string; }"
+    },
+    "references": {}
+  },
+  "IForceGraphEdge": {
+    "properties": {
+      "id": "string",
+      "source": "string",
+      "target": "string",
+      "color": "string"
+    },
+    "references": {}
+  },
+  "LayoutWorkerMessage": {
+    "properties": {
+      "id": "string",
+      "action": "\"computeLayout\" | \"cancelComputation\"",
+      "layoutType": "LayoutEngineOption",
+      "serializedGraph": "SerializedSceneGraph"
+    },
+    "references": {}
+  },
+  "_LayoutWorkerResponse": {
+    "properties": {
+      "id": "string",
+      "result": "ILayoutEngineResult",
+      "error": "string",
+      "type": "\"error\" | \"progress\" | \"complete\" | \"cancelled\"",
+      "progress": "number"
+    },
+    "references": {}
+  },
+  "ImageBox": {
+    "properties": {
+      "id": "string",
+      "imageId": "string",
+      "position": "Vector3",
+      "width": "number",
+      "height": "number"
+    },
+    "references": {}
+  },
+  "ImageData": {
+    "properties": {
+      "id": "string",
+      "url": "string",
+      "group": "Group<Object3DEventMap>",
+      "boxes": "ImageBox[]"
+    },
+    "references": {}
+  },
+  "ImageLayoutOptions": {
+    "properties": {
+      "type": "\"grid2d\" | \"random3d\" | \"stack\"",
+      "gridOptions": "{ cols: number; spacing: { x: number; y: number; z: number; }; }",
+      "randomOptions": "{ bounds: { x: [number, number]; y: [number, number]; z: [number, number]; }; }",
+      "stackOptions": "{ spacing: number; }"
+    },
+    "references": {}
+  },
+  "IGraphDiffResult": {
+    "properties": {
+      "additionalNodes": "Node[]",
+      "missingNodes": "Node[]",
+      "additionalEdges": "Edge[]",
+      "missingEdges": "Edge[]"
+    },
+    "references": {}
+  },
+  "PathData": {
+    "properties": {
+      "start": "Point",
+      "end": "Point"
+    },
+    "references": {}
+  },
+  "StoredSceneGraphInfo": {
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "lastModified": "number",
+      "createdAt": "number",
+      "thumbnailUrl": "string",
+      "tags": "string[]"
+    },
+    "references": {}
+  },
+  "IPersistentStore": {
+    "properties": {},
+    "references": {}
+  },
+  "Command": {
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "execute": "() => void",
+      "children": "Command[]"
+    },
+    "references": {}
+  },
+  "ReactFlowConfigState": {
+    "properties": {
+      "config": "ReactFlowRenderConfig",
+      "setConfig": "(config: ReactFlowRenderConfig) => void",
+      "subscribeToConfigChanges": "(callback: (config: ReactFlowRenderConfig) => void) => () => void"
+    },
+    "references": {}
+  },
+  "User": {
+    "properties": {
+      "id": "string",
+      "email": "string",
+      "user_metadata": "{ avatar_url?: string; picture?: string; name?: string; }"
+    },
+    "references": {}
+  },
+  "UserStore": {
+    "properties": {
+      "isSignedIn": "boolean",
+      "user": "User",
+      "isLoading": "boolean",
+      "setSignedIn": "(signedIn: boolean) => void",
+      "setUser": "(user: User) => void",
+      "setLoading": "(loading: boolean) => void",
+      "initializeAuth": "() => Promise<void>",
+      "signOut": "() => Promise<void>",
+      "checkAuthStatus": "() => Promise<boolean>",
+      "getUserDetails": "() => User",
+      "getAvatarUrl": "() => string"
+    },
+    "references": {}
+  }
+}
