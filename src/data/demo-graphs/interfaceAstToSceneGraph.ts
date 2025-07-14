@@ -12,7 +12,7 @@ type InterfaceAST = Record<
 >;
 
 export async function demo_scenegraph_ast(
-  url: string = "/public/data/unigraph-ast/interface-ast.json"
+  url: string = "/data/unigraph-ast/interface-ast.json"
 ): Promise<SceneGraph> {
   // Load the AST
   const response = await fetch(url);
