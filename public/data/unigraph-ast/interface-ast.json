@@ -26,30 +26,19 @@
   "EntityDataArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "EntityData",
-      "EntityId",
-      "Tag"
-    ],
+    "references": ["EntityData", "EntityId", "Tag"],
     "definition": "EntityDataArgs"
   },
   "FullEntityType": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "of",
-      "EntityData",
-      "EntityDataArgs"
-    ],
+    "references": ["of", "EntityData", "EntityDataArgs"],
     "definition": "FullEntityType<T>"
   },
   "fromDefault": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "T",
-      "FullEntityType<T>"
-    ],
+    "references": ["T", "FullEntityType<T>"],
     "arguments": {
       "args": "T"
     },
@@ -65,10 +54,7 @@
     "properties": {
       "data": "Data"
     },
-    "references": [
-      "IEntity",
-      "T"
-    ],
+    "references": ["IEntity", "T"],
     "methods": {
       "getEntityType": {
         "arguments": {},
@@ -192,16 +178,12 @@
         "returnType": "void"
       }
     },
-    "implements": [
-      "IEntity"
-    ]
+    "implements": ["IEntity"]
   },
   "Entity": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "AbstractEntity"
-    ],
+    "references": ["AbstractEntity"],
     "methods": {
       "getEntityType": {
         "arguments": {},
@@ -213,10 +195,7 @@
   "EntityIds": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "Set",
-      "T"
-    ],
+    "references": ["Set", "T"],
     "methods": {
       "fromId": {
         "arguments": {
@@ -282,11 +261,7 @@
       "entities": "V[]",
       "_map": "Map<T, number>"
     },
-    "references": [
-      "Iterable",
-      "V",
-      "T"
-    ],
+    "references": ["Iterable", "V", "T"],
     "methods": {
       "addEntity": {
         "arguments": {
@@ -471,17 +446,12 @@
         "returnType": "EntitiesContainer<T, V>"
       }
     },
-    "implements": [
-      "Iterable"
-    ]
+    "implements": ["Iterable"]
   },
   "NodeId": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "EntityId",
-      "on"
-    ],
+    "references": ["EntityId", "on"],
     "definition": "NodeId"
   },
   "DisplayNodeData": {
@@ -499,28 +469,18 @@
       "borderWidth": "number",
       "borderColor": "string"
     },
-    "references": [
-      "Position"
-    ]
+    "references": ["Position"]
   },
   "DisplayNodeDataArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "DisplayNodeData",
-      "NodeData"
-    ],
+    "references": ["Node", "DisplayNodeData", "NodeData"],
     "definition": "Partial<DisplayNodeData>"
   },
   "NodeData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "DisplayNodeData",
-      "EntityData"
-    ],
+    "references": ["Node", "DisplayNodeData", "EntityData"],
     "definition": "NodeData"
   },
   "NodeDataArgs": {
@@ -548,10 +508,7 @@
   "EdgeId": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "EntityId",
-      "on"
-    ],
+    "references": ["EntityId", "on"],
     "definition": "EdgeId"
   },
   "DisplayEdgeData": {
@@ -568,21 +525,13 @@
   "DisplayEdgeDataArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "DisplayEdgeData",
-      "EdgeData"
-    ],
+    "references": ["DisplayEdgeData", "EdgeData"],
     "definition": "Partial<DisplayEdgeData>"
   },
   "EdgeData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "DisplayEdgeData",
-      "NodeId",
-      "EntityData"
-    ],
+    "references": ["Node", "DisplayEdgeData", "NodeId", "EntityData"],
     "definition": "EdgeData"
   },
   "EdgeDataArgs": {
@@ -602,12 +551,7 @@
   "Edge": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "AbstractEntity",
-      "EdgeId",
-      "EdgeData",
-      "NodeId"
-    ],
+    "references": ["AbstractEntity", "EdgeId", "EdgeData", "NodeId"],
     "methods": {
       "id": {
         "arguments": {
@@ -676,50 +620,31 @@
   "NodeIds": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "NodeId",
-      "EntityId"
-    ],
+    "references": ["Node", "NodeId", "EntityId"],
     "definition": "NodeIds"
   },
   "EdgeIds": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "EdgeId",
-      "EntityId"
-    ],
+    "references": ["EdgeId", "EntityId"],
     "definition": "EdgeIds"
   },
   "NodesContainer": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "NodeId",
-      "on"
-    ],
+    "references": ["Node", "NodeId", "on"],
     "definition": "NodesContainer"
   },
   "EdgesContainer": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "EdgeId",
-      "on"
-    ],
+    "references": ["EdgeId", "on"],
     "definition": "EdgesContainer"
   },
   "GraphArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "NodesContainer",
-      "EdgesContainer",
-      "on"
-    ],
+    "references": ["Node", "NodesContainer", "EdgesContainer", "on"],
     "definition": "GraphArgs"
   },
   "Graph": {
@@ -998,18 +923,13 @@
   "NodePositionData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Position",
-      "on"
-    ],
+    "references": ["Position", "on"],
     "definition": "ObjectOf<Position>"
   },
   "createGraphologyGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "arguments": {
       "graph": "Graph"
     },
@@ -1063,9 +983,7 @@
       "addNodes": "(nodeIds: string[], type: string) => void",
       "addEdge": "(input: string, edgeType: string, output: string) => void"
     },
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "methods": {
       "graph": {
         "arguments": {},
@@ -1082,18 +1000,13 @@
   "GraphMetadata": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Metadata",
-      "EntitiesMetadata"
-    ],
+    "references": ["Metadata", "EntitiesMetadata"],
     "definition": "GraphMetadata"
   },
   "GraphStastics": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Tag"
-    ],
+    "references": ["Tag"],
     "definition": "GraphStastics"
   },
   "RGB": {
@@ -1108,27 +1021,19 @@
   "DisplayConfigData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "or"
-    ],
+    "references": ["or"],
     "definition": "DisplayConfigData"
   },
   "DisplayConfig": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "DisplayConfigData",
-      "on"
-    ],
+    "references": ["DisplayConfigData", "on"],
     "definition": "DisplayConfig"
   },
   "EntitiesDisplayConfig": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "DisplayConfig",
-      "on"
-    ],
+    "references": ["DisplayConfig", "on"],
     "definition": "EntitiesDisplayConfig"
   },
   "RenderingConfig": {
@@ -1252,9 +1157,7 @@
   "FilterRuleMode": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Tag"
-    ],
+    "references": ["Tag"],
     "definition": "FilterRuleMode"
   },
   "FilterRuleDefinition": {
@@ -1265,10 +1168,7 @@
       "ruleMode": "FilterRuleMode",
       "conditions": "{ types?: string[]; tags?: string[]; nodes?: string[]; }"
     },
-    "references": [
-      "FilterOperator",
-      "FilterRuleMode"
-    ]
+    "references": ["FilterOperator", "FilterRuleMode"]
   },
   "Filter": {
     "kind": "interface",
@@ -1309,11 +1209,7 @@
   "WorkspaceConfigState": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "on",
-      "ISidebarConfig",
-      "SectionWidthConfig"
-    ],
+    "references": ["on", "ISidebarConfig", "SectionWidthConfig"],
     "definition": "WorkspaceConfigState"
   },
   "AppConfigActions": {
@@ -1359,9 +1255,7 @@
       "workerId": "string",
       "progress": "number"
     },
-    "references": [
-      "LayoutEngineOption"
-    ]
+    "references": ["LayoutEngineOption"]
   },
   "Layout": {
     "kind": "interface",
@@ -1391,10 +1285,7 @@
       "finishLayoutJob": "() => void",
       "cancelLayoutJob": "() => void"
     },
-    "references": [
-      "LayoutJobStatus",
-      "ILayoutEngineResult"
-    ]
+    "references": ["LayoutJobStatus", "ILayoutEngineResult"]
   },
   "DocumentState": {
     "kind": "interface",
@@ -1406,9 +1297,7 @@
       "lastModified": "number",
       "tags": "string[]"
     },
-    "references": [
-      "NodeId"
-    ]
+    "references": ["NodeId"]
   },
   "DocumentStore": {
     "kind": "interface",
@@ -1425,9 +1314,7 @@
       "getAllDocuments": "() => Record<NodeId, DocumentState>",
       "clearAllDocuments": "() => void"
     },
-    "references": [
-      "NodeId"
-    ]
+    "references": ["NodeId"]
   },
   "IForceGraphRenderConfig": {
     "kind": "interface",
@@ -1500,9 +1387,7 @@
       "graph": "{ nodes: { id: string; label?: string; type?: string; position?: { x: number; y: number; }; data?: Record<string, any>; }[]; edges: { id: string; source: string; target: string; label?: string; type?: string; data?: Record<...>; }[]; }",
       "displayConfig": "RenderingConfig"
     },
-    "references": [
-      "RenderingConfig"
-    ]
+    "references": ["RenderingConfig"]
   },
   "ISceneGraphValidationResult": {
     "kind": "interface",
@@ -1538,10 +1423,7 @@
   "ISceneGraphArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "SceneGraphData",
-      "SceneGraph"
-    ],
+    "references": ["SceneGraphData", "SceneGraph"],
     "definition": "Partial<SceneGraphData>"
   },
   "SceneGraphData": {
@@ -1823,20 +1705,13 @@
   "Node3DPositionData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "Position",
-      "Node3DPosition",
-      "on"
-    ],
+    "references": ["Node", "Position", "Node3DPosition", "on"],
     "definition": "Node3DPositionData"
   },
   "GraphologyLayoutEngine": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "methods": {
       "computeLayout": {
         "arguments": {
@@ -1859,10 +1734,7 @@
   "LayoutEngineOption": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "to",
-      "Layout"
-    ],
+    "references": ["to", "Layout"],
     "definition": "LayoutEngineOption"
   },
   "ILayoutEngineResult": {
@@ -1893,9 +1765,7 @@
   "DisplayManager": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "methods": {
       "applyVisibilityFromFilterRulesToGraph": {
         "arguments": {
@@ -1954,9 +1824,7 @@
   "extractIntersection": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "T"
-    ],
+    "references": ["T"],
     "arguments": {
       "intersects": "Intersection<Object3D<Object3DEventMap>>[]",
       "id": "string"
@@ -2021,19 +1889,13 @@
   "ImageBoxData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "to",
-      "Position",
-      "on"
-    ],
+    "references": ["to", "Position", "on"],
     "definition": "ImageBoxData"
   },
   "findNodeInForceGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "NodeId"
-    ],
+    "references": ["NodeId"],
     "arguments": {
       "forceGraphInstance": "ForceGraph3DInstance",
       "nodeId": "NodeId"
@@ -2043,10 +1905,7 @@
   "selectNodesInSelectionBox": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "SelectionBox"
-    ],
+    "references": ["SceneGraph", "SelectionBox"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "sceneGraph": "SceneGraph",
@@ -2139,10 +1998,7 @@
   "MouseControlMode": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "or",
-      "on"
-    ],
+    "references": ["or", "on"],
     "definition": "MouseControlMode"
   },
   "SelectionBox": {
@@ -2171,44 +2027,30 @@
       "endSelectionBox": "() => void",
       "clearSelectionBox": "() => void"
     },
-    "references": [
-      "MouseControlMode",
-      "SelectionBox"
-    ]
+    "references": ["MouseControlMode", "SelectionBox"]
   },
   "ForceGraph3dLayoutMode": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Layout"
-    ],
+    "references": ["Layout"],
     "definition": "ForceGraph3dLayoutMode"
   },
   "ActiveView": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "or"
-    ],
+    "references": ["or"],
     "definition": "string"
   },
   "WorkspaceConfig": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "on",
-      "ISidebarConfig"
-    ],
+    "references": ["on", "ISidebarConfig"],
     "definition": "WorkspaceConfig"
   },
   "InteractivityFlags": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "let",
-      "on",
-      "MouseControlMode"
-    ],
+    "references": ["let", "on", "MouseControlMode"],
     "definition": "InteractivityFlags"
   },
   "AppConfig": {
@@ -2245,9 +2087,7 @@
   "computeGraphBounds": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "GraphBounds"
-    ],
+    "references": ["GraphBounds"],
     "arguments": {
       "nodes": "Node[]"
     },
@@ -2265,20 +2105,13 @@
   "SongAnnotationId": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Annotation",
-      "EntityId",
-      "on"
-    ],
+    "references": ["Annotation", "EntityId", "on"],
     "definition": "SongAnnotationId"
   },
   "SongAnnotationData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "EntityData",
-      "on"
-    ],
+    "references": ["EntityData", "on"],
     "definition": "SongAnnotationData"
   },
   "SongAnnotationDataArgs": {
@@ -2296,10 +2129,7 @@
   "SongAnnotation": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "AbstractEntity",
-      "SongAnnotationData"
-    ],
+    "references": ["AbstractEntity", "SongAnnotationData"],
     "methods": {
       "getData": {
         "arguments": {},
@@ -2345,9 +2175,7 @@
   "runManagedAnimation": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "AnimationConfig"
-    ],
+    "references": ["AnimationConfig"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "callback": "(elapsedTime: number, frameCount: number) => void",
@@ -2367,10 +2195,7 @@
   "transitionToConfig": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "IForceGraphRenderConfig",
-      "TransitionOptions"
-    ],
+    "references": ["IForceGraphRenderConfig", "TransitionOptions"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "targetConfig": "IForceGraphRenderConfig",
@@ -2385,9 +2210,7 @@
       "config": "IForceGraphRenderConfig",
       "duration": "number"
     },
-    "references": [
-      "IForceGraphRenderConfig"
-    ]
+    "references": ["IForceGraphRenderConfig"]
   },
   "SequenceConfig": {
     "kind": "interface",
@@ -2402,9 +2225,7 @@
   "playConfigSequence": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SequenceConfig"
-    ],
+    "references": ["SequenceConfig"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "configs": "TimedConfig[]",
@@ -2431,12 +2252,7 @@
   "ConfigGeneratorArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "ConfigGeneratorOptions",
-      "to",
-      "or",
-      "on"
-    ],
+    "references": ["ConfigGeneratorOptions", "to", "or", "on"],
     "definition": "Partial<ConfigGeneratorOptions>"
   },
   "generateRandomConfig": {
@@ -2478,10 +2294,7 @@
   "createAnnotationNodeSpawner": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SpawnerConfig",
-      "SceneGraph"
-    ],
+    "references": ["SpawnerConfig", "SceneGraph"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "annotations": "SongAnnotationData[]",
@@ -2506,9 +2319,7 @@
   "applyRandomEffects": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "RandomEffectsConfig"
-    ],
+    "references": ["RandomEffectsConfig"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "annotations": "SongAnnotation[]",
@@ -2535,9 +2346,7 @@
   "applyStaggeredEffects": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "StaggeredEffectsConfig"
-    ],
+    "references": ["StaggeredEffectsConfig"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "annotations": "SongAnnotation[]",
@@ -2566,10 +2375,7 @@
   "pulsateNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "PulsateOptions"
-    ],
+    "references": ["SceneGraph", "PulsateOptions"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "sceneGraph": "SceneGraph",
@@ -2593,9 +2399,7 @@
   "createSongVisualizationTimeline": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SongVisualizationConfig"
-    ],
+    "references": ["SongVisualizationConfig"],
     "arguments": {
       "graph": "ForceGraph3DInstance",
       "annotations": "SongAnnotation[]",
@@ -2627,9 +2431,7 @@
       "color": "Color",
       "boundingBox": "{ minX: number; minY: number; maxX: number; maxY: number; }"
     },
-    "references": [
-      "Color"
-    ]
+    "references": ["Color"]
   },
   "Moon": {
     "kind": "interface",
@@ -2674,9 +2476,7 @@
   "createBlobMesh": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "arguments": {
       "radius": "number",
       "shells": "number",
@@ -2741,9 +2541,7 @@
   "GraphvizLayoutEngine": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "methods": {
       "computeLayout": {
         "arguments": {
@@ -2778,10 +2576,7 @@
     "properties": {
       "isComputingSafeLayout": "boolean"
     },
-    "references": [
-      "SceneGraph",
-      "LayoutEngineOption"
-    ],
+    "references": ["SceneGraph", "LayoutEngineOption"],
     "methods": {
       "resetComputationState": {
         "arguments": {},
@@ -2818,9 +2613,7 @@
   "applyLayoutAndTriggerAppUpdate": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Layout"
-    ],
+    "references": ["Layout"],
     "arguments": {
       "layout": "Layout"
     },
@@ -2829,10 +2622,7 @@
   "computeLayoutAndTriggerAppUpdate": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "LayoutEngineOption"
-    ],
+    "references": ["SceneGraph", "LayoutEngineOption"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "layout": "LayoutEngineOption",
@@ -2843,9 +2633,7 @@
   "computeLayoutAndTriggerUpdateForCurrentSceneGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "LayoutEngineOption"
-    ],
+    "references": ["LayoutEngineOption"],
     "arguments": {
       "layout": "LayoutEngineOption",
       "nodeSelection": "EntityIds<NodeId>"
@@ -2870,9 +2658,7 @@
   "saveWebpage": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Webpage"
-    ],
+    "references": ["Webpage"],
     "arguments": {
       "webpage": "Webpage"
     },
@@ -2909,12 +2695,7 @@
   "ImageAnnotationData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "to",
-      "Position",
-      "EntityData",
-      "on"
-    ],
+    "references": ["to", "Position", "EntityData", "on"],
     "definition": "ImageAnnotationData"
   },
   "Annotation": {
@@ -2931,9 +2712,7 @@
   "saveAnnotation": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Annotation"
-    ],
+    "references": ["Annotation"],
     "arguments": {
       "annotation": "Annotation"
     },
@@ -2958,9 +2737,7 @@
   "NotificationType": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "or"
-    ],
+    "references": ["or"],
     "definition": "NotificationType"
   },
   "Notification": {
@@ -2972,9 +2749,7 @@
       "duration": "number",
       "groupId": "string"
     },
-    "references": [
-      "NotificationType"
-    ]
+    "references": ["NotificationType"]
   },
   "NotificationStore": {
     "kind": "interface",
@@ -2988,9 +2763,7 @@
   "serializeSceneGraphToJson": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -2999,9 +2772,7 @@
   "deserializeSceneGraphFromJson": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "json": "string"
     },
@@ -3010,9 +2781,7 @@
   "compressSceneGraphJsonForUrl": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -3021,9 +2790,7 @@
   "decompressSceneGraphJsonFromUrl": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "compressed": "string"
     },
@@ -3053,9 +2820,7 @@
   "saveProjectToSupabase": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -3089,9 +2854,7 @@
   "updateProject": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "UpdateProjectParams"
-    ],
+    "references": ["UpdateProjectParams"],
     "arguments": {
       "projectId": "string",
       "updates": "UpdateProjectParams"
@@ -3140,9 +2903,7 @@
   "editProject": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "UpdateProjectParams"
-    ],
+    "references": ["UpdateProjectParams"],
     "arguments": {
       "projectId": "string",
       "updates": "UpdateProjectParams"
@@ -3161,9 +2922,7 @@
   "handleProjectActionResult": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "ProjectActionResult"
-    ],
+    "references": ["ProjectActionResult"],
     "arguments": {
       "result": "ProjectActionResult",
       "onSuccess": "(data?: any) => void",
@@ -3183,14 +2942,7 @@
   "InterfaceAST": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "or",
-      "aliases",
-      "alias",
-      "definition",
-      "references",
-      "on"
-    ],
+    "references": ["or", "aliases", "alias", "definition", "references", "on"],
     "definition": "InterfaceAST"
   },
   "extractReferences": {
@@ -3222,19 +2974,13 @@
   "MajorWork": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "on"
-    ],
+    "references": ["on"],
     "definition": "MajorWork"
   },
   "Person": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "or",
-      "MajorWork",
-      "on"
-    ],
+    "references": ["or", "MajorWork", "on"],
     "definition": "Person"
   },
   "Field": {
@@ -3256,12 +3002,7 @@
       "graph": "Graph",
       "thinkers2": "SceneGraph"
     },
-    "references": [
-      "Graph",
-      "SceneGraph",
-      "Person",
-      "Field"
-    ],
+    "references": ["Graph", "SceneGraph", "Person", "Field"],
     "methods": {
       "addPerson": {
         "arguments": {
@@ -3357,10 +3098,7 @@
   "generateRandomNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Graph",
-      "RandomNodeOptions"
-    ],
+    "references": ["Graph", "RandomNodeOptions"],
     "arguments": {
       "graph": "Graph",
       "options": "RandomNodeOptions"
@@ -3370,10 +3108,7 @@
   "generateRandomEdges": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Graph",
-      "RandomEdgeOptions"
-    ],
+    "references": ["Graph", "RandomEdgeOptions"],
     "arguments": {
       "graph": "Graph",
       "nodeIds": "NodeId[]",
@@ -3384,11 +3119,7 @@
   "generateRandomGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "RandomNodeOptions",
-      "RandomEdgeOptions"
-    ],
+    "references": ["SceneGraph", "RandomNodeOptions", "RandomEdgeOptions"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "nodeOptions": "RandomNodeOptions",
@@ -3399,10 +3130,7 @@
   "addRandomCluster": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "centerNodeId": "NodeId",
@@ -3532,16 +3260,12 @@
       "type": "\"StoryCard\"",
       "data": "StoryCard"
     },
-    "references": [
-      "StoryCard"
-    ]
+    "references": ["StoryCard"]
   },
   "createStoryCard": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "StoryCard"
-    ],
+    "references": ["StoryCard"],
     "arguments": {
       "id": "string",
       "title": "string",
@@ -3552,9 +3276,7 @@
   "createMarkdownStoryCard": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "StoryCard"
-    ],
+    "references": ["StoryCard"],
     "arguments": {
       "id": "string",
       "title": "string",
@@ -3565,11 +3287,7 @@
   "addStoryCardToGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "StoryCard",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "StoryCard", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "card": "StoryCard"
@@ -3579,11 +3297,7 @@
   "createStoryChoice": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId",
-      "EdgeId"
-    ],
+    "references": ["SceneGraph", "NodeId", "EdgeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "parentCardId": "NodeId",
@@ -3595,10 +3309,7 @@
   "getChildStoryCards": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "parentCardId": "NodeId"
@@ -3608,10 +3319,7 @@
   "getParentStoryCard": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "childCardId": "NodeId"
@@ -3621,10 +3329,7 @@
   "findRootStoryCard": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -3633,10 +3338,7 @@
   "reconstructStoryHierarchy": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "rootNodeId": "NodeId"
@@ -3646,9 +3348,7 @@
   "addStoryTreeToGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "storyTree": "any"
@@ -3658,10 +3358,7 @@
   "convertStoryCardToEntity": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "StoryCard",
-      "StoryCardEntity"
-    ],
+    "references": ["StoryCard", "StoryCardEntity"],
     "arguments": {
       "card": "StoryCard"
     },
@@ -3670,9 +3367,7 @@
   "createStoryGraphFromTree": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "storyTree": "any"
     },
@@ -3681,10 +3376,7 @@
   "exportStoryTree": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "NodeId"
-    ],
+    "references": ["SceneGraph", "NodeId"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "rootNodeId": "NodeId"
@@ -3694,24 +3386,13 @@
   "StoryCardId": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "to",
-      "or",
-      "EntityId",
-      "on"
-    ],
+    "references": ["to", "or", "EntityId", "on"],
     "definition": "StoryCardId"
   },
   "StoryCardData": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "if",
-      "Position",
-      "or",
-      "EntityData",
-      "on"
-    ],
+    "references": ["if", "Position", "or", "EntityData", "on"],
     "definition": "StoryCardData"
   },
   "StoryCardDataArgs": {
@@ -3742,17 +3423,13 @@
   "FeatureSet": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Feature"
-    ],
+    "references": ["Feature"],
     "definition": "FeatureSet<E>"
   },
   "createFeatureSet": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "E"
-    ],
+    "references": ["E"],
     "arguments": {
       "name": "string",
       "features": "E"
@@ -3774,9 +3451,7 @@
   "createSphereMesh": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "arguments": {
       "radius": "number",
       "segments": "number"
@@ -3786,9 +3461,7 @@
   "createCylindricalMesh": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Graph"
-    ],
+    "references": ["Graph"],
     "arguments": {
       "radius": "number",
       "latitudeCount": "number",
@@ -3819,9 +3492,7 @@
   "getDemoSceneGraphTree": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "DemoSceneGraphTree"
-    ],
+    "references": ["DemoSceneGraphTree"],
     "arguments": {},
     "returnType": "DemoSceneGraphTree"
   },
@@ -4001,9 +3672,7 @@
       "model": "string",
       "initProgressCallback": "(report: { progress: number; }) => void"
     },
-    "references": [
-      "ExtendedCompletionParams"
-    ],
+    "references": ["ExtendedCompletionParams"],
     "methods": {
       "getModel": {
         "arguments": {},
@@ -4052,16 +3721,12 @@
       "total": "number",
       "currentNodeId": "NodeId"
     },
-    "references": [
-      "NodeId"
-    ]
+    "references": ["NodeId"]
   },
   "analyzeDocumentForTags": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "WebLLMClient"
-    ],
+    "references": ["WebLLMClient"],
     "arguments": {
       "content": "string",
       "llmClient": "WebLLMClient"
@@ -4071,9 +3736,7 @@
   "analyzeAllDocuments": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "onProgress": "(progress: AnalysisProgress) => void"
@@ -4083,10 +3746,7 @@
   "applyTagsToDocuments": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph",
-      "DocumentTags"
-    ],
+    "references": ["SceneGraph", "DocumentTags"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "documentTags": "DocumentTags"
@@ -4096,9 +3756,7 @@
   "exportTagsToJson": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "DocumentTags"
-    ],
+    "references": ["DocumentTags"],
     "arguments": {
       "documentTags": "DocumentTags",
       "filename": "string"
@@ -4108,9 +3766,7 @@
   "runConversationsAnalysis": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "applyTags": "boolean",
@@ -4196,9 +3852,7 @@
   "parseConversationItem": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "ParsedConversation"
-    ],
+    "references": ["ParsedConversation"],
     "arguments": {
       "conversation": "any"
     },
@@ -4207,9 +3861,7 @@
   "createFormattedConversationDocument": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "ParsedConversation"
-    ],
+    "references": ["ParsedConversation"],
     "arguments": {
       "conversation": "ParsedConversation"
     },
@@ -4227,9 +3879,7 @@
   "importChatGptConversation": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "url": "string",
       "sceneGraph": "SceneGraph",
@@ -4258,10 +3908,7 @@
   "importChatGptFromFile": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "File",
-      "SceneGraph"
-    ],
+    "references": ["File", "SceneGraph"],
     "arguments": {
       "file": "File",
       "sceneGraph": "SceneGraph",
@@ -4273,10 +3920,7 @@
   "importParsedConversation": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "ParsedConversation",
-      "SceneGraph"
-    ],
+    "references": ["ParsedConversation", "SceneGraph"],
     "arguments": {
       "conversation": "ParsedConversation",
       "sceneGraph": "SceneGraph",
@@ -4317,9 +3961,7 @@
       "hash": "string",
       "timestamp": "number"
     },
-    "references": [
-      "Metadata"
-    ]
+    "references": ["Metadata"]
   },
   "ConversationsData": {
     "kind": "interface",
@@ -4334,9 +3976,7 @@
   "importConversations": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "jsonFilePath": "string",
       "sceneGraph": "SceneGraph"
@@ -4346,9 +3986,7 @@
   "createTopicNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -4357,9 +3995,7 @@
   "createKeywordNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph",
       "minOccurrences": "number"
@@ -4369,9 +4005,7 @@
   "importConversationsWithStructure": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "jsonFilePath": "string",
       "sceneGraph": "SceneGraph",
@@ -4433,9 +4067,7 @@
   "callLLMStudioAPI": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "LLMStudioOptions"
-    ],
+    "references": ["LLMStudioOptions"],
     "arguments": {
       "messages": "ChatMessage[]",
       "options": "LLMStudioOptions"
@@ -4475,20 +4107,13 @@
   "SerializedMentionNode": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Node",
-      "SerializedTextNode",
-      "Spread",
-      "on"
-    ],
+    "references": ["Node", "SerializedTextNode", "Spread", "on"],
     "definition": "SerializedMentionNode"
   },
   "$convertMentionElement": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "DOMConversionOutput"
-    ],
+    "references": ["DOMConversionOutput"],
     "arguments": {
       "domNode": "HTMLElement"
     },
@@ -4576,9 +4201,7 @@
   "$createMentionNode": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "MentionNode"
-    ],
+    "references": ["MentionNode"],
     "arguments": {
       "mentionName": "string",
       "textContent": "string"
@@ -4588,9 +4211,7 @@
   "$isMentionNode": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "LexicalNode"
-    ],
+    "references": ["LexicalNode"],
     "arguments": {
       "node": "LexicalNode"
     },
@@ -4607,9 +4228,7 @@
   "getDownstreamNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "nodeIds": "NodeId[]",
       "sceneGraph": "SceneGraph"
@@ -4619,9 +4238,7 @@
   "getUpstreamNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "nodeIds": "NodeId[]",
       "sceneGraph": "SceneGraph"
@@ -4631,9 +4248,7 @@
   "getAllPaths": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "nodeIds": "NodeId[]",
       "sceneGraph": "SceneGraph"
@@ -4643,9 +4258,7 @@
   "findOriginNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "nodeIds": "NodeId[]",
       "sceneGraph": "SceneGraph"
@@ -4655,9 +4268,7 @@
   "getEdgesBetweenNodes": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "nodes": "EntityIds<NodeId>",
       "sceneGraph": "SceneGraph"
@@ -4667,9 +4278,7 @@
   "getEntirePath": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "nodeIds": "NodeId[]",
       "sceneGraph": "SceneGraph"
@@ -4713,9 +4322,7 @@
       "schema": "FormSchema",
       "isDarkMode": "boolean"
     },
-    "references": [
-      "FormSchema"
-    ]
+    "references": ["FormSchema"]
   },
   "StoryNode": {
     "kind": "interface",
@@ -4767,9 +4374,7 @@
       "allTags": "Map<any, Set<string>>",
       "allTypes": "Map<any, Set<string>>"
     },
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "methods": {
       "rebuildCache": {
         "arguments": {},
@@ -4877,9 +4482,7 @@
         "returnType": "void"
       }
     },
-    "implements": [
-      "IForceGraphInstanceController"
-    ]
+    "implements": ["IForceGraphInstanceController"]
   },
   "Dimension": {
     "kind": "type",
@@ -4895,10 +4498,7 @@
       "layoutType": "LayoutEngineOption",
       "serializedGraph": "SerializedSceneGraph"
     },
-    "references": [
-      "LayoutEngineOption",
-      "SerializedSceneGraph"
-    ]
+    "references": ["LayoutEngineOption", "SerializedSceneGraph"]
   },
   "_LayoutWorkerResponse": {
     "kind": "interface",
@@ -4909,17 +4509,12 @@
       "type": "\"error\" | \"progress\" | \"complete\" | \"cancelled\"",
       "progress": "number"
     },
-    "references": [
-      "ILayoutEngineResult"
-    ]
+    "references": ["ILayoutEngineResult"]
   },
   "deserializeSceneGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SerializedSceneGraph",
-      "SceneGraph"
-    ],
+    "references": ["SerializedSceneGraph", "SceneGraph"],
     "arguments": {
       "serializedGraph": "SerializedSceneGraph"
     },
@@ -4928,9 +4523,7 @@
   "handleComputeLayout": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "LayoutWorkerMessage"
-    ],
+    "references": ["LayoutWorkerMessage"],
     "arguments": {
       "message": "LayoutWorkerMessage"
     },
@@ -4998,9 +4591,7 @@
   "deserializeDotToSceneGraph": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "dotContent": "string"
     },
@@ -5021,24 +4612,18 @@
       "start": "Point",
       "end": "Point"
     },
-    "references": [
-      "Point"
-    ]
+    "references": ["Point"]
   },
   "FileFormat": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "on"
-    ],
+    "references": ["on"],
     "definition": "FileFormat"
   },
   "loadSceneGraphFromFile": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "File"
-    ],
+    "references": ["File"],
     "arguments": {
       "file": "File"
     },
@@ -5047,9 +4632,7 @@
   "serializeSceneGraphToDot": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -5058,9 +4641,7 @@
   "serializeSceneGraphToGraphml": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "SceneGraph"
-    ],
+    "references": ["SceneGraph"],
     "arguments": {
       "sceneGraph": "SceneGraph"
     },
@@ -5087,11 +4668,7 @@
   "PersistentStoreManager": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "IPersistentStore",
-      "SceneGraph",
-      "File"
-    ],
+    "references": ["IPersistentStore", "SceneGraph", "File"],
     "methods": {
       "openDB": {
         "arguments": {},
@@ -5157,30 +4734,18 @@
         "returnType": "Promise<string>"
       }
     },
-    "implements": [
-      "IPersistentStore"
-    ]
+    "implements": ["IPersistentStore"]
   },
   "ImageAnnotationId": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "Annotation",
-      "EntityId",
-      "on"
-    ],
+    "references": ["Annotation", "EntityId", "on"],
     "definition": "ImageAnnotationId"
   },
   "ImageAnnotationDataArgs": {
     "kind": "type",
     "properties": {},
-    "references": [
-      "to",
-      "Position",
-      "EntityData",
-      "EntityDataArgs",
-      "on"
-    ],
+    "references": ["to", "Position", "EntityData", "EntityDataArgs", "on"],
     "definition": "ImageAnnotationDataArgs"
   },
   "ImageAnnotation": {
@@ -5218,9 +4783,7 @@
       "scene": "Scene",
       "isAnimating": "boolean"
     },
-    "references": [
-      "Scene"
-    ],
+    "references": ["Scene"],
     "methods": {
       "centerOnObject": {
         "arguments": {
@@ -5268,9 +4831,7 @@
   "applyParticleEffects": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Scene"
-    ],
+    "references": ["Scene"],
     "arguments": {
       "svgElements": "SVGElement[]",
       "container": "HTMLDivElement",
@@ -5294,9 +4855,7 @@
   "commandMatchesQueryUnordered": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Command"
-    ],
+    "references": ["Command"],
     "arguments": {
       "command": "Command",
       "query": "string"
@@ -5306,9 +4865,7 @@
   "getCommandMatchScore": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Command"
-    ],
+    "references": ["Command"],
     "arguments": {
       "command": "Command",
       "query": "string"
@@ -5336,10 +4893,7 @@
   "DisplayConfigManager": {
     "kind": "class",
     "properties": {},
-    "references": [
-      "DisplayConfigData",
-      "SceneGraph"
-    ],
+    "references": ["DisplayConfigData", "SceneGraph"],
     "methods": {
       "addKeyToDisplayConfig": {
         "arguments": {
@@ -5386,9 +4940,7 @@
       "getUserDetails": "() => User",
       "getAvatarUrl": "() => string"
     },
-    "references": [
-      "User"
-    ]
+    "references": ["User"]
   },
   "replaceUnigraphUrlsWithLocalhost": {
     "kind": "function",
