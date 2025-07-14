@@ -45,6 +45,7 @@ import WebpageNode from "./nodes/WebpageNode";
 import "@xyflow/react/dist/style.css";
 import { EdgeId } from "../../../core/model/Edge";
 import ResizableAnnotationCard from "../../annotations/ResizableAnnotationCard";
+import ResizableDefinitionCard from "../../annotations/ResizableDefinitionCard";
 import ResizerNode from "./nodes/resizerNode";
 
 // Remove the custom Node interface that was causing the type conflict
@@ -78,11 +79,29 @@ const AnnotationNode = (props: any) => {
   );
 };
 
+// DefinitionNode component for definition nodes
+const DefinitionNode = (props: any) => {
+  const data = props.data;
+  if (!data || !data.definition) return <div>Invalid definition</div>;
+  return (
+    <ResizableDefinitionCard
+      name={data.definition.name}
+      kind={data.definition.kind}
+      fields={data.definition.fields}
+      description={data.definition.description}
+      dimensions={data.dimensions}
+      onResizeEnd={data.onResizeEnd}
+      style={props.style}
+    />
+  );
+};
+
 export const nodeTypes = {
   customNode: CustomNode, // Register the custom node component
   resizerNode: ResizerNode,
   annotation: AnnotationNode,
   webpage: WebpageNode,
+  definition: DefinitionNode,
 };
 
 // Add a style tag for selected and hovered nodes
