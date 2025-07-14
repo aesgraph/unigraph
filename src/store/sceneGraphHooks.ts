@@ -1,4 +1,3 @@
-import { ForceGraphManager } from "../core/force-graph/ForceGraphManager";
 import { Compute_Layout } from "../core/layouts/LayoutEngine";
 import {
   ILayoutEngineResult,
@@ -29,15 +28,11 @@ import {
 import {
   getActiveView,
   getCurrentSceneGraph,
-  getForceGraphInstance,
   getLegendMode,
   getReactFlowInstance,
   setActiveFilter,
 } from "./appConfigStore";
-import {
-  getMouseControlMode,
-  toggleMouseControlMode,
-} from "./mouseControlsStore";
+import { getMouseControlMode, setMouseControlMode } from "./mouseControlsStore";
 
 export async function applyLayoutAndTriggerAppUpdate(layout: Layout) {
   const sceneGraph = getCurrentSceneGraph();
@@ -188,14 +183,13 @@ export const hideVisibleNodes = (nodeIds: EntityIds<NodeId>) => {
 };
 
 export const toggleForceGraphMouseControls = () => {
-  toggleMouseControlMode();
-  const forceGraphInstance = getForceGraphInstance();
-  if (forceGraphInstance) {
-    ForceGraphManager.updateMouseControlMode(
-      forceGraphInstance,
-      getMouseControlMode()
-    );
-  }
+  const currentMode = getMouseControlMode();
+  const newMode = currentMode === "orbital" ? "multiselection" : "orbital";
+
+  // Use the explicit setter instead of toggle
+  setMouseControlMode(newMode);
+
+  console.log(`Mouse control mode toggled from ${currentMode} to ${newMode}`);
 };
 
 export const clearFiltersOnAppInstance = () => {

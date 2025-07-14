@@ -276,6 +276,22 @@
           "name": "index.md"
         },
         {
+          "path": "useCases/quickInteractiveDiagrams",
+          "type": "directory",
+          "children": [
+            {
+              "path": "useCases/quickInteractiveDiagrams/factorGraph.md",
+              "type": "file",
+              "name": "factorGraph.md"
+            },
+            {
+              "path": "useCases/quickInteractiveDiagrams/index.md",
+              "type": "file",
+              "name": "index.md"
+            }
+          ]
+        },
+        {
           "path": "useCases/researchAndCollaboration.md",
           "type": "file",
           "name": "researchAndCollaboration.md"

@@ -97,6 +97,7 @@ import {
   SetCurrentDisplayConfigOf,
 } from "./core/model/utils";
 import { exportGraphDataForReactFlow } from "./core/react-flow/exportGraphDataForReactFlow";
+import { deserializeSceneGraphFromJson } from "./core/serializers/toFromJson";
 import { persistentStore } from "./core/storage/PersistentStoreManager";
 import { flyToNode } from "./core/webgl/webglHelpers";
 import {
@@ -155,7 +156,10 @@ import {
   setHoveredNodeIds,
   setSelectedNodeId,
 } from "./store/graphInteractionStore";
-import { useMouseControlsStore } from "./store/mouseControlsStore";
+import {
+  applyMouseClickModeFromInteractivityFlags,
+  useMouseControlsStore,
+} from "./store/mouseControlsStore";
 import { addNotification } from "./store/notificationStore";
 import {
   applyActiveFilterToAppInstance,
@@ -169,6 +173,7 @@ import useWorkspaceConfigStore, {
   setLeftSidebarConfig,
   setRightActiveSection,
   setRightSidebarConfig,
+  setShowToolbar,
 } from "./store/workspaceConfigStore";
 
 // Import the persistent store
@@ -243,12 +248,14 @@ const AppContent = ({
   defaultActiveView,
   defaultActiveLayout,
   shouldShowLoadDialog = false,
+  defaultSerializedSceneGraph,
 }: {
   defaultGraph?: string;
   svgUrl?: string;
   defaultActiveView?: string;
   defaultActiveLayout?: string;
   shouldShowLoadDialog?: boolean;
+  defaultSerializedSceneGraph?: any;
 }) => {
   const { initializeAuth } = useUserStore();
 
@@ -452,6 +459,16 @@ const AppContent = ({
   }, [currentSceneGraph]);
 
   useEffect(() => {
+    if (defaultSerializedSceneGraph) {
+      // Load from serialized scenegraph param
+      console.log("Loading serialized scenegraph", defaultSerializedSceneGraph);
+      const sg = deserializeSceneGraphFromJson(
+        JSON.stringify(defaultSerializedSceneGraph)
+      );
+      console.log("Loaded serialized scenegraph", sg);
+      handleLoadSceneGraph(sg, false);
+      return;
+    }
     if (svgUrl) {
       fetchSvgSceneGraph(svgUrl).then(({ sceneGraph, error }) => {
         if (error) {
@@ -477,7 +494,13 @@ const AppContent = ({
       setActiveLayout(defaultActiveLayout as LayoutEngineOption);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultGraph, svgUrl, defaultActiveView, defaultActiveLayout]);
+  }, [
+    defaultSerializedSceneGraph,
+    defaultGraph,
+    svgUrl,
+    defaultActiveView,
+    defaultActiveLayout,
+  ]);
 
   // Auto-open LoadSceneGraphDialog when shouldShowLoadDialog is true
   useEffect(() => {
@@ -733,9 +756,21 @@ const AppContent = ({
       handleBackgroundRightClick
     );
 
-    newInstance?.onEngineTick(() => {
-      zoomToFit(newInstance!, 0);
-    });
+    // Apply mouse click mode from interactivityFlags if specified
+    const interactivityFlags =
+      currentSceneGraph.getData().defaultAppConfig?.interactivityFlags;
+    if (interactivityFlags?.mouseClickMode) {
+      // console.log(
+      //   "Applying mouse click mode to new ForceGraph3D instance:",
+      //   interactivityFlags.mouseClickMode
+      // );
+      applyMouseClickModeFromInteractivityFlags(
+        interactivityFlags.mouseClickMode
+      );
+    }
+
+    // Remove the automatic zoomToFit that overrides camera settings
+    // Camera settings are now handled in createForceGraph and ForceGraphManager
 
     setTimeout(() => {
       newInstance?.onEngineTick(() => {});
@@ -853,17 +888,34 @@ const AppContent = ({
 
         setActiveFilter(graph.getData().defaultAppConfig?.activeFilter ?? null);
 
-        if (graph.getData()?.defaultAppConfig?.workspaceConfig) {
-          setLeftSidebarConfig(
-            graph.getData()!.defaultAppConfig!.workspaceConfig!
-              .leftSidebarConfig
-          );
-          setLeftActiveSection(getLeftSidebarConfig().activeSectionId);
-          setRightSidebarConfig(
-            graph.getData()!.defaultAppConfig!.workspaceConfig!
-              .rightSidebarConfig
-          );
-          setRightActiveSection(getRightSidebarConfig().activeSectionId);
+        const workspaceConfig =
+          graph.getData()?.defaultAppConfig?.workspaceConfig;
+        if (workspaceConfig) {
+          const leftToSet = workspaceConfig?.leftSidebarConfig;
+          if (leftToSet !== undefined) {
+            setLeftSidebarConfig(leftToSet);
+            setLeftActiveSection(leftToSet.activeSectionId ?? "default");
+          }
+          const rightToSet = workspaceConfig?.rightSidebarConfig;
+          if (rightToSet !== undefined) {
+            setRightSidebarConfig(rightToSet);
+            setRightActiveSection(rightToSet.activeSectionId ?? "default");
+          }
+
+          setShowToolbar(workspaceConfig?.showToolbar ?? true);
+          if (workspaceConfig?.hideAll) {
+            setShowToolbar(false);
+            setLeftSidebarConfig({
+              ...getLeftSidebarConfig(),
+              ...leftToSet,
+              isVisible: false,
+            });
+            setRightSidebarConfig({
+              ...getRightSidebarConfig(),
+              ...rightToSet,
+              isVisible: false,
+            });
+          }
         }
 
         const tock = Date.now();
@@ -1504,10 +1556,17 @@ const AppContent = ({
         forceGraphInstance,
         sceneGraph.getDisplayConfig().nodePositions!
       );
-      zoomToFit(forceGraphInstance);
+
+      // Only zoom to fit if no custom camera settings are configured
+      const config = sceneGraph.getForceGraphRenderConfig();
+      if (!config.cameraPosition || !config.cameraTarget) {
+        zoomToFit(forceGraphInstance);
+      }
     },
     [forceGraphInstance]
   );
+
+  const { controlMode } = useMouseControlsStore();
 
   useEffect(() => {
     if (activeView === "ForceGraph3d" && forceGraphInstance) {
@@ -1572,7 +1631,13 @@ const AppContent = ({
         forceGraphInstance,
         currentLayoutResult.positions
       );
-      zoomToFit(forceGraphInstance);
+
+      // Only zoom to fit if no custom camera settings are configured
+      const config = currentSceneGraph.getForceGraphRenderConfig();
+      if (!config.cameraPosition || !config.cameraTarget) {
+        zoomToFit(forceGraphInstance);
+      }
+
       console.log(
         "triggered",
         currentLayoutResult.layoutType,
@@ -1591,6 +1656,7 @@ const AppContent = ({
     currentLayoutResult, // Use this to trigger the effect when the layout result changes
     forceGraph3dOptions.layout,
     graphvizFitToView,
+    currentSceneGraph, // Add dependency to access scene graph config
   ]);
 
   // Add window resize handler for ForceGraph3D
@@ -1824,6 +1890,16 @@ const AppContent = ({
     setShowPathAnalysis,
   ]);
 
+  // Hide/show ForceGraph3D help text based on cameraControls flag
+  useEffect(() => {
+    if (forceGraphInstance) {
+      setTimeout(() => {
+        forceGraphInstance.showNavInfo(controlMode === "orbital");
+        window.dispatchEvent(new Event("resize"));
+      }, 100);
+    }
+  }, [forceGraphInstance, controlMode]);
+
   const [editingEntity, setEditingEntity] = useState<Entity | null>(null);
   const [jsonEditEntity, setJsonEditEntity] = useState<Entity | null>(null);
 
@@ -1953,8 +2029,6 @@ const AppContent = ({
       </div>
     );
   };
-
-  const controlMode = useMouseControlsStore((state) => state.controlMode);
 
   return (
     <AppContextProvider value={{ setEditingEntity, setJsonEditEntity }}>
@@ -2237,6 +2311,7 @@ interface AppProps {
   defaultActiveView?: string;
   defaultActiveLayout?: string;
   shouldShowLoadDialog?: boolean;
+  defaultSerializedSceneGraph?: any;
 }
 
 const App: React.FC<AppProps> = ({
@@ -2245,6 +2320,7 @@ const App: React.FC<AppProps> = ({
   defaultActiveView,
   defaultActiveLayout,
   shouldShowLoadDialog = false,
+  defaultSerializedSceneGraph,
 }) => {
   return (
     <MousePositionProvider>
@@ -2254,6 +2330,7 @@ const App: React.FC<AppProps> = ({
         defaultActiveView={defaultActiveView}
         defaultActiveLayout={defaultActiveLayout}
         shouldShowLoadDialog={shouldShowLoadDialog}
+        defaultSerializedSceneGraph={defaultSerializedSceneGraph}
       />
       <LayoutComputationDialog />
     </MousePositionProvider>

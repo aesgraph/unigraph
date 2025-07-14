@@ -16,7 +16,10 @@ import {
   getEdgeLegendConfig,
   getNodeLegendConfig,
 } from "../../store/activeLegendConfigStore";
-import { getLegendMode } from "../../store/appConfigStore";
+import {
+  getInteractivityFlags,
+  getLegendMode,
+} from "../../store/appConfigStore";
 import {
   DEFAULT_FORCE_GRAPH_RENDER_CONFIG,
   IForceGraphRenderConfig,
@@ -77,6 +80,7 @@ export const createForceGraph = (
     extraRenderers: [new CSS2DRenderer()],
   })
     .graphData({ nodes: data.nodes, links: data.edges })
+    .showNavInfo(getMouseControlMode() === "orbital")
     .nodeLabel("label")
     .nodeColor((node) => {
       if (getHoveredNodeIds().has(node.id as NodeId)) {
@@ -313,6 +317,19 @@ export const createForceGraph = (
       .nodeThreeObjectExtend(true);
   }
 
+  // Check if camera controls are disabled via interactivityFlags
+  const interactivityFlags = getInteractivityFlags();
+  if (interactivityFlags?.cameraControls === false) {
+    console.log("Camera controls are disabled via interactivityFlags");
+    const controls = graph.controls() as any;
+    if (controls) {
+      controls.enableRotate = false;
+      controls.enableZoom = false;
+      controls.enablePan = false;
+      controls.update();
+    }
+  }
+
   if (layout === "Layout" && positions) {
     ForceGraphManager.applyFixedNodePositions(graph, positions);
   }
@@ -323,6 +340,49 @@ export const createForceGraph = (
     sceneGraph,
     true
   );
+
+  // Apply initial camera settings if provided
+  if (options.cameraPosition && options.cameraTarget) {
+    console.log(
+      "setting camera position",
+      options.cameraPosition,
+      options.cameraTarget
+    );
+    console.log("Camera target Z value:", options.cameraTarget.z);
+
+    graph.cameraPosition(
+      options.cameraPosition,
+      options.cameraTarget,
+      0 // Immediate transition for initial setup
+    );
+
+    // Debug: Check what the camera target actually is after setting
+    const controls = graph.controls() as any;
+    if (controls && controls.target) {
+      console.log("Camera target after setting:", controls.target);
+
+      // Manually set the controls target to ensure Z coordinate is applied
+      if (controls.target.set) {
+        controls.target.set(
+          options.cameraTarget.x,
+          options.cameraTarget.y,
+          options.cameraTarget.z
+        );
+        controls.update();
+        console.log("Manually set camera target to:", controls.target);
+      }
+    }
+  }
+
+  // Apply initial zoom if provided
+  if (options.initialZoom && options.initialZoom !== 1) {
+    console.log("setting initial zoom", options.initialZoom);
+    const controls = graph.controls() as any;
+    if (controls && controls.object) {
+      controls.object.zoom = options.initialZoom;
+      controls.update();
+    }
+  }
 
   return graph;
 };

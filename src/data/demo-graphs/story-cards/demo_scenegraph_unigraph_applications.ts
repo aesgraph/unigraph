@@ -16,7 +16,7 @@ export const demo_Unigraph_Applications = () => {
     userData: {
       title: "Story Cards",
       description:
-        "Story cards are a way to represent complex information in a fun and interactive way.\nThey give creators a new paradigm for communication information, and users to explore different narratives that interest them.",
+        "Story cards are a way to represent complex information in a fun and interactive way.\nThey give creators a new paradigm for communicating information that allows users to explore different narratives that interest them.",
       tags: ["unigraph", "story cards", "interactive"],
     },
   });
@@ -522,7 +522,7 @@ export const demo_Unigraph_Applications = () => {
     defaultAppConfig: {
       ...DEFAULT_APP_CONFIG(),
       activeLayout: "dot",
-      activeView: "wikipediaViewer",
+      activeView: "storyCard",
     },
   });
 };

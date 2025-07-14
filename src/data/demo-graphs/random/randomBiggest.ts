@@ -1,6 +1,6 @@
-import { Edge } from "../../core/model/Edge";
-import { Graph } from "../../core/model/Graph";
-import { SceneGraph } from "../../core/model/SceneGraph";
+import { Edge } from "../../../core/model/Edge";
+import { Graph } from "../../../core/model/Graph";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 
 export const randomBiggestGraph = () => {
   const graph = new Graph();

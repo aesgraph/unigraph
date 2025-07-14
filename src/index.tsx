@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
+import { decompressSceneGraphJsonFromUrl } from "./core/serializers/toFromJson";
 import "./index.css";
 import SignIn from "./pages/SignIn";
 import {
@@ -48,6 +49,60 @@ const initializeApp = async () => {
   const svgUrl = urlParams.get("svgUrl") ?? undefined;
   const activeView = urlParams.get("view") ?? undefined;
   const activeLayout = urlParams.get("layout") ?? undefined;
+
+  // Support loading a scenegraph from the #scenegraph= hash fragment
+  const sceneGraphParam = urlParams.get("scenegraph");
+  let defaultSerializedSceneGraph = undefined;
+
+  // Check for scenegraph in hash fragment first (preferred method)
+  if (window.location.hash) {
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const sceneGraphHash = hashParams.get("scenegraph");
+    if (sceneGraphHash) {
+      try {
+        // First try to parse as JSON (uncompressed)
+        defaultSerializedSceneGraph = JSON.parse(
+          decodeURIComponent(sceneGraphHash)
+        );
+      } catch (e) {
+        try {
+          // If JSON parsing fails, try to decompress
+          const decompressed = decompressSceneGraphJsonFromUrl(sceneGraphHash);
+          defaultSerializedSceneGraph = JSON.parse(
+            JSON.stringify(decompressed)
+          );
+        } catch (decompressError) {
+          console.error(
+            "Failed to parse or decompress scenegraph hash",
+            e,
+            decompressError
+          );
+        }
+      }
+    }
+  }
+
+  // Fall back to query parameter if no hash fragment
+  if (!defaultSerializedSceneGraph && sceneGraphParam) {
+    try {
+      // First try to parse as JSON (uncompressed)
+      defaultSerializedSceneGraph = JSON.parse(
+        decodeURIComponent(sceneGraphParam)
+      );
+    } catch (e) {
+      try {
+        // If JSON parsing fails, try to decompress
+        const decompressed = decompressSceneGraphJsonFromUrl(sceneGraphParam);
+        defaultSerializedSceneGraph = JSON.parse(JSON.stringify(decompressed));
+      } catch (decompressError) {
+        console.error(
+          "Failed to parse or decompress scenegraph param",
+          e,
+          decompressError
+        );
+      }
+    }
+  }
 
   const showToolbar = getToggleOptionValue(urlParams, "showToolbar");
   setShowToolbar(showToolbar);
@@ -97,7 +152,8 @@ const initializeApp = async () => {
       svgUrl={svgUrl}
       defaultActiveView={activeView}
       defaultActiveLayout={activeLayout}
-      shouldShowLoadDialog={!graphId && !svgUrl} // Show dialog when no graph or SVG URL is provided
+      shouldShowLoadDialog={!graphId && !svgUrl && !defaultSerializedSceneGraph}
+      defaultSerializedSceneGraph={defaultSerializedSceneGraph}
     />
   );
 };

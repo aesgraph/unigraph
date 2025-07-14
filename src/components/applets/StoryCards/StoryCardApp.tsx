@@ -22,6 +22,7 @@ const StoryCardApp: React.FC<StoryCardAppProps> = ({
   const [markdownContents, setMarkdownContents] = useState<
     Record<string, string>
   >({});
+  const [lastClickTime, setLastClickTime] = useState(0);
 
   // Convert SceneGraph to a hierarchical structure that can be navigated
   const buildStoryTree = useMemo(() => {
@@ -139,65 +140,157 @@ const StoryCardApp: React.FC<StoryCardAppProps> = ({
       currentNode?.markdownFile &&
       !markdownContents[currentNode.markdownFile]
     ) {
-      loadMarkdownFile(currentNode.markdownFile).then((content) => {
-        setMarkdownContents((prev) => ({
-          ...prev,
-          [currentNode.markdownFile!]: content,
-        }));
-      });
+      loadMarkdownFile(currentNode.markdownFile)
+        .then((content) => {
+          setMarkdownContents((prev) => ({
+            ...prev,
+            [currentNode.markdownFile!]: content,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error loading markdown for current node:", error);
+          // Set a fallback content to prevent infinite loading
+          setMarkdownContents((prev) => ({
+            ...prev,
+            [currentNode.markdownFile!]:
+              "# Error Loading Content\n\nThere was an error loading this content.",
+          }));
+        });
     }
 
     // Also preload markdown for child cards
     if (currentNode?.children) {
       currentNode.children.forEach((child) => {
         if (child.markdownFile && !markdownContents[child.markdownFile]) {
-          loadMarkdownFile(child.markdownFile).then((content) => {
-            setMarkdownContents((prev) => ({
-              ...prev,
-              [child.markdownFile!]: content,
-            }));
-          });
+          loadMarkdownFile(child.markdownFile)
+            .then((content) => {
+              setMarkdownContents((prev) => ({
+                ...prev,
+                [child.markdownFile!]: content,
+              }));
+            })
+            .catch((error) => {
+              console.error("Error loading markdown for child node:", error);
+              // Set a fallback content to prevent infinite loading
+              setMarkdownContents((prev) => ({
+                ...prev,
+                [child.markdownFile!]:
+                  "# Error Loading Content\n\nThere was an error loading this content.",
+              }));
+            });
         }
       });
     }
   }, [currentNode, markdownContents]);
 
   const handleSelectCard = (child: StoryNode) => {
+    // Prevent rapid clicking
+    const now = Date.now();
+    if (now - lastClickTime < 100) {
+      return;
+    }
+    setLastClickTime(now);
+
     if (transitioning || !child) return;
 
     setTransitioning(true);
 
     // Add short delay for transition effect
     setTimeout(() => {
-      setCurrentNode(child);
-      setPath([...path, child]);
-      setTransitioning(false);
+      try {
+        // Safety check: ensure child is valid
+        if (!child || !child.id) {
+          console.error("Invalid child node in handleSelectCard");
+          setTransitioning(false);
+          return;
+        }
+
+        setCurrentNode(child);
+        setPath([...path, child]);
+      } catch (error) {
+        console.error("Error in handleSelectCard:", error);
+      } finally {
+        setTransitioning(false);
+      }
     }, 300);
   };
 
   const handleBack = () => {
+    // Prevent rapid clicking
+    const now = Date.now();
+    if (now - lastClickTime < 100) {
+      return;
+    }
+    setLastClickTime(now);
+
     if (transitioning || path.length <= 1) return;
 
     setTransitioning(true);
 
     setTimeout(() => {
-      const newPath = [...path];
-      newPath.pop();
-      setCurrentNode(newPath[newPath.length - 1]);
-      setPath(newPath);
-      setTransitioning(false);
+      try {
+        // Create a new path array without mutating the original
+        const newPath = path.slice(0, -1);
+
+        // Safety check: ensure we have a valid path
+        if (newPath.length === 0) {
+          console.error("Back navigation would result in empty path");
+          setTransitioning(false);
+          return;
+        }
+
+        const previousNode = newPath[newPath.length - 1];
+
+        // Safety check: ensure the previous node exists
+        if (!previousNode) {
+          console.error("Previous node is undefined");
+          setTransitioning(false);
+          return;
+        }
+
+        setCurrentNode(previousNode);
+        setPath(newPath);
+      } catch (error) {
+        console.error("Error in handleBack:", error);
+        // Reset to a safe state
+        if (rootNode) {
+          setCurrentNode(rootNode);
+          setPath([rootNode]);
+        }
+      } finally {
+        setTransitioning(false);
+      }
     }, 300);
   };
 
   const handleRestart = () => {
+    // Prevent rapid clicking
+    const now = Date.now();
+    if (now - lastClickTime < 100) {
+      return;
+    }
+    setLastClickTime(now);
+
     if (transitioning || !rootNode) return;
 
     setTransitioning(true);
 
     setTimeout(() => {
-      setCurrentNode(rootNode);
-      setPath([rootNode]);
-      setTransitioning(false);
+      try {
+        // Safety check: ensure rootNode is valid
+        if (!rootNode || !rootNode.id) {
+          console.error("Invalid root node in handleRestart");
+          setTransitioning(false);
+          return;
+        }
+
+        setCurrentNode(rootNode);
+        setPath([rootNode]);
+      } catch (error) {
+        console.error("Error in handleRestart:", error);
+      } finally {
+        setTransitioning(false);
+      }
     }, 300);
   };
 

@@ -110,6 +110,7 @@ const useAppConfigStore = create<AppState>((set) => ({
   selectedSimulation: "Lumina",
   legendMode: DEFAULTS.legendMode,
   autoFitView: true,
+  interactivityFlags: DEFAULTS.interactivityFlags,
 
   setActiveView: (activeView: ActiveView) =>
     set({ previousView: useAppConfigStore.getState().activeView, activeView }),
@@ -225,13 +226,13 @@ export const getActiveLayout = () => {
 
 export const setAppConfig = (appConfig: AppConfig) => {
   useAppConfigStore.setState(() => appConfig);
-  if (appConfig.workspaceConfig?.leftSidebarConfig.activeSectionId) {
+  if (appConfig.workspaceConfig?.leftSidebarConfig?.activeSectionId) {
     updateSectionWidth(
       appConfig.workspaceConfig.leftSidebarConfig.activeSectionId,
       appConfig.workspaceConfig.leftSidebarConfig.panelWidth
     );
   }
-  if (appConfig.workspaceConfig?.rightSidebarConfig.activeSectionId) {
+  if (appConfig.workspaceConfig?.rightSidebarConfig?.activeSectionId) {
     updateSectionWidth(
       appConfig.workspaceConfig.rightSidebarConfig.activeSectionId,
       appConfig.workspaceConfig.rightSidebarConfig.panelWidth
@@ -249,6 +250,7 @@ export const getAppConfig = (): AppConfig => {
     activeLayout: state.activeLayout,
     legendMode: state.legendMode,
     activeFilter: state.activeFilter,
+    interactivityFlags: state.interactivityFlags,
     workspaceConfig: {
       leftSidebarConfig: getLeftSidebarConfig(),
       rightSidebarConfig: getRightSidebarConfig(),
@@ -342,6 +344,10 @@ export const setAutoFitView = (autoFitView: boolean) => {
 
 export const getAutoFitView = () => {
   return useAppConfigStore.getState().autoFitView;
+};
+
+export const getInteractivityFlags = () => {
+  return useAppConfigStore.getState().interactivityFlags;
 };
 
 export default useAppConfigStore;

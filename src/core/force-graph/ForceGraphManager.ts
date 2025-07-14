@@ -351,6 +351,7 @@ export class ForceGraphManager {
     // Apply current mouse control mode
     const controlMode = getMouseControlMode();
     ForceGraphManager.updateMouseControlMode(forceGraphInstance, controlMode);
+    forceGraphInstance.showNavInfo(controlMode === "orbital");
 
     forceGraphInstance.nodeColor((node) => {
       if (getHoveredNodeIds().has(node.id as NodeId)) {
@@ -391,6 +392,88 @@ export class ForceGraphManager {
       sceneGraph.getForceGraphRenderConfig(),
       sceneGraph
     );
+
+    // Apply camera settings if configured
+    const config = sceneGraph.getForceGraphRenderConfig();
+    if (config.cameraPosition && config.cameraTarget) {
+      console.log(
+        "refreshing camera position",
+        config.cameraPosition,
+        config.cameraTarget
+      );
+      forceGraphInstance.cameraPosition(
+        config.cameraPosition,
+        config.cameraTarget,
+        0 // Immediate transition for refresh
+      );
+    }
+
+    // Apply initial zoom if configured
+    if (config.initialZoom && config.initialZoom !== 1) {
+      console.log("refreshing initial zoom", config.initialZoom);
+      const controls = forceGraphInstance.controls() as any;
+      if (controls && controls.object) {
+        controls.object.zoom = config.initialZoom;
+        controls.update();
+      }
+    }
+
+    // Configure directional arrows for edges with drawType: 'arrow'
+    forceGraphInstance.linkDirectionalArrowLength((link) => {
+      const edge = sceneGraph.getGraph().getEdge((link as any).id);
+      if (!edge) return 0;
+
+      const drawType = edge.getData().drawType;
+      if (drawType === "arrow") {
+        // Use custom arrow length if specified, otherwise default to a larger size for better visibility
+        const arrowLength = (edge.getData() as any).arrowLength as number;
+        console.log("drawing arrow with length", arrowLength);
+        return arrowLength || 12; // Doubled from 6 to 12 for more pronounced arrows
+      }
+      return 0;
+    });
+
+    forceGraphInstance.linkDirectionalArrowRelPos((link) => {
+      const edge = sceneGraph.getGraph().getEdge((link as any).id);
+      if (!edge) return 0.5;
+
+      const drawType = edge.getData().drawType;
+      if (drawType === "arrow") {
+        // Use custom arrow position if specified, otherwise default to 0.95
+        const arrowPos = (edge.getData() as any).arrowPosition as number;
+        return arrowPos !== undefined ? arrowPos : 0.95;
+      }
+      return 0.5;
+    });
+
+    // Configure arrow color to match link color
+    forceGraphInstance.linkDirectionalArrowColor((link) => {
+      const edge = sceneGraph.getGraph().getEdge((link as any).id);
+      if (!edge || edge.getData().drawType !== "arrow") return "transparent";
+
+      // Use custom arrow color if specified, otherwise inherit from link
+      const arrowColor = (edge.getData() as any).arrowColor as string;
+      if (arrowColor) return arrowColor;
+
+      // Apply the same color logic as the link
+      if (
+        getHoveredNodeIds().has((link.source as any).id) ||
+        getHoveredNodeIds().has((link.target as any).id)
+      ) {
+        return "yellow";
+      }
+      if (getHoveredEdgeIds().has((link as any).id)) {
+        return "white";
+      }
+      return RenderingManager.getColor(
+        edge,
+        getEdgeLegendConfig(),
+        getLegendMode()
+      );
+    });
+
+    // Configure arrow resolution for thicker, more pronounced arrows
+    forceGraphInstance.linkDirectionalArrowResolution(16); // Higher resolution for thicker arrows
 
     if (layout === "Layout" && sceneGraph.getDisplayConfig().nodePositions) {
       ForceGraphManager.applyFixedNodePositions(
@@ -502,6 +585,49 @@ export class ForceGraphManager {
     ) {
       instance.d3Force("charge")?.strength(config.chargeStrength);
       instance.d3ReheatSimulation();
+    }
+
+    // Apply camera settings if configured
+    if (config.cameraPosition && config.cameraTarget) {
+      console.log(
+        "applying camera position from config",
+        config.cameraPosition,
+        config.cameraTarget
+      );
+      console.log("Camera target Z value:", config.cameraTarget.z);
+
+      instance.cameraPosition(
+        config.cameraPosition,
+        config.cameraTarget,
+        0 // Immediate transition for config application
+      );
+
+      // Debug: Check what the camera target actually is after setting
+      const controls = instance.controls() as any;
+      if (controls && controls.target) {
+        console.log("Camera target after setting:", controls.target);
+
+        // Manually set the controls target to ensure Z coordinate is applied
+        if (controls.target.set) {
+          controls.target.set(
+            config.cameraTarget.x,
+            config.cameraTarget.y,
+            config.cameraTarget.z
+          );
+          controls.update();
+          console.log("Manually set camera target to:", controls.target);
+        }
+      }
+    }
+
+    // Apply initial zoom if configured
+    if (config.initialZoom && config.initialZoom !== 1) {
+      console.log("applying initial zoom from config", config.initialZoom);
+      const controls = instance.controls() as any;
+      if (controls && controls.object) {
+        controls.object.zoom = config.initialZoom;
+        controls.update();
+      }
     }
 
     sceneGraph.setForceGraphRenderConfig(config);

@@ -1,6 +1,8 @@
+import { DEFAULT_WORKSPACE_CONFIG } from "../../../AppConfig";
 import { PresetLayoutType } from "../../../core/layouts/layoutEngineTypes";
 import { Graph } from "../../../core/model/Graph";
 import { SceneGraph } from "../../../core/model/SceneGraph";
+import { DEFAULT_INTERACTIVITY_FLAGS } from "./../../../AppConfig";
 
 /**
  * Creates a Graph representing a factor graph
@@ -32,7 +34,7 @@ const createGraph = (): Graph => {
         label,
         position: { x, y, z: 0 },
         color: "rgb(100, 150, 255)",
-        dimensions: { width: 25, height: 25 },
+        dimensions: { width: 16, height: 16 },
         size: 1.5,
         fontColor: "rgb(0, 0, 0)",
         shape: "circle",
@@ -60,7 +62,7 @@ const createGraph = (): Graph => {
         label,
         position: { x, y, z: 0 },
         color: "rgb(255, 150, 100)",
-        dimensions: { width: 25, height: 25 },
+        dimensions: { width: 16, height: 16 },
         size: 1.2,
         fontColor: "rgb(0, 0, 0)",
         shape: "square",
@@ -100,7 +102,7 @@ const createGraph = (): Graph => {
         label,
         position: { x, y, z: 0 },
         color: "rgb(255, 150, 100)",
-        dimensions: { width: 25, height: 25 },
+        dimensions: { width: 16, height: 16 },
         size: 1.2,
         fontColor: "rgb(0, 0, 0)",
         shape: "square",
@@ -142,7 +144,7 @@ const createGraph = (): Graph => {
           label,
           position: { x, y, z: 0 },
           color: "rgb(255, 150, 100)",
-          dimensions: { width: 25, height: 25 },
+          dimensions: { width: 16, height: 16 },
           size: 1.2,
           fontColor: "rgb(0, 0, 0)",
           shape: "square",
@@ -195,17 +197,29 @@ export const createFactorGraphSceneGraph = async (): Promise<SceneGraph> => {
       activeLayout: PresetLayoutType.NodePositions, // Use the positions we defined
       legendMode: "type",
       activeFilter: null,
+      workspaceConfig: {
+        ...DEFAULT_WORKSPACE_CONFIG(),
+        hideAll: true,
+      },
+      interactivityFlags: {
+        ...DEFAULT_INTERACTIVITY_FLAGS,
+        commandPalette: false,
+        cameraControls: false,
+        mouseClickMode: "multiselection",
+      },
     },
     forceGraphDisplayConfig: {
       nodeTextLabels: true,
       nodeSize: 3,
       nodeOpacity: 1,
       linkTextLabels: false,
-      linkWidth: 1.5,
+      linkWidth: 3,
       linkOpacity: 1,
       chargeStrength: -30,
       backgroundColor: "rgba(211, 211, 211, 1)",
-      fontSize: 25, // Default font size for labels
+      fontSize: 25, // Default font size for labels,
+      cameraPosition: { x: 250, y: -200, z: 450 },
+      cameraTarget: { x: 250, y: -200, z: 0 },
     },
     displayConfig: {
       mode: "type",

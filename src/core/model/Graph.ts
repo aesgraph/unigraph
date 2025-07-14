@@ -1,10 +1,5 @@
-import { Edge, EdgeId } from "./Edge";
-import {
-  Entity,
-  EntityDataArgs,
-  EntityId,
-  IEntity,
-} from "./entity/abstractEntity";
+import { Edge, EdgeDataArgs, EdgeId } from "./Edge";
+import { Entity, EntityId, IEntity } from "./entity/abstractEntity";
 import { EntitiesContainer } from "./entity/entitiesContainer";
 import { EntityIds } from "./entity/entityIds";
 import { Node, NodeDataArgs, NodeId } from "./Node";
@@ -72,7 +67,7 @@ export class Graph {
   createEdge(
     fromNode: NodeId | string,
     toNode: NodeId | string,
-    args?: EntityDataArgs
+    args?: Omit<EdgeDataArgs, "source" | "target">
   ): Edge {
     if (this.strict) {
       if (
@@ -109,7 +104,7 @@ export class Graph {
   createEdgeIfMissing(
     from: NodeId | string,
     to: NodeId | string,
-    args?: EntityDataArgs
+    args?: Omit<EdgeDataArgs, "source" | "target">
   ): Edge {
     const edgeId = `${from}:::${to}`;
     if (!this.containsEdge(edgeId as EdgeId)) {

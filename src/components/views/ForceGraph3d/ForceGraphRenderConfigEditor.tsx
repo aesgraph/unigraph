@@ -1,7 +1,56 @@
 import React, { useEffect, useState } from "react";
+import { getForceGraph3dInstance } from "../../../store/appConfigStore";
 import { IForceGraphRenderConfig } from "../../../store/forceGraphConfigStore";
 import { FormFieldProps, FormSchema } from "../../shared/FormSchemaTypes";
 import "./ForceGraphRenderConfigEditor.css";
+
+// Function to get current camera state from ForceGraph3D instance
+const getCurrentCameraState = (): IForceGraphRenderConfig => {
+  const forceGraphInstance = getForceGraph3dInstance();
+  const config: IForceGraphRenderConfig = {
+    nodeTextLabels: false,
+    linkWidth: 2,
+    nodeSize: 6,
+    linkTextLabels: true,
+    nodeOpacity: 1,
+    linkOpacity: 1,
+    chargeStrength: -30,
+    backgroundColor: "#1a1a1a",
+    fontSize: 12,
+  };
+
+  if (forceGraphInstance) {
+    const camera = forceGraphInstance.camera();
+    const controls = forceGraphInstance.controls() as any;
+
+    // Get current camera position and target
+    config.cameraPosition = {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z,
+    };
+
+    if (controls && controls.target) {
+      config.cameraTarget = {
+        x: controls.target.x,
+        y: controls.target.y,
+        z: controls.target.z,
+      };
+    } else {
+      config.cameraTarget = { x: 0, y: 0, z: 0 };
+    }
+
+    // Get current zoom
+    config.initialZoom = controls?.object?.zoom || 1;
+  } else {
+    // Fallback to defaults if no instance
+    config.cameraPosition = { x: 0, y: 0, z: 500 };
+    config.cameraTarget = { x: 0, y: 0, z: 0 };
+    config.initialZoom = 1;
+  }
+
+  return config;
+};
 
 const formSchema: FormSchema = {
   nodeTextLabels: {
@@ -65,6 +114,72 @@ const formSchema: FormSchema = {
       return null;
     },
     label: "Charge Strength",
+    type: "number",
+  },
+  // Camera controls
+  cameraPositionX: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Camera X is required";
+      if (isNaN(Number(value))) return "Camera X must be a number";
+      return null;
+    },
+    label: "Camera Position X",
+    type: "number",
+  },
+  cameraPositionY: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Camera Y is required";
+      if (isNaN(Number(value))) return "Camera Y must be a number";
+      return null;
+    },
+    label: "Camera Position Y",
+    type: "number",
+  },
+  cameraPositionZ: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Camera Z is required";
+      if (isNaN(Number(value))) return "Camera Z must be a number";
+      return null;
+    },
+    label: "Camera Position Z",
+    type: "number",
+  },
+  cameraTargetX: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Target X is required";
+      if (isNaN(Number(value))) return "Target X must be a number";
+      return null;
+    },
+    label: "Camera Target X",
+    type: "number",
+  },
+  cameraTargetY: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Target Y is required";
+      if (isNaN(Number(value))) return "Target Y must be a number";
+      return null;
+    },
+    label: "Camera Target Y",
+    type: "number",
+  },
+  cameraTargetZ: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Target Z is required";
+      if (isNaN(Number(value))) return "Target Z must be a number";
+      return null;
+    },
+    label: "Camera Target Z",
+    type: "number",
+  },
+  initialZoom: {
+    validate: (value) => {
+      if (value === null || value === undefined)
+        return "Initial zoom is required";
+      if (isNaN(Number(value)) || Number(value) <= 0)
+        return "Initial zoom must be a positive number";
+      return null;
+    },
+    label: "Initial Zoom",
     type: "number",
   },
 };
@@ -186,15 +301,43 @@ interface ForceGraphRenderConfigEditorProps {
 const ForceGraphRenderConfigEditor: React.FC<
   ForceGraphRenderConfigEditorProps
 > = ({ onApply, isDarkMode, initialConfig }) => {
+  // Get current camera state from ForceGraph3D instance
+  const currentCameraState = getCurrentCameraState();
+
   const [formData, setFormData] = useState<IForceGraphRenderConfig>({
     ...initialConfig,
-  });
+    // Use current camera state from ForceGraph3D instance
+    cameraPosition: currentCameraState.cameraPosition,
+    cameraTarget: currentCameraState.cameraTarget,
+    initialZoom: currentCameraState.initialZoom,
+    // Map camera object properties to individual form fields
+    cameraPositionX: currentCameraState.cameraPosition?.x ?? 0,
+    cameraPositionY: currentCameraState.cameraPosition?.y ?? 0,
+    cameraPositionZ: currentCameraState.cameraPosition?.z ?? 500,
+    cameraTargetX: currentCameraState.cameraTarget?.x ?? 0,
+    cameraTargetY: currentCameraState.cameraTarget?.y ?? 0,
+    cameraTargetZ: currentCameraState.cameraTarget?.z ?? 0,
+  } as any);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
-  // Update initialConfig when it changes from parent
+  // Update form data when ForceGraph3D instance changes
   useEffect(() => {
-    setFormData(initialConfig);
-  }, [initialConfig]);
+    const currentCameraState = getCurrentCameraState();
+    setFormData({
+      ...initialConfig,
+      // Use current camera state from ForceGraph3D instance
+      cameraPosition: currentCameraState.cameraPosition,
+      cameraTarget: currentCameraState.cameraTarget,
+      initialZoom: currentCameraState.initialZoom,
+      // Map camera object properties to individual form fields
+      cameraPositionX: currentCameraState.cameraPosition?.x ?? 0,
+      cameraPositionY: currentCameraState.cameraPosition?.y ?? 0,
+      cameraPositionZ: currentCameraState.cameraPosition?.z ?? 500,
+      cameraTargetX: currentCameraState.cameraTarget?.x ?? 0,
+      cameraTargetY: currentCameraState.cameraTarget?.y ?? 0,
+      cameraTargetZ: currentCameraState.cameraTarget?.z ?? 0,
+    } as any);
+  }, [initialConfig]); // Keep initialConfig dependency for non-camera settings
 
   const validateField = (
     name: string,
@@ -212,8 +355,73 @@ const ForceGraphRenderConfigEditor: React.FC<
       type === "checkbox"
         ? (e.target as HTMLInputElement).checked
         : parseFloat(value);
-    setFormData((prev) => ({ ...prev, [name]: newValue }));
-    onApply({ ...formData, [name]: newValue });
+
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: newValue };
+
+      // Handle camera position fields
+      if (name.startsWith("cameraPosition")) {
+        const currentPos = prev.cameraPosition ?? { x: 0, y: 0, z: 500 };
+        updated.cameraPosition = {
+          x: name === "cameraPositionX" ? (newValue as number) : currentPos.x,
+          y: name === "cameraPositionY" ? (newValue as number) : currentPos.y,
+          z: name === "cameraPositionZ" ? (newValue as number) : currentPos.z,
+        };
+      }
+
+      // Handle camera target fields
+      if (name.startsWith("cameraTarget")) {
+        const currentTarget = prev.cameraTarget ?? { x: 0, y: 0, z: 0 };
+        updated.cameraTarget = {
+          x: name === "cameraTargetX" ? (newValue as number) : currentTarget.x,
+          y: name === "cameraTargetY" ? (newValue as number) : currentTarget.y,
+          z: name === "cameraTargetZ" ? (newValue as number) : currentTarget.z,
+        };
+      }
+
+      return updated;
+    });
+
+    // Create the config to apply immediately, but clean it up to remove individual field properties
+    const configToApply = { ...formData, [name]: newValue };
+
+    // Handle camera position fields
+    if (name.startsWith("cameraPosition")) {
+      const currentPos = formData.cameraPosition ?? { x: 0, y: 0, z: 500 };
+      configToApply.cameraPosition = {
+        x: name === "cameraPositionX" ? (newValue as number) : currentPos.x,
+        y: name === "cameraPositionY" ? (newValue as number) : currentPos.y,
+        z: name === "cameraPositionZ" ? (newValue as number) : currentPos.z,
+      };
+    }
+
+    // Handle camera target fields
+    if (name.startsWith("cameraTarget")) {
+      const currentTarget = formData.cameraTarget ?? { x: 0, y: 0, z: 0 };
+      configToApply.cameraTarget = {
+        x: name === "cameraTargetX" ? (newValue as number) : currentTarget.x,
+        y: name === "cameraTargetY" ? (newValue as number) : currentTarget.y,
+        z: name === "cameraTargetZ" ? (newValue as number) : currentTarget.z,
+      };
+    }
+
+    // Clean up the config to remove individual field properties and only keep the object format
+    const cleanConfig: IForceGraphRenderConfig = {
+      nodeTextLabels: configToApply.nodeTextLabels as boolean,
+      nodeSize: configToApply.nodeSize as number,
+      nodeOpacity: configToApply.nodeOpacity as number,
+      linkTextLabels: configToApply.linkTextLabels as boolean,
+      linkWidth: configToApply.linkWidth as number,
+      linkOpacity: configToApply.linkOpacity as number,
+      chargeStrength: configToApply.chargeStrength as number,
+      backgroundColor: configToApply.backgroundColor,
+      fontSize: configToApply.fontSize,
+      cameraPosition: configToApply.cameraPosition,
+      cameraTarget: configToApply.cameraTarget,
+      initialZoom: configToApply.initialZoom,
+    };
+
+    onApply(cleanConfig);
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
@@ -230,7 +438,8 @@ const ForceGraphRenderConfigEditor: React.FC<
     });
 
     if (Object.keys(newErrors).length === 0) {
-      const config: IForceGraphRenderConfig = {
+      // Clean up the config to remove individual field properties and only keep the object format
+      const cleanConfig: IForceGraphRenderConfig = {
         nodeTextLabels: formData.nodeTextLabels as boolean,
         nodeSize: formData.nodeSize as number,
         nodeOpacity: formData.nodeOpacity as number,
@@ -238,8 +447,13 @@ const ForceGraphRenderConfigEditor: React.FC<
         linkWidth: formData.linkWidth as number,
         linkOpacity: formData.linkOpacity as number,
         chargeStrength: formData.chargeStrength as number,
+        backgroundColor: formData.backgroundColor,
+        fontSize: formData.fontSize,
+        cameraPosition: formData.cameraPosition,
+        cameraTarget: formData.cameraTarget,
+        initialZoom: formData.initialZoom,
       };
-      onApply(config);
+      onApply(cleanConfig);
     } else {
       setErrors(newErrors);
     }

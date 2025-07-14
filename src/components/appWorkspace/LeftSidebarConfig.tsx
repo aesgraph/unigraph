@@ -28,6 +28,7 @@ import {
   computeLayoutAndTriggerAppUpdate,
 } from "../../store/sceneGraphHooks";
 import { getSectionWidth } from "../../store/workspaceConfigStore";
+import WorkspaceSettings from "../common/WorkspaceSettings";
 import FilterManagerV2 from "../filters/FilterManagerV2";
 import LayoutManagerV2 from "../layouts/LayoutManagerV2";
 import ProjectManager from "../projects/ProjectManager"; // Import the new component
@@ -260,18 +261,20 @@ export const createDefaultLeftMenus = ({
     },
   ];
 
-  // Create bottom elements with a ProfileIcon
+  // Create bottom elements with a ProfileIcon and Settings button
   const bottomElements = includeBottomElements ? (
     <div className={styles.sidebarBottomElements}>
+      {/* Center profile and settings icons together near the bottom */}
       <div
         className={styles.bottomElement}
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center", // Center horizontally
+          justifyContent: "center",
           marginTop: "auto",
-          marginBottom: "16px", // Add bottom margin
-          width: "100%", // Ensure full width for proper centering
+          marginBottom: "18px",
+          gap: "18px",
         }}
       >
         <ProfileIcon
@@ -285,6 +288,17 @@ export const createDefaultLeftMenus = ({
           }}
           size={30}
         />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 30,
+            height: 30,
+          }}
+        >
+          <WorkspaceSettings isDarkMode={isDarkMode} />
+        </div>
       </div>
     </div>
   ) : null;

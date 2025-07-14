@@ -46,6 +46,8 @@ import {
 import {
   getActiveView,
   getCurrentSceneGraph,
+  getForceGraph3dInstance,
+  getInteractivityFlags,
   getShowEntityDataCard,
   setShowEntityDataCard,
 } from "../store/appConfigStore";
@@ -59,6 +61,7 @@ import { clearDocuments, getAllDocuments } from "../store/documentStore";
 
 import { demoSongAnnotations } from "../_experimental/mp3/data";
 import { demoSongAnnotations2 } from "../_experimental/mp3/demoSongAnnotations247";
+import { compressSceneGraphJsonForUrl } from "../core/serializers/toFromJson";
 import {
   applyLayoutAndTriggerAppUpdate,
   computeLayoutAndTriggerUpdateForCurrentSceneGraph,
@@ -70,6 +73,7 @@ import {
   setLeftSidebarConfig,
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
+import { debugForceGraph3DCamera } from "../utils/forceGraphDebugUtils";
 import { supabase } from "../utils/supabaseClient";
 import { runConversationsAnalysis } from "./applets/ChatGptImporter/services/runConversationsAnalysis";
 import {
@@ -234,6 +238,14 @@ export class MenuConfig {
           },
           "Command Palette": {
             action: () => {
+              // Check if command palette is disabled via interactivityFlags
+              const interactivityFlags = getInteractivityFlags();
+              if (interactivityFlags?.commandPalette === false) {
+                console.log(
+                  "Command palette is disabled via interactivityFlags"
+                );
+                return;
+              }
               setShowCommandPalette(true);
             },
             tooltip: "cmd+shift+p",
@@ -299,6 +311,23 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "Debug ForceGraph3D Camera": {
+            action: () => {
+              debugForceGraph3DCamera(getForceGraph3dInstance());
+            },
+          },
+          "Copy SceneGraph as URL": {
+            action: () => {
+              const sceneGraph = getCurrentSceneGraph();
+              const compressed = compressSceneGraphJsonForUrl(sceneGraph);
+              const url = `${window.location.origin}${window.location.pathname}#scenegraph=${compressed}`;
+              navigator.clipboard.writeText(url);
+              console.log(
+                "Compressed SceneGraph URL copied to clipboard:",
+                url
+              );
+            },
+          },
           "Load annotations": {
             action: () => {
               supabase.auth.getUser().then(({ data, error }) => {

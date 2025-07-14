@@ -1,4 +1,9 @@
+import { compressSceneGraphJsonForUrl } from "../core/serializers/toFromJson";
 import { cmdOrCtrl, HotkeyAction } from "../hooks/useHotkeys";
+import {
+  getCurrentSceneGraph,
+  getInteractivityFlags,
+} from "../store/appConfigStore";
 import {
   setShowCommandPalette,
   setShowEntityTables,
@@ -8,15 +13,28 @@ import {
   setShowLoadSceneGraphWindow,
   setShowSceneGraphDetailView,
 } from "../store/dialogStore";
+import { addNotification } from "../store/notificationStore";
 
 export const getHotkeyConfig = (
   handleSetSceneGraph?: (key: string, clearQueryParams?: boolean) => void
 ): HotkeyAction[] => [
   // Command Palette
-  cmdOrCtrl(() => setShowCommandPalette(true), "p", {
-    shiftKey: true,
-    description: "Open Command Palette",
-  }),
+  cmdOrCtrl(
+    () => {
+      // Check if command palette is disabled via interactivityFlags
+      const interactivityFlags = getInteractivityFlags();
+      if (interactivityFlags?.commandPalette === false) {
+        console.log("Command palette is disabled via interactivityFlags");
+        return;
+      }
+      setShowCommandPalette(true);
+    },
+    "p",
+    {
+      shiftKey: true,
+      description: "Open Command Palette",
+    }
+  ),
 
   // Project actions
   //   cmdOrCtrl(() => setShowSaveSceneGraphDialog(true), "s", {
@@ -70,6 +88,24 @@ export const getHotkeyConfig = (
     {
       shiftKey: true,
       description: "Create new project",
+    }
+  ),
+
+  cmdOrCtrl(
+    () => {
+      const sceneGraph = getCurrentSceneGraph();
+      const compressed = compressSceneGraphJsonForUrl(sceneGraph);
+      const url = `${window.location.origin}${window.location.pathname}#scenegraph=${compressed}`;
+      navigator.clipboard.writeText(url);
+      console.log("Compressed SceneGraph URL copied to clipboard:", url);
+      addNotification({
+        message: "SceneGraph URL copied to clipboard",
+        type: "success",
+      });
+    },
+    "c",
+    {
+      description: "Copy SceneGraph URL",
     }
   ),
 

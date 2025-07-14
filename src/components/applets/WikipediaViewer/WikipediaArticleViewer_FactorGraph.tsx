@@ -9,6 +9,7 @@ import {
   DefinitionPopup,
   DefinitionPopupData,
 } from "../../common/DefinitionPopup";
+import { FACTOR_GRAPH_DATA_URL } from "./factorGraphDataUrl";
 
 // Add a utility function to extract article title from Wikipedia URLs
 const extractWikipediaTitle = (url: string): string | null => {
@@ -157,13 +158,18 @@ export const WikipediaArticleViewer_FactorGraph: React.FC<
           // Force insert the iframe without relying on heading detection
           const unigraphBaseUrl = getUnigraphBaseUrl();
 
+          console.log(
+            "loading unigraph from url",
+            `${unigraphBaseUrl}/${FACTOR_GRAPH_DATA_URL}`
+          );
+
           // Only add Unigraph visualization for Factor graph article
           if (articleTitle.toLowerCase() === "factor graph") {
             const unigraphIframe = `
               <div style="margin: 20px 0; display: block; width: 100%;">
                 <h4>Interactive Unigraph Visualization</h4>
                 <iframe 
-                  src="${unigraphBaseUrl}/?graph=unigraph&view=ForceGraph3d" 
+                  src="${unigraphBaseUrl}/${FACTOR_GRAPH_DATA_URL}" 
                   width="100%" 
                   height="500" 
                   style="border: 1px solid #ccc; display: block; margin: 0 auto; background: #fff;" 
@@ -519,38 +525,31 @@ export const WikipediaArticleViewer_FactorGraph: React.FC<
         ref={(container) => {
           if (!container || !html) return;
 
-          // Add click event listeners to all links in the container
           setTimeout(() => {
             // Attach click handlers to Wikipedia links
             container.querySelectorAll("a").forEach((link) => {
-              // Remove existing listeners first to avoid duplicates
               link.removeEventListener(
                 "click",
                 handleLinkClick as EventListener
               );
-
               if (link.getAttribute("href")) {
-                // If it's a Wikipedia article link, intercept it
                 if (extractWikipediaTitle(link.href)) {
                   link.addEventListener(
                     "click",
                     handleLinkClick as EventListener
                   );
                 } else {
-                  // For external links, open in new tab
                   link.setAttribute("target", "_blank");
                 }
               }
             });
 
-            // Add Unigraph iframe for factor graph example if needed
             if (currentArticle.toLowerCase() === "factor graph") {
               // Find the target image with "Example factor graph" caption
               const images = container.querySelectorAll("img");
               let targetImage = null;
 
               for (const img of Array.from(images)) {
-                // Check caption (could be in figcaption or nearby element)
                 const caption =
                   img.closest("figure")?.querySelector("figcaption")
                     ?.textContent ||
@@ -566,7 +565,6 @@ export const WikipediaArticleViewer_FactorGraph: React.FC<
                   break;
                 }
 
-                // Also check parent figure or div that might contain the image
                 const parentFigure = img.closest("figure, div.thumb");
                 if (
                   parentFigure &&
@@ -580,43 +578,68 @@ export const WikipediaArticleViewer_FactorGraph: React.FC<
                 }
               }
 
-              // If we found the image or its container
               if (targetImage) {
                 const targetContainer =
                   targetImage.closest("figure, div.thumb") ||
                   targetImage.parentElement;
                 if (targetContainer) {
-                  console.log("Found target image for second iframe");
-
-                  // Create second iframe using the utility function for base URL
                   const unigraphBaseUrl = getUnigraphBaseUrl();
-
-                  const secondIframe = document.createElement("div");
-                  secondIframe.innerHTML = `
-                    <div style="margin: 20px 0; display: block; width: 100%;">
-                      <h4>Interactive Unigraph Visualization (Factor Graph Example)</h4>
+                  // Get image dimensions
+                  let width =
+                    targetImage.width || targetImage.naturalWidth || 450;
+                  let height =
+                    targetImage.height || targetImage.naturalHeight || 300;
+                  // If the image has style width/height, use those
+                  const computedStyle = window.getComputedStyle(targetImage);
+                  if (computedStyle.width && computedStyle.width !== "auto") {
+                    width = parseInt(computedStyle.width, 10) || width;
+                  }
+                  if (computedStyle.height && computedStyle.height !== "auto") {
+                    height = parseInt(computedStyle.height, 10) || height;
+                  }
+                  // If the parent is a figure or thumb div, try to use its width
+                  if (targetContainer instanceof HTMLElement) {
+                    const parentStyle =
+                      window.getComputedStyle(targetContainer);
+                    if (parentStyle.width && parentStyle.width !== "auto") {
+                      width = parseInt(parentStyle.width, 10) || width;
+                    }
+                  }
+                  const replacementDiv = document.createElement("div");
+                  // Determine alignment of the original container
+                  let floatStyle = "";
+                  let marginStyle = "";
+                  if (targetContainer instanceof HTMLElement) {
+                    const parentStyle =
+                      window.getComputedStyle(targetContainer);
+                    if (parentStyle.float === "right") {
+                      floatStyle = "float: right;";
+                      marginStyle = "margin: 0 0 1em 1em;";
+                    } else if (parentStyle.float === "left") {
+                      floatStyle = "float: left;";
+                      marginStyle = "margin: 0 1em 1em 0;";
+                    }
+                  }
+                  replacementDiv.innerHTML = `
+                    <div style="margin: 0; display: block; width: ${width}px; ${floatStyle} ${marginStyle}">
                       <iframe
-                        src="${unigraphBaseUrl}/?graph=unigraph&view=ForceGraph3d"
-                        width="100%"
-                        height="450"
-                        style="border: 1px solid #ccc; display: block; margin: 0 auto; background: #fff;"
+                        src="${unigraphBaseUrl}/${FACTOR_GRAPH_DATA_URL}"
+                        width="${width}"
+                        height="${height}"
+                        style="border: 1px solid #ccc; display: block; background: #fff; width: ${width}px; height: ${height}px;"
                         title="Unigraph Factor Graph Example"
                         allowfullscreen>
                       </iframe>
                     </div>
                   `;
-
-                  // Insert after the image container
-                  if (secondIframe.firstElementChild) {
-                    targetContainer.insertAdjacentElement(
-                      "afterend",
-                      secondIframe.firstElementChild
-                    );
-                  }
+                  // Replace the image's container with the iframe
+                  targetContainer.replaceWith(
+                    replacementDiv.firstElementChild!
+                  );
                 }
               }
             }
-          }, 500); // Small delay to ensure DOM is ready
+          }, 500);
         }}
       />
 
