@@ -1391,6 +1391,10 @@ const AppContent = ({
         dimensions: node.data.dimensions,
         annotation: node.type == "annotation" ? node.data.userData : undefined,
         webpage: node.type == "webpage" ? node.data.userData : undefined,
+        definition:
+          node.type === "definition"
+            ? (node.data.userData as any).definition
+            : undefined,
       },
       style: {
         background: RenderingManager.getColor(

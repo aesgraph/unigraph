@@ -15,9 +15,13 @@ type InterfaceAST = Record<
     definition?: string; // For type aliases
     arguments?: Record<string, string>; // For functions
     returnType?: string; // For functions
-    methods?: Record<string, { arguments: Record<string, string>; returnType: string }>; // For classes
+    methods?: Record<
+      string,
+      { arguments: Record<string, string>; returnType: string }
+    >; // For classes
     extends?: string; // For classes that extend other classes
     implements?: string[]; // For classes that implement interfaces
+    description?: string; // For interfaces/types/classes
   }
 >;
 
@@ -86,10 +90,27 @@ export async function demo_scenegraph_ast(
   const allTypes = new Set(Object.keys(ast));
 
   for (const [name, data] of Object.entries(ast)) {
+    // Prepare fields for ResizableDefinitionCard
+    const fields = Object.entries(data.properties || {}).map(
+      ([fieldName, fieldType]) => ({
+        name: fieldName,
+        type: fieldType,
+      })
+    );
+    // Compose definition data
+    const definitionData = {
+      name,
+      kind: data.kind,
+      fields,
+      description: data.description || undefined,
+    };
     graph.createNode({
       id: name,
       label: name,
-      type: data.kind,
+      type: "definition",
+      userData: {
+        definition: definitionData,
+      },
     });
 
     // Enhanced: Extract references from property types (for interfaces and classes)
@@ -171,11 +192,16 @@ export async function demo_scenegraph_ast(
           graph.createEdgeIfMissing(name, methodNodeId as NodeId);
 
           // Create argument nodes for method parameters
-          for (const [argName, argType] of Object.entries(methodData.arguments)) {
+          for (const [argName, argType] of Object.entries(
+            methodData.arguments
+          )) {
             const refs = extractReferences(argType, allTypes);
             for (const ref of refs) {
               if (ref && allTypes.has(ref)) {
-                graph.createEdgeIfMissing(methodNodeId as NodeId, ref as NodeId);
+                graph.createEdgeIfMissing(
+                  methodNodeId as NodeId,
+                  ref as NodeId
+                );
               }
             }
 
@@ -185,7 +211,10 @@ export async function demo_scenegraph_ast(
               label: `${argName}: ${argType}`,
               type: "method-argument",
             });
-            graph.createEdgeIfMissing(methodNodeId as NodeId, methodArgNodeId as NodeId);
+            graph.createEdgeIfMissing(
+              methodNodeId as NodeId,
+              methodArgNodeId as NodeId
+            );
           }
 
           // Handle method return type references
@@ -193,7 +222,10 @@ export async function demo_scenegraph_ast(
             const refs = extractReferences(methodData.returnType, allTypes);
             for (const ref of refs) {
               if (ref && allTypes.has(ref)) {
-                graph.createEdgeIfMissing(methodNodeId as NodeId, ref as NodeId);
+                graph.createEdgeIfMissing(
+                  methodNodeId as NodeId,
+                  ref as NodeId
+                );
               }
             }
           }
