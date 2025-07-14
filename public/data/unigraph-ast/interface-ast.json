@@ -1,5 +1,18 @@
 {
+  "EntityId": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string"
+  },
+  "Tag": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string"
+  },
   "EntityData": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "tags": "Set<string>",
@@ -8,13 +21,50 @@
       "userData": "ObjectOf<any>",
       "description": "string"
     },
-    "references": {}
+    "references": []
+  },
+  "EntityDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityData",
+      "EntityId",
+      "Tag"
+    ],
+    "definition": "EntityDataArgs"
+  },
+  "FullEntityType": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "of",
+      "EntityData",
+      "EntityDataArgs"
+    ],
+    "definition": "FullEntityType<T>"
   },
   "IEntity": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
+  },
+  "JSONString": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string"
+  },
+  "NodeId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityId",
+      "on"
+    ],
+    "definition": "NodeId"
   },
   "DisplayNodeData": {
+    "kind": "interface",
     "properties": {
       "position": "Position",
       "dimensions": "{ width: number; height: number; }",
@@ -28,9 +78,54 @@
       "borderWidth": "number",
       "borderColor": "string"
     },
-    "references": {}
+    "references": [
+      "Position"
+    ]
+  },
+  "DisplayNodeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayNodeData",
+      "NodeData"
+    ],
+    "definition": "Partial<DisplayNodeData>"
+  },
+  "NodeData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayNodeData",
+      "EntityData"
+    ],
+    "definition": "NodeData"
+  },
+  "NodeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayNodeData",
+      "DisplayNodeDataArgs",
+      "NodeData",
+      "EntityData",
+      "EntityDataArgs"
+    ],
+    "definition": "NodeDataArgs"
+  },
+  "EdgeId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityId",
+      "on"
+    ],
+    "definition": "EdgeId"
   },
   "DisplayEdgeData": {
+    "kind": "interface",
     "properties": {
       "isVisible": "boolean",
       "color": "string",
@@ -38,34 +133,230 @@
       "opacity": "number",
       "drawType": "\"arrow\" | \"line\""
     },
-    "references": {}
+    "references": []
+  },
+  "DisplayEdgeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "DisplayEdgeData",
+      "EdgeData"
+    ],
+    "definition": "Partial<DisplayEdgeData>"
+  },
+  "EdgeData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayEdgeData",
+      "NodeId",
+      "EntityData"
+    ],
+    "definition": "EdgeData"
+  },
+  "EdgeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayEdgeData",
+      "DisplayEdgeDataArgs",
+      "EdgeData",
+      "NodeId",
+      "EntityData",
+      "EntityDataArgs"
+    ],
+    "definition": "EdgeDataArgs"
+  },
+  "NodeIds": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "NodeId",
+      "EntityId"
+    ],
+    "definition": "NodeIds"
+  },
+  "EdgeIds": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EdgeId",
+      "EntityId"
+    ],
+    "definition": "EdgeIds"
+  },
+  "NodesContainer": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "NodeId",
+      "on"
+    ],
+    "definition": "NodesContainer"
+  },
+  "EdgesContainer": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EdgeId",
+      "on"
+    ],
+    "definition": "EdgesContainer"
+  },
+  "GraphArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "NodesContainer",
+      "EdgesContainer",
+      "on"
+    ],
+    "definition": "GraphArgs"
+  },
+  "Position": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Position"
+  },
+  "Dimensions": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Dimensions"
+  },
+  "NodePositionData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Position",
+      "on"
+    ],
+    "definition": "ObjectOf<Position>"
+  },
+  "EntitiesMetadata": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "EntitiesMetadata"
+  },
+  "GraphMetadata": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Metadata",
+      "EntitiesMetadata"
+    ],
+    "definition": "GraphMetadata"
+  },
+  "GraphStastics": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Tag"
+    ],
+    "definition": "GraphStastics"
   },
   "RGB": {
+    "kind": "interface",
     "properties": {
       "r": "number",
       "g": "number",
       "b": "number"
     },
-    "references": {}
+    "references": []
+  },
+  "DisplayConfigData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "DisplayConfigData"
+  },
+  "DisplayConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "DisplayConfigData",
+      "on"
+    ],
+    "definition": "DisplayConfig"
+  },
+  "EntitiesDisplayConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "DisplayConfig",
+      "on"
+    ],
+    "definition": "EntitiesDisplayConfig"
+  },
+  "RenderingConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Position",
+      "DisplayConfig",
+      "EntitiesDisplayConfig",
+      "RenderingManager__DisplayMode",
+      "of",
+      "NodePosition",
+      "NodePositionData",
+      "on"
+    ],
+    "definition": "RenderingConfig"
+  },
+  "RenderingManager__DisplayMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "RenderingManager__DisplayMode"
+  },
+  "FilterOperator": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "FilterOperator"
+  },
+  "FilterRuleMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Tag"
+    ],
+    "definition": "FilterRuleMode"
   },
   "FilterRuleDefinition": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "operator": "FilterOperator",
       "ruleMode": "FilterRuleMode",
       "conditions": "{ types?: string[]; tags?: string[]; nodes?: string[]; }"
     },
-    "references": {}
+    "references": [
+      "FilterOperator",
+      "FilterRuleMode"
+    ]
   },
   "Filter": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "description": "string",
       "filterRules": "FilterRuleDefinition[]"
     },
-    "references": {}
+    "references": []
   },
   "ActiveFiltersState": {
+    "kind": "interface",
     "properties": {
       "savedFilters": "ObjectOf<Filter>",
       "saveFilter": "(filter: Filter) => void",
@@ -73,9 +364,10 @@
       "getSavedFilters": "() => ObjectOf<Filter>",
       "clearFilters": "() => void"
     },
-    "references": {}
+    "references": []
   },
   "ISidebarConfig": {
+    "kind": "interface",
     "properties": {
       "isVisible": "boolean",
       "mode": "\"collapsed\" | \"full\"",
@@ -83,13 +375,59 @@
       "activeSectionId": "string",
       "panelWidth": "number"
     },
-    "references": {}
+    "references": []
   },
   "SectionWidthConfig": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
+  },
+  "WorkspaceConfigState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on",
+      "ISidebarConfig",
+      "SectionWidthConfig"
+    ],
+    "definition": "WorkspaceConfigState"
+  },
+  "AppConfigActions": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "ForceGraph3dLayoutMode",
+      "ActiveView",
+      "AppConfig",
+      "for",
+      "to",
+      "RenderingManager__DisplayMode",
+      "or",
+      "LayoutEngineOption",
+      "SceneGraph",
+      "EntityData",
+      "on",
+      "Filter",
+      "Layout"
+    ],
+    "definition": "AppConfigActions"
+  },
+  "AppState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "AppConfig",
+      "for",
+      "to",
+      "or",
+      "SceneGraph",
+      "on",
+      "AppConfigActions"
+    ],
+    "definition": "AppState"
   },
   "LayoutJobStatus": {
+    "kind": "interface",
     "properties": {
       "isRunning": "boolean",
       "startTime": "number",
@@ -97,9 +435,12 @@
       "workerId": "string",
       "progress": "number"
     },
-    "references": {}
+    "references": [
+      "LayoutEngineOption"
+    ]
   },
   "Layout": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "description": "string",
@@ -107,9 +448,10 @@
       "createdAt": "number",
       "updatedAt": "number"
     },
-    "references": {}
+    "references": []
   },
   "ActiveLayoutsState": {
+    "kind": "interface",
     "properties": {
       "savedLayouts": "ObjectOf<Layout>",
       "jobStatus": "LayoutJobStatus",
@@ -125,9 +467,13 @@
       "finishLayoutJob": "() => void",
       "cancelLayoutJob": "() => void"
     },
-    "references": {}
+    "references": [
+      "LayoutJobStatus",
+      "ILayoutEngineResult"
+    ]
   },
   "DocumentState": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "nodeId": "NodeId",
@@ -136,9 +482,12 @@
       "lastModified": "number",
       "tags": "string[]"
     },
-    "references": {}
+    "references": [
+      "NodeId"
+    ]
   },
   "DocumentStore": {
+    "kind": "interface",
     "properties": {
       "documents": "Record<NodeId, DocumentState>",
       "activeDocument": "NodeId",
@@ -152,9 +501,12 @@
       "getAllDocuments": "() => Record<NodeId, DocumentState>",
       "clearAllDocuments": "() => void"
     },
-    "references": {}
+    "references": [
+      "NodeId"
+    ]
   },
   "IForceGraphRenderConfig": {
+    "kind": "interface",
     "properties": {
       "nodeTextLabels": "boolean",
       "linkWidth": "number",
@@ -169,66 +521,130 @@
       "cameraTarget": "{ x: number; y: number; z: number; }",
       "initialZoom": "number"
     },
-    "references": {}
+    "references": []
   },
   "SerializedSceneGraph": {
+    "kind": "interface",
     "properties": {
       "graph": "{ nodes: { id: string; label?: string; type?: string; position?: { x: number; y: number; }; data?: Record<string, any>; }[]; edges: { id: string; source: string; target: string; label?: string; type?: string; data?: Record<...>; }[]; }",
       "displayConfig": "RenderingConfig"
     },
-    "references": {}
+    "references": [
+      "RenderingConfig"
+    ]
   },
   "ISceneGraphValidationResult": {
+    "kind": "interface",
     "properties": {
       "missingNodes": "NodeId[]"
     },
-    "references": {}
+    "references": []
   },
   "ISceneGraph": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
   },
   "ISceneGraphListeners": {
+    "kind": "interface",
     "properties": {
       "onPositionsChanged": "(positions: ObjectOf<Position>) => void",
       "onDisplayConfigChanged": "(config: RenderingConfig) => void",
       "onGraphChanged": "(graph: Graph) => void"
     },
-    "references": {}
+    "references": []
   },
   "ISceneGraphMetadata": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "description": "string",
       "source": "string",
       "notes": "string"
     },
-    "references": {}
+    "references": []
+  },
+  "ISceneGraphArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "SceneGraphData",
+      "SceneGraph"
+    ],
+    "definition": "Partial<SceneGraphData>"
+  },
+  "SceneGraphData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "AppConfig",
+      "for",
+      "to",
+      "Metadata",
+      "DisplayConfig",
+      "RenderingConfig",
+      "by",
+      "or",
+      "GraphMetadata",
+      "ISceneGraph",
+      "ISceneGraphMetadata",
+      "SceneGraph",
+      "on",
+      "Filter",
+      "Layout",
+      "DocumentState",
+      "IForceGraphRenderConfig"
+    ],
+    "definition": "SceneGraphData"
   },
   "IGraphvizOutput": {
+    "kind": "interface",
     "properties": {
       "svg": "string",
       "positions": "ObjectOf<Position>"
     },
-    "references": {}
+    "references": []
   },
   "INode3DPosition": {
+    "kind": "interface",
     "properties": {
       "x": "number",
       "y": "number",
       "z": "number"
     },
-    "references": {}
+    "references": []
+  },
+  "Node3DPositionData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Position",
+      "Node3DPosition",
+      "on"
+    ],
+    "definition": "Node3DPositionData"
+  },
+  "LayoutEngineOption": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Layout"
+    ],
+    "definition": "LayoutEngineOption"
   },
   "ILayoutEngineResult": {
+    "kind": "interface",
     "properties": {
       "positions": "ObjectOf<Position>",
       "svg": "string",
       "layoutType": "string"
     },
-    "references": {}
+    "references": []
   },
   "IDisplayManagerData": {
+    "kind": "interface",
     "properties": {
       "mode": "\"type\" | \"tag\"",
       "nodeTypeColors": "{ [key: string]: string; }",
@@ -241,31 +657,86 @@
       "edgeTagVisibility": "{ [key: string]: boolean; }",
       "nodePositions": "ObjectOf<Position>"
     },
-    "references": {}
+    "references": []
+  },
+  "ActiveLegendConfigState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Color",
+      "for",
+      "to",
+      "NodeKey",
+      "DisplayConfigData",
+      "DisplayConfig",
+      "or",
+      "EdgeId",
+      "NodeId",
+      "on"
+    ],
+    "definition": "ActiveLegendConfigState"
+  },
+  "GraphInteractionState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "EdgeId",
+      "NodeIds",
+      "EdgeIds",
+      "NodeId",
+      "EntityId",
+      "on"
+    ],
+    "definition": "GraphInteractionState"
   },
   "ScreenCoordinates": {
+    "kind": "interface",
     "properties": {
       "topLeftScreen": "Vector3",
       "bottomRightScreen": "Vector3",
       "width": "number",
       "height": "number"
     },
-    "references": {}
+    "references": []
   },
   "SelectionBoxGroup": {
+    "kind": "interface",
     "properties": {
       "userData": "{ anchorPoint: Vector3; box: Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>; ... 4 more ...; uuid: string; }"
     },
-    "references": {}
+    "references": []
+  },
+  "ImageBoxData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Position",
+      "on"
+    ],
+    "definition": "ImageBoxData"
   },
   "IForceGraph3dCameraData": {
+    "kind": "interface",
     "properties": {
       "pos": "Vector3",
       "quaternion": "any"
     },
-    "references": {}
+    "references": []
+  },
+  "MouseControlMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or",
+      "on"
+    ],
+    "definition": "MouseControlMode"
   },
   "SelectionBox": {
+    "kind": "interface",
     "properties": {
       "startX": "number",
       "startY": "number",
@@ -274,9 +745,10 @@
       "isActive": "boolean",
       "isAdditive": "boolean"
     },
-    "references": {}
+    "references": []
   },
   "MouseControlsState": {
+    "kind": "interface",
     "properties": {
       "isDraggingNode": "boolean",
       "setIsDraggingNode": "(isDragging: boolean) => void",
@@ -289,60 +761,159 @@
       "endSelectionBox": "() => void",
       "clearSelectionBox": "() => void"
     },
-    "references": {}
+    "references": [
+      "MouseControlMode",
+      "SelectionBox"
+    ]
+  },
+  "ForceGraph3dLayoutMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Layout"
+    ],
+    "definition": "ForceGraph3dLayoutMode"
+  },
+  "ActiveView": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "string"
+  },
+  "WorkspaceConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on",
+      "ISidebarConfig"
+    ],
+    "definition": "WorkspaceConfig"
+  },
+  "InteractivityFlags": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "let",
+      "on",
+      "MouseControlMode"
+    ],
+    "definition": "InteractivityFlags"
+  },
+  "AppConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "ForceGraph3dLayoutMode",
+      "ActiveView",
+      "WorkspaceConfig",
+      "InteractivityFlags",
+      "for",
+      "to",
+      "RenderingManager__DisplayMode",
+      "or",
+      "LayoutEngineOption",
+      "SceneGraph",
+      "EntityData",
+      "on",
+      "Filter",
+      "Layout"
+    ],
+    "definition": "AppConfig"
   },
   "Node": {
+    "kind": "interface",
     "properties": {
       "x": "number",
       "y": "number",
       "z": "number"
     },
-    "references": {}
+    "references": []
   },
   "GraphBounds": {
+    "kind": "interface",
     "properties": {
       "min": "Vector3",
       "max": "Vector3",
       "center": "Vector3",
       "radius": "number"
     },
-    "references": {}
+    "references": []
+  },
+  "SongAnnotationId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Annotation",
+      "EntityId",
+      "on"
+    ],
+    "definition": "SongAnnotationId"
+  },
+  "SongAnnotationData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityData",
+      "on"
+    ],
+    "definition": "SongAnnotationData"
+  },
+  "SongAnnotationDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "SongAnnotationId",
+      "Annotation",
+      "EntityData",
+      "EntityDataArgs",
+      "on"
+    ],
+    "definition": "SongAnnotationDataArgs"
   },
   "AnimationConfig": {
+    "kind": "interface",
     "properties": {
       "duration": "number",
       "interval": "number",
       "onComplete": "() => void",
       "onError": "(error: any) => void"
     },
-    "references": {}
+    "references": []
   },
   "TransitionOptions": {
+    "kind": "interface",
     "properties": {
       "duration": "number",
       "easing": "(t: number) => number",
       "onComplete": "() => void"
     },
-    "references": {}
+    "references": []
   },
   "TimedConfig": {
+    "kind": "interface",
     "properties": {
       "time": "number",
       "config": "IForceGraphRenderConfig",
       "duration": "number"
     },
-    "references": {}
+    "references": [
+      "IForceGraphRenderConfig"
+    ]
   },
   "SequenceConfig": {
+    "kind": "interface",
     "properties": {
       "loop": "boolean",
       "totalDuration": "number",
       "interval": "number",
       "onComplete": "() => void"
     },
-    "references": {}
+    "references": []
   },
   "ConfigGeneratorOptions": {
+    "kind": "interface",
     "properties": {
       "minNodeSize": "number",
       "maxNodeSize": "number",
@@ -355,9 +926,21 @@
       "transitionDuration": "number",
       "showLabels": "boolean"
     },
-    "references": {}
+    "references": []
+  },
+  "ConfigGeneratorArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "ConfigGeneratorOptions",
+      "to",
+      "or",
+      "on"
+    ],
+    "definition": "Partial<ConfigGeneratorOptions>"
   },
   "SpawnerConfig": {
+    "kind": "interface",
     "properties": {
       "maxNodes": "number",
       "spawnRadius": "number",
@@ -366,9 +949,10 @@
       "fadeOutDuration": "number",
       "linkColor": "string"
     },
-    "references": {}
+    "references": []
   },
   "RandomEffectsConfig": {
+    "kind": "interface",
     "properties": {
       "minNodeSize": "number",
       "maxNodeSize": "number",
@@ -378,9 +962,10 @@
       "maxOpacity": "number",
       "transitionDuration": "number"
     },
-    "references": {}
+    "references": []
   },
   "StaggeredEffectsConfig": {
+    "kind": "interface",
     "properties": {
       "minNodeSize": "number",
       "maxNodeSize": "number",
@@ -393,25 +978,28 @@
       "nodeOpacityTransitionDuration": "number",
       "linkOpacityTransitionDuration": "number"
     },
-    "references": {}
+    "references": []
   },
   "EdgesToDegreeResult": {
+    "kind": "interface",
     "properties": {
       "degreesToEdges": "Map<number, Edge[]>",
       "edgesToDegree": "Map<EdgeId, number>"
     },
-    "references": {}
+    "references": []
   },
   "PulsateOptions": {
+    "kind": "interface",
     "properties": {
       "minOpacity": "number",
       "maxOpacity": "number",
       "duration": "number",
       "nodeFilter": "(node: any) => boolean"
     },
-    "references": {}
+    "references": []
   },
   "SongVisualizationConfig": {
+    "kind": "interface",
     "properties": {
       "minNodeSize": "number",
       "maxNodeSize": "number",
@@ -421,47 +1009,55 @@
       "maxOpacity": "number",
       "transitionDuration": "number"
     },
-    "references": {}
+    "references": []
   },
   "Point": {
+    "kind": "interface",
     "properties": {
       "x": "number",
       "y": "number"
     },
-    "references": {}
+    "references": []
   },
   "Color": {
+    "kind": "interface",
     "properties": {
       "r": "number",
       "g": "number",
       "b": "number"
     },
-    "references": {}
+    "references": []
   },
   "ConnectedComponent": {
+    "kind": "interface",
     "properties": {
       "points": "Point[]",
       "color": "Color",
       "boundingBox": "{ minX: number; minY: number; maxX: number; maxY: number; }"
     },
-    "references": {}
+    "references": [
+      "Color"
+    ]
   },
   "Moon": {
+    "kind": "interface",
     "properties": {
       "pivot": "Object3D<Object3DEventMap>",
       "speed": "number"
     },
-    "references": {}
+    "references": []
   },
   "PlanetSystem": {
+    "kind": "interface",
     "properties": {
       "pivot": "Object3D<Object3DEventMap>",
       "moons": "Moon[]",
       "speed": "number"
     },
-    "references": {}
+    "references": []
   },
   "BlobNodeMetadata": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "layer": "number",
@@ -469,9 +1065,28 @@
       "point": "{ x: number; y: number; z: number; }",
       "isCore": "boolean"
     },
-    "references": {}
+    "references": []
+  },
+  "GraphvizOutput": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Position",
+      "NodePosition",
+      "NodePositionData",
+      "on"
+    ],
+    "definition": "GraphvizOutput"
+  },
+  "Node3DPosition": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Node3DPosition"
   },
   "GraphvizNode": {
+    "kind": "interface",
     "properties": {
       "_gvid": "number",
       "name": "string",
@@ -482,9 +1097,10 @@
       "height": "string",
       "width": "string"
     },
-    "references": {}
+    "references": []
   },
   "GraphvizJSON": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "directed": "boolean",
@@ -492,9 +1108,10 @@
       "bb": "string",
       "layout": "string"
     },
-    "references": {}
+    "references": []
   },
   "NodePosition": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "x": "number",
@@ -502,9 +1119,10 @@
       "label": "string",
       "color": "string"
     },
-    "references": {}
+    "references": []
   },
   "Webpage": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "url": "string",
@@ -516,9 +1134,10 @@
       "created_at": "string",
       "last_updated_at": "string"
     },
-    "references": {}
+    "references": []
   },
   "TextSelectionAnnotationData": {
+    "kind": "interface",
     "properties": {
       "selected_text": "string",
       "comment": "string",
@@ -527,20 +1146,21 @@
       "page_url": "string",
       "type": "\"text_selection\""
     },
-    "references": {}
+    "references": []
   },
   "ImageAnnotationData": {
-    "properties": {
-      "image_url": "string",
-      "comment": "string",
-      "secondary_comment": "string",
-      "tags": "string[]",
-      "page_url": "string",
-      "type": "\"image\""
-    },
-    "references": {}
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Position",
+      "EntityData",
+      "on"
+    ],
+    "definition": "ImageAnnotationData"
   },
   "Annotation": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "label": "string",
@@ -548,9 +1168,18 @@
       "imageBoxId": "string",
       "references": "string[]"
     },
-    "references": {}
+    "references": []
+  },
+  "NotificationType": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "NotificationType"
   },
   "Notification": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "message": "string",
@@ -558,17 +1187,21 @@
       "duration": "number",
       "groupId": "string"
     },
-    "references": {}
+    "references": [
+      "NotificationType"
+    ]
   },
   "NotificationStore": {
+    "kind": "interface",
     "properties": {
       "notifications": "Notification[]",
       "addNotification": "(notification: Omit<Notification, \"id\">) => void",
       "removeNotification": "(id: string) => void"
     },
-    "references": {}
+    "references": []
   },
   "SupabaseProject": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "name": "string",
@@ -578,44 +1211,92 @@
       "user_id": "string",
       "data": "any"
     },
-    "references": {}
+    "references": []
   },
   "UpdateProjectParams": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "description": "string"
     },
-    "references": {}
+    "references": []
   },
   "ProjectActionResult": {
+    "kind": "interface",
     "properties": {
       "success": "boolean",
       "message": "string",
       "data": "any"
     },
-    "references": {}
+    "references": []
+  },
+  "InterfaceAST": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "InterfaceAST"
   },
   "StoryCardOptions": {
+    "kind": "interface",
     "properties": {
       "basePath": "string"
     },
-    "references": {}
+    "references": []
+  },
+  "MajorWork": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on"
+    ],
+    "definition": "MajorWork"
+  },
+  "Person": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or",
+      "MajorWork",
+      "on"
+    ],
+    "definition": "Person"
+  },
+  "Field": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Field"
   },
   "IForceConsistencyResult": {
+    "kind": "interface",
     "properties": {
       "nodesAdded": "Node[]"
     },
-    "references": {}
+    "references": []
+  },
+  "Vector8": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Vector8"
   },
   "ILoadSvgToSceneGraphOptions": {
+    "kind": "interface",
     "properties": {
       "forceGraphDisplayConfig": "IForceGraphRenderConfig",
       "appConfig": "AppConfig",
       "metadata": "ISceneGraphMetadata"
     },
-    "references": {}
+    "references": [
+      "IForceGraphRenderConfig",
+      "AppConfig",
+      "ISceneGraphMetadata"
+    ]
   },
   "RandomNodeOptions": {
+    "kind": "interface",
     "properties": {
       "nodeCount": "number",
       "nodeTypes": "string[]",
@@ -625,9 +1306,10 @@
       "minTagsPerNode": "number",
       "maxTagsPerNode": "number"
     },
-    "references": {}
+    "references": []
   },
   "RandomEdgeOptions": {
+    "kind": "interface",
     "properties": {
       "edgeCount": "number",
       "edgeTypes": "string[]",
@@ -640,9 +1322,10 @@
       "allowSelfLoops": "boolean",
       "allowMultiEdges": "boolean"
     },
-    "references": {}
+    "references": []
   },
   "TreeNode": {
+    "kind": "interface",
     "properties": {
       "node_id": "number",
       "node_name": "string",
@@ -653,16 +1336,18 @@
       "confidence": "number",
       "phylesis": "number"
     },
-    "references": {}
+    "references": []
   },
   "TreeLink": {
+    "kind": "interface",
     "properties": {
       "source_node_id": "number",
       "target_node_id": "number"
     },
-    "references": {}
+    "references": []
   },
   "StoryCard": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "title": "string",
@@ -670,17 +1355,77 @@
       "markdownFile": "string",
       "metadata": "{ tags?: string[]; author?: string; createdAt?: string; difficulty?: number; imageUrl?: string; position?: { x: number; y: number; z: number; }; }"
     },
-    "references": {}
+    "references": []
   },
   "StoryCardEntity": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "type": "\"StoryCard\"",
       "data": "StoryCard"
     },
-    "references": {}
+    "references": [
+      "StoryCard"
+    ]
+  },
+  "StoryCardId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "or",
+      "EntityId",
+      "on"
+    ],
+    "definition": "StoryCardId"
+  },
+  "StoryCardData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "if",
+      "Position",
+      "or",
+      "EntityData",
+      "on"
+    ],
+    "definition": "StoryCardData"
+  },
+  "StoryCardDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "if",
+      "Position",
+      "or",
+      "EntityData",
+      "EntityDataArgs",
+      "on"
+    ],
+    "definition": "StoryCardDataArgs"
+  },
+  "SubFeature": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string"
+  },
+  "Feature": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string"
+  },
+  "FeatureSet": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Feature"
+    ],
+    "definition": "FeatureSet<E>"
   },
   "SphereNodeMetadata": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "phi": "number",
@@ -689,77 +1434,106 @@
       "isPole": "boolean",
       "poleType": "\"north\" | \"south\""
     },
-    "references": {}
+    "references": []
   },
   "SceneGraphCategory": {
+    "kind": "interface",
     "properties": {
       "label": "string",
       "graphs": "{ [key: string]: SceneGraph | (() => SceneGraph) | (() => Promise<SceneGraph>); }"
     },
-    "references": {}
+    "references": []
   },
   "DemoSceneGraphTree": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
   },
   "ILayoutManagerState": {
+    "kind": "interface",
     "properties": {
       "mode": "\"save\" | \"load\"",
       "show": "boolean"
     },
-    "references": {}
+    "references": []
   },
   "ISceneGraphDetailViewState": {
+    "kind": "interface",
     "properties": {
       "show": "boolean",
       "readOnly": "boolean"
     },
-    "references": {}
+    "references": []
+  },
+  "DialogState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "let",
+      "ISceneGraph",
+      "SceneGraph",
+      "2",
+      "Command",
+      "Filter",
+      "Layout",
+      "ILayoutManagerState",
+      "ISceneGraphDetailViewState"
+    ],
+    "definition": "DialogState"
   },
   "ChatMessage": {
+    "kind": "interface",
     "properties": {
       "role": "string",
       "content": "string",
       "timestamp": "string"
     },
-    "references": {}
+    "references": []
   },
   "ChatHistoryState": {
+    "kind": "interface",
     "properties": {
       "messages": "ChatMessage[]",
       "addMessage": "(message: ChatMessage) => void",
       "setMessages": "(messages: ChatMessage[]) => void",
       "clearHistory": "() => void"
     },
-    "references": {}
+    "references": []
   },
   "WebLLMClientConfig": {
+    "kind": "interface",
     "properties": {
       "model": "string",
       "initProgressCallback": "(report: { progress: number; }) => void"
     },
-    "references": {}
+    "references": []
   },
   "ExtendedCompletionParams": {
+    "kind": "interface",
     "properties": {
       "singleMessage": "boolean",
       "forceNewConvo": "boolean"
     },
-    "references": {}
+    "references": []
   },
   "DocumentTags": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
   },
   "AnalysisProgress": {
+    "kind": "interface",
     "properties": {
       "processed": "number",
       "total": "number",
       "currentNodeId": "NodeId"
     },
-    "references": {}
+    "references": [
+      "NodeId"
+    ]
   },
   "IMenuConfigCallbacks": {
+    "kind": "interface",
     "properties": {
       "handleSetSceneGraph": "(key: string, clearQueryParams?: boolean, onLoaded?: (sceneGraph?: SceneGraph) => void) => void",
       "handleImportConfig": "(event: ChangeEvent<HTMLInputElement>) => void",
@@ -773,26 +1547,29 @@
       "showSceneGraphDetailView": "(readOnly: boolean) => void",
       "showChatGptImporter": "() => void"
     },
-    "references": {}
+    "references": []
   },
   "ParsedConversation": {
+    "kind": "interface",
     "properties": {
       "title": "string",
       "messages": "ChatMessage[]",
       "error": "string"
     },
-    "references": {}
+    "references": []
   },
   "Metadata": {
+    "kind": "interface",
     "properties": {
       "summary": "string",
       "keywords": "string[]",
       "sentiment": "\"positive\" | \"negative\"",
       "topic": "string"
     },
-    "references": {}
+    "references": []
   },
   "Conversation": {
+    "kind": "interface",
     "properties": {
       "id": "number",
       "title": "string",
@@ -803,25 +1580,30 @@
       "hash": "string",
       "timestamp": "number"
     },
-    "references": {}
+    "references": [
+      "Metadata"
+    ]
   },
   "ConversationsData": {
+    "kind": "interface",
     "properties": {
       "source_file": "string",
       "conversation_count": "number",
       "conversations": "Conversation[]",
       "completed": "boolean"
     },
-    "references": {}
+    "references": []
   },
   "SceneGraphCommand": {
+    "kind": "interface",
     "properties": {
       "action": "string",
       "parameters": "Record<string, any>"
     },
-    "references": {}
+    "references": []
   },
   "CommandDefinition": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "description": "string",
@@ -829,25 +1611,39 @@
       "keywords": "string[]",
       "apiFormat": "string"
     },
-    "references": {}
+    "references": []
   },
   "LLMStudioOptions": {
+    "kind": "interface",
     "properties": {
       "temperature": "number",
       "top_p": "number",
       "max_tokens": "number",
       "model": "string"
     },
-    "references": {}
+    "references": []
+  },
+  "SerializedMentionNode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "SerializedTextNode",
+      "Spread",
+      "on"
+    ],
+    "definition": "SerializedMentionNode"
   },
   "ResourceSpecifier": {
+    "kind": "interface",
     "properties": {
       "type": "\"wikipedia\"",
       "resource_id": "string"
     },
-    "references": {}
+    "references": []
   },
   "FormSchemaField": {
+    "kind": "interface",
     "properties": {
       "validate": "(value: string | number | boolean) => string",
       "label": "string",
@@ -857,13 +1653,15 @@
       "max": "number",
       "step": "number"
     },
-    "references": {}
+    "references": []
   },
   "FormSchema": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
   },
   "FormFieldProps": {
+    "kind": "interface",
     "properties": {
       "name": "string",
       "value": "string | number | boolean",
@@ -872,9 +1670,12 @@
       "schema": "FormSchema",
       "isDarkMode": "boolean"
     },
-    "references": {}
+    "references": [
+      "FormSchema"
+    ]
   },
   "StoryNode": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "title": "string",
@@ -883,9 +1684,10 @@
       "markdownContent": "string",
       "children": "StoryNode[]"
     },
-    "references": {}
+    "references": []
   },
   "HotkeyAction": {
+    "kind": "interface",
     "properties": {
       "key": "string",
       "ctrlKey": "boolean",
@@ -895,53 +1697,68 @@
       "action": "() => void",
       "description": "string"
     },
-    "references": {}
+    "references": []
   },
   "IForceGraphEventHandlers": {
+    "kind": "interface",
     "properties": {
       "onNodeHovered": "(node: NodeId) => void",
       "onNodeClicked": "(node: NodeId) => void",
       "onNodeRightClick": "(event: MouseEvent, nodeId: string) => void"
     },
-    "references": {}
+    "references": []
   },
   "IForceGraphInstanceController": {
+    "kind": "interface",
     "properties": {
       "setBackgroundColor": "(color: string) => void",
       "initializeInstance": "(dom: HTMLElement, appConfig?: AppConfig) => ForceGraph3DInstance",
       "applyFixedLayout": "(positions: ObjectOf<Position>) => void",
       "applyConfigToForceGraph": "(config: IForceGraphRenderConfig) => void"
     },
-    "references": {}
+    "references": []
   },
   "IForceGraphNode": {
+    "kind": "interface",
     "properties": {
       "id": "string | NodeId",
       "color": "string",
       "position": "{ x: number; y: number; z?: number; }",
       "data": "{ label: string; color: string; }"
     },
-    "references": {}
+    "references": []
   },
   "IForceGraphEdge": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "source": "string",
       "target": "string",
       "color": "string"
     },
-    "references": {}
+    "references": []
+  },
+  "Dimension": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Dimension"
   },
   "LayoutWorkerMessage": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "action": "\"computeLayout\" | \"cancelComputation\"",
       "layoutType": "LayoutEngineOption",
       "serializedGraph": "SerializedSceneGraph"
     },
-    "references": {}
+    "references": [
+      "LayoutEngineOption",
+      "SerializedSceneGraph"
+    ]
   },
   "_LayoutWorkerResponse": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "result": "ILayoutEngineResult",
@@ -949,9 +1766,12 @@
       "type": "\"error\" | \"progress\" | \"complete\" | \"cancelled\"",
       "progress": "number"
     },
-    "references": {}
+    "references": [
+      "ILayoutEngineResult"
+    ]
   },
   "ImageBox": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "imageId": "string",
@@ -959,43 +1779,58 @@
       "width": "number",
       "height": "number"
     },
-    "references": {}
+    "references": []
   },
   "ImageData": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "url": "string",
       "group": "Group<Object3DEventMap>",
       "boxes": "ImageBox[]"
     },
-    "references": {}
+    "references": []
   },
   "ImageLayoutOptions": {
+    "kind": "interface",
     "properties": {
       "type": "\"grid2d\" | \"random3d\" | \"stack\"",
       "gridOptions": "{ cols: number; spacing: { x: number; y: number; z: number; }; }",
       "randomOptions": "{ bounds: { x: [number, number]; y: [number, number]; z: [number, number]; }; }",
       "stackOptions": "{ spacing: number; }"
     },
-    "references": {}
+    "references": []
   },
   "IGraphDiffResult": {
+    "kind": "interface",
     "properties": {
       "additionalNodes": "Node[]",
       "missingNodes": "Node[]",
       "additionalEdges": "Edge[]",
       "missingEdges": "Edge[]"
     },
-    "references": {}
+    "references": []
   },
   "PathData": {
+    "kind": "interface",
     "properties": {
       "start": "Point",
       "end": "Point"
     },
-    "references": {}
+    "references": [
+      "Point"
+    ]
+  },
+  "FileFormat": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on"
+    ],
+    "definition": "FileFormat"
   },
   "StoredSceneGraphInfo": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "name": "string",
@@ -1005,13 +1840,37 @@
       "thumbnailUrl": "string",
       "tags": "string[]"
     },
-    "references": {}
+    "references": []
   },
   "IPersistentStore": {
+    "kind": "interface",
     "properties": {},
-    "references": {}
+    "references": []
+  },
+  "ImageAnnotationId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Annotation",
+      "EntityId",
+      "on"
+    ],
+    "definition": "ImageAnnotationId"
+  },
+  "ImageAnnotationDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Position",
+      "EntityData",
+      "EntityDataArgs",
+      "on"
+    ],
+    "definition": "ImageAnnotationDataArgs"
   },
   "Command": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "title": "string",
@@ -1019,25 +1878,28 @@
       "execute": "() => void",
       "children": "Command[]"
     },
-    "references": {}
+    "references": []
   },
   "ReactFlowConfigState": {
+    "kind": "interface",
     "properties": {
       "config": "ReactFlowRenderConfig",
       "setConfig": "(config: ReactFlowRenderConfig) => void",
       "subscribeToConfigChanges": "(callback: (config: ReactFlowRenderConfig) => void) => () => void"
     },
-    "references": {}
+    "references": []
   },
   "User": {
+    "kind": "interface",
     "properties": {
       "id": "string",
       "email": "string",
       "user_metadata": "{ avatar_url?: string; picture?: string; name?: string; }"
     },
-    "references": {}
+    "references": []
   },
   "UserStore": {
+    "kind": "interface",
     "properties": {
       "isSignedIn": "boolean",
       "user": "User",
@@ -1051,6 +1913,8 @@
       "getUserDetails": "() => User",
       "getAvatarUrl": "() => string"
     },
-    "references": {}
+    "references": [
+      "User"
+    ]
   }
 }

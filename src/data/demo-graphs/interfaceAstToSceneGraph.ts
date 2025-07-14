@@ -7,16 +7,15 @@ import { SceneGraph } from "../../core/model/SceneGraph";
 type InterfaceAST = Record<
   string,
   {
+    kind: "interface" | "type";
     properties: Record<string, string>;
     references: string[];
+    definition?: string; // For type aliases
   }
 >;
 
 // --- Enhanced Reference Extraction ---
-function extractReferences(
-  typeStr: string,
-  allInterfaces: Set<string>
-): string[] {
+function extractReferences(typeStr: string, allTypes: Set<string>): string[] {
   // Remove array notation
   const baseType = typeStr.replace(/\[\]$/, "").trim();
 
@@ -24,7 +23,7 @@ function extractReferences(
   if (baseType.includes("|") || baseType.includes("&")) {
     return baseType
       .split(/[|&]/)
-      .map((t) => extractReferences(t.trim(), allInterfaces))
+      .map((t) => extractReferences(t.trim(), allTypes))
       .flat();
   }
 
@@ -34,13 +33,13 @@ function extractReferences(
     const fieldMatches = baseType.matchAll(/(\w+)\??:\s*([^;]+);?/g);
     let refs: string[] = [];
     for (const match of fieldMatches) {
-      refs = refs.concat(extractReferences(match[2].trim(), allInterfaces));
+      refs = refs.concat(extractReferences(match[2].trim(), allTypes));
     }
     return refs;
   }
 
-  // If it's a known interface, return it
-  if (allInterfaces.has(baseType)) {
+  // If it's a known interface or type, return it
+  if (allTypes.has(baseType)) {
     return [baseType];
   }
 
@@ -77,22 +76,39 @@ export async function demo_scenegraph_ast(
 
   const ast: InterfaceAST = await response.json();
   const graph = new Graph();
-  const allInterfaces = new Set(Object.keys(ast));
+  const allTypes = new Set(Object.keys(ast));
 
-  for (const [iface, data] of Object.entries(ast)) {
+  for (const [name, data] of Object.entries(ast)) {
     graph.createNode({
-      id: iface,
-      label: iface,
-      type: "interface",
+      id: name,
+      label: name,
+      type: data.kind,
     });
 
-    // Enhanced: Extract references from property types
-    for (const [prop, typeStr] of Object.entries(data.properties)) {
-      const refs = extractReferences(typeStr, allInterfaces);
+    // Enhanced: Extract references from property types (for interfaces)
+    for (const [_, typeStr] of Object.entries(data.properties)) {
+      const refs = extractReferences(typeStr, allTypes);
       for (const ref of refs) {
-        if (ref && ref !== iface && allInterfaces.has(ref)) {
-          graph.createEdgeIfMissing(iface, ref as NodeId);
+        if (ref && ref !== name && allTypes.has(ref)) {
+          graph.createEdgeIfMissing(name, ref as NodeId);
         }
+      }
+    }
+
+    // Extract references from type definition (for type aliases)
+    if (data.definition) {
+      const refs = extractReferences(data.definition, allTypes);
+      for (const ref of refs) {
+        if (ref && ref !== name && allTypes.has(ref)) {
+          graph.createEdgeIfMissing(name, ref as NodeId);
+        }
+      }
+    }
+
+    // Also use the explicit references from the AST
+    for (const ref of data.references) {
+      if (ref && ref !== name && allTypes.has(ref)) {
+        graph.createEdgeIfMissing(name, ref as NodeId);
       }
     }
   }
@@ -100,8 +116,9 @@ export async function demo_scenegraph_ast(
   return new SceneGraph({
     graph,
     metadata: {
-      name: "Interface AST SceneGraph",
-      description: "A scene graph representing the interface AST",
+      name: "Interface and Type AST SceneGraph",
+      description:
+        "A scene graph representing interfaces and types from the AST",
     },
   });
 }

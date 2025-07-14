@@ -25,9 +25,14 @@ function getAllTSFiles(dir: string): string[] {
 function parseInterfaces(files: string[]) {
   const program = ts.createProgram(files, {});
   const checker = program.getTypeChecker();
-  const interfaces: Record<
+  const ast: Record<
     string,
-    { properties: Record<string, string>; references: Set<string> }
+    {
+      kind: "interface" | "type";
+      properties: Record<string, string>;
+      references: Set<string>;
+      definition?: string; // For type aliases
+    }
   > = {};
 
   for (const sourceFile of program.getSourceFiles()) {
@@ -47,11 +52,13 @@ function parseInterfaces(files: string[]) {
             );
             properties[propName] = type;
 
-            // If the type is another interface, add a reference
+            // If the type is another interface or type, add a reference
             if (
-              type in interfaces ||
-              files.some((f) =>
-                fs.readFileSync(f, "utf8").includes(`interface ${type}`)
+              type in ast ||
+              files.some(
+                (f) =>
+                  fs.readFileSync(f, "utf8").includes(`interface ${type}`) ||
+                  fs.readFileSync(f, "utf8").includes(`type ${type}`)
               )
             ) {
               references.add(type);
@@ -59,11 +66,41 @@ function parseInterfaces(files: string[]) {
           }
         });
 
-        interfaces[name] = { properties, references };
+        ast[name] = { kind: "interface", properties, references };
+      } else if (ts.isTypeAliasDeclaration(node)) {
+        const name = node.name.text;
+        const references = new Set<string>();
+        const definition = checker.typeToString(
+          checker.getTypeFromTypeNode(node.type)
+        );
+
+        // Extract references from type definition
+        const typeText = node.type.getText();
+        files.forEach((f) => {
+          const content = fs.readFileSync(f, "utf8");
+          const interfaceMatches = content.match(/interface\s+(\w+)/g);
+          const typeMatches = content.match(/type\s+(\w+)/g);
+
+          [...(interfaceMatches || []), ...(typeMatches || [])].forEach(
+            (match) => {
+              const typeName = match.split(/\s+/)[1];
+              if (typeText.includes(typeName) && typeName !== name) {
+                references.add(typeName);
+              }
+            }
+          );
+        });
+
+        ast[name] = {
+          kind: "type",
+          properties: {},
+          references,
+          definition,
+        };
       }
     });
   }
-  return interfaces;
+  return ast;
 }
 
 // MAIN
@@ -71,9 +108,17 @@ const rootDir = path.resolve(__dirname, "../src"); // Adjust as needed
 const files = getAllTSFiles(rootDir);
 const ast = parseInterfaces(files);
 
+// Convert Sets to Arrays for JSON serialization
+const serializedAst = Object.fromEntries(
+  Object.entries(ast).map(([name, data]) => [
+    name,
+    { ...data, references: Array.from(data.references) },
+  ])
+);
+
 // Output as JSON or visualize as needed
 fs.writeFileSync(
   "public/data/unigraph-ast/interface-ast.json",
-  JSON.stringify(ast, null, 2)
+  JSON.stringify(serializedAst, null, 2)
 );
-console.log("Interface AST written to interface-ast.json");
+console.log("Interface and Type AST written to interface-ast.json");
