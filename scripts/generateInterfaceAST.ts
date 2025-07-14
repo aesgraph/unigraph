@@ -28,12 +28,15 @@ function parseInterfaces(files: string[]) {
   const ast: Record<
     string,
     {
-      kind: "interface" | "type" | "function";
+      kind: "interface" | "type" | "function" | "class";
       properties: Record<string, string>;
       references: Set<string>;
       definition?: string; // For type aliases
       arguments?: Record<string, string>; // For functions
       returnType?: string; // For functions
+      methods?: Record<string, { arguments: Record<string, string>; returnType: string }>; // For classes
+      extends?: string; // For classes that extend other classes
+      implements?: string[]; // For classes that implement interfaces
     }
   > = {};
 
@@ -156,6 +159,112 @@ function parseInterfaces(files: string[]) {
           arguments: functionArguments,
           returnType,
         };
+      } else if (ts.isClassDeclaration(node) && node.name) {
+        const name = node.name.text;
+        const references = new Set<string>();
+        const properties: Record<string, string> = {};
+        const methods: Record<string, { arguments: Record<string, string>; returnType: string }> = {};
+        let extendsClass: string | undefined;
+        const implementsInterfaces: string[] = [];
+
+        // Check for extends clause
+        if (node.heritageClauses) {
+          for (const clause of node.heritageClauses) {
+            if (clause.token === ts.SyntaxKind.ExtendsKeyword) {
+              const extendedType = clause.types[0];
+              if (ts.isIdentifier(extendedType.expression)) {
+                extendsClass = extendedType.expression.text;
+                references.add(extendsClass);
+              }
+            } else if (clause.token === ts.SyntaxKind.ImplementsKeyword) {
+              for (const type of clause.types) {
+                if (ts.isIdentifier(type.expression)) {
+                  const implementedInterface = type.expression.text;
+                  implementsInterfaces.push(implementedInterface);
+                  references.add(implementedInterface);
+                }
+              }
+            }
+          }
+        }
+
+        // Parse class members
+        node.members.forEach((member) => {
+          if (ts.isPropertyDeclaration(member) && member.type && ts.isIdentifier(member.name)) {
+            const propName = member.name.text;
+            const propType = checker.typeToString(
+              checker.getTypeFromTypeNode(member.type)
+            );
+            properties[propName] = propType;
+
+            // Add reference if it's a custom type
+            if (
+              propType in ast ||
+              files.some((f) =>
+                fs.readFileSync(f, "utf8").includes(`interface ${propType}`) ||
+                fs.readFileSync(f, "utf8").includes(`type ${propType}`) ||
+                fs.readFileSync(f, "utf8").includes(`class ${propType}`)
+              )
+            ) {
+              references.add(propType);
+            }
+          } else if (ts.isMethodDeclaration(member) && ts.isIdentifier(member.name)) {
+            const methodName = member.name.text;
+            const methodArguments: Record<string, string> = {};
+
+            // Parse method parameters
+            member.parameters.forEach((param) => {
+              if (param.name && ts.isIdentifier(param.name) && param.type) {
+                const paramName = param.name.text;
+                const paramType = checker.typeToString(
+                  checker.getTypeFromTypeNode(param.type)
+                );
+                methodArguments[paramName] = paramType;
+
+                // Add reference if it's a custom type
+                if (
+                  paramType in ast ||
+                  files.some((f) =>
+                    fs.readFileSync(f, "utf8").includes(`interface ${paramType}`) ||
+                    fs.readFileSync(f, "utf8").includes(`type ${paramType}`) ||
+                    fs.readFileSync(f, "utf8").includes(`class ${paramType}`)
+                  )
+                ) {
+                  references.add(paramType);
+                }
+              }
+            });
+
+            // Parse return type
+            let returnType = 'void';
+            if (member.type) {
+              returnType = checker.typeToString(
+                checker.getTypeFromTypeNode(member.type)
+              );
+              if (
+                returnType in ast ||
+                files.some((f) =>
+                  fs.readFileSync(f, "utf8").includes(`interface ${returnType}`) ||
+                  fs.readFileSync(f, "utf8").includes(`type ${returnType}`) ||
+                  fs.readFileSync(f, "utf8").includes(`class ${returnType}`)
+                )
+              ) {
+                references.add(returnType);
+              }
+            }
+
+            methods[methodName] = { arguments: methodArguments, returnType };
+          }
+        });
+
+        ast[name] = {
+          kind: 'class',
+          properties,
+          references,
+          methods,
+          extends: extendsClass,
+          implements: implementsInterfaces.length > 0 ? implementsInterfaces : undefined
+        };
       }
     });
   }
@@ -180,4 +289,4 @@ fs.writeFileSync(
   "public/data/unigraph-ast/interface-ast.json",
   JSON.stringify(serializedAst, null, 2)
 );
-console.log("Interface, Type, and Function AST written to interface-ast.json");
+console.log("Complete AST (interfaces, types, functions, classes) written to interface-ast.json");

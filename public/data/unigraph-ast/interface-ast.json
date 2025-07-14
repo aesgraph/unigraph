@@ -60,11 +60,420 @@
     "properties": {},
     "references": []
   },
+  "AbstractEntity": {
+    "kind": "class",
+    "properties": {
+      "data": "Data"
+    },
+    "references": [
+      "IEntity",
+      "T"
+    ],
+    "methods": {
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getId": {
+        "arguments": {},
+        "returnType": "T"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "Data"
+      },
+      "getLabel": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getFullyQualifiedId": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setId": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "void"
+      },
+      "setType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "void"
+      },
+      "getType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setLabel": {
+        "arguments": {
+          "label": "string"
+        },
+        "returnType": "void"
+      },
+      "getTags": {
+        "arguments": {},
+        "returnType": "Set<string>"
+      },
+      "setTags": {
+        "arguments": {
+          "tags": "Set<string>"
+        },
+        "returnType": "void"
+      },
+      "addTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "void"
+      },
+      "removeTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "void"
+      },
+      "maybeGetUserData": {
+        "arguments": {
+          "key": "string"
+        },
+        "returnType": "any"
+      },
+      "getAllUserData": {
+        "arguments": {},
+        "returnType": "ObjectOf<any>"
+      },
+      "getUserData": {
+        "arguments": {
+          "key": "string"
+        },
+        "returnType": "any"
+      },
+      "setUserData": {
+        "arguments": {
+          "key": "string",
+          "value": "any"
+        },
+        "returnType": "void"
+      },
+      "setUserDataObject": {
+        "arguments": {
+          "userData": "ObjectOf<any>"
+        },
+        "returnType": "void"
+      },
+      "getUserDataObject": {
+        "arguments": {},
+        "returnType": "ObjectOf<any>"
+      },
+      "setDescription": {
+        "arguments": {
+          "description": "string"
+        },
+        "returnType": "void"
+      },
+      "getDescription": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "deepCopy": {
+        "arguments": {},
+        "returnType": "T"
+      },
+      "deepCopyValue": {
+        "arguments": {
+          "value": "any"
+        },
+        "returnType": "any"
+      },
+      "toJSON": {
+        "arguments": {},
+        "returnType": "void"
+      }
+    },
+    "implements": [
+      "IEntity"
+    ]
+  },
+  "Entity": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "AbstractEntity"
+    ],
+    "methods": {
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      }
+    },
+    "extends": "AbstractEntity"
+  },
+  "EntityIds": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "Set",
+      "T"
+    ],
+    "methods": {
+      "fromId": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "getAny": {
+        "arguments": {
+          "container": "EntitiesContainer<T, V>"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "getAll": {
+        "arguments": {
+          "container": "EntitiesContainer<T, V>"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "toArray": {
+        "arguments": {},
+        "returnType": "T[]"
+      },
+      "isEmpty": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "hasAll": {
+        "arguments": {
+          "ids": "EntityIds<T>"
+        },
+        "returnType": "boolean"
+      },
+      "throwIfEmpty": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "isEqualTo": {
+        "arguments": {
+          "a": "EntityIds<any>",
+          "b": "EntityIds<any>"
+        },
+        "returnType": "boolean"
+      },
+      "getDifference": {
+        "arguments": {
+          "other": "EntityIds<T>"
+        },
+        "returnType": "EntityIds<T>"
+      }
+    },
+    "extends": "Set"
+  },
   "JSONString": {
     "kind": "type",
     "properties": {},
     "references": [],
     "definition": "string"
+  },
+  "EntitiesContainer": {
+    "kind": "class",
+    "properties": {
+      "entities": "V[]",
+      "_map": "Map<T, number>"
+    },
+    "references": [
+      "Iterable",
+      "V",
+      "T"
+    ],
+    "methods": {
+      "addEntity": {
+        "arguments": {
+          "entity": "V",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "addEntitySafe": {
+        "arguments": {
+          "entity": "V",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "removeEntity": {
+        "arguments": {
+          "id": "T",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "get": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "V"
+      },
+      "getIds": {
+        "arguments": {},
+        "returnType": "EntityIds<T>"
+      },
+      "maybeGet": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "V"
+      },
+      "getAny": {
+        "arguments": {
+          "ids": "EntityIds<T>"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "getAll": {
+        "arguments": {
+          "ids": "EntityIds<T> | T[]",
+          "strict": "boolean"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "first": {
+        "arguments": {},
+        "returnType": "V"
+      },
+      "isEmpty": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "removeEntities": {
+        "arguments": {
+          "ids": "EntityIds<T>",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "addEntities": {
+        "arguments": {
+          "entities": "EntitiesContainer<T, V> | V[]",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "addEntitiesSafe": {
+        "arguments": {
+          "entities": "EntitiesContainer<T, V> | V[]",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "has": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "throwIfContains": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "throwIfNotContains": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "toArray": {
+        "arguments": {},
+        "returnType": "V[]"
+      },
+      "clear": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getTypes": {
+        "arguments": {},
+        "returnType": "Set<string>"
+      },
+      "getTags": {
+        "arguments": {},
+        "returnType": "Set<string>"
+      },
+      "filter": {
+        "arguments": {
+          "predicate": "(entity: V) => boolean"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "filterByType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "filterByTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "size": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "forEach": {
+        "arguments": {
+          "callback": "(entity: V, index: number, array: V[]) => void"
+        },
+        "returnType": "void"
+      },
+      "map": {
+        "arguments": {
+          "callbackfn": "(value: V, index: number, array: V[]) => U"
+        },
+        "returnType": "U[]"
+      },
+      "getRandomEntity": {
+        "arguments": {},
+        "returnType": "V"
+      },
+      "deepCopy": {
+        "arguments": {},
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "shallowCopy": {
+        "arguments": {},
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "getDatas": {
+        "arguments": {},
+        "returnType": "any[]"
+      },
+      "validate": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getRandom": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "toJSON": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "fromJSON": {
+        "arguments": {
+          "json": "string",
+          "entityFactory": "(json: string) => V"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      }
+    },
+    "implements": [
+      "Iterable"
+    ]
   },
   "NodeId": {
     "kind": "type",
@@ -127,6 +536,15 @@
     ],
     "definition": "NodeDataArgs"
   },
+  "Node": {
+    "kind": "interface",
+    "properties": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
+    "references": []
+  },
   "EdgeId": {
     "kind": "type",
     "properties": {},
@@ -181,6 +599,80 @@
     ],
     "definition": "EdgeDataArgs"
   },
+  "Edge": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "AbstractEntity",
+      "EdgeId",
+      "EdgeData",
+      "NodeId"
+    ],
+    "methods": {
+      "id": {
+        "arguments": {
+          "source": "string | NodeId",
+          "target": "string | NodeId"
+        },
+        "returnType": "EdgeId"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getUniqueConnectionId": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "EdgeData"
+      },
+      "setData": {
+        "arguments": {
+          "data": "EdgeData"
+        },
+        "returnType": "void"
+      },
+      "getSource": {
+        "arguments": {},
+        "returnType": "NodeId"
+      },
+      "getTarget": {
+        "arguments": {},
+        "returnType": "NodeId"
+      },
+      "isVisible": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "setVisibility": {
+        "arguments": {
+          "isVisible": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getColor": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setColor": {
+        "arguments": {
+          "color": "string"
+        },
+        "returnType": "void"
+      },
+      "getSize": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getOpacity": {
+        "arguments": {},
+        "returnType": "number"
+      }
+    },
+    "extends": "AbstractEntity"
+  },
   "NodeIds": {
     "kind": "type",
     "properties": {},
@@ -229,6 +721,267 @@
       "on"
     ],
     "definition": "GraphArgs"
+  },
+  "Graph": {
+    "kind": "class",
+    "properties": {
+      "nodes": "NodesContainer",
+      "edges": "EdgesContainer",
+      "strict": "boolean"
+    },
+    "references": [
+      "NodesContainer",
+      "EdgesContainer",
+      "NodeIds",
+      "Graph",
+      "NodeDataArgs",
+      "Node",
+      "NodeId",
+      "Edge",
+      "EdgeId"
+    ],
+    "methods": {
+      "setStrictMode": {
+        "arguments": {
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getFilteredGraph": {
+        "arguments": {
+          "nodeIds": "NodeIds"
+        },
+        "returnType": "Graph"
+      },
+      "createNode": {
+        "arguments": {
+          "args": "NodeDataArgs"
+        },
+        "returnType": "Node"
+      },
+      "createEdge": {
+        "arguments": {
+          "fromNode": "string | NodeId",
+          "toNode": "string | NodeId",
+          "args": "Omit<EdgeDataArgs, \"source\" | \"target\">"
+        },
+        "returnType": "Edge"
+      },
+      "getAllEntities": {
+        "arguments": {},
+        "returnType": "EntitiesContainer<string, Entity>"
+      },
+      "createNodeIfMissing": {
+        "arguments": {
+          "id": "string | NodeId",
+          "args": "NodeDataArgs"
+        },
+        "returnType": "Node"
+      },
+      "createEdgeIfMissing": {
+        "arguments": {
+          "from": "string | NodeId",
+          "to": "string | NodeId",
+          "args": "Omit<EdgeDataArgs, \"source\" | \"target\">"
+        },
+        "returnType": "Edge"
+      },
+      "addNode": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "void"
+      },
+      "getNode": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "Node"
+      },
+      "maybeGetNode": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "Node"
+      },
+      "maybeGetEdge": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "Edge"
+      },
+      "maybeGetEntity": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "IEntity<string>"
+      },
+      "removeNode": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "containsNode": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "boolean"
+      },
+      "addEdge": {
+        "arguments": {
+          "edge": "Edge"
+        },
+        "returnType": "void"
+      },
+      "getEdge": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "Edge"
+      },
+      "removeEdge": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "void"
+      },
+      "containsEdge": {
+        "arguments": {
+          "edgeId": "EdgeId"
+        },
+        "returnType": "boolean"
+      },
+      "getNodesByTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "Node[]"
+      },
+      "getEdgesByTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "Edge[]"
+      },
+      "getNodes": {
+        "arguments": {},
+        "returnType": "NodesContainer"
+      },
+      "getEdges": {
+        "arguments": {},
+        "returnType": "EdgesContainer"
+      },
+      "getEdgesOf": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "Edge[]"
+      },
+      "getNodesOf": {
+        "arguments": {
+          "edge": "Edge"
+        },
+        "returnType": "[Node, Node]"
+      },
+      "getIslands": {
+        "arguments": {},
+        "returnType": "Node[][]"
+      },
+      "requireEntity": {
+        "arguments": {
+          "entityId": "string"
+        },
+        "returnType": "IEntity<string>"
+      },
+      "requireEntities": {
+        "arguments": {
+          "entityIds": "string[]"
+        },
+        "returnType": "IEntity<string>[]"
+      },
+      "getEntity": {
+        "arguments": {
+          "entityId": "string"
+        },
+        "returnType": "IEntity<string>"
+      },
+      "getEntities": {
+        "arguments": {
+          "entityIds": "string[]"
+        },
+        "returnType": "IEntity<string>[]"
+      },
+      "maybeGetEntities": {
+        "arguments": {
+          "entityIds": "string[]"
+        },
+        "returnType": "IEntity<string>[]"
+      },
+      "getNodesByType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "NodesContainer"
+      },
+      "getEdgesTo": {
+        "arguments": {
+          "nodeIds": "NodeId | EntityIds<NodeId>"
+        },
+        "returnType": "Edge[]"
+      },
+      "getEdgesFrom": {
+        "arguments": {
+          "nodeIds": "NodeId | EntityIds<NodeId>"
+        },
+        "returnType": "Edge[]"
+      },
+      "getOutgoingEdges": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "Edge[]"
+      },
+      "getIncomingEdges": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "Edge[]"
+      },
+      "getGraphMap": {
+        "arguments": {},
+        "returnType": "Map<NodeId, NodeId[]>"
+      },
+      "getAllEdgesConnectingBetween": {
+        "arguments": {
+          "nodeIds": "NodeIds"
+        },
+        "returnType": "EdgesContainer"
+      },
+      "getEdgesConnectedToNodes": {
+        "arguments": {
+          "nodeIds": "NodeId | NodeIds",
+          "mode": "\"both\" | \"from\" | \"to\""
+        },
+        "returnType": "EdgesContainer"
+      },
+      "validateGraph": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "deleteNode": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "deleteNodes": {
+        "arguments": {
+          "nodeIds": "NodeIds | NodeId[]"
+        },
+        "returnType": "void"
+      }
+    }
   },
   "Position": {
     "kind": "type",
@@ -301,6 +1054,24 @@
       "positions": "ObjectOf<Position>"
     },
     "returnType": "ObjectOf<Position>"
+  },
+  "GraphBuilder": {
+    "kind": "class",
+    "properties": {
+      "_graph": "Graph",
+      "addNode": "(id: string, type: string) => void",
+      "addNodes": "(nodeIds: string[], type: string) => void",
+      "addEdge": "(input: string, edgeType: string, output: string) => void"
+    },
+    "references": [
+      "Graph"
+    ],
+    "methods": {
+      "graph": {
+        "arguments": {},
+        "returnType": "Graph"
+      }
+    }
   },
   "EntitiesMetadata": {
     "kind": "type",
@@ -381,6 +1152,96 @@
     "properties": {},
     "references": [],
     "definition": "RenderingManager__DisplayMode"
+  },
+  "RenderingManager": {
+    "kind": "class",
+    "properties": {
+      "config": "RenderingConfig"
+    },
+    "references": [
+      "RenderingConfig",
+      "DisplayConfig",
+      "RenderingManager__DisplayMode",
+      "Node",
+      "Edge",
+      "Graph"
+    ],
+    "methods": {
+      "getColor": {
+        "arguments": {
+          "entity": "IEntity<string>",
+          "config": "DisplayConfig",
+          "mode": "\"type\" | \"tag\""
+        },
+        "returnType": "string"
+      },
+      "getVisibility": {
+        "arguments": {
+          "entity": "IEntity<string>",
+          "config": "DisplayConfig",
+          "mode": "RenderingManager__DisplayMode"
+        },
+        "returnType": "boolean"
+      },
+      "getDisplayConfig": {
+        "arguments": {
+          "entityType": "GraphEntityType",
+          "mode": "RenderingManager__DisplayMode"
+        },
+        "returnType": "DisplayConfig"
+      },
+      "setDisplayConfig": {
+        "arguments": {
+          "mode": "RenderingManager__DisplayMode",
+          "entityType": "GraphEntityType",
+          "config": "DisplayConfig"
+        },
+        "returnType": "void"
+      },
+      "getNodeColor": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "string"
+      },
+      "getEdgeColor": {
+        "arguments": {
+          "edge": "Edge"
+        },
+        "returnType": "string"
+      },
+      "getNodeIsVisible": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "boolean"
+      },
+      "getEdgeIsVisibleByTag": {
+        "arguments": {
+          "edge": "Edge",
+          "graph": "Graph"
+        },
+        "returnType": "boolean"
+      },
+      "getEdgeIsVisibleByType": {
+        "arguments": {
+          "edge": "Edge",
+          "graph": "Graph"
+        },
+        "returnType": "boolean"
+      },
+      "getEdgeIsVisible": {
+        "arguments": {
+          "edge": "Edge",
+          "graph": "Graph"
+        },
+        "returnType": "boolean"
+      },
+      "getConfig": {
+        "arguments": {},
+        "returnType": "RenderingConfig"
+      }
+    }
   },
   "FilterOperator": {
     "kind": "type",
@@ -586,6 +1447,53 @@
     },
     "references": []
   },
+  "EntityCache": {
+    "kind": "class",
+    "properties": {
+      "cache": "Map<string, EntitiesContainer<any, any>>"
+    },
+    "references": [],
+    "methods": {
+      "addEntity": {
+        "arguments": {
+          "entity": "IEntity<string>"
+        },
+        "returnType": "void"
+      },
+      "addEntities": {
+        "arguments": {
+          "entities": "EntitiesContainer<any, any>"
+        },
+        "returnType": "void"
+      },
+      "getEntitiesOfType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "EntitiesContainer<any, any>"
+      },
+      "clearEntitiesOfType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "void"
+      },
+      "getTypes": {
+        "arguments": {},
+        "returnType": "string[]"
+      },
+      "getSize": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "maybeGetEntityById": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "IEntity<string>"
+      }
+    }
+  },
   "SerializedSceneGraph": {
     "kind": "interface",
     "properties": {
@@ -660,6 +1568,241 @@
     ],
     "definition": "SceneGraphData"
   },
+  "SceneGraph": {
+    "kind": "class",
+    "properties": {
+      "data": "SceneGraphData",
+      "listeners": "ISceneGraphListeners"
+    },
+    "references": [
+      "SceneGraphData",
+      "ISceneGraphListeners",
+      "Layout",
+      "DocumentState",
+      "ISceneGraphMetadata",
+      "IForceGraphRenderConfig",
+      "Graph",
+      "NodesContainer",
+      "EdgesContainer",
+      "NodeId",
+      "EdgeId",
+      "RenderingConfig",
+      "Position",
+      "Filter",
+      "SceneGraph",
+      "SerializedSceneGraph"
+    ],
+    "methods": {
+      "refreshDisplayConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getCommittedDisplayConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "saveLayout": {
+        "arguments": {
+          "layout": "Layout"
+        },
+        "returnType": "void"
+      },
+      "setDocument": {
+        "arguments": {
+          "storageKey": "string",
+          "document": "DocumentState"
+        },
+        "returnType": "void"
+      },
+      "getDocuments": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getDocument": {
+        "arguments": {
+          "storageKey": "string"
+        },
+        "returnType": "void"
+      },
+      "commitDisplayConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "bindListeners": {
+        "arguments": {
+          "listeners": "ISceneGraphListeners"
+        },
+        "returnType": "void"
+      },
+      "notifyDisplayConfigChanged": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "notifyGraphChanged": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getEntityCache": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getMetadata": {
+        "arguments": {},
+        "returnType": "ISceneGraphMetadata"
+      },
+      "setMetadata": {
+        "arguments": {
+          "data": "ISceneGraphMetadata"
+        },
+        "returnType": "void"
+      },
+      "getForceGraphRenderConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "setForceGraphRenderConfig": {
+        "arguments": {
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "void"
+      },
+      "getGraph": {
+        "arguments": {},
+        "returnType": "Graph"
+      },
+      "getNodes": {
+        "arguments": {},
+        "returnType": "NodesContainer"
+      },
+      "getEdges": {
+        "arguments": {},
+        "returnType": "EdgesContainer"
+      },
+      "getNodeById": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getEdgeById": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "void"
+      },
+      "getEdgeByNodes": {
+        "arguments": {
+          "source": "NodeId",
+          "target": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getDisplayConfig": {
+        "arguments": {},
+        "returnType": "RenderingConfig"
+      },
+      "setDisplayConfig": {
+        "arguments": {
+          "config": "RenderingConfig"
+        },
+        "returnType": "void"
+      },
+      "getNodePositions": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "setNodePositions": {
+        "arguments": {
+          "positions": "ObjectOf<Position>"
+        },
+        "returnType": "void"
+      },
+      "setNodePosition": {
+        "arguments": {
+          "nodeId": "NodeId",
+          "position": "Position",
+          "notify": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getNode": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getEdgeByNodeIds": {
+        "arguments": {
+          "sourceId": "NodeId",
+          "targetId": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getNodePosition": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "Position"
+      },
+      "getVisibleNodes": {
+        "arguments": {},
+        "returnType": "EntityIds<NodeId>"
+      },
+      "getColor": {
+        "arguments": {
+          "entity": "IEntity<string>"
+        },
+        "returnType": "string"
+      },
+      "getVisibility": {
+        "arguments": {
+          "entity": "Node | Edge"
+        },
+        "returnType": "boolean"
+      },
+      "saveFilter": {
+        "arguments": {
+          "name": "string",
+          "filter": "Filter"
+        },
+        "returnType": "void"
+      },
+      "getSavedFilters": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "clearFilters": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getNodesByType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "void"
+      },
+      "fromJSON": {
+        "arguments": {
+          "json": "string"
+        },
+        "returnType": "SceneGraph"
+      },
+      "toSerialized": {
+        "arguments": {},
+        "returnType": "SerializedSceneGraph"
+      },
+      "fromSerialized": {
+        "arguments": {
+          "serialized": "SerializedSceneGraph"
+        },
+        "returnType": "void"
+      }
+    }
+  },
   "IGraphvizOutput": {
     "kind": "interface",
     "properties": {
@@ -687,6 +1830,22 @@
       "on"
     ],
     "definition": "Node3DPositionData"
+  },
+  "GraphologyLayoutEngine": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "Graph"
+    ],
+    "methods": {
+      "computeLayout": {
+        "arguments": {
+          "modelGraph": "Graph",
+          "layoutType": "GraphologyLayoutType"
+        },
+        "returnType": "Promise<ObjectOf<Position>>"
+      }
+    }
   },
   "extractPositionsFromGraphlogyGraph": {
     "kind": "function",
@@ -730,6 +1889,35 @@
       "nodePositions": "ObjectOf<Position>"
     },
     "references": []
+  },
+  "DisplayManager": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "Graph"
+    ],
+    "methods": {
+      "applyVisibilityFromFilterRulesToGraph": {
+        "arguments": {
+          "graph": "Graph",
+          "filterRules": "FilterRuleDefinition[]"
+        },
+        "returnType": "void"
+      },
+      "setOnlyNodesVisible": {
+        "arguments": {
+          "graph": "Graph",
+          "nodeIds": "string[]"
+        },
+        "returnType": "void"
+      },
+      "setAllVisible": {
+        "arguments": {
+          "graph": "Graph"
+        },
+        "returnType": "void"
+      }
+    }
   },
   "ActiveLegendConfigState": {
     "kind": "type",
@@ -883,6 +2071,71 @@
     },
     "returnType": "void"
   },
+  "ForceGraphManager": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "ImageBoxData",
+      "Node",
+      "IForceGraphRenderConfig",
+      "SceneGraph"
+    ],
+    "methods": {
+      "createImageSprite": {
+        "arguments": {
+          "imageUrl": "string"
+        },
+        "returnType": "Sprite<Object3DEventMap>"
+      },
+      "createImageBoxElement": {
+        "arguments": {
+          "imageBoxData": "ImageBoxData"
+        },
+        "returnType": "HTMLDivElement"
+      },
+      "createShapeElement": {
+        "arguments": {
+          "n": "Node",
+          "shape": "string",
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "HTMLDivElement"
+      },
+      "createLabelElement": {
+        "arguments": {
+          "n": "Node",
+          "config": "IForceGraphRenderConfig",
+          "isForShape": "boolean"
+        },
+        "returnType": "HTMLElement"
+      },
+      "createNodeThreeObject": {
+        "arguments": {
+          "node": "any",
+          "sceneGraph": "SceneGraph",
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "Sprite<Object3DEventMap> | CSS2DObject"
+      },
+      "createLinkThreeObject": {
+        "arguments": {
+          "link": "any",
+          "sceneGraph": "SceneGraph",
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "CSS2DObject"
+      },
+      "applyForceGraphRenderConfig": {
+        "arguments": {
+          "instance": "ForceGraph3DInstance",
+          "config": "IForceGraphRenderConfig",
+          "sceneGraph": "SceneGraph",
+          "reheatSimulation": "boolean"
+        },
+        "returnType": "void"
+      }
+    }
+  },
   "MouseControlMode": {
     "kind": "type",
     "properties": {},
@@ -979,15 +2232,6 @@
     ],
     "definition": "AppConfig"
   },
-  "Node": {
-    "kind": "interface",
-    "properties": {
-      "x": "number",
-      "y": "number",
-      "z": "number"
-    },
-    "references": []
-  },
   "GraphBounds": {
     "kind": "interface",
     "properties": {
@@ -1048,6 +2292,45 @@
       "on"
     ],
     "definition": "SongAnnotationDataArgs"
+  },
+  "SongAnnotation": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "AbstractEntity",
+      "SongAnnotationData"
+    ],
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "SongAnnotationData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getTime": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "setTime": {
+        "arguments": {
+          "time": "number"
+        },
+        "returnType": "void"
+      },
+      "getText": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setText": {
+        "arguments": {
+          "text": "string"
+        },
+        "returnType": "void"
+      }
+    },
+    "extends": "AbstractEntity"
   },
   "AnimationConfig": {
     "kind": "interface",
@@ -1455,12 +2738,82 @@
     },
     "references": []
   },
+  "GraphvizLayoutEngine": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "methods": {
+      "computeLayout": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "GraphvizLayoutType"
+        },
+        "returnType": "Promise<GraphvizOutput>"
+      },
+      "convertToDot": {
+        "arguments": {
+          "graph": "any"
+        },
+        "returnType": "string"
+      },
+      "extractPositionsFromDot": {
+        "arguments": {
+          "dot": "string"
+        },
+        "returnType": "ObjectOf<Position>"
+      }
+    }
+  },
   "getLayoutWorker": {
     "kind": "function",
     "properties": {},
     "references": [],
     "arguments": {},
     "returnType": "Worker"
+  },
+  "LayoutEngine": {
+    "kind": "class",
+    "properties": {
+      "isComputingSafeLayout": "boolean"
+    },
+    "references": [
+      "SceneGraph",
+      "LayoutEngineOption"
+    ],
+    "methods": {
+      "resetComputationState": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "safeComputeLayout": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "LayoutEngineOption",
+          "nodeIds": "EntityIds<NodeId>"
+        },
+        "returnType": "Promise<ILayoutEngineResult>"
+      },
+      "cancelCurrentLayout": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "computeLayoutWithWorker": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "LayoutEngineOption"
+        },
+        "returnType": "Promise<ILayoutEngineResult>"
+      },
+      "computeLayout": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "LayoutEngineOption"
+        },
+        "returnType": "Promise<ILayoutEngineResult>"
+      }
+    }
   },
   "applyLayoutAndTriggerAppUpdate": {
     "kind": "function",
@@ -1835,6 +3188,7 @@
       "aliases",
       "alias",
       "definition",
+      "references",
       "on"
     ],
     "definition": "InterfaceAST"
@@ -1895,6 +3249,41 @@
       "nodesAdded": "Node[]"
     },
     "references": []
+  },
+  "KnowledgeGraphBuilder": {
+    "kind": "class",
+    "properties": {
+      "graph": "Graph",
+      "thinkers2": "SceneGraph"
+    },
+    "references": [
+      "Graph",
+      "SceneGraph",
+      "Person",
+      "Field"
+    ],
+    "methods": {
+      "addPerson": {
+        "arguments": {
+          "person": "Person"
+        },
+        "returnType": "void"
+      },
+      "addField": {
+        "arguments": {
+          "field": "Field"
+        },
+        "returnType": "void"
+      },
+      "addInitialNodes": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "buildGraph": {
+        "arguments": {},
+        "returnType": "Graph"
+      }
+    }
   },
   "Vector8": {
     "kind": "type",
@@ -2045,15 +3434,96 @@
     "references": []
   },
   "StoryCard": {
-    "kind": "interface",
-    "properties": {
-      "id": "string",
-      "title": "string",
-      "description": "string",
-      "markdownFile": "string",
-      "metadata": "{ tags?: string[]; author?: string; createdAt?: string; difficulty?: number; imageUrl?: string; position?: { x: number; y: number; z: number; }; }"
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "AbstractEntity",
+      "StoryCardData",
+      "Position",
+      "StoryCard",
+      "StoryCardDataArgs"
+    ],
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "StoryCardData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getTitle": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getDescription": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getAuthor": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getCreatedAt": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getDifficulty": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getImageUrl": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getPosition": {
+        "arguments": {},
+        "returnType": "Position"
+      },
+      "setTitle": {
+        "arguments": {
+          "title": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setDescription": {
+        "arguments": {
+          "description": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setAuthor": {
+        "arguments": {
+          "author": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setDifficulty": {
+        "arguments": {
+          "difficulty": "number"
+        },
+        "returnType": "StoryCard"
+      },
+      "setImageUrl": {
+        "arguments": {
+          "imageUrl": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setPosition": {
+        "arguments": {
+          "position": "Position"
+        },
+        "returnType": "StoryCard"
+      },
+      "create": {
+        "arguments": {
+          "args": "StoryCardDataArgs"
+        },
+        "returnType": "StoryCard"
+      }
     },
-    "references": []
+    "extends": "AbstractEntity"
   },
   "StoryCardEntity": {
     "kind": "interface",
@@ -2524,6 +3994,52 @@
     },
     "references": []
   },
+  "WebLLMClient": {
+    "kind": "class",
+    "properties": {
+      "engine": "MLCEngine",
+      "model": "string",
+      "initProgressCallback": "(report: { progress: number; }) => void"
+    },
+    "references": [
+      "ExtendedCompletionParams"
+    ],
+    "methods": {
+      "getModel": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "load": {
+        "arguments": {},
+        "returnType": "Promise<void>"
+      },
+      "reload": {
+        "arguments": {},
+        "returnType": "Promise<void>"
+      },
+      "isLoaded": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "chatCompletion": {
+        "arguments": {
+          "messages": "ChatMessage[]",
+          "params": "ExtendedCompletionParams"
+        },
+        "returnType": "Promise<string>"
+      },
+      "streamChatCompletion": {
+        "arguments": {
+          "messages": "ChatMessage[]"
+        },
+        "returnType": "Promise<string>"
+      },
+      "getMessage": {
+        "arguments": {},
+        "returnType": "Promise<string>"
+      }
+    }
+  },
   "DocumentTags": {
     "kind": "interface",
     "properties": {},
@@ -2619,6 +4135,36 @@
       "showChatGptImporter": "() => void"
     },
     "references": []
+  },
+  "MenuConfig": {
+    "kind": "class",
+    "properties": {
+      "callbacks": "IMenuConfigCallbacks",
+      "sceneGraph": "SceneGraph",
+      "forceGraphInstance": "ForceGraph3DInstance"
+    },
+    "references": [
+      "IMenuConfigCallbacks",
+      "SceneGraph",
+      "SceneGraphCategory",
+      "IMenuConfig"
+    ],
+    "methods": {
+      "createGraphSubmenu": {
+        "arguments": {
+          "category": "SceneGraphCategory"
+        },
+        "returnType": "IMenuConfig"
+      },
+      "buildGraphMenu": {
+        "arguments": {},
+        "returnType": "IMenuConfig"
+      },
+      "getConfig": {
+        "arguments": {},
+        "returnType": "MenuConfigType"
+      }
+    }
   },
   "ParsedConversation": {
     "kind": "interface",
@@ -2854,6 +4400,12 @@
     },
     "references": []
   },
+  "SceneGraphController": {
+    "kind": "class",
+    "properties": {},
+    "references": [],
+    "methods": {}
+  },
   "LLMStudioOptions": {
     "kind": "interface",
     "properties": {
@@ -2942,10 +4494,91 @@
     },
     "returnType": "DOMConversionOutput"
   },
+  "MentionNode": {
+    "kind": "class",
+    "properties": {
+      "__mention": "string"
+    },
+    "references": [
+      "TextNode",
+      "MentionNode",
+      "SerializedMentionNode",
+      "EditorConfig",
+      "DOMExportOutput",
+      "DOMConversionMap"
+    ],
+    "methods": {
+      "getType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "clone": {
+        "arguments": {
+          "node": "MentionNode"
+        },
+        "returnType": "MentionNode"
+      },
+      "importJSON": {
+        "arguments": {
+          "serializedNode": "SerializedMentionNode"
+        },
+        "returnType": "MentionNode"
+      },
+      "exportJSON": {
+        "arguments": {},
+        "returnType": "SerializedMentionNode"
+      },
+      "createDOM": {
+        "arguments": {
+          "config": "EditorConfig"
+        },
+        "returnType": "HTMLElement"
+      },
+      "exportDOM": {
+        "arguments": {},
+        "returnType": "DOMExportOutput"
+      },
+      "importDOM": {
+        "arguments": {},
+        "returnType": "DOMConversionMap"
+      },
+      "isTextEntity": {
+        "arguments": {},
+        "returnType": "true"
+      },
+      "canInsertTextBefore": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "canInsertTextAfter": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isSegmented": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isSimpleText": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isInert": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isToken": {
+        "arguments": {},
+        "returnType": "boolean"
+      }
+    },
+    "extends": "TextNode"
+  },
   "$createMentionNode": {
     "kind": "function",
     "properties": {},
-    "references": [],
+    "references": [
+      "MentionNode"
+    ],
     "arguments": {
       "mentionName": "string",
       "textContent": "string"
@@ -3127,6 +4760,35 @@
     },
     "references": []
   },
+  "SceneGraphCache": {
+    "kind": "class",
+    "properties": {
+      "sceneGraph": "SceneGraph",
+      "allTags": "Map<any, Set<string>>",
+      "allTypes": "Map<any, Set<string>>"
+    },
+    "references": [
+      "SceneGraph"
+    ],
+    "methods": {
+      "rebuildCache": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getTags": {
+        "arguments": {
+          "entityType": "GraphEntityType"
+        },
+        "returnType": "Set<string>"
+      },
+      "getTypes": {
+        "arguments": {
+          "entityType": "GraphEntityType"
+        },
+        "returnType": "Set<string>"
+      }
+    }
+  },
   "IForceGraphEventHandlers": {
     "kind": "interface",
     "properties": {
@@ -3165,6 +4827,59 @@
       "color": "string"
     },
     "references": []
+  },
+  "ForceGraphInstanceController": {
+    "kind": "class",
+    "properties": {
+      "sceneGraph": "SceneGraph",
+      "forceGraphInstance": "ForceGraph3DInstance"
+    },
+    "references": [
+      "IForceGraphInstanceController",
+      "SceneGraph",
+      "IForceGraphEventHandlers",
+      "AppConfig"
+    ],
+    "methods": {
+      "bindEventsToGraphInstance": {
+        "arguments": {
+          "eventHandlers": "IForceGraphEventHandlers"
+        },
+        "returnType": "void"
+      },
+      "initializeInstance": {
+        "arguments": {
+          "dom": "HTMLElement",
+          "appConfig": "AppConfig"
+        },
+        "returnType": "ForceGraph3DInstance"
+      },
+      "getInstance": {
+        "arguments": {},
+        "returnType": "ForceGraph3DInstance"
+      },
+      "applyFixedLayout": {
+        "arguments": {
+          "positions": "ObjectOf<Position>"
+        },
+        "returnType": "void"
+      },
+      "setBackgroundColor": {
+        "arguments": {
+          "color": "string"
+        },
+        "returnType": "void"
+      },
+      "setHighlightedNodes": {
+        "arguments": {
+          "nodeIds": "NodeId[]"
+        },
+        "returnType": "void"
+      }
+    },
+    "implements": [
+      "IForceGraphInstanceController"
+    ]
   },
   "Dimension": {
     "kind": "type",
@@ -3369,6 +5084,83 @@
     "properties": {},
     "references": []
   },
+  "PersistentStoreManager": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "IPersistentStore",
+      "SceneGraph",
+      "File"
+    ],
+    "methods": {
+      "openDB": {
+        "arguments": {},
+        "returnType": "Promise<IDBDatabase>"
+      },
+      "checkIdExists": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<boolean>"
+      },
+      "generateUniqueId": {
+        "arguments": {},
+        "returnType": "Promise<string>"
+      },
+      "generateThumbnail": {
+        "arguments": {
+          "_sceneGraph": "SceneGraph"
+        },
+        "returnType": "Promise<string>"
+      },
+      "saveSceneGraph": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "options": "{ id?: string; createThumbnail?: boolean; }"
+        },
+        "returnType": "Promise<string>"
+      },
+      "loadSceneGraph": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<SceneGraph>"
+      },
+      "listSceneGraphs": {
+        "arguments": {},
+        "returnType": "Promise<StoredSceneGraphInfo[]>"
+      },
+      "deleteSceneGraph": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<boolean>"
+      },
+      "exportSceneGraph": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<Blob>"
+      },
+      "importSceneGraph": {
+        "arguments": {
+          "file": "File"
+        },
+        "returnType": "Promise<string>"
+      },
+      "updateSceneGraph": {
+        "arguments": {
+          "id": "string",
+          "sceneGraph": "SceneGraph",
+          "options": "{ createThumbnail?: boolean; }"
+        },
+        "returnType": "Promise<string>"
+      }
+    },
+    "implements": [
+      "IPersistentStore"
+    ]
+  },
   "ImageAnnotationId": {
     "kind": "type",
     "properties": {},
@@ -3390,6 +5182,88 @@
       "on"
     ],
     "definition": "ImageAnnotationDataArgs"
+  },
+  "ImageAnnotation": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "AbstractEntity",
+      "ImageAnnotationData",
+      "ImageAnnotationDataArgs",
+      "ImageAnnotation"
+    ],
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "ImageAnnotationData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "create": {
+        "arguments": {
+          "args": "ImageAnnotationDataArgs"
+        },
+        "returnType": "ImageAnnotation"
+      }
+    },
+    "extends": "AbstractEntity"
+  },
+  "CameraHelper": {
+    "kind": "class",
+    "properties": {
+      "camera": "PerspectiveCamera | OrthographicCamera",
+      "controls": "OrbitControls",
+      "scene": "Scene",
+      "isAnimating": "boolean"
+    },
+    "references": [
+      "Scene"
+    ],
+    "methods": {
+      "centerOnObject": {
+        "arguments": {
+          "target": "Object3D<Object3DEventMap>",
+          "options": "{ duration?: number; distance?: number; offset?: Vector3; immediate?: boolean; onComplete?: () => void; }"
+        },
+        "returnType": "void"
+      },
+      "calculateCameraPosition": {
+        "arguments": {
+          "targetPos": "Vector3",
+          "distance": "number",
+          "offset": "Vector3"
+        },
+        "returnType": "Vector3"
+      },
+      "animateCameraToPosition": {
+        "arguments": {
+          "targetCameraPosition": "Vector3",
+          "lookAtPosition": "Vector3",
+          "duration": "number",
+          "onComplete": "() => void"
+        },
+        "returnType": "void"
+      },
+      "setCameraPosition": {
+        "arguments": {
+          "position": "Vector3",
+          "lookAtPosition": "Vector3"
+        },
+        "returnType": "void"
+      },
+      "easeInOutCubic": {
+        "arguments": {
+          "t": "number"
+        },
+        "returnType": "number"
+      },
+      "isCurrentlyAnimating": {
+        "arguments": {},
+        "returnType": "boolean"
+      }
+    }
   },
   "applyParticleEffects": {
     "kind": "function",
@@ -3458,6 +5332,26 @@
       "svgUrl": "string"
     },
     "returnType": "{ sceneGraph: SceneGraph; loading: boolean; error: Error; }"
+  },
+  "DisplayConfigManager": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "DisplayConfigData",
+      "SceneGraph"
+    ],
+    "methods": {
+      "addKeyToDisplayConfig": {
+        "arguments": {
+          "key": "string",
+          "config": "DisplayConfigData",
+          "mode": "\"type\" | \"tag\"",
+          "entityType": "GraphEntityType",
+          "sceneGraph": "SceneGraph"
+        },
+        "returnType": "void"
+      }
+    }
   },
   "ReactFlowConfigState": {
     "kind": "interface",

@@ -9,12 +9,15 @@ import { SceneGraph } from "../../core/model/SceneGraph";
 type InterfaceAST = Record<
   string,
   {
-    kind: "interface" | "type" | "function";
+    kind: "interface" | "type" | "function" | "class";
     properties: Record<string, string>;
     references: string[];
     definition?: string; // For type aliases
     arguments?: Record<string, string>; // For functions
     returnType?: string; // For functions
+    methods?: Record<string, { arguments: Record<string, string>; returnType: string }>; // For classes
+    extends?: string; // For classes that extend other classes
+    implements?: string[]; // For classes that implement interfaces
   }
 >;
 
@@ -89,7 +92,7 @@ export async function demo_scenegraph_ast(
       type: data.kind,
     });
 
-    // Enhanced: Extract references from property types (for interfaces)
+    // Enhanced: Extract references from property types (for interfaces and classes)
     for (const [_, typeStr] of Object.entries(data.properties)) {
       const refs = extractReferences(typeStr, allTypes);
       for (const ref of refs) {
@@ -140,6 +143,64 @@ export async function demo_scenegraph_ast(
       }
     }
 
+    // Handle class-specific features
+    if (data.kind === "class") {
+      // Handle inheritance (extends)
+      if (data.extends && allTypes.has(data.extends)) {
+        graph.createEdgeIfMissing(name, data.extends as NodeId);
+      }
+
+      // Handle interface implementation
+      if (data.implements) {
+        for (const interfaceName of data.implements) {
+          if (allTypes.has(interfaceName)) {
+            graph.createEdgeIfMissing(name, interfaceName as NodeId);
+          }
+        }
+      }
+
+      // Handle methods
+      if (data.methods) {
+        for (const [methodName, methodData] of Object.entries(data.methods)) {
+          const methodNodeId = `${name}::${methodName}`;
+          graph.createNode({
+            id: methodNodeId,
+            label: `${methodName}(): ${methodData.returnType}`,
+            type: "method",
+          });
+          graph.createEdgeIfMissing(name, methodNodeId as NodeId);
+
+          // Create argument nodes for method parameters
+          for (const [argName, argType] of Object.entries(methodData.arguments)) {
+            const refs = extractReferences(argType, allTypes);
+            for (const ref of refs) {
+              if (ref && allTypes.has(ref)) {
+                graph.createEdgeIfMissing(methodNodeId as NodeId, ref as NodeId);
+              }
+            }
+
+            const methodArgNodeId = `${methodNodeId}:${argName}`;
+            graph.createNode({
+              id: methodArgNodeId,
+              label: `${argName}: ${argType}`,
+              type: "method-argument",
+            });
+            graph.createEdgeIfMissing(methodNodeId as NodeId, methodArgNodeId as NodeId);
+          }
+
+          // Handle method return type references
+          if (methodData.returnType && methodData.returnType !== "void") {
+            const refs = extractReferences(methodData.returnType, allTypes);
+            for (const ref of refs) {
+              if (ref && allTypes.has(ref)) {
+                graph.createEdgeIfMissing(methodNodeId as NodeId, ref as NodeId);
+              }
+            }
+          }
+        }
+      }
+    }
+
     // Also use the explicit references from the AST
     for (const ref of data.references) {
       if (ref && ref !== name && allTypes.has(ref)) {
@@ -151,9 +212,9 @@ export async function demo_scenegraph_ast(
   return new SceneGraph({
     graph,
     metadata: {
-      name: "Interface, Type, and Function AST SceneGraph",
+      name: "Ultimate AST SceneGraph",
       description:
-        "A scene graph representing interfaces, types, and functions from the AST",
+        "Complete scene graph with interfaces, types, functions, classes, properties, and methods",
     },
     defaultAppConfig: {
       ...DEFAULT_APP_CONFIG(),
