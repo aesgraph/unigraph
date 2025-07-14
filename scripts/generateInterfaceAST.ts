@@ -28,10 +28,12 @@ function parseInterfaces(files: string[]) {
   const ast: Record<
     string,
     {
-      kind: "interface" | "type";
+      kind: "interface" | "type" | "function";
       properties: Record<string, string>;
       references: Set<string>;
       definition?: string; // For type aliases
+      arguments?: Record<string, string>; // For functions
+      returnType?: string; // For functions
     }
   > = {};
 
@@ -97,6 +99,63 @@ function parseInterfaces(files: string[]) {
           references,
           definition,
         };
+      } else if (ts.isFunctionDeclaration(node) && node.name) {
+        const name = node.name.text;
+        const references = new Set<string>();
+        const functionArguments: Record<string, string> = {};
+
+        // Parse function parameters
+        node.parameters.forEach((param) => {
+          if (param.name && ts.isIdentifier(param.name) && param.type) {
+            const paramName = param.name.text;
+            const paramType = checker.typeToString(
+              checker.getTypeFromTypeNode(param.type)
+            );
+            functionArguments[paramName] = paramType;
+
+            // Add reference if it's a custom type
+            if (
+              paramType in ast ||
+              files.some(
+                (f) =>
+                  fs
+                    .readFileSync(f, "utf8")
+                    .includes(`interface ${paramType}`) ||
+                  fs.readFileSync(f, "utf8").includes(`type ${paramType}`)
+              )
+            ) {
+              references.add(paramType);
+            }
+          }
+        });
+
+        // Parse return type
+        let returnType = "void";
+        if (node.type) {
+          returnType = checker.typeToString(
+            checker.getTypeFromTypeNode(node.type)
+          );
+          if (
+            returnType in ast ||
+            files.some(
+              (f) =>
+                fs
+                  .readFileSync(f, "utf8")
+                  .includes(`interface ${returnType}`) ||
+                fs.readFileSync(f, "utf8").includes(`type ${returnType}`)
+            )
+          ) {
+            references.add(returnType);
+          }
+        }
+
+        ast[name] = {
+          kind: "function",
+          properties: {},
+          references,
+          arguments: functionArguments,
+          returnType,
+        };
       }
     });
   }
@@ -121,4 +180,4 @@ fs.writeFileSync(
   "public/data/unigraph-ast/interface-ast.json",
   JSON.stringify(serializedAst, null, 2)
 );
-console.log("Interface and Type AST written to interface-ast.json");
+console.log("Interface, Type, and Function AST written to interface-ast.json");

@@ -43,6 +43,18 @@
     ],
     "definition": "FullEntityType<T>"
   },
+  "fromDefault": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "T",
+      "FullEntityType<T>"
+    ],
+    "arguments": {
+      "args": "T"
+    },
+    "returnType": "FullEntityType<T>"
+  },
   "IEntity": {
     "kind": "interface",
     "properties": {},
@@ -238,6 +250,57 @@
       "on"
     ],
     "definition": "ObjectOf<Position>"
+  },
+  "createGraphologyGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Graph"
+    ],
+    "arguments": {
+      "graph": "Graph"
+    },
+    "returnType": "Graph<Attributes, Attributes, Attributes>"
+  },
+  "normalizePositions": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "positions": "ObjectOf<Position>"
+    },
+    "returnType": "ObjectOf<Position>"
+  },
+  "scalePositions": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "positions": "ObjectOf<Position>",
+      "width": "number",
+      "height": "number"
+    },
+    "returnType": "ObjectOf<Position>"
+  },
+  "centerPositions": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "positions": "ObjectOf<Position>"
+    },
+    "returnType": "ObjectOf<Position>"
+  },
+  "fitToRect": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "width": "number",
+      "height": "number",
+      "positions": "ObjectOf<Position>"
+    },
+    "returnType": "ObjectOf<Position>"
   },
   "EntitiesMetadata": {
     "kind": "type",
@@ -625,6 +688,15 @@
     ],
     "definition": "Node3DPositionData"
   },
+  "extractPositionsFromGraphlogyGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "graph": "Graph<Attributes, Attributes, Attributes>"
+    },
+    "returnType": "ObjectOf<Position>"
+  },
   "LayoutEngineOption": {
     "kind": "type",
     "properties": {},
@@ -691,6 +763,28 @@
     ],
     "definition": "GraphInteractionState"
   },
+  "extractIntersection": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "T"
+    ],
+    "arguments": {
+      "intersects": "Intersection<Object3D<Object3DEventMap>>[]",
+      "id": "string"
+    },
+    "returnType": "T"
+  },
+  "extractIntersections": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "intersects": "Intersection<Object3D<Object3DEventMap>>[]",
+      "id": "string"
+    },
+    "returnType": "T[]"
+  },
   "ScreenCoordinates": {
     "kind": "interface",
     "properties": {
@@ -701,12 +795,40 @@
     },
     "references": []
   },
+  "getImagePixelCoordinates": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "camera": "Camera",
+      "renderer": "WebGLRenderer"
+    },
+    "returnType": "void"
+  },
+  "convertPixelCoordinatesToPositions": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "pixelCoordinates": "{ x: number; y: number; width: number; height: number; }"
+    },
+    "returnType": "void"
+  },
   "SelectionBoxGroup": {
     "kind": "interface",
     "properties": {
       "userData": "{ anchorPoint: Vector3; box: Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>; ... 4 more ...; uuid: string; }"
     },
     "references": []
+  },
+  "extractSelectionBoxGroups": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "intersects": "Intersection<Object3D<Object3DEventMap>>[]"
+    },
+    "returnType": "SelectionBoxGroup[]"
   },
   "ImageBoxData": {
     "kind": "type",
@@ -718,6 +840,32 @@
     ],
     "definition": "ImageBoxData"
   },
+  "findNodeInForceGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "NodeId"
+    ],
+    "arguments": {
+      "forceGraphInstance": "ForceGraph3DInstance",
+      "nodeId": "NodeId"
+    },
+    "returnType": "any"
+  },
+  "selectNodesInSelectionBox": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "SelectionBox"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "sceneGraph": "SceneGraph",
+      "selectionBox": "SelectionBox"
+    },
+    "returnType": "void"
+  },
   "IForceGraph3dCameraData": {
     "kind": "interface",
     "properties": {
@@ -725,6 +873,15 @@
       "quaternion": "any"
     },
     "references": []
+  },
+  "updateHighlight": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "graph": "ForceGraph3DInstance"
+    },
+    "returnType": "void"
   },
   "MouseControlMode": {
     "kind": "type",
@@ -841,6 +998,26 @@
     },
     "references": []
   },
+  "computeGraphBounds": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "GraphBounds"
+    ],
+    "arguments": {
+      "nodes": "Node[]"
+    },
+    "returnType": "GraphBounds"
+  },
+  "setupDynamicCamera": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "graph": "ForceGraph3DInstance"
+    },
+    "returnType": "void"
+  },
   "SongAnnotationId": {
     "kind": "type",
     "properties": {},
@@ -882,6 +1059,19 @@
     },
     "references": []
   },
+  "runManagedAnimation": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "AnimationConfig"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "callback": "(elapsedTime: number, frameCount: number) => void",
+      "config": "AnimationConfig"
+    },
+    "returnType": "void"
+  },
   "TransitionOptions": {
     "kind": "interface",
     "properties": {
@@ -890,6 +1080,20 @@
       "onComplete": "() => void"
     },
     "references": []
+  },
+  "transitionToConfig": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "IForceGraphRenderConfig",
+      "TransitionOptions"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "targetConfig": "IForceGraphRenderConfig",
+      "options": "TransitionOptions"
+    },
+    "returnType": "void"
   },
   "TimedConfig": {
     "kind": "interface",
@@ -911,6 +1115,19 @@
       "onComplete": "() => void"
     },
     "references": []
+  },
+  "playConfigSequence": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SequenceConfig"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "configs": "TimedConfig[]",
+      "options": "SequenceConfig"
+    },
+    "returnType": "void"
   },
   "ConfigGeneratorOptions": {
     "kind": "interface",
@@ -939,6 +1156,30 @@
     ],
     "definition": "Partial<ConfigGeneratorOptions>"
   },
+  "generateRandomConfig": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SongAnnotation",
+      "SongVisualizationConfig",
+      "IForceGraphRenderConfig"
+    ],
+    "arguments": {
+      "annotation": "SongAnnotation",
+      "config": "SongVisualizationConfig"
+    },
+    "returnType": "IForceGraphRenderConfig"
+  },
+  "generateConfigsFromAnnotations": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "annotations": "SongAnnotationData[]",
+      "options": "Partial<ConfigGeneratorOptions>"
+    },
+    "returnType": "TimedConfig[]"
+  },
   "SpawnerConfig": {
     "kind": "interface",
     "properties": {
@@ -950,6 +1191,21 @@
       "linkColor": "string"
     },
     "references": []
+  },
+  "createAnnotationNodeSpawner": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SpawnerConfig",
+      "SceneGraph"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotationData[]",
+      "config": "SpawnerConfig",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "void"
   },
   "RandomEffectsConfig": {
     "kind": "interface",
@@ -963,6 +1219,19 @@
       "transitionDuration": "number"
     },
     "references": []
+  },
+  "applyRandomEffects": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "RandomEffectsConfig"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotation[]",
+      "config": "RandomEffectsConfig"
+    },
+    "returnType": "void"
   },
   "StaggeredEffectsConfig": {
     "kind": "interface",
@@ -979,6 +1248,19 @@
       "linkOpacityTransitionDuration": "number"
     },
     "references": []
+  },
+  "applyStaggeredEffects": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "StaggeredEffectsConfig"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotation[]",
+      "config": "StaggeredEffectsConfig"
+    },
+    "returnType": "void"
   },
   "EdgesToDegreeResult": {
     "kind": "interface",
@@ -998,6 +1280,20 @@
     },
     "references": []
   },
+  "pulsateNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "PulsateOptions"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "sceneGraph": "SceneGraph",
+      "options": "PulsateOptions"
+    },
+    "returnType": "void"
+  },
   "SongVisualizationConfig": {
     "kind": "interface",
     "properties": {
@@ -1010,6 +1306,19 @@
       "transitionDuration": "number"
     },
     "references": []
+  },
+  "createSongVisualizationTimeline": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SongVisualizationConfig"
+    ],
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotation[]",
+      "options": "SongVisualizationConfig"
+    },
+    "returnType": "void"
   },
   "Point": {
     "kind": "interface",
@@ -1056,6 +1365,18 @@
     },
     "references": []
   },
+  "bfsQuery": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "dbpediaId": "string",
+      "limitLevel1": "number",
+      "limitLevel2": "number",
+      "totalLimit": "number"
+    },
+    "returnType": "void"
+  },
   "BlobNodeMetadata": {
     "kind": "interface",
     "properties": {
@@ -1066,6 +1387,19 @@
       "isCore": "boolean"
     },
     "references": []
+  },
+  "createBlobMesh": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Graph"
+    ],
+    "arguments": {
+      "radius": "number",
+      "shells": "number",
+      "nodesPerShell": "number"
+    },
+    "returnType": "Graph"
   },
   "GraphvizOutput": {
     "kind": "type",
@@ -1121,6 +1455,50 @@
     },
     "references": []
   },
+  "getLayoutWorker": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Worker"
+  },
+  "applyLayoutAndTriggerAppUpdate": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Layout"
+    ],
+    "arguments": {
+      "layout": "Layout"
+    },
+    "returnType": "void"
+  },
+  "computeLayoutAndTriggerAppUpdate": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "LayoutEngineOption"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "layout": "LayoutEngineOption",
+      "nodeSelection": "EntityIds<NodeId>"
+    },
+    "returnType": "Promise<ILayoutEngineResult>"
+  },
+  "computeLayoutAndTriggerUpdateForCurrentSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "LayoutEngineOption"
+    ],
+    "arguments": {
+      "layout": "LayoutEngineOption",
+      "nodeSelection": "EntityIds<NodeId>"
+    },
+    "returnType": "Promise<ILayoutEngineResult>"
+  },
   "Webpage": {
     "kind": "interface",
     "properties": {
@@ -1135,6 +1513,33 @@
       "last_updated_at": "string"
     },
     "references": []
+  },
+  "saveWebpage": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Webpage"
+    ],
+    "arguments": {
+      "webpage": "Webpage"
+    },
+    "returnType": "void"
+  },
+  "listWebpages": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void"
+  },
+  "getWebpage": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void"
   },
   "TextSelectionAnnotationData": {
     "kind": "interface",
@@ -1170,6 +1575,33 @@
     },
     "references": []
   },
+  "saveAnnotation": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Annotation"
+    ],
+    "arguments": {
+      "annotation": "Annotation"
+    },
+    "returnType": "void"
+  },
+  "listAnnotations": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void"
+  },
+  "getAnnotation": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void"
+  },
   "NotificationType": {
     "kind": "type",
     "properties": {},
@@ -1200,6 +1632,50 @@
     },
     "references": []
   },
+  "serializeSceneGraphToJson": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string"
+  },
+  "deserializeSceneGraphFromJson": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "json": "string"
+    },
+    "returnType": "SceneGraph"
+  },
+  "compressSceneGraphJsonForUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string"
+  },
+  "decompressSceneGraphJsonFromUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "compressed": "string"
+    },
+    "returnType": "SceneGraph"
+  },
   "SupabaseProject": {
     "kind": "interface",
     "properties": {
@@ -1221,6 +1697,54 @@
     },
     "references": []
   },
+  "saveProjectToSupabase": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "void"
+  },
+  "listProjects": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<Omit<SupabaseProject, \"data\">[]>"
+  },
+  "getProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "params": "{ id?: string; name?: string; }"
+    },
+    "returnType": "Promise<SupabaseProject>"
+  },
+  "deleteProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "projectId": "string"
+    },
+    "returnType": "Promise<void>"
+  },
+  "updateProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UpdateProjectParams"
+    ],
+    "arguments": {
+      "projectId": "string",
+      "updates": "UpdateProjectParams"
+    },
+    "returnType": "Promise<SupabaseProject>"
+  },
   "ProjectActionResult": {
     "kind": "interface",
     "properties": {
@@ -1230,13 +1754,109 @@
     },
     "references": []
   },
+  "exportProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "projectId": "string",
+      "projectName": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>"
+  },
+  "deleteProjectAction": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "projectId": "string",
+      "projectName": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>"
+  },
+  "copyProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "projectId": "string",
+      "newName": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>"
+  },
+  "editProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UpdateProjectParams"
+    ],
+    "arguments": {
+      "projectId": "string",
+      "updates": "UpdateProjectParams"
+    },
+    "returnType": "Promise<ProjectActionResult>"
+  },
+  "loadProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "projectId": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>"
+  },
+  "handleProjectActionResult": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ProjectActionResult"
+    ],
+    "arguments": {
+      "result": "ProjectActionResult",
+      "onSuccess": "(data?: any) => void",
+      "onError": "(message: string) => void"
+    },
+    "returnType": "void"
+  },
+  "confirmAction": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "message": "string"
+    },
+    "returnType": "Promise<boolean>"
+  },
   "InterfaceAST": {
     "kind": "type",
     "properties": {},
     "references": [
-      "or"
+      "or",
+      "aliases",
+      "alias",
+      "definition",
+      "on"
     ],
     "definition": "InterfaceAST"
+  },
+  "extractReferences": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "typeStr": "string",
+      "allTypes": "Set<string>"
+    },
+    "returnType": "string[]"
+  },
+  "demo_scenegraph_ast": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "Promise<SceneGraph>"
   },
   "StoryCardOptions": {
     "kind": "interface",
@@ -1282,6 +1902,16 @@
     "references": [],
     "definition": "Vector8"
   },
+  "loadSvgFromUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string",
+      "options": "any"
+    },
+    "returnType": "Promise<SceneGraph>"
+  },
   "ILoadSvgToSceneGraphOptions": {
     "kind": "interface",
     "properties": {
@@ -1294,6 +1924,17 @@
       "AppConfig",
       "ISceneGraphMetadata"
     ]
+  },
+  "findClosestNode": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "nodes": "any[]",
+      "x": "number",
+      "y": "number"
+    },
+    "returnType": "string"
   },
   "RandomNodeOptions": {
     "kind": "interface",
@@ -1323,6 +1964,63 @@
       "allowMultiEdges": "boolean"
     },
     "references": []
+  },
+  "generateRandomNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Graph",
+      "RandomNodeOptions"
+    ],
+    "arguments": {
+      "graph": "Graph",
+      "options": "RandomNodeOptions"
+    },
+    "returnType": "NodeId[]"
+  },
+  "generateRandomEdges": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Graph",
+      "RandomEdgeOptions"
+    ],
+    "arguments": {
+      "graph": "Graph",
+      "nodeIds": "NodeId[]",
+      "options": "RandomEdgeOptions"
+    },
+    "returnType": "number"
+  },
+  "generateRandomGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "RandomNodeOptions",
+      "RandomEdgeOptions"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "nodeOptions": "RandomNodeOptions",
+      "edgeOptions": "RandomEdgeOptions"
+    },
+    "returnType": "{ nodeIds: NodeId[]; edgeCount: number; }"
+  },
+  "addRandomCluster": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "centerNodeId": "NodeId",
+      "clusterSize": "number",
+      "connectivityDensity": "number"
+    },
+    "returnType": "NodeId[]"
   },
   "TreeNode": {
     "kind": "interface",
@@ -1367,6 +2065,161 @@
     "references": [
       "StoryCard"
     ]
+  },
+  "createStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "StoryCard"
+    ],
+    "arguments": {
+      "id": "string",
+      "title": "string",
+      "description": "string"
+    },
+    "returnType": "StoryCard"
+  },
+  "createMarkdownStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "StoryCard"
+    ],
+    "arguments": {
+      "id": "string",
+      "title": "string",
+      "markdownFile": "string"
+    },
+    "returnType": "StoryCard"
+  },
+  "addStoryCardToGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "StoryCard",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "card": "StoryCard"
+    },
+    "returnType": "NodeId"
+  },
+  "createStoryChoice": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId",
+      "EdgeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "parentCardId": "NodeId",
+      "childCardId": "NodeId",
+      "choiceLabel": "string"
+    },
+    "returnType": "EdgeId"
+  },
+  "getChildStoryCards": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "parentCardId": "NodeId"
+    },
+    "returnType": "NodeId[]"
+  },
+  "getParentStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "childCardId": "NodeId"
+    },
+    "returnType": "NodeId"
+  },
+  "findRootStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "NodeId"
+  },
+  "reconstructStoryHierarchy": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "rootNodeId": "NodeId"
+    },
+    "returnType": "{ card: StoryCard; children: { card: StoryCard; children: any[]; }[]; }"
+  },
+  "addStoryTreeToGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "storyTree": "any"
+    },
+    "returnType": "Map<string, NodeId>"
+  },
+  "convertStoryCardToEntity": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "StoryCard",
+      "StoryCardEntity"
+    ],
+    "arguments": {
+      "card": "StoryCard"
+    },
+    "returnType": "StoryCardEntity"
+  },
+  "createStoryGraphFromTree": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "storyTree": "any"
+    },
+    "returnType": "SceneGraph"
+  },
+  "exportStoryTree": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "NodeId"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "rootNodeId": "NodeId"
+    },
+    "returnType": "any"
   },
   "StoryCardId": {
     "kind": "type",
@@ -1424,6 +2277,18 @@
     ],
     "definition": "FeatureSet<E>"
   },
+  "createFeatureSet": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "E"
+    ],
+    "arguments": {
+      "name": "string",
+      "features": "E"
+    },
+    "returnType": "FeatureSet<E>"
+  },
   "SphereNodeMetadata": {
     "kind": "interface",
     "properties": {
@@ -1435,6 +2300,31 @@
       "poleType": "\"north\" | \"south\""
     },
     "references": []
+  },
+  "createSphereMesh": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Graph"
+    ],
+    "arguments": {
+      "radius": "number",
+      "segments": "number"
+    },
+    "returnType": "Graph"
+  },
+  "createCylindricalMesh": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Graph"
+    ],
+    "arguments": {
+      "radius": "number",
+      "latitudeCount": "number",
+      "longitudeCount": "number"
+    },
+    "returnType": "Graph"
   },
   "SceneGraphCategory": {
     "kind": "interface",
@@ -1448,6 +2338,22 @@
     "kind": "interface",
     "properties": {},
     "references": []
+  },
+  "getAllDemoSceneGraphCategories": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string[]"
+  },
+  "getDemoSceneGraphTree": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "DemoSceneGraphTree"
+    ],
+    "arguments": {},
+    "returnType": "DemoSceneGraphTree"
   },
   "ILayoutManagerState": {
     "kind": "interface",
@@ -1480,6 +2386,108 @@
       "ISceneGraphDetailViewState"
     ],
     "definition": "DialogState"
+  },
+  "setShowLoadSceneGraphWindow": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowSaveSceneGraphDialog": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowSaveAsNewProjectDialog": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowPathAnalysis": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowEntityTables": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowEntityTablesV2": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowLayoutManager": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "mode": "\"save\" | \"load\"",
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowSceneGraphDetailView": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean",
+      "readOnly": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowFilterManager": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "mode": "\"save\" | \"load\"",
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowFilterWindow": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void"
+  },
+  "setShowCommandPalette": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "open": "boolean"
+    },
+    "returnType": "void"
   },
   "ChatMessage": {
     "kind": "interface",
@@ -1532,6 +2540,69 @@
       "NodeId"
     ]
   },
+  "analyzeDocumentForTags": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "WebLLMClient"
+    ],
+    "arguments": {
+      "content": "string",
+      "llmClient": "WebLLMClient"
+    },
+    "returnType": "Promise<string[]>"
+  },
+  "analyzeAllDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "onProgress": "(progress: AnalysisProgress) => void"
+    },
+    "returnType": "Promise<DocumentTags>"
+  },
+  "applyTagsToDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph",
+      "DocumentTags"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "documentTags": "DocumentTags"
+    },
+    "returnType": "Promise<number>"
+  },
+  "exportTagsToJson": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "DocumentTags"
+    ],
+    "arguments": {
+      "documentTags": "DocumentTags",
+      "filename": "string"
+    },
+    "returnType": "void"
+  },
+  "runConversationsAnalysis": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "applyTags": "boolean",
+      "exportFile": "boolean",
+      "onProgress": "(progress: AnalysisProgress) => void"
+    },
+    "returnType": "Promise<DocumentTags>"
+  },
   "IMenuConfigCallbacks": {
     "kind": "interface",
     "properties": {
@@ -1557,6 +2628,126 @@
       "error": "string"
     },
     "references": []
+  },
+  "fetchChatGptConversation": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "Promise<ParsedConversation>"
+  },
+  "parseConversationsJson": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "data": "any"
+    },
+    "returnType": "ParsedConversation[]"
+  },
+  "parseConversationItem": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ParsedConversation"
+    ],
+    "arguments": {
+      "conversation": "any"
+    },
+    "returnType": "ParsedConversation"
+  },
+  "createFormattedConversationDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ParsedConversation"
+    ],
+    "arguments": {
+      "conversation": "ParsedConversation"
+    },
+    "returnType": "string"
+  },
+  "getRoleLabel": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "role": "string"
+    },
+    "returnType": "string"
+  },
+  "importChatGptConversation": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "url": "string",
+      "sceneGraph": "SceneGraph",
+      "createMessageNodes": "boolean"
+    },
+    "returnType": "Promise<NodeId>"
+  },
+  "getLabelForRole": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "role": "string"
+    },
+    "returnType": "string"
+  },
+  "getTypeForRole": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "role": "string"
+    },
+    "returnType": "string"
+  },
+  "importChatGptFromFile": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "File",
+      "SceneGraph"
+    ],
+    "arguments": {
+      "file": "File",
+      "sceneGraph": "SceneGraph",
+      "createMessageNodes": "boolean",
+      "conversationSampleRatio": "number"
+    },
+    "returnType": "Promise<NodeId | NodeId[]>"
+  },
+  "importParsedConversation": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ParsedConversation",
+      "SceneGraph"
+    ],
+    "arguments": {
+      "conversation": "ParsedConversation",
+      "sceneGraph": "SceneGraph",
+      "fileName": "string",
+      "createMessageNodes": "boolean"
+    },
+    "returnType": "Promise<NodeId>"
+  },
+  "downsampleConversations": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "conversations": "ParsedConversation[]",
+      "ratio": "number"
+    },
+    "returnType": "ParsedConversation[]"
   },
   "Metadata": {
     "kind": "interface",
@@ -1594,6 +2785,56 @@
     },
     "references": []
   },
+  "importConversations": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "jsonFilePath": "string",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "Promise<{ imported: number; matched: number; }>"
+  },
+  "createTopicNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "{ topics: number; connections: number; }"
+  },
+  "createKeywordNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "minOccurrences": "number"
+    },
+    "returnType": "{ keywords: number; connections: number; }"
+  },
+  "importConversationsWithStructure": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "jsonFilePath": "string",
+      "sceneGraph": "SceneGraph",
+      "createTopics": "boolean",
+      "createKeywords": "boolean",
+      "keywordMinOccurrences": "number"
+    },
+    "returnType": "Promise<{ imported: number; matched: number; topics?: { topics: number; connections: number; }; keywords?: { keywords: number; connections: number; }; }>"
+  },
   "SceneGraphCommand": {
     "kind": "interface",
     "properties": {
@@ -1623,6 +2864,62 @@
     },
     "references": []
   },
+  "getSystemPromptWithCommands": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string"
+  },
+  "getCommandsContextForLLM": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string"
+  },
+  "callLLMStudioAPI": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "LLMStudioOptions"
+    ],
+    "arguments": {
+      "messages": "ChatMessage[]",
+      "options": "LLMStudioOptions"
+    },
+    "returnType": "Promise<string>"
+  },
+  "normalizeMessages": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "messages": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]"
+    },
+    "returnType": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]"
+  },
+  "getEnhancedSystemPrompt": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string"
+  },
+  "checkLLMStudioAvailability": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<boolean>"
+  },
+  "main": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void"
+  },
   "SerializedMentionNode": {
     "kind": "type",
     "properties": {},
@@ -1634,6 +2931,38 @@
     ],
     "definition": "SerializedMentionNode"
   },
+  "$convertMentionElement": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "DOMConversionOutput"
+    ],
+    "arguments": {
+      "domNode": "HTMLElement"
+    },
+    "returnType": "DOMConversionOutput"
+  },
+  "$createMentionNode": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "mentionName": "string",
+      "textContent": "string"
+    },
+    "returnType": "MentionNode"
+  },
+  "$isMentionNode": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "LexicalNode"
+    ],
+    "arguments": {
+      "node": "LexicalNode"
+    },
+    "returnType": "boolean"
+  },
   "ResourceSpecifier": {
     "kind": "interface",
     "properties": {
@@ -1641,6 +2970,87 @@
       "resource_id": "string"
     },
     "references": []
+  },
+  "getDownstreamNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>"
+  },
+  "getUpstreamNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>"
+  },
+  "getAllPaths": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>"
+  },
+  "findOriginNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>"
+  },
+  "getEdgesBetweenNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "nodes": "EntityIds<NodeId>",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<EdgeId>"
+  },
+  "getEntirePath": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "{ nodes: EntityIds<NodeId>; edges: EntityIds<EdgeId>; }"
+  },
+  "loadMarkdownFile": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "path": "string"
+    },
+    "returnType": "Promise<string>"
   },
   "FormSchemaField": {
     "kind": "interface",
@@ -1685,6 +3095,24 @@
       "children": "StoryNode[]"
     },
     "references": []
+  },
+  "extractFirstImageSrc": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "markdown": "string"
+    },
+    "returnType": "string"
+  },
+  "removeFirstImage": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "markdown": "string"
+    },
+    "returnType": "string"
   },
   "HotkeyAction": {
     "kind": "interface",
@@ -1770,6 +3198,29 @@
       "ILayoutEngineResult"
     ]
   },
+  "deserializeSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SerializedSceneGraph",
+      "SceneGraph"
+    ],
+    "arguments": {
+      "serializedGraph": "SerializedSceneGraph"
+    },
+    "returnType": "SceneGraph"
+  },
+  "handleComputeLayout": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "LayoutWorkerMessage"
+    ],
+    "arguments": {
+      "message": "LayoutWorkerMessage"
+    },
+    "returnType": "Promise<ILayoutEngineResult>"
+  },
   "ImageBox": {
     "kind": "interface",
     "properties": {
@@ -1811,6 +3262,44 @@
     },
     "references": []
   },
+  "serializeSongAnnotationContainerToJson": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "container": "EntitiesContainer<SongAnnotationId, SongAnnotation>"
+    },
+    "returnType": "string"
+  },
+  "deserializeSongAnnotationContainerFromJson": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "json": "string"
+    },
+    "returnType": "EntitiesContainer<SongAnnotationId, SongAnnotation>"
+  },
+  "deserializeDotToSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "dotContent": "string"
+    },
+    "returnType": "SceneGraph"
+  },
+  "deserializeGraphmlToSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "graphmlContent": "string"
+    },
+    "returnType": "Promise<SceneGraph>"
+  },
   "PathData": {
     "kind": "interface",
     "properties": {
@@ -1828,6 +3317,39 @@
       "on"
     ],
     "definition": "FileFormat"
+  },
+  "loadSceneGraphFromFile": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "File"
+    ],
+    "arguments": {
+      "file": "File"
+    },
+    "returnType": "Promise<SceneGraph>"
+  },
+  "serializeSceneGraphToDot": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string"
+  },
+  "serializeSceneGraphToGraphml": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "SceneGraph"
+    ],
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string"
   },
   "StoredSceneGraphInfo": {
     "kind": "interface",
@@ -1869,6 +3391,21 @@
     ],
     "definition": "ImageAnnotationDataArgs"
   },
+  "applyParticleEffects": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Scene"
+    ],
+    "arguments": {
+      "svgElements": "SVGElement[]",
+      "container": "HTMLDivElement",
+      "renderer": "WebGLRenderer",
+      "scene": "Scene",
+      "camera": "PerspectiveCamera"
+    },
+    "returnType": "void"
+  },
   "Command": {
     "kind": "interface",
     "properties": {
@@ -1879,6 +3416,48 @@
       "children": "Command[]"
     },
     "references": []
+  },
+  "commandMatchesQueryUnordered": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Command"
+    ],
+    "arguments": {
+      "command": "Command",
+      "query": "string"
+    },
+    "returnType": "boolean"
+  },
+  "getCommandMatchScore": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "Command"
+    ],
+    "arguments": {
+      "command": "Command",
+      "query": "string"
+    },
+    "returnType": "number"
+  },
+  "fetchSvgSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "svgUrl": "string"
+    },
+    "returnType": "Promise<{ sceneGraph: SceneGraph; error: Error; }>"
+  },
+  "useSvgSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "svgUrl": "string"
+    },
+    "returnType": "{ sceneGraph: SceneGraph; loading: boolean; error: Error; }"
   },
   "ReactFlowConfigState": {
     "kind": "interface",
@@ -1916,5 +3495,31 @@
     "references": [
       "User"
     ]
+  },
+  "replaceUnigraphUrlsWithLocalhost": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "html": "string"
+    },
+    "returnType": "string"
+  },
+  "getUnigraphBaseUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string"
+  },
+  "fixWikipediaLinks": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "html": "string",
+      "language": "string"
+    },
+    "returnType": "string"
   }
 }

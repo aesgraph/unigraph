@@ -1,3 +1,5 @@
+import { DEFAULT_APP_CONFIG } from "../../AppConfig";
+import { GraphvizLayoutType } from "../../core/layouts/GraphvizLayoutType";
 import { Graph } from "../../core/model/Graph";
 import { NodeId } from "../../core/model/Node";
 import { SceneGraph } from "../../core/model/SceneGraph";
@@ -7,10 +9,12 @@ import { SceneGraph } from "../../core/model/SceneGraph";
 type InterfaceAST = Record<
   string,
   {
-    kind: "interface" | "type";
+    kind: "interface" | "type" | "function";
     properties: Record<string, string>;
     references: string[];
     definition?: string; // For type aliases
+    arguments?: Record<string, string>; // For functions
+    returnType?: string; // For functions
   }
 >;
 
@@ -105,6 +109,37 @@ export async function demo_scenegraph_ast(
       }
     }
 
+    // Extract references from function arguments (for functions)
+    if (data.arguments) {
+      for (const [argName, argType] of Object.entries(data.arguments)) {
+        const refs = extractReferences(argType, allTypes);
+        for (const ref of refs) {
+          if (ref && allTypes.has(ref)) {
+            graph.createEdgeIfMissing(name, ref as NodeId);
+          }
+        }
+
+        // Create argument node
+        const argNodeId = `${name}:${argName}`;
+        graph.createNode({
+          id: argNodeId,
+          label: `${argName}: ${argType}`,
+          type: "argument",
+        });
+        graph.createEdgeIfMissing(name, argNodeId as NodeId);
+      }
+    }
+
+    // Extract references from return type (for functions)
+    if (data.returnType && data.returnType !== "void") {
+      const refs = extractReferences(data.returnType, allTypes);
+      for (const ref of refs) {
+        if (ref && ref !== name && allTypes.has(ref)) {
+          graph.createEdgeIfMissing(name, ref as NodeId);
+        }
+      }
+    }
+
     // Also use the explicit references from the AST
     for (const ref of data.references) {
       if (ref && ref !== name && allTypes.has(ref)) {
@@ -116,9 +151,14 @@ export async function demo_scenegraph_ast(
   return new SceneGraph({
     graph,
     metadata: {
-      name: "Interface and Type AST SceneGraph",
+      name: "Interface, Type, and Function AST SceneGraph",
       description:
-        "A scene graph representing interfaces and types from the AST",
+        "A scene graph representing interfaces, types, and functions from the AST",
+    },
+    defaultAppConfig: {
+      ...DEFAULT_APP_CONFIG(),
+      activeLayout: GraphvizLayoutType.Graphviz_dot,
+      activeView: "ReactFlow",
     },
   });
 }
