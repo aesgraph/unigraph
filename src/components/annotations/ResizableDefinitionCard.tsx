@@ -98,6 +98,9 @@ const ResizableDefinitionCard: React.FC<ResizableDefinitionCardProps> = ({
           border: "1px solid #e0e0e0",
           boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
           padding: 12,
+          boxSizing: "border-box",
+          maxWidth: "100%",
+          maxHeight: "100%",
         }}
       >
         <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 2 }}>
@@ -115,7 +118,13 @@ const ResizableDefinitionCard: React.FC<ResizableDefinitionCardProps> = ({
           Fields:
         </div>
         <table
-          style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}
+          style={{
+            width: "100%",
+            maxWidth: "100%",
+            fontSize: 13,
+            borderCollapse: "collapse",
+            tableLayout: "fixed",
+          }}
         >
           <tbody>
             {fields.map((field) => (
