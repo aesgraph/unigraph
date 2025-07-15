@@ -79,246 +79,292 @@ export async function demo_scenegraph_ast(
   url: string = "/data/unigraph-ast/interface-ast.json"
 ): Promise<SceneGraph> {
   // Load the AST
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch AST JSON: ${response.statusText}`);
-  }
-  console.log("Fetching AST JSON from:", url, response);
-
-  const ast: InterfaceAST = await response.json();
-  const graph = new Graph();
-  const allTypes = new Set(Object.keys(ast));
-
-  for (const [name, data] of Object.entries(ast)) {
-    // Prepare fields for ResizableDefinitionCard
-    const fields = Object.entries(data.properties || {}).map(
-      ([fieldName, fieldType]) => ({
-        name: fieldName,
-        type: fieldType,
-      })
-    );
-    // Compose definition data
-    const definitionData = {
-      name,
-      kind: data.kind,
-      fields,
-      description: data.description || undefined,
-    };
-
-    // Compose classData for ResizableClassCard if this is a class
-    let classData = undefined;
-    if (data.kind === "class") {
-      // Data members
-      const classFields = fields;
-      // Methods
-      const methods = data.methods
-        ? Object.entries(data.methods).map(([methodName, methodData]) => ({
-            name: methodName,
-            arguments: Object.entries(methodData.arguments || {}).map(
-              ([argName, argType]) => ({
-                name: argName,
-                type: argType,
-              })
-            ),
-            returnType: methodData.returnType,
-          }))
-        : [];
-      classData = {
-        name,
-        description: data.description || undefined,
-        fields: classFields,
-        methods,
-      };
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch AST JSON: ${response.statusText}`);
     }
+    console.log("Fetching AST JSON from:", url, response);
 
-    graph.createNode({
-      id: name,
-      label: name,
-      type: data.kind === "class" ? "class" : "definition",
-      userData: {
-        definition: definitionData,
-        ...(classData ? { classData } : {}),
-      },
-    });
+    const rawData = await response.json();
+    console.log("Raw AST data keys:", Object.keys(rawData));
 
-    // Enhanced: Extract references from property types (for interfaces and classes)
-    for (const [_, typeStr] of Object.entries(data.properties)) {
-      const refs = extractReferences(typeStr, allTypes);
-      for (const ref of refs) {
-        if (ref && ref !== name && allTypes.has(ref)) {
-          graph.createEdgeIfMissing(name, ref as NodeId);
-        }
-      }
-    }
+    // Extract metadata
+    const filesMap = rawData._files as Record<string, string[]> | undefined;
+    const directoriesMap = rawData._directories as
+      | Record<string, string[]>
+      | undefined;
 
-    // Extract references from type definition (for type aliases)
-    if (data.definition) {
-      const refs = extractReferences(data.definition, allTypes);
-      for (const ref of refs) {
-        if (ref && ref !== name && allTypes.has(ref)) {
-          graph.createEdgeIfMissing(name, ref as NodeId);
-        }
-      }
-    }
+    // Filter out metadata entries to get actual AST data
+    const ast: InterfaceAST = Object.fromEntries(
+      Object.entries(rawData).filter(([key]) => !key.startsWith("_"))
+    ) as InterfaceAST;
 
-    // Extract references from function arguments (for functions)
-    if (data.arguments) {
-      for (const [argName, argType] of Object.entries(data.arguments)) {
-        const refs = extractReferences(argType, allTypes);
-        for (const ref of refs) {
-          if (ref && allTypes.has(ref)) {
-            graph.createEdgeIfMissing(name, ref as NodeId);
-          }
+    console.log("Filtered AST data:", Object.keys(ast).length, "entries");
+
+    const graph = new Graph();
+    const allTypes = new Set(Object.keys(ast));
+
+    for (const [name, data] of Object.entries(ast)) {
+      try {
+        // Ensure we have valid data structure
+        if (!data || typeof data !== "object") {
+          console.warn(`Skipping invalid entry: ${name}`);
+          continue;
         }
 
-        // Create argument node
-        const argNodeId = `${name}:${argName}`;
+        // Convert references from object to array if needed
+        const references = Array.isArray(data.references)
+          ? data.references
+          : data.references && typeof data.references === "object"
+            ? Object.keys(data.references)
+            : [];
+
+        // Prepare fields for ResizableDefinitionCard
+        const fields = Object.entries(data.properties || {}).map(
+          ([fieldName, fieldType]) => ({
+            name: fieldName,
+            type: fieldType,
+          })
+        );
+
+        // Compose definition data
+        const definitionData = {
+          name,
+          kind: data.kind,
+          fields,
+          description: data.description || undefined,
+        };
+
+        // Compose classData for ResizableClassCard if this is a class
+        let classData = undefined;
+        if (data.kind === "class") {
+          // Data members
+          const classFields = fields;
+          // Methods
+          const methods = data.methods
+            ? Object.entries(data.methods).map(([methodName, methodData]) => ({
+                name: methodName,
+                arguments: Object.entries(methodData.arguments || {}).map(
+                  ([argName, argType]) => ({
+                    name: argName,
+                    type: argType,
+                  })
+                ),
+                returnType: methodData.returnType,
+              }))
+            : [];
+          classData = {
+            name,
+            description: data.description || undefined,
+            fields: classFields,
+            methods,
+          };
+        }
+
         graph.createNode({
-          id: argNodeId,
-          label: `${argName}: ${argType}`,
-          type: "argument",
+          id: name,
+          label: name,
+          type: data.kind === "class" ? "class" : "definition",
+          userData: {
+            definition: definitionData,
+            ...(classData ? { classData } : {}),
+          },
         });
-        graph.createEdgeIfMissing(name, argNodeId as NodeId);
-      }
-    }
 
-    // Extract references from return type (for functions)
-    if (data.returnType && data.returnType !== "void") {
-      const refs = extractReferences(data.returnType, allTypes);
-      for (const ref of refs) {
-        if (ref && ref !== name && allTypes.has(ref)) {
-          graph.createEdgeIfMissing(name, ref as NodeId);
-        }
-      }
-    }
-
-    // Handle class-specific features
-    if (data.kind === "class") {
-      // Handle inheritance (extends)
-      if (data.extends && allTypes.has(data.extends)) {
-        graph.createEdgeIfMissing(name, data.extends as NodeId);
-      }
-
-      // Handle interface implementation
-      if (data.implements) {
-        for (const interfaceName of data.implements) {
-          if (allTypes.has(interfaceName)) {
-            graph.createEdgeIfMissing(name, interfaceName as NodeId);
+        // Enhanced: Extract references from property types (for interfaces and classes)
+        for (const [_, typeStr] of Object.entries(data.properties || {})) {
+          const refs = extractReferences(typeStr, allTypes);
+          for (const ref of refs) {
+            if (ref && ref !== name && allTypes.has(ref)) {
+              graph.createEdgeIfMissing(name, ref as NodeId);
+            }
           }
         }
-      }
 
-      // Handle methods
-      if (data.methods) {
-        for (const [methodName, methodData] of Object.entries(data.methods)) {
-          const methodNodeId = `${name}::${methodName}`;
-          graph.createNode({
-            id: methodNodeId,
-            label: `${methodName}(): ${methodData.returnType}`,
-            type: "method",
-          });
-          graph.createEdgeIfMissing(name, methodNodeId as NodeId);
+        // Extract references from type definition (for type aliases)
+        if (data.definition) {
+          const refs = extractReferences(data.definition, allTypes);
+          for (const ref of refs) {
+            if (ref && ref !== name && allTypes.has(ref)) {
+              graph.createEdgeIfMissing(name, ref as NodeId);
+            }
+          }
+        }
 
-          // Create argument nodes for method parameters
-          for (const [argName, argType] of Object.entries(
-            methodData.arguments
-          )) {
+        // Extract references from function arguments (for functions)
+        if (data.arguments) {
+          for (const [argName, argType] of Object.entries(data.arguments)) {
             const refs = extractReferences(argType, allTypes);
             for (const ref of refs) {
               if (ref && allTypes.has(ref)) {
-                graph.createEdgeIfMissing(
-                  methodNodeId as NodeId,
-                  ref as NodeId
-                );
+                graph.createEdgeIfMissing(name, ref as NodeId);
               }
             }
 
-            const methodArgNodeId = `${methodNodeId}:${argName}`;
+            // Create argument node
+            const argNodeId = `${name}:${argName}`;
             graph.createNode({
-              id: methodArgNodeId,
+              id: argNodeId,
               label: `${argName}: ${argType}`,
-              type: "method-argument",
+              type: "argument",
             });
-            graph.createEdgeIfMissing(
-              methodNodeId as NodeId,
-              methodArgNodeId as NodeId,
-              { type: "method-argument" }
-            );
+            graph.createEdgeIfMissing(name, argNodeId as NodeId);
+          }
+        }
+
+        // Extract references from return type (for functions)
+        if (data.returnType && data.returnType !== "void") {
+          const refs = extractReferences(data.returnType, allTypes);
+          for (const ref of refs) {
+            if (ref && ref !== name && allTypes.has(ref)) {
+              graph.createEdgeIfMissing(name, ref as NodeId);
+            }
+          }
+        }
+
+        // Handle class-specific features
+        if (data.kind === "class") {
+          // Handle inheritance (extends)
+          if (data.extends && allTypes.has(data.extends)) {
+            graph.createEdgeIfMissing(name, data.extends as NodeId);
           }
 
-          // Handle method return type references
-          if (methodData.returnType && methodData.returnType !== "void") {
-            const refs = extractReferences(methodData.returnType, allTypes);
-            for (const ref of refs) {
-              if (ref && allTypes.has(ref)) {
+          // Handle interface implementation
+          if (data.implements) {
+            for (const interfaceName of data.implements) {
+              if (allTypes.has(interfaceName)) {
+                graph.createEdgeIfMissing(name, interfaceName as NodeId);
+              }
+            }
+          }
+
+          // Handle methods
+          if (data.methods) {
+            for (const [methodName, methodData] of Object.entries(
+              data.methods
+            )) {
+              const methodNodeId = `${name}::${methodName}`;
+              graph.createNode({
+                id: methodNodeId,
+                label: `${methodName}(): ${methodData.returnType}`,
+                type: "method",
+              });
+              graph.createEdgeIfMissing(name, methodNodeId as NodeId);
+
+              // Create argument nodes for method parameters
+              for (const [argName, argType] of Object.entries(
+                methodData.arguments || {}
+              )) {
+                const refs = extractReferences(argType, allTypes);
+                for (const ref of refs) {
+                  if (ref && allTypes.has(ref)) {
+                    graph.createEdgeIfMissing(
+                      methodNodeId as NodeId,
+                      ref as NodeId
+                    );
+                  }
+                }
+
+                const methodArgNodeId = `${methodNodeId}:${argName}`;
+                graph.createNode({
+                  id: methodArgNodeId,
+                  label: `${argName}: ${argType}`,
+                  type: "method-argument",
+                });
                 graph.createEdgeIfMissing(
                   methodNodeId as NodeId,
-                  ref as NodeId,
-                  { type: "method-return" }
+                  methodArgNodeId as NodeId,
+                  { type: "method-argument" }
                 );
+              }
+
+              // Handle method return type references
+              if (methodData.returnType && methodData.returnType !== "void") {
+                const refs = extractReferences(methodData.returnType, allTypes);
+                for (const ref of refs) {
+                  if (ref && allTypes.has(ref)) {
+                    graph.createEdgeIfMissing(
+                      methodNodeId as NodeId,
+                      ref as NodeId,
+                      { type: "method-return" }
+                    );
+                  }
+                }
               }
             }
           }
         }
+
+        // Also use the explicit references from the AST
+        for (const ref of references) {
+          if (ref && ref !== name && allTypes.has(ref)) {
+            graph.createEdgeIfMissing(name, ref as NodeId);
+          }
+        }
+      } catch (nodeError) {
+        console.error(`Error processing node ${name}:`, nodeError);
       }
     }
 
-    // Also use the explicit references from the AST
-    for (const ref of data.references) {
-      if (ref && ref !== name && allTypes.has(ref)) {
-        graph.createEdgeIfMissing(name, ref as NodeId);
-      }
-    }
-  }
-
-  // Add file nodes and edges
-  if (ast._files) {
-    const filesMap = ast._files as unknown as Record<string, string[]>;
-    for (const filePath of Object.keys(filesMap)) {
-      graph.createNode({
-        id: filePath,
-        label: filePath.split("/").pop() || filePath,
-        type: "file",
-      });
-      for (const symbol of filesMap[filePath]) {
-        if ((ast as any)[symbol]) {
-          graph.createEdgeIfMissing(filePath, symbol, {
-            type: "parent to child",
-          });
+    // Add file nodes and edges
+    if (filesMap) {
+      for (const filePath of Object.keys(filesMap)) {
+        graph.createNode({
+          id: filePath,
+          label: filePath.split("/").pop() || filePath,
+          type: "file",
+        });
+        for (const symbol of filesMap[filePath]) {
+          // Check if this symbol exists in our filtered AST data
+          if (allTypes.has(symbol)) {
+            graph.createEdgeIfMissing(filePath, symbol, {
+              type: "parent to child",
+            });
+          }
         }
       }
     }
-  }
 
-  // Add directory nodes and edges
-  if (ast._directories) {
-    const directoriesMap = ast._directories as unknown as Record<
-      string,
-      string[]
-    >;
-    for (const dirPath of Object.keys(directoriesMap)) {
-      graph.createNode({
-        id: dirPath,
-        label: dirPath.split("/").pop() || dirPath,
-        type: "directory",
-      });
-      for (const filePath of directoriesMap[dirPath]) {
-        graph.createEdgeIfMissing(dirPath, filePath, { type: "file contains" });
+    // Add directory nodes and edges
+    if (directoriesMap) {
+      for (const dirPath of Object.keys(directoriesMap)) {
+        graph.createNode({
+          id: dirPath,
+          label: dirPath.split("/").pop() || dirPath,
+          type: "directory",
+        });
+        for (const filePath of directoriesMap[dirPath]) {
+          // Only create edge if the file path exists as a node
+          if (filesMap && Object.keys(filesMap).includes(filePath)) {
+            graph.createEdgeIfMissing(dirPath, filePath, {
+              type: "file contains",
+            });
+          }
+        }
       }
     }
-  }
 
-  return new SceneGraph({
-    graph,
-    metadata: {
-      name: "Ultimate AST SceneGraph",
-      description:
-        "Complete scene graph with interfaces, types, functions, classes, properties, and methods",
-    },
-    defaultAppConfig: {
-      ...DEFAULT_APP_CONFIG(),
-      activeLayout: GraphvizLayoutType.Graphviz_dot,
-      activeView: "ReactFlow",
-    },
-  });
+    console.log(
+      `Created scene graph with ${graph.getNodes().size()} nodes and ${graph.getEdges().size()} edges`
+    );
+    console.log("Node types created:", Array.from(new Set(graph.getNodes().toArray().map(n => n.getType()))));
+
+    return new SceneGraph({
+      graph,
+      metadata: {
+        name: "Ultimate AST SceneGraph",
+        description:
+          "Complete scene graph with interfaces, types, functions, classes, properties, and methods",
+      },
+      defaultAppConfig: {
+        ...DEFAULT_APP_CONFIG(),
+        activeLayout: GraphvizLayoutType.Graphviz_dot,
+        activeView: "ReactFlow",
+      },
+    });
+  } catch (error) {
+    console.error("Error loading AST scene graph:", error);
+    throw new Error(`Failed to load AST scene graph: ${error}`);
+  }
 }

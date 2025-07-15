@@ -42,6 +42,7 @@ function parseInterfaces(files: string[]) {
         let kind = "interface";
         if (ts.isClassDeclaration(node)) kind = "class";
         if (ts.isTypeAliasDeclaration(node)) kind = "type";
+        // eslint-disable-next-line unused-imports/no-unused-vars
         if (ts.isFunctionDeclaration(node)) kind = "function";
 
         const properties: Record<string, string> = {};
@@ -70,6 +71,7 @@ function parseInterfaces(files: string[]) {
             }
           });
         } else if (ts.isTypeAliasDeclaration(node)) {
+          // eslint-disable-next-line unused-imports/no-unused-vars
           const definition = checker.typeToString(
             checker.getTypeFromTypeNode(node.type)
           );
@@ -311,9 +313,27 @@ const rootDir = path.resolve(__dirname, "../src"); // Adjust as needed
 const files = getAllTSFiles(rootDir);
 const ast = parseInterfaces(files);
 
+// Convert Sets to Arrays for JSON serialization
+const serializedAst = Object.fromEntries(
+  Object.entries(ast).map(([name, data]) => [
+    name,
+    { ...data, references: Array.from(data.references) },
+  ])
+);
+
+// Filter out the file mapping data and only keep the actual AST entries
+const astOnly = Object.fromEntries(
+  Object.entries(serializedAst).filter(
+    ([key]) =>
+      !key.startsWith("_") && key !== "_files" && key !== "_directories"
+  )
+);
+
 // Output as JSON or visualize as needed
 fs.writeFileSync(
   "public/data/unigraph-ast/interface-ast.json",
-  JSON.stringify(ast, null, 2)
+  JSON.stringify(astOnly, null, 2)
 );
-console.log("Interface AST written to interface-ast.json");
+console.log(
+  "Complete AST (interfaces, types, functions, classes) written to interface-ast.json"
+);
