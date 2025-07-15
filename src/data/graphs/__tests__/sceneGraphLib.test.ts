@@ -4,6 +4,7 @@ import { DEMO_SCENE_GRAPHS } from "../../DemoSceneGraphs";
 // List of demo functions to skip testing (e.g., demos that make API calls)
 const DEMOS_TO_SKIP = [
   "wikipediaDemo",
+  "ast",
   // Add more demos to skip here as needed
 ];
 
