@@ -241,7 +241,8 @@ export async function demo_scenegraph_ast(
             });
             graph.createEdgeIfMissing(
               methodNodeId as NodeId,
-              methodArgNodeId as NodeId
+              methodArgNodeId as NodeId,
+              { type: "method-argument" }
             );
           }
 
@@ -252,7 +253,8 @@ export async function demo_scenegraph_ast(
               if (ref && allTypes.has(ref)) {
                 graph.createEdgeIfMissing(
                   methodNodeId as NodeId,
-                  ref as NodeId
+                  ref as NodeId,
+                  { type: "method-return" }
                 );
               }
             }
@@ -265,6 +267,43 @@ export async function demo_scenegraph_ast(
     for (const ref of data.references) {
       if (ref && ref !== name && allTypes.has(ref)) {
         graph.createEdgeIfMissing(name, ref as NodeId);
+      }
+    }
+  }
+
+  // Add file nodes and edges
+  if (ast._files) {
+    const filesMap = ast._files as unknown as Record<string, string[]>;
+    for (const filePath of Object.keys(filesMap)) {
+      graph.createNode({
+        id: filePath,
+        label: filePath.split("/").pop() || filePath,
+        type: "file",
+      });
+      for (const symbol of filesMap[filePath]) {
+        if ((ast as any)[symbol]) {
+          graph.createEdgeIfMissing(filePath, symbol, {
+            type: "parent to child",
+          });
+        }
+      }
+    }
+  }
+
+  // Add directory nodes and edges
+  if (ast._directories) {
+    const directoriesMap = ast._directories as unknown as Record<
+      string,
+      string[]
+    >;
+    for (const dirPath of Object.keys(directoriesMap)) {
+      graph.createNode({
+        id: dirPath,
+        label: dirPath.split("/").pop() || dirPath,
+        type: "directory",
+      });
+      for (const filePath of directoriesMap[dirPath]) {
+        graph.createEdgeIfMissing(dirPath, filePath, { type: "file contains" });
       }
     }
   }
