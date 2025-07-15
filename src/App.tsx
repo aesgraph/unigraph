@@ -1411,13 +1411,6 @@ const AppContent = ({
       targetPosition: Position.Left,
     }));
 
-    console.log(
-      "nodesWithPositions",
-      nodesWithPositions.filter((node) => {
-        return node.type === "class";
-      })
-    );
-
     return (
       <div
         id="react-flow"

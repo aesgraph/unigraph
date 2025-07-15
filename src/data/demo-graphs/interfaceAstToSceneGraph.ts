@@ -131,10 +131,6 @@ export async function demo_scenegraph_ast(
       };
     }
 
-    if (classData) {
-      console.log("classData", classData);
-    }
-
     graph.createNode({
       id: name,
       label: name,
