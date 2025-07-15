@@ -1,4 +1,53 @@
 {
+  "EntityId": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string",
+    "file": "src/core/model/entity/abstractEntity.ts"
+  },
+  "Tag": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string",
+    "file": "src/core/model/entity/abstractEntity.ts"
+  },
+  "EntityData": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "tags": "Set<string>",
+      "label": "string",
+      "type": "string",
+      "userData": "ObjectOf<any>",
+      "description": "string"
+    },
+    "references": [],
+    "file": "src/core/model/entity/abstractEntity.ts"
+  },
+  "EntityDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityData",
+      "EntityId",
+      "Tag"
+    ],
+    "definition": "EntityDataArgs",
+    "file": "src/core/model/entity/abstractEntity.ts"
+  },
+  "FullEntityType": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "of",
+      "EntityData",
+      "EntityDataArgs"
+    ],
+    "definition": "FullEntityType<T>",
+    "file": "src/core/model/entity/abstractEntity.ts"
+  },
   "fromDefault": {
     "kind": "function",
     "properties": {},
@@ -10,6 +59,12 @@
       "args": "T"
     },
     "returnType": "FullEntityType<T>",
+    "file": "src/core/model/entity/abstractEntity.ts"
+  },
+  "IEntity": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
     "file": "src/core/model/entity/abstractEntity.ts"
   },
   "AbstractEntity": {
@@ -225,6 +280,13 @@
     "extends": "Set",
     "file": "src/core/model/entity/entityIds.ts"
   },
+  "JSONString": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string",
+    "file": "src/core/model/entity/entitiesContainer.ts"
+  },
   "EntitiesContainer": {
     "kind": "class",
     "properties": {
@@ -425,76 +487,140 @@
     ],
     "file": "src/core/model/entity/entitiesContainer.ts"
   },
-  "Node": {
-    "kind": "class",
+  "NodeId": {
+    "kind": "type",
     "properties": {},
     "references": [
-      "AbstractEntity",
-      "Dimensions",
-      "Node",
-      "NodeData",
+      "EntityId",
+      "on"
+    ],
+    "definition": "NodeId",
+    "file": "src/core/model/Node.ts"
+  },
+  "DisplayNodeData": {
+    "kind": "interface",
+    "properties": {
+      "position": "Position",
+      "dimensions": "{ width: number; height: number; }",
+      "isVisible": "boolean",
+      "color": "string",
+      "size": "number",
+      "opacity": "number",
+      "fontSize": "number",
+      "fontColor": "string",
+      "shape": "\"circle\" | \"square\" | \"triangle\"",
+      "borderWidth": "number",
+      "borderColor": "string"
+    },
+    "references": [
       "Position"
     ],
-    "methods": {
-      "getDimensions": {
-        "arguments": {},
-        "returnType": "Dimensions"
-      },
-      "setDimensions": {
-        "arguments": {
-          "dimensions": "Dimensions"
-        },
-        "returnType": "Node"
-      },
-      "getData": {
-        "arguments": {},
-        "returnType": "NodeData"
-      },
-      "getPosition": {
-        "arguments": {},
-        "returnType": "Position"
-      },
-      "setPosition": {
-        "arguments": {
-          "position": "Position"
-        },
-        "returnType": "Node"
-      },
-      "isVisible": {
-        "arguments": {},
-        "returnType": "boolean"
-      },
-      "getColor": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "setColor": {
-        "arguments": {
-          "color": "string"
-        },
-        "returnType": "void"
-      },
-      "setVisibility": {
-        "arguments": {
-          "isVisible": "boolean"
-        },
-        "returnType": "void"
-      },
-      "getSize": {
-        "arguments": {},
-        "returnType": "number"
-      },
-      "getOpacity": {
-        "arguments": {},
-        "returnType": "number"
-      },
-      "getEntityType": {
-        "arguments": {},
-        "returnType": "string"
-      }
-    },
-    "extends": "AbstractEntity",
     "file": "src/core/model/Node.ts"
+  },
+  "DisplayNodeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayNodeData",
+      "NodeData"
+    ],
+    "definition": "Partial<DisplayNodeData>",
+    "file": "src/core/model/Node.ts"
+  },
+  "NodeData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayNodeData",
+      "EntityData"
+    ],
+    "definition": "NodeData",
+    "file": "src/core/model/Node.ts"
+  },
+  "NodeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayNodeData",
+      "DisplayNodeDataArgs",
+      "NodeData",
+      "EntityData",
+      "EntityDataArgs"
+    ],
+    "definition": "NodeDataArgs",
+    "file": "src/core/model/Node.ts"
+  },
+  "Node": {
+    "kind": "interface",
+    "properties": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/exampleCode/forceGraph3dCamera.ts"
+  },
+  "EdgeId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityId",
+      "on"
+    ],
+    "definition": "EdgeId",
+    "file": "src/core/model/Edge.ts"
+  },
+  "DisplayEdgeData": {
+    "kind": "interface",
+    "properties": {
+      "isVisible": "boolean",
+      "color": "string",
+      "size": "number",
+      "opacity": "number",
+      "drawType": "\"arrow\" | \"line\""
+    },
+    "references": [],
+    "file": "src/core/model/Edge.ts"
+  },
+  "DisplayEdgeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "DisplayEdgeData",
+      "EdgeData"
+    ],
+    "definition": "Partial<DisplayEdgeData>",
+    "file": "src/core/model/Edge.ts"
+  },
+  "EdgeData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayEdgeData",
+      "NodeId",
+      "EntityData"
+    ],
+    "definition": "EdgeData",
+    "file": "src/core/model/Edge.ts"
+  },
+  "EdgeDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "DisplayEdgeData",
+      "DisplayEdgeDataArgs",
+      "EdgeData",
+      "NodeId",
+      "EntityData",
+      "EntityDataArgs"
+    ],
+    "definition": "EdgeDataArgs",
+    "file": "src/core/model/Edge.ts"
   },
   "Edge": {
     "kind": "class",
@@ -570,6 +696,60 @@
     },
     "extends": "AbstractEntity",
     "file": "src/core/model/Edge.ts"
+  },
+  "NodeIds": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "NodeId",
+      "EntityId"
+    ],
+    "definition": "NodeIds",
+    "file": "src/core/model/Graph.ts"
+  },
+  "EdgeIds": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EdgeId",
+      "EntityId"
+    ],
+    "definition": "EdgeIds",
+    "file": "src/core/model/Graph.ts"
+  },
+  "NodesContainer": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "NodeId",
+      "on"
+    ],
+    "definition": "NodesContainer",
+    "file": "src/core/model/Graph.ts"
+  },
+  "EdgesContainer": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EdgeId",
+      "on"
+    ],
+    "definition": "EdgesContainer",
+    "file": "src/core/model/Graph.ts"
+  },
+  "GraphArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "NodesContainer",
+      "EdgesContainer",
+      "on"
+    ],
+    "definition": "GraphArgs",
+    "file": "src/core/model/Graph.ts"
   },
   "Graph": {
     "kind": "class",
@@ -833,6 +1013,30 @@
     },
     "file": "src/core/model/Graph.ts"
   },
+  "Position": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Position",
+    "file": "src/controllers/RenderingManager.ts"
+  },
+  "Dimensions": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Dimensions",
+    "file": "src/core/layouts/layoutHelpers.ts"
+  },
+  "NodePositionData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Position",
+      "on"
+    ],
+    "definition": "ObjectOf<Position>",
+    "file": "src/core/layouts/layoutHelpers.ts"
+  },
   "createGraphologyGraph": {
     "kind": "function",
     "properties": {},
@@ -907,6 +1111,95 @@
       }
     },
     "file": "src/core/model/GraphBuilder.ts"
+  },
+  "EntitiesMetadata": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "EntitiesMetadata",
+    "file": "src/core/model/GraphBuilder.ts"
+  },
+  "GraphMetadata": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Metadata",
+      "EntitiesMetadata"
+    ],
+    "definition": "GraphMetadata",
+    "file": "src/core/model/GraphBuilder.ts"
+  },
+  "GraphStastics": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Tag"
+    ],
+    "definition": "GraphStastics",
+    "file": "src/core/model/GraphBuilder.ts"
+  },
+  "RGB": {
+    "kind": "interface",
+    "properties": {
+      "r": "number",
+      "g": "number",
+      "b": "number"
+    },
+    "references": [],
+    "file": "src/utils/colorUtils.ts"
+  },
+  "DisplayConfigData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "DisplayConfigData",
+    "file": "src/controllers/RenderingManager.ts"
+  },
+  "DisplayConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "DisplayConfigData",
+      "on"
+    ],
+    "definition": "DisplayConfig",
+    "file": "src/controllers/RenderingManager.ts"
+  },
+  "EntitiesDisplayConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "DisplayConfig",
+      "on"
+    ],
+    "definition": "EntitiesDisplayConfig",
+    "file": "src/controllers/RenderingManager.ts"
+  },
+  "RenderingConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Position",
+      "DisplayConfig",
+      "EntitiesDisplayConfig",
+      "RenderingManager__DisplayMode",
+      "of",
+      "NodePosition",
+      "NodePositionData",
+      "on"
+    ],
+    "definition": "RenderingConfig",
+    "file": "src/controllers/RenderingManager.ts"
+  },
+  "RenderingManager__DisplayMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "RenderingManager__DisplayMode",
+    "file": "src/controllers/RenderingManager.ts"
   },
   "RenderingManager": {
     "kind": "class",
@@ -999,6 +1292,226 @@
     },
     "file": "src/controllers/RenderingManager.ts"
   },
+  "FilterOperator": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "FilterOperator",
+    "file": "src/components/filters/FilterRuleDefinition.ts"
+  },
+  "FilterRuleMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Tag"
+    ],
+    "definition": "FilterRuleMode",
+    "file": "src/components/filters/FilterRuleDefinition.ts"
+  },
+  "FilterRuleDefinition": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "operator": "FilterOperator",
+      "ruleMode": "FilterRuleMode",
+      "conditions": "{ types?: string[]; tags?: string[]; nodes?: string[]; }"
+    },
+    "references": [
+      "FilterOperator",
+      "FilterRuleMode"
+    ],
+    "file": "src/components/filters/FilterRuleDefinition.ts"
+  },
+  "Filter": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "filterRules": "FilterRuleDefinition[]"
+    },
+    "references": [],
+    "file": "src/store/activeFilterStore.ts"
+  },
+  "ActiveFiltersState": {
+    "kind": "interface",
+    "properties": {
+      "savedFilters": "ObjectOf<Filter>",
+      "saveFilter": "(filter: Filter) => void",
+      "deleteFilter": "(filterName: string) => void",
+      "getSavedFilters": "() => ObjectOf<Filter>",
+      "clearFilters": "() => void"
+    },
+    "references": [],
+    "file": "src/store/activeFilterStore.ts"
+  },
+  "ISidebarConfig": {
+    "kind": "interface",
+    "properties": {
+      "isVisible": "boolean",
+      "mode": "\"collapsed\" | \"full\"",
+      "minimal": "boolean",
+      "activeSectionId": "string",
+      "panelWidth": "number"
+    },
+    "references": [],
+    "file": "src/store/workspaceConfigStore.ts"
+  },
+  "SectionWidthConfig": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
+    "file": "src/store/workspaceConfigStore.ts"
+  },
+  "WorkspaceConfigState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on",
+      "ISidebarConfig",
+      "SectionWidthConfig"
+    ],
+    "definition": "WorkspaceConfigState",
+    "file": "src/store/workspaceConfigStore.ts"
+  },
+  "AppConfigActions": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "ForceGraph3dLayoutMode",
+      "ActiveView",
+      "AppConfig",
+      "for",
+      "to",
+      "RenderingManager__DisplayMode",
+      "or",
+      "LayoutEngineOption",
+      "SceneGraph",
+      "EntityData",
+      "on",
+      "Filter",
+      "Layout"
+    ],
+    "definition": "AppConfigActions",
+    "file": "src/store/appConfigStore.ts"
+  },
+  "AppState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "AppConfig",
+      "for",
+      "to",
+      "or",
+      "SceneGraph",
+      "on",
+      "AppConfigActions"
+    ],
+    "definition": "AppState",
+    "file": "src/store/appConfigStore.ts"
+  },
+  "LayoutJobStatus": {
+    "kind": "interface",
+    "properties": {
+      "isRunning": "boolean",
+      "startTime": "number",
+      "layoutType": "LayoutEngineOption",
+      "workerId": "string",
+      "progress": "number"
+    },
+    "references": [
+      "LayoutEngineOption"
+    ],
+    "file": "src/store/activeLayoutStore.ts"
+  },
+  "Layout": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "positions": "ObjectOf<Position>",
+      "createdAt": "number",
+      "updatedAt": "number"
+    },
+    "references": [],
+    "file": "src/store/activeLayoutStore.ts"
+  },
+  "ActiveLayoutsState": {
+    "kind": "interface",
+    "properties": {
+      "savedLayouts": "ObjectOf<Layout>",
+      "jobStatus": "LayoutJobStatus",
+      "currentLayoutResult": "ILayoutEngineResult",
+      "saveLayout": "(layout: Layout) => void",
+      "deleteLayout": "(layoutName: string) => void",
+      "getSavedLayouts": "() => ObjectOf<Layout>",
+      "clearLayouts": "() => void",
+      "setCurrentLayoutResult": "(result: ILayoutEngineResult, forceGraph3dLayoutMode: \"Physics\" | \"Layout\") => void",
+      "getCurrentLayoutResult": "() => ILayoutEngineResult",
+      "startLayoutJob": "(layoutType: LayoutEngineOption, workerId: string) => void",
+      "updateLayoutJobProgress": "(progress: number) => void",
+      "finishLayoutJob": "() => void",
+      "cancelLayoutJob": "() => void"
+    },
+    "references": [
+      "LayoutJobStatus",
+      "ILayoutEngineResult"
+    ],
+    "file": "src/store/activeLayoutStore.ts"
+  },
+  "DocumentState": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "nodeId": "NodeId",
+      "content": "string",
+      "lexicalState": "string",
+      "lastModified": "number",
+      "tags": "string[]"
+    },
+    "references": [
+      "NodeId"
+    ],
+    "file": "src/store/documentStore.ts"
+  },
+  "DocumentStore": {
+    "kind": "interface",
+    "properties": {
+      "documents": "Record<NodeId, DocumentState>",
+      "activeDocument": "NodeId",
+      "previousView": "string",
+      "createDocument": "(nodeId: NodeId) => void",
+      "updateDocument": "(nodeId: NodeId, content: string, lexicalState: string, tags?: string[]) => void",
+      "setActiveDocument": "(nodeId: NodeId, previousView?: string) => void",
+      "deleteDocument": "(nodeId: NodeId) => void",
+      "getDocumentByNodeId": "(nodeId: NodeId) => DocumentState",
+      "getPreviousView": "() => string",
+      "getAllDocuments": "() => Record<NodeId, DocumentState>",
+      "clearAllDocuments": "() => void"
+    },
+    "references": [
+      "NodeId"
+    ],
+    "file": "src/store/documentStore.ts"
+  },
+  "IForceGraphRenderConfig": {
+    "kind": "interface",
+    "properties": {
+      "nodeTextLabels": "boolean",
+      "linkWidth": "number",
+      "nodeSize": "number",
+      "linkTextLabels": "boolean",
+      "nodeOpacity": "number",
+      "linkOpacity": "number",
+      "chargeStrength": "number",
+      "backgroundColor": "string",
+      "fontSize": "number",
+      "cameraPosition": "{ x: number; y: number; z: number; }",
+      "cameraTarget": "{ x: number; y: number; z: number; }",
+      "initialZoom": "number"
+    },
+    "references": [],
+    "file": "src/store/forceGraphConfigStore.ts"
+  },
   "EntityCache": {
     "kind": "class",
     "properties": {
@@ -1046,6 +1559,87 @@
       }
     },
     "file": "src/core/model/entity/entityCache.ts"
+  },
+  "SerializedSceneGraph": {
+    "kind": "interface",
+    "properties": {
+      "graph": "{ nodes: { id: string; label?: string; type?: string; position?: { x: number; y: number; }; data?: Record<string, any>; }[]; edges: { id: string; source: string; target: string; label?: string; type?: string; data?: Record<...>; }[]; }",
+      "displayConfig": "RenderingConfig"
+    },
+    "references": [
+      "RenderingConfig"
+    ],
+    "file": "src/core/model/SerializedSceneGraph.ts"
+  },
+  "ISceneGraphValidationResult": {
+    "kind": "interface",
+    "properties": {
+      "missingNodes": "NodeId[]"
+    },
+    "references": [],
+    "file": "src/core/model/validateSceneGraph.ts"
+  },
+  "ISceneGraph": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
+    "file": "src/core/model/SceneGraph.ts"
+  },
+  "ISceneGraphListeners": {
+    "kind": "interface",
+    "properties": {
+      "onPositionsChanged": "(positions: ObjectOf<Position>) => void",
+      "onDisplayConfigChanged": "(config: RenderingConfig) => void",
+      "onGraphChanged": "(graph: Graph) => void"
+    },
+    "references": [],
+    "file": "src/core/model/SceneGraph.ts"
+  },
+  "ISceneGraphMetadata": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "source": "string",
+      "notes": "string"
+    },
+    "references": [],
+    "file": "src/core/model/SceneGraph.ts"
+  },
+  "ISceneGraphArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "SceneGraphData",
+      "SceneGraph"
+    ],
+    "definition": "Partial<SceneGraphData>",
+    "file": "src/core/model/SceneGraph.ts"
+  },
+  "SceneGraphData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "AppConfig",
+      "for",
+      "to",
+      "Metadata",
+      "DisplayConfig",
+      "RenderingConfig",
+      "by",
+      "or",
+      "GraphMetadata",
+      "ISceneGraph",
+      "ISceneGraphMetadata",
+      "SceneGraph",
+      "on",
+      "Filter",
+      "Layout",
+      "DocumentState",
+      "IForceGraphRenderConfig"
+    ],
+    "definition": "SceneGraphData",
+    "file": "src/core/model/SceneGraph.ts"
   },
   "SceneGraph": {
     "kind": "class",
@@ -1283,6 +1877,37 @@
     },
     "file": "src/core/model/SceneGraph.ts"
   },
+  "IGraphvizOutput": {
+    "kind": "interface",
+    "properties": {
+      "svg": "string",
+      "positions": "ObjectOf<Position>"
+    },
+    "references": [],
+    "file": "src/core/layouts/CustomLayoutEngine.ts"
+  },
+  "INode3DPosition": {
+    "kind": "interface",
+    "properties": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
+    "references": [],
+    "file": "src/core/layouts/CustomLayoutEngine.ts"
+  },
+  "Node3DPositionData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Position",
+      "Node3DPosition",
+      "on"
+    ],
+    "definition": "Node3DPositionData",
+    "file": "src/controllers/graphvizHelpers.ts"
+  },
   "GraphologyLayoutEngine": {
     "kind": "class",
     "properties": {},
@@ -1309,6 +1934,43 @@
     },
     "returnType": "ObjectOf<Position>",
     "file": "src/core/layouts/GraphologyLayoutEngine.ts"
+  },
+  "LayoutEngineOption": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Layout"
+    ],
+    "definition": "LayoutEngineOption",
+    "file": "src/core/layouts/layoutEngineTypes.ts"
+  },
+  "ILayoutEngineResult": {
+    "kind": "interface",
+    "properties": {
+      "positions": "ObjectOf<Position>",
+      "svg": "string",
+      "layoutType": "string"
+    },
+    "references": [],
+    "file": "src/core/layouts/layoutEngineTypes.ts"
+  },
+  "IDisplayManagerData": {
+    "kind": "interface",
+    "properties": {
+      "mode": "\"type\" | \"tag\"",
+      "nodeTypeColors": "{ [key: string]: string; }",
+      "edgeTypeColors": "{ [key: string]: string; }",
+      "nodeTagColors": "{ [key: string]: string; }",
+      "edgeTagColors": "{ [key: string]: string; }",
+      "nodeTypeVisibility": "{ [key: string]: boolean; }",
+      "edgeTypeVisibility": "{ [key: string]: boolean; }",
+      "nodeTagVisibility": "{ [key: string]: boolean; }",
+      "edgeTagVisibility": "{ [key: string]: boolean; }",
+      "nodePositions": "ObjectOf<Position>"
+    },
+    "references": [],
+    "file": "src/core/model/DisplayManager.ts"
   },
   "DisplayManager": {
     "kind": "class",
@@ -1340,6 +2002,40 @@
     },
     "file": "src/core/model/DisplayManager.ts"
   },
+  "ActiveLegendConfigState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Color",
+      "for",
+      "to",
+      "NodeKey",
+      "DisplayConfigData",
+      "DisplayConfig",
+      "or",
+      "EdgeId",
+      "NodeId",
+      "on"
+    ],
+    "definition": "ActiveLegendConfigState",
+    "file": "src/store/activeLegendConfigStore.ts"
+  },
+  "GraphInteractionState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "EdgeId",
+      "NodeIds",
+      "EdgeIds",
+      "NodeId",
+      "EntityId",
+      "on"
+    ],
+    "definition": "GraphInteractionState",
+    "file": "src/store/graphInteractionStore.ts"
+  },
   "extractIntersection": {
     "kind": "function",
     "properties": {},
@@ -1364,6 +2060,17 @@
     "returnType": "T[]",
     "file": "src/core/webgl/webglHelpers.ts"
   },
+  "ScreenCoordinates": {
+    "kind": "interface",
+    "properties": {
+      "topLeftScreen": "Vector3",
+      "bottomRightScreen": "Vector3",
+      "width": "number",
+      "height": "number"
+    },
+    "references": [],
+    "file": "src/core/webgl/webglHelpers.ts"
+  },
   "getImagePixelCoordinates": {
     "kind": "function",
     "properties": {},
@@ -1385,6 +2092,14 @@
     "returnType": "void",
     "file": "src/core/webgl/webglHelpers.ts"
   },
+  "SelectionBoxGroup": {
+    "kind": "interface",
+    "properties": {
+      "userData": "{ anchorPoint: Vector3; box: Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>; ... 4 more ...; uuid: string; }"
+    },
+    "references": [],
+    "file": "src/core/webgl/selectionArea.ts"
+  },
   "extractSelectionBoxGroups": {
     "kind": "function",
     "properties": {},
@@ -1394,6 +2109,17 @@
     },
     "returnType": "SelectionBoxGroup[]",
     "file": "src/core/webgl/selectionArea.ts"
+  },
+  "ImageBoxData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Position",
+      "on"
+    ],
+    "definition": "ImageBoxData",
+    "file": "src/core/types/ImageBoxData.ts"
   },
   "findNodeInForceGraph": {
     "kind": "function",
@@ -1421,6 +2147,15 @@
       "selectionBox": "SelectionBox"
     },
     "returnType": "void",
+    "file": "src/core/force-graph/createForceGraph.ts"
+  },
+  "IForceGraph3dCameraData": {
+    "kind": "interface",
+    "properties": {
+      "pos": "Vector3",
+      "quaternion": "any"
+    },
+    "references": [],
     "file": "src/core/force-graph/createForceGraph.ts"
   },
   "updateHighlight": {
@@ -1499,6 +2234,121 @@
     },
     "file": "src/core/force-graph/ForceGraphManager.ts"
   },
+  "MouseControlMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or",
+      "on"
+    ],
+    "definition": "MouseControlMode",
+    "file": "src/store/mouseControlsStore.ts"
+  },
+  "SelectionBox": {
+    "kind": "interface",
+    "properties": {
+      "startX": "number",
+      "startY": "number",
+      "endX": "number",
+      "endY": "number",
+      "isActive": "boolean",
+      "isAdditive": "boolean"
+    },
+    "references": [],
+    "file": "src/store/mouseControlsStore.ts"
+  },
+  "MouseControlsState": {
+    "kind": "interface",
+    "properties": {
+      "isDraggingNode": "boolean",
+      "setIsDraggingNode": "(isDragging: boolean) => void",
+      "controlMode": "MouseControlMode",
+      "selectionBox": "SelectionBox",
+      "setControlMode": "(mode: MouseControlMode) => void",
+      "toggleControlMode": "() => void",
+      "startSelectionBox": "(x: number, y: number, isAdditive?: boolean) => void",
+      "updateSelectionBox": "(x: number, y: number) => void",
+      "endSelectionBox": "() => void",
+      "clearSelectionBox": "() => void"
+    },
+    "references": [
+      "MouseControlMode",
+      "SelectionBox"
+    ],
+    "file": "src/store/mouseControlsStore.ts"
+  },
+  "ForceGraph3dLayoutMode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Layout"
+    ],
+    "definition": "ForceGraph3dLayoutMode",
+    "file": "src/AppConfig.ts"
+  },
+  "ActiveView": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "string",
+    "file": "src/AppConfig.ts"
+  },
+  "WorkspaceConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on",
+      "ISidebarConfig"
+    ],
+    "definition": "WorkspaceConfig",
+    "file": "src/AppConfig.ts"
+  },
+  "InteractivityFlags": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "let",
+      "on",
+      "MouseControlMode"
+    ],
+    "definition": "InteractivityFlags",
+    "file": "src/AppConfig.ts"
+  },
+  "AppConfig": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "ForceGraph3dLayoutMode",
+      "ActiveView",
+      "WorkspaceConfig",
+      "InteractivityFlags",
+      "for",
+      "to",
+      "RenderingManager__DisplayMode",
+      "or",
+      "LayoutEngineOption",
+      "SceneGraph",
+      "EntityData",
+      "on",
+      "Filter",
+      "Layout"
+    ],
+    "definition": "AppConfig",
+    "file": "src/AppConfig.ts"
+  },
+  "GraphBounds": {
+    "kind": "interface",
+    "properties": {
+      "min": "Vector3",
+      "max": "Vector3",
+      "center": "Vector3",
+      "radius": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/exampleCode/forceGraph3dCamera.ts"
+  },
   "computeGraphBounds": {
     "kind": "function",
     "properties": {},
@@ -1520,6 +2370,40 @@
     },
     "returnType": "void",
     "file": "src/_experimental/exampleCode/forceGraph3dCamera.ts"
+  },
+  "SongAnnotationId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Annotation",
+      "EntityId",
+      "on"
+    ],
+    "definition": "SongAnnotationId",
+    "file": "src/_experimental/mp3/SongAnnotation.ts"
+  },
+  "SongAnnotationData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "EntityData",
+      "on"
+    ],
+    "definition": "SongAnnotationData",
+    "file": "src/_experimental/mp3/SongAnnotation.ts"
+  },
+  "SongAnnotationDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "SongAnnotationId",
+      "Annotation",
+      "EntityData",
+      "EntityDataArgs",
+      "on"
+    ],
+    "definition": "SongAnnotationDataArgs",
+    "file": "src/_experimental/mp3/SongAnnotation.ts"
   },
   "SongAnnotation": {
     "kind": "class",
@@ -1561,6 +2445,17 @@
     "extends": "AbstractEntity",
     "file": "src/_experimental/mp3/SongAnnotation.ts"
   },
+  "AnimationConfig": {
+    "kind": "interface",
+    "properties": {
+      "duration": "number",
+      "interval": "number",
+      "onComplete": "() => void",
+      "onError": "(error: any) => void"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/animationRunner.ts"
+  },
   "runManagedAnimation": {
     "kind": "function",
     "properties": {},
@@ -1574,6 +2469,16 @@
     },
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/animationRunner.ts"
+  },
+  "TransitionOptions": {
+    "kind": "interface",
+    "properties": {
+      "duration": "number",
+      "easing": "(t: number) => number",
+      "onComplete": "() => void"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/transition.ts"
   },
   "transitionToConfig": {
     "kind": "function",
@@ -1590,6 +2495,29 @@
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/transition.ts"
   },
+  "TimedConfig": {
+    "kind": "interface",
+    "properties": {
+      "time": "number",
+      "config": "IForceGraphRenderConfig",
+      "duration": "number"
+    },
+    "references": [
+      "IForceGraphRenderConfig"
+    ],
+    "file": "src/_experimental/force-graph-dynamics/configSequencePlayer.ts"
+  },
+  "SequenceConfig": {
+    "kind": "interface",
+    "properties": {
+      "loop": "boolean",
+      "totalDuration": "number",
+      "interval": "number",
+      "onComplete": "() => void"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/configSequencePlayer.ts"
+  },
   "playConfigSequence": {
     "kind": "function",
     "properties": {},
@@ -1603,6 +2531,35 @@
     },
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/configSequencePlayer.ts"
+  },
+  "ConfigGeneratorOptions": {
+    "kind": "interface",
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "minCharge": "number",
+      "maxCharge": "number",
+      "transitionDuration": "number",
+      "showLabels": "boolean"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts"
+  },
+  "ConfigGeneratorArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "ConfigGeneratorOptions",
+      "to",
+      "or",
+      "on"
+    ],
+    "definition": "Partial<ConfigGeneratorOptions>",
+    "file": "src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts"
   },
   "generateRandomConfig": {
     "kind": "function",
@@ -1630,6 +2587,19 @@
     "returnType": "TimedConfig[]",
     "file": "src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts"
   },
+  "SpawnerConfig": {
+    "kind": "interface",
+    "properties": {
+      "maxNodes": "number",
+      "spawnRadius": "number",
+      "nodeColor": "string",
+      "nodeSize": "number",
+      "fadeOutDuration": "number",
+      "linkColor": "string"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts"
+  },
   "createAnnotationNodeSpawner": {
     "kind": "function",
     "properties": {},
@@ -1646,6 +2616,20 @@
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts"
   },
+  "RandomEffectsConfig": {
+    "kind": "interface",
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "transitionDuration": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/applyRandomEffects2.ts"
+  },
   "applyRandomEffects": {
     "kind": "function",
     "properties": {},
@@ -1660,6 +2644,23 @@
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/applyRandomEffects2.ts"
   },
+  "StaggeredEffectsConfig": {
+    "kind": "interface",
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "nodeSizeTransitionDuration": "number",
+      "linkWidthTransitionDuration": "number",
+      "nodeOpacityTransitionDuration": "number",
+      "linkOpacityTransitionDuration": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts"
+  },
   "applyStaggeredEffects": {
     "kind": "function",
     "properties": {},
@@ -1673,6 +2674,26 @@
     },
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts"
+  },
+  "EdgesToDegreeResult": {
+    "kind": "interface",
+    "properties": {
+      "degreesToEdges": "Map<number, Edge[]>",
+      "edgesToDegree": "Map<EdgeId, number>"
+    },
+    "references": [],
+    "file": "src/core/analysis/degree.ts"
+  },
+  "PulsateOptions": {
+    "kind": "interface",
+    "properties": {
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "duration": "number",
+      "nodeFilter": "(node: any) => boolean"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/pulsate.ts"
   },
   "pulsateNodes": {
     "kind": "function",
@@ -1689,6 +2710,20 @@
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/pulsate.ts"
   },
+  "SongVisualizationConfig": {
+    "kind": "interface",
+    "properties": {
+      "minNodeSize": "number",
+      "maxNodeSize": "number",
+      "minLinkWidth": "number",
+      "maxLinkWidth": "number",
+      "minOpacity": "number",
+      "maxOpacity": "number",
+      "transitionDuration": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts"
+  },
   "createSongVisualizationTimeline": {
     "kind": "function",
     "properties": {},
@@ -1703,6 +2738,56 @@
     "returnType": "void",
     "file": "src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts"
   },
+  "Point": {
+    "kind": "interface",
+    "properties": {
+      "x": "number",
+      "y": "number"
+    },
+    "references": [],
+    "file": "src/core/serializers/fromSvg.ts"
+  },
+  "Color": {
+    "kind": "interface",
+    "properties": {
+      "r": "number",
+      "g": "number",
+      "b": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/lumina/imageSegmentation.ts"
+  },
+  "ConnectedComponent": {
+    "kind": "interface",
+    "properties": {
+      "points": "Point[]",
+      "color": "Color",
+      "boundingBox": "{ minX: number; minY: number; maxX: number; maxY: number; }"
+    },
+    "references": [
+      "Color"
+    ],
+    "file": "src/_experimental/lumina/imageSegmentation.ts"
+  },
+  "Moon": {
+    "kind": "interface",
+    "properties": {
+      "pivot": "Object3D<Object3DEventMap>",
+      "speed": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/webgl/simulations/solarSystemHelpers.ts"
+  },
+  "PlanetSystem": {
+    "kind": "interface",
+    "properties": {
+      "pivot": "Object3D<Object3DEventMap>",
+      "moons": "Moon[]",
+      "speed": "number"
+    },
+    "references": [],
+    "file": "src/_experimental/webgl/simulations/solarSystemHelpers.ts"
+  },
   "bfsQuery": {
     "kind": "function",
     "properties": {},
@@ -1715,6 +2800,18 @@
     },
     "returnType": "void",
     "file": "src/_experimental/yasgui/yasguiHelpers.ts"
+  },
+  "BlobNodeMetadata": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "layer": "number",
+      "angle": "number",
+      "point": "{ x: number; y: number; z: number; }",
+      "isCore": "boolean"
+    },
+    "references": [],
+    "file": "src/data/graphs/blobMesh.ts"
   },
   "createBlobMesh": {
     "kind": "function",
@@ -1729,6 +2826,65 @@
     },
     "returnType": "Graph",
     "file": "src/data/graphs/blobMesh.ts"
+  },
+  "GraphvizOutput": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "Position",
+      "NodePosition",
+      "NodePositionData",
+      "on"
+    ],
+    "definition": "GraphvizOutput",
+    "file": "src/controllers/graphvizHelpers.ts"
+  },
+  "Node3DPosition": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Node3DPosition",
+    "file": "src/controllers/graphvizHelpers.ts"
+  },
+  "GraphvizNode": {
+    "kind": "interface",
+    "properties": {
+      "_gvid": "number",
+      "name": "string",
+      "pos": "string",
+      "label": "string",
+      "color": "string",
+      "shape": "string",
+      "height": "string",
+      "width": "string"
+    },
+    "references": [],
+    "file": "src/controllers/graphvizJsonParser.ts"
+  },
+  "GraphvizJSON": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "directed": "boolean",
+      "objects": "GraphvizNode[]",
+      "bb": "string",
+      "layout": "string"
+    },
+    "references": [],
+    "file": "src/controllers/graphvizJsonParser.ts"
+  },
+  "NodePosition": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "x": "number",
+      "y": "number",
+      "label": "string",
+      "color": "string"
+    },
+    "references": [],
+    "file": "src/controllers/graphvizJsonParser.ts"
   },
   "GraphvizLayoutEngine": {
     "kind": "class",
@@ -1850,6 +3006,22 @@
     "returnType": "Promise<ILayoutEngineResult>",
     "file": "src/store/sceneGraphHooks.ts"
   },
+  "Webpage": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "url": "string",
+      "user_id": "string",
+      "title": "string",
+      "html_content": "string",
+      "screenshot_url": "string",
+      "metadata": "any",
+      "created_at": "string",
+      "last_updated_at": "string"
+    },
+    "references": [],
+    "file": "src/api/webpagesApi.ts"
+  },
   "saveWebpage": {
     "kind": "function",
     "properties": {},
@@ -1880,6 +3052,43 @@
     "returnType": "void",
     "file": "src/api/webpagesApi.ts"
   },
+  "TextSelectionAnnotationData": {
+    "kind": "interface",
+    "properties": {
+      "selected_text": "string",
+      "comment": "string",
+      "secondary_comment": "string",
+      "tags": "string[]",
+      "page_url": "string",
+      "type": "\"text_selection\""
+    },
+    "references": [],
+    "file": "src/api/annotationsApi.ts"
+  },
+  "ImageAnnotationData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Position",
+      "EntityData",
+      "on"
+    ],
+    "definition": "ImageAnnotationData",
+    "file": "src/core/types/ImageAnnotation.ts"
+  },
+  "Annotation": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "label": "string",
+      "description": "string",
+      "imageBoxId": "string",
+      "references": "string[]"
+    },
+    "references": [],
+    "file": "src/utils/generateAnnotations.ts"
+  },
   "saveAnnotation": {
     "kind": "function",
     "properties": {},
@@ -1909,6 +3118,39 @@
     },
     "returnType": "void",
     "file": "src/api/annotationsApi.ts"
+  },
+  "NotificationType": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or"
+    ],
+    "definition": "NotificationType",
+    "file": "src/store/notificationStore.ts"
+  },
+  "Notification": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "message": "string",
+      "type": "NotificationType",
+      "duration": "number",
+      "groupId": "string"
+    },
+    "references": [
+      "NotificationType"
+    ],
+    "file": "src/store/notificationStore.ts"
+  },
+  "NotificationStore": {
+    "kind": "interface",
+    "properties": {
+      "notifications": "Notification[]",
+      "addNotification": "(notification: Omit<Notification, \"id\">) => void",
+      "removeNotification": "(id: string) => void"
+    },
+    "references": [],
+    "file": "src/store/notificationStore.ts"
   },
   "serializeSceneGraphToJson": {
     "kind": "function",
@@ -1957,6 +3199,29 @@
     },
     "returnType": "SceneGraph",
     "file": "src/core/serializers/toFromJson.ts"
+  },
+  "SupabaseProject": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "created_at": "string",
+      "last_updated_at": "string",
+      "user_id": "string",
+      "data": "any"
+    },
+    "references": [],
+    "file": "src/api/supabaseProjects.ts"
+  },
+  "UpdateProjectParams": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "description": "string"
+    },
+    "references": [],
+    "file": "src/api/supabaseProjects.ts"
   },
   "saveProjectToSupabase": {
     "kind": "function",
@@ -2010,6 +3275,16 @@
     },
     "returnType": "Promise<SupabaseProject>",
     "file": "src/api/supabaseProjects.ts"
+  },
+  "ProjectActionResult": {
+    "kind": "interface",
+    "properties": {
+      "success": "boolean",
+      "message": "string",
+      "data": "any"
+    },
+    "references": [],
+    "file": "src/api/projectActions.ts"
   },
   "exportProject": {
     "kind": "function",
@@ -2091,6 +3366,20 @@
     "returnType": "Promise<boolean>",
     "file": "src/api/projectActions.ts"
   },
+  "InterfaceAST": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or",
+      "aliases",
+      "alias",
+      "definition",
+      "references",
+      "on"
+    ],
+    "definition": "InterfaceAST",
+    "file": "src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+  },
   "extractReferences": {
     "kind": "function",
     "properties": {},
@@ -2111,6 +3400,49 @@
     },
     "returnType": "Promise<SceneGraph>",
     "file": "src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+  },
+  "StoryCardOptions": {
+    "kind": "interface",
+    "properties": {
+      "basePath": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/StoryCards/cards/utils.ts"
+  },
+  "MajorWork": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on"
+    ],
+    "definition": "MajorWork",
+    "file": "src/data/datasets/academic-works.ts"
+  },
+  "Person": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "or",
+      "MajorWork",
+      "on"
+    ],
+    "definition": "Person",
+    "file": "src/data/datasets/academic-works.ts"
+  },
+  "Field": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Field",
+    "file": "src/data/datasets/academic-works.ts"
+  },
+  "IForceConsistencyResult": {
+    "kind": "interface",
+    "properties": {
+      "nodesAdded": "Node[]"
+    },
+    "references": [],
+    "file": "src/core/model/forceConsistency.ts"
   },
   "KnowledgeGraphBuilder": {
     "kind": "class",
@@ -2148,6 +3480,13 @@
     },
     "file": "src/data/graphs/thinkers1Graph.ts"
   },
+  "Vector8": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Vector8",
+    "file": "src/data/graphs/e8PetrieProjection.ts"
+  },
   "loadSvgFromUrl": {
     "kind": "function",
     "properties": {},
@@ -2157,6 +3496,20 @@
       "options": "any"
     },
     "returnType": "Promise<SceneGraph>",
+    "file": "src/utils/svgLoader.ts"
+  },
+  "ILoadSvgToSceneGraphOptions": {
+    "kind": "interface",
+    "properties": {
+      "forceGraphDisplayConfig": "IForceGraphRenderConfig",
+      "appConfig": "AppConfig",
+      "metadata": "ISceneGraphMetadata"
+    },
+    "references": [
+      "IForceGraphRenderConfig",
+      "AppConfig",
+      "ISceneGraphMetadata"
+    ],
     "file": "src/utils/svgLoader.ts"
   },
   "findClosestNode": {
@@ -2170,6 +3523,37 @@
     },
     "returnType": "string",
     "file": "src/utils/svgLoader.ts"
+  },
+  "RandomNodeOptions": {
+    "kind": "interface",
+    "properties": {
+      "nodeCount": "number",
+      "nodeTypes": "string[]",
+      "nodeTags": "string[][]",
+      "labelPrefix": "string",
+      "addRandomTags": "boolean",
+      "minTagsPerNode": "number",
+      "maxTagsPerNode": "number"
+    },
+    "references": [],
+    "file": "src/utils/graphUtils.ts"
+  },
+  "RandomEdgeOptions": {
+    "kind": "interface",
+    "properties": {
+      "edgeCount": "number",
+      "edgeTypes": "string[]",
+      "edgeTags": "string[][]",
+      "labelPrefix": "string",
+      "addRandomTags": "boolean",
+      "minTagsPerEdge": "number",
+      "maxTagsPerEdge": "number",
+      "connectionDensity": "number",
+      "allowSelfLoops": "boolean",
+      "allowMultiEdges": "boolean"
+    },
+    "references": [],
+    "file": "src/utils/graphUtils.ts"
   },
   "generateRandomNodes": {
     "kind": "function",
@@ -2231,6 +3615,135 @@
     },
     "returnType": "NodeId[]",
     "file": "src/utils/graphUtils.ts"
+  },
+  "TreeNode": {
+    "kind": "interface",
+    "properties": {
+      "node_id": "number",
+      "node_name": "string",
+      "child_nodes": "number",
+      "leaf_node": "number",
+      "tolorg_link": "number",
+      "extinct": "number",
+      "confidence": "number",
+      "phylesis": "number"
+    },
+    "references": [],
+    "file": "src/data/graphs/Gallery_Demos/demo_SceneGraph_TreeOfLife.ts"
+  },
+  "TreeLink": {
+    "kind": "interface",
+    "properties": {
+      "source_node_id": "number",
+      "target_node_id": "number"
+    },
+    "references": [],
+    "file": "src/data/graphs/Gallery_Demos/demo_SceneGraph_TreeOfLife.ts"
+  },
+  "StoryCard": {
+    "kind": "class",
+    "properties": {},
+    "references": [
+      "AbstractEntity",
+      "StoryCardData",
+      "Position",
+      "StoryCard",
+      "StoryCardDataArgs"
+    ],
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "StoryCardData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getTitle": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getDescription": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getAuthor": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getCreatedAt": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getDifficulty": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getImageUrl": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getPosition": {
+        "arguments": {},
+        "returnType": "Position"
+      },
+      "setTitle": {
+        "arguments": {
+          "title": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setDescription": {
+        "arguments": {
+          "description": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setAuthor": {
+        "arguments": {
+          "author": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setDifficulty": {
+        "arguments": {
+          "difficulty": "number"
+        },
+        "returnType": "StoryCard"
+      },
+      "setImageUrl": {
+        "arguments": {
+          "imageUrl": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setPosition": {
+        "arguments": {
+          "position": "Position"
+        },
+        "returnType": "StoryCard"
+      },
+      "create": {
+        "arguments": {
+          "args": "StoryCardDataArgs"
+        },
+        "returnType": "StoryCard"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "src/core/types/StoryCard.ts"
+  },
+  "StoryCardEntity": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "type": "\"StoryCard\"",
+      "data": "StoryCard"
+    },
+    "references": [
+      "StoryCard"
+    ],
+    "file": "src/data/models/StoryCard.ts"
   },
   "createStoryCard": {
     "kind": "function",
@@ -2399,98 +3912,67 @@
     "returnType": "any",
     "file": "src/data/models/StoryCard.ts"
   },
-  "StoryCard": {
-    "kind": "class",
+  "StoryCardId": {
+    "kind": "type",
     "properties": {},
     "references": [
-      "AbstractEntity",
-      "StoryCardData",
-      "Position",
-      "StoryCard",
-      "StoryCardDataArgs"
+      "to",
+      "or",
+      "EntityId",
+      "on"
     ],
-    "methods": {
-      "getData": {
-        "arguments": {},
-        "returnType": "StoryCardData"
-      },
-      "getEntityType": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "getTitle": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "getDescription": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "getAuthor": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "getCreatedAt": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "getDifficulty": {
-        "arguments": {},
-        "returnType": "number"
-      },
-      "getImageUrl": {
-        "arguments": {},
-        "returnType": "string"
-      },
-      "getPosition": {
-        "arguments": {},
-        "returnType": "Position"
-      },
-      "setTitle": {
-        "arguments": {
-          "title": "string"
-        },
-        "returnType": "StoryCard"
-      },
-      "setDescription": {
-        "arguments": {
-          "description": "string"
-        },
-        "returnType": "StoryCard"
-      },
-      "setAuthor": {
-        "arguments": {
-          "author": "string"
-        },
-        "returnType": "StoryCard"
-      },
-      "setDifficulty": {
-        "arguments": {
-          "difficulty": "number"
-        },
-        "returnType": "StoryCard"
-      },
-      "setImageUrl": {
-        "arguments": {
-          "imageUrl": "string"
-        },
-        "returnType": "StoryCard"
-      },
-      "setPosition": {
-        "arguments": {
-          "position": "Position"
-        },
-        "returnType": "StoryCard"
-      },
-      "create": {
-        "arguments": {
-          "args": "StoryCardDataArgs"
-        },
-        "returnType": "StoryCard"
-      }
-    },
-    "extends": "AbstractEntity",
+    "definition": "StoryCardId",
     "file": "src/core/types/StoryCard.ts"
+  },
+  "StoryCardData": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "if",
+      "Position",
+      "or",
+      "EntityData",
+      "on"
+    ],
+    "definition": "StoryCardData",
+    "file": "src/core/types/StoryCard.ts"
+  },
+  "StoryCardDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "if",
+      "Position",
+      "or",
+      "EntityData",
+      "EntityDataArgs",
+      "on"
+    ],
+    "definition": "StoryCardDataArgs",
+    "file": "src/core/types/StoryCard.ts"
+  },
+  "SubFeature": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string",
+    "file": "src/data/graphs/Feature.ts"
+  },
+  "Feature": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "string",
+    "file": "src/data/graphs/Feature.ts"
+  },
+  "FeatureSet": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Feature"
+    ],
+    "definition": "FeatureSet<E>",
+    "file": "src/data/graphs/Feature.ts"
   },
   "createFeatureSet": {
     "kind": "function",
@@ -2504,6 +3986,19 @@
     },
     "returnType": "FeatureSet<E>",
     "file": "src/data/graphs/Feature.ts"
+  },
+  "SphereNodeMetadata": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "phi": "number",
+      "theta": "number",
+      "point": "{ x: number; y: number; z: number; }",
+      "isPole": "boolean",
+      "poleType": "\"north\" | \"south\""
+    },
+    "references": [],
+    "file": "src/data/graphs/sphereMesh.ts"
   },
   "createSphereMesh": {
     "kind": "function",
@@ -2532,6 +4027,21 @@
     "returnType": "Graph",
     "file": "src/data/graphs/sphericalMesh.ts"
   },
+  "SceneGraphCategory": {
+    "kind": "interface",
+    "properties": {
+      "label": "string",
+      "graphs": "{ [key: string]: SceneGraph | (() => SceneGraph) | (() => Promise<SceneGraph>); }"
+    },
+    "references": [],
+    "file": "src/data/DemoSceneGraphs.ts"
+  },
+  "DemoSceneGraphTree": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
+    "file": "src/data/DemoSceneGraphs.ts"
+  },
   "getAllDemoSceneGraphCategories": {
     "kind": "function",
     "properties": {},
@@ -2549,6 +4059,41 @@
     "arguments": {},
     "returnType": "DemoSceneGraphTree",
     "file": "src/data/DemoSceneGraphs.ts"
+  },
+  "ILayoutManagerState": {
+    "kind": "interface",
+    "properties": {
+      "mode": "\"save\" | \"load\"",
+      "show": "boolean"
+    },
+    "references": [],
+    "file": "src/store/dialogStore.ts"
+  },
+  "ISceneGraphDetailViewState": {
+    "kind": "interface",
+    "properties": {
+      "show": "boolean",
+      "readOnly": "boolean"
+    },
+    "references": [],
+    "file": "src/store/dialogStore.ts"
+  },
+  "DialogState": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "let",
+      "ISceneGraph",
+      "SceneGraph",
+      "2",
+      "Command",
+      "Filter",
+      "Layout",
+      "ILayoutManagerState",
+      "ISceneGraphDetailViewState"
+    ],
+    "definition": "DialogState",
+    "file": "src/store/dialogStore.ts"
   },
   "setShowLoadSceneGraphWindow": {
     "kind": "function",
@@ -2663,6 +4208,45 @@
     "returnType": "void",
     "file": "src/store/dialogStore.ts"
   },
+  "ChatMessage": {
+    "kind": "interface",
+    "properties": {
+      "role": "string",
+      "content": "string",
+      "timestamp": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "ChatHistoryState": {
+    "kind": "interface",
+    "properties": {
+      "messages": "ChatMessage[]",
+      "addMessage": "(message: ChatMessage) => void",
+      "setMessages": "(messages: ChatMessage[]) => void",
+      "clearHistory": "() => void"
+    },
+    "references": [],
+    "file": "src/store/chatHistoryStore.ts"
+  },
+  "WebLLMClientConfig": {
+    "kind": "interface",
+    "properties": {
+      "model": "string",
+      "initProgressCallback": "(report: { progress: number; }) => void"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/WebLLMClient.ts"
+  },
+  "ExtendedCompletionParams": {
+    "kind": "interface",
+    "properties": {
+      "singleMessage": "boolean",
+      "forceNewConvo": "boolean"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/WebLLMClient.ts"
+  },
   "WebLLMClient": {
     "kind": "class",
     "properties": {
@@ -2709,6 +4293,24 @@
       }
     },
     "file": "src/components/applets/ChatGptImporter/services/WebLLMClient.ts"
+  },
+  "DocumentTags": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
+  },
+  "AnalysisProgress": {
+    "kind": "interface",
+    "properties": {
+      "processed": "number",
+      "total": "number",
+      "currentNodeId": "NodeId"
+    },
+    "references": [
+      "NodeId"
+    ],
+    "file": "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
   },
   "analyzeDocumentForTags": {
     "kind": "function",
@@ -2778,6 +4380,24 @@
     "returnType": "Promise<DocumentTags>",
     "file": "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
   },
+  "IMenuConfigCallbacks": {
+    "kind": "interface",
+    "properties": {
+      "handleSetSceneGraph": "(key: string, clearQueryParams?: boolean, onLoaded?: (sceneGraph?: SceneGraph) => void) => void",
+      "handleImportConfig": "(event: ChangeEvent<HTMLInputElement>) => void",
+      "handleFitToView": "(activeView: string) => void",
+      "GraphMenuActions": "() => { [key: string]: { action: () => void; }; }",
+      "SimulationMenuActions": "() => { [key: string]: { action: () => void; }; }",
+      "setShowNodeTable": "(show: boolean) => void",
+      "setShowEdgeTable": "(show: boolean) => void",
+      "showLayoutManager": "(mode: \"save\" | \"load\") => void",
+      "showFilterWindow": "() => void",
+      "showSceneGraphDetailView": "(readOnly: boolean) => void",
+      "showChatGptImporter": "() => void"
+    },
+    "references": [],
+    "file": "src/components/MenuConfig.ts"
+  },
   "MenuConfig": {
     "kind": "class",
     "properties": {
@@ -2808,6 +4428,16 @@
       }
     },
     "file": "src/components/MenuConfig.ts"
+  },
+  "ParsedConversation": {
+    "kind": "interface",
+    "properties": {
+      "title": "string",
+      "messages": "ChatMessage[]",
+      "error": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
   },
   "fetchChatGptConversation": {
     "kind": "function",
@@ -2940,6 +4570,45 @@
     "returnType": "ParsedConversation[]",
     "file": "src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
   },
+  "Metadata": {
+    "kind": "interface",
+    "properties": {
+      "summary": "string",
+      "keywords": "string[]",
+      "sentiment": "\"positive\" | \"negative\"",
+      "topic": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
+  "Conversation": {
+    "kind": "interface",
+    "properties": {
+      "id": "number",
+      "title": "string",
+      "excerpt": "string",
+      "message_count": "number",
+      "char_length": "number",
+      "metadata": "Metadata",
+      "hash": "string",
+      "timestamp": "number"
+    },
+    "references": [
+      "Metadata"
+    ],
+    "file": "src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
+  "ConversationsData": {
+    "kind": "interface",
+    "properties": {
+      "source_file": "string",
+      "conversation_count": "number",
+      "conversations": "Conversation[]",
+      "completed": "boolean"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
   "importConversations": {
     "kind": "function",
     "properties": {},
@@ -2994,12 +4663,44 @@
     "returnType": "Promise<{ imported: number; matched: number; topics?: { topics: number; connections: number; }; keywords?: { keywords: number; connections: number; }; }>",
     "file": "src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
   },
+  "SceneGraphCommand": {
+    "kind": "interface",
+    "properties": {
+      "action": "string",
+      "parameters": "Record<string, any>"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "CommandDefinition": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "examples": "string[]",
+      "keywords": "string[]",
+      "apiFormat": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/sceneGraphController.ts"
+  },
   "SceneGraphController": {
     "kind": "class",
     "properties": {},
     "references": [],
     "methods": {},
     "file": "src/core/force-graph/SceneGraphController.ts"
+  },
+  "LLMStudioOptions": {
+    "kind": "interface",
+    "properties": {
+      "temperature": "number",
+      "top_p": "number",
+      "max_tokens": "number",
+      "model": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
   },
   "getSystemPromptWithCommands": {
     "kind": "function",
@@ -3063,6 +4764,18 @@
     "arguments": {},
     "returnType": "void",
     "file": "src/components/applets/ChatGptImporter/services/testLlm.ts"
+  },
+  "SerializedMentionNode": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "SerializedTextNode",
+      "Spread",
+      "on"
+    ],
+    "definition": "SerializedMentionNode",
+    "file": "src/components/applets/Lexical/nodes/MentionNode.ts"
   },
   "$convertMentionElement": {
     "kind": "function",
@@ -3181,6 +4894,15 @@
     "returnType": "boolean",
     "file": "src/components/applets/Lexical/nodes/MentionNode.ts"
   },
+  "ResourceSpecifier": {
+    "kind": "interface",
+    "properties": {
+      "type": "\"wikipedia\"",
+      "resource_id": "string"
+    },
+    "references": [],
+    "file": "src/components/common/saveAnnotationToSceneGraph.ts"
+  },
   "getDownstreamNodes": {
     "kind": "function",
     "properties": {},
@@ -3269,6 +4991,54 @@
     "returnType": "Promise<string>",
     "file": "src/components/markdown/markdownLoader.ts"
   },
+  "FormSchemaField": {
+    "kind": "interface",
+    "properties": {
+      "validate": "(value: string | number | boolean) => string",
+      "label": "string",
+      "type": "\"number\" | \"checkbox\" | \"select\"",
+      "options": "{ value: string; label: string; }[]",
+      "min": "number",
+      "max": "number",
+      "step": "number"
+    },
+    "references": [],
+    "file": "src/components/shared/FormSchemaTypes.ts"
+  },
+  "FormSchema": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
+    "file": "src/components/shared/FormSchemaTypes.ts"
+  },
+  "FormFieldProps": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "value": "string | number | boolean",
+      "error": "string",
+      "onChange": "(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void",
+      "schema": "FormSchema",
+      "isDarkMode": "boolean"
+    },
+    "references": [
+      "FormSchema"
+    ],
+    "file": "src/components/shared/FormSchemaTypes.ts"
+  },
+  "StoryNode": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "markdownFile": "string",
+      "markdownContent": "string",
+      "children": "StoryNode[]"
+    },
+    "references": [],
+    "file": "src/components/types/StoryTypes.ts"
+  },
   "extractFirstImageSrc": {
     "kind": "function",
     "properties": {},
@@ -3288,6 +5058,20 @@
     },
     "returnType": "string",
     "file": "src/components/utils/markdownUtils.ts"
+  },
+  "HotkeyAction": {
+    "kind": "interface",
+    "properties": {
+      "key": "string",
+      "ctrlKey": "boolean",
+      "metaKey": "boolean",
+      "shiftKey": "boolean",
+      "altKey": "boolean",
+      "action": "() => void",
+      "description": "string"
+    },
+    "references": [],
+    "file": "src/hooks/useHotkeys.ts"
   },
   "SceneGraphCache": {
     "kind": "class",
@@ -3318,6 +5102,49 @@
       }
     },
     "file": "src/controllers/SceneGraphCache.ts"
+  },
+  "IForceGraphEventHandlers": {
+    "kind": "interface",
+    "properties": {
+      "onNodeHovered": "(node: NodeId) => void",
+      "onNodeClicked": "(node: NodeId) => void",
+      "onNodeRightClick": "(event: MouseEvent, nodeId: string) => void"
+    },
+    "references": [],
+    "file": "src/core/force-graph/forceGraphController.ts"
+  },
+  "IForceGraphInstanceController": {
+    "kind": "interface",
+    "properties": {
+      "setBackgroundColor": "(color: string) => void",
+      "initializeInstance": "(dom: HTMLElement, appConfig?: AppConfig) => ForceGraph3DInstance",
+      "applyFixedLayout": "(positions: ObjectOf<Position>) => void",
+      "applyConfigToForceGraph": "(config: IForceGraphRenderConfig) => void"
+    },
+    "references": [],
+    "file": "src/core/force-graph/forceGraphController.ts"
+  },
+  "IForceGraphNode": {
+    "kind": "interface",
+    "properties": {
+      "id": "string | NodeId",
+      "color": "string",
+      "position": "{ x: number; y: number; z?: number; }",
+      "data": "{ label: string; color: string; }"
+    },
+    "references": [],
+    "file": "src/core/force-graph/forceGraphController.ts"
+  },
+  "IForceGraphEdge": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "source": "string",
+      "target": "string",
+      "color": "string"
+    },
+    "references": [],
+    "file": "src/core/force-graph/forceGraphController.ts"
   },
   "ForceGraphInstanceController": {
     "kind": "class",
@@ -3373,6 +5200,41 @@
     ],
     "file": "src/core/force-graph/forceGraphController.ts"
   },
+  "Dimension": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "Dimension",
+    "file": "src/core/geometry/convertCoordinates.ts"
+  },
+  "LayoutWorkerMessage": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "action": "\"computeLayout\" | \"cancelComputation\"",
+      "layoutType": "LayoutEngineOption",
+      "serializedGraph": "SerializedSceneGraph"
+    },
+    "references": [
+      "LayoutEngineOption",
+      "SerializedSceneGraph"
+    ],
+    "file": "src/core/layouts/LayoutWorker.ts"
+  },
+  "_LayoutWorkerResponse": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "result": "ILayoutEngineResult",
+      "error": "string",
+      "type": "\"error\" | \"progress\" | \"complete\" | \"cancelled\"",
+      "progress": "number"
+    },
+    "references": [
+      "ILayoutEngineResult"
+    ],
+    "file": "src/core/layouts/LayoutWorker.ts"
+  },
   "deserializeSceneGraph": {
     "kind": "function",
     "properties": {},
@@ -3397,6 +5259,51 @@
     },
     "returnType": "Promise<ILayoutEngineResult>",
     "file": "src/core/layouts/LayoutWorker.ts"
+  },
+  "ImageBox": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "imageId": "string",
+      "position": "Vector3",
+      "width": "number",
+      "height": "number"
+    },
+    "references": [],
+    "file": "src/core/layouts/renderImageBox.ts"
+  },
+  "ImageData": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "url": "string",
+      "group": "Group<Object3DEventMap>",
+      "boxes": "ImageBox[]"
+    },
+    "references": [],
+    "file": "src/core/layouts/renderImageBox.ts"
+  },
+  "ImageLayoutOptions": {
+    "kind": "interface",
+    "properties": {
+      "type": "\"grid2d\" | \"random3d\" | \"stack\"",
+      "gridOptions": "{ cols: number; spacing: { x: number; y: number; z: number; }; }",
+      "randomOptions": "{ bounds: { x: [number, number]; y: [number, number]; z: [number, number]; }; }",
+      "stackOptions": "{ spacing: number; }"
+    },
+    "references": [],
+    "file": "src/core/layouts/imageLayoutEngine.ts"
+  },
+  "IGraphDiffResult": {
+    "kind": "interface",
+    "properties": {
+      "additionalNodes": "Node[]",
+      "missingNodes": "Node[]",
+      "additionalEdges": "Edge[]",
+      "missingEdges": "Edge[]"
+    },
+    "references": [],
+    "file": "src/core/model/graphDiff.ts"
   },
   "serializeSongAnnotationContainerToJson": {
     "kind": "function",
@@ -3440,6 +5347,26 @@
     "returnType": "Promise<SceneGraph>",
     "file": "src/core/serializers/fromGraphml.ts"
   },
+  "PathData": {
+    "kind": "interface",
+    "properties": {
+      "start": "Point",
+      "end": "Point"
+    },
+    "references": [
+      "Point"
+    ],
+    "file": "src/core/serializers/fromSvg.ts"
+  },
+  "FileFormat": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "on"
+    ],
+    "definition": "FileFormat",
+    "file": "src/core/serializers/sceneGraphLoader.ts"
+  },
   "loadSceneGraphFromFile": {
     "kind": "function",
     "properties": {},
@@ -3475,6 +5402,26 @@
     },
     "returnType": "string",
     "file": "src/core/serializers/toGraphml.ts"
+  },
+  "StoredSceneGraphInfo": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "lastModified": "number",
+      "createdAt": "number",
+      "thumbnailUrl": "string",
+      "tags": "string[]"
+    },
+    "references": [],
+    "file": "src/core/storage/IPersistentStore.ts"
+  },
+  "IPersistentStore": {
+    "kind": "interface",
+    "properties": {},
+    "references": [],
+    "file": "src/core/storage/IPersistentStore.ts"
   },
   "PersistentStoreManager": {
     "kind": "class",
@@ -3553,6 +5500,30 @@
       "IPersistentStore"
     ],
     "file": "src/core/storage/PersistentStoreManager.ts"
+  },
+  "ImageAnnotationId": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Annotation",
+      "EntityId",
+      "on"
+    ],
+    "definition": "ImageAnnotationId",
+    "file": "src/core/types/ImageAnnotation.ts"
+  },
+  "ImageAnnotationDataArgs": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "to",
+      "Position",
+      "EntityData",
+      "EntityDataArgs",
+      "on"
+    ],
+    "definition": "ImageAnnotationDataArgs",
+    "file": "src/core/types/ImageAnnotation.ts"
   },
   "ImageAnnotation": {
     "kind": "class",
@@ -3654,6 +5625,18 @@
     "returnType": "void",
     "file": "src/core/webgl/simulations/applyParticleEffects.ts"
   },
+  "Command": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "execute": "() => void",
+      "children": "Command[]"
+    },
+    "references": [],
+    "file": "src/hooks/useCommandPalette.ts"
+  },
   "commandMatchesQueryUnordered": {
     "kind": "function",
     "properties": {},
@@ -3721,6 +5704,46 @@
     },
     "file": "src/store/TagManager.ts"
   },
+  "ReactFlowConfigState": {
+    "kind": "interface",
+    "properties": {
+      "config": "ReactFlowRenderConfig",
+      "setConfig": "(config: ReactFlowRenderConfig) => void",
+      "subscribeToConfigChanges": "(callback: (config: ReactFlowRenderConfig) => void) => () => void"
+    },
+    "references": [],
+    "file": "src/store/reactFlowConfigStore.ts"
+  },
+  "User": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "email": "string",
+      "user_metadata": "{ avatar_url?: string; picture?: string; name?: string; }"
+    },
+    "references": [],
+    "file": "src/store/userStore.ts"
+  },
+  "UserStore": {
+    "kind": "interface",
+    "properties": {
+      "isSignedIn": "boolean",
+      "user": "User",
+      "isLoading": "boolean",
+      "setSignedIn": "(signedIn: boolean) => void",
+      "setUser": "(user: User) => void",
+      "setLoading": "(loading: boolean) => void",
+      "initializeAuth": "() => Promise<void>",
+      "signOut": "() => Promise<void>",
+      "checkAuthStatus": "() => Promise<boolean>",
+      "getUserDetails": "() => User",
+      "getAvatarUrl": "() => string"
+    },
+    "references": [
+      "User"
+    ],
+    "file": "src/store/userStore.ts"
+  },
   "replaceUnigraphUrlsWithLocalhost": {
     "kind": "function",
     "properties": {},
@@ -3751,148 +5774,97 @@
     "file": "src/utils/urlUtils.ts"
   },
   "_files": {
-    "src/core/model/entity/abstractEntity.ts": [
-      "fromDefault",
-      "AbstractEntity",
-      "Entity"
+    "src/AppConfig.ts": [
+      "ForceGraph3dLayoutMode",
+      "ActiveView",
+      "WorkspaceConfig",
+      "InteractivityFlags",
+      "AppConfig"
     ],
-    "src/core/model/entity/entityIds.ts": [
-      "EntityIds"
-    ],
-    "src/core/model/entity/entitiesContainer.ts": [
-      "EntitiesContainer"
-    ],
-    "src/core/model/Node.ts": [
-      "Node"
-    ],
-    "src/core/model/Edge.ts": [
-      "Edge"
-    ],
-    "src/core/model/Graph.ts": [
-      "Graph"
-    ],
-    "src/core/layouts/layoutHelpers.ts": [
-      "createGraphologyGraph",
-      "normalizePositions",
-      "scalePositions",
-      "centerPositions",
-      "fitToRect"
-    ],
-    "src/core/model/GraphBuilder.ts": [
-      "GraphBuilder"
-    ],
-    "src/controllers/RenderingManager.ts": [
-      "RenderingManager"
-    ],
-    "src/core/model/entity/entityCache.ts": [
-      "EntityCache"
-    ],
-    "src/core/model/SceneGraph.ts": [
-      "SceneGraph"
-    ],
-    "src/core/layouts/GraphologyLayoutEngine.ts": [
-      "GraphologyLayoutEngine",
-      "extractPositionsFromGraphlogyGraph"
-    ],
-    "src/core/model/DisplayManager.ts": [
-      "DisplayManager"
-    ],
-    "src/core/webgl/webglHelpers.ts": [
-      "extractIntersection",
-      "extractIntersections",
-      "getImagePixelCoordinates",
-      "convertPixelCoordinatesToPositions"
-    ],
-    "src/core/webgl/selectionArea.ts": [
-      "extractSelectionBoxGroups"
-    ],
-    "src/core/force-graph/forceGraphHelpers.ts": [
-      "findNodeInForceGraph"
-    ],
-    "src/core/force-graph/createForceGraph.ts": [
-      "selectNodesInSelectionBox",
-      "updateHighlight"
-    ],
-    "src/core/force-graph/ForceGraphManager.ts": [
-      "ForceGraphManager"
-    ],
+    "src/__mocks__/fileMock.ts": [],
     "src/_experimental/exampleCode/forceGraph3dCamera.ts": [
+      "Node",
+      "GraphBounds",
       "computeGraphBounds",
       "setupDynamicCamera"
     ],
-    "src/_experimental/mp3/SongAnnotation.ts": [
-      "SongAnnotation"
-    ],
+    "src/_experimental/force-graph-dynamics/247-2.ts": [],
+    "src/_experimental/force-graph-dynamics/addCluster.ts": [],
+    "src/_experimental/force-graph-dynamics/addRandomEdges.ts": [],
+    "src/_experimental/force-graph-dynamics/addRandomNodes.ts": [],
     "src/_experimental/force-graph-dynamics/animationRunner.ts": [
+      "AnimationConfig",
       "runManagedAnimation"
     ],
-    "src/_experimental/force-graph-dynamics/transition.ts": [
-      "transitionToConfig"
-    ],
-    "src/_experimental/force-graph-dynamics/configSequencePlayer.ts": [
-      "playConfigSequence"
-    ],
-    "src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts": [
-      "generateRandomConfig",
-      "createSongVisualizationTimeline"
-    ],
     "src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts": [
+      "ConfigGeneratorOptions",
+      "ConfigGeneratorArgs",
       "generateConfigsFromAnnotations"
     ],
     "src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts": [
+      "SpawnerConfig",
       "createAnnotationNodeSpawner"
     ],
+    "src/_experimental/force-graph-dynamics/applyRandomEffects.ts": [],
     "src/_experimental/force-graph-dynamics/applyRandomEffects2.ts": [
+      "RandomEffectsConfig",
       "applyRandomEffects"
     ],
     "src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts": [
+      "StaggeredEffectsConfig",
       "applyStaggeredEffects"
     ],
+    "src/_experimental/force-graph-dynamics/burstNodeSpawner.ts": [],
+    "src/_experimental/force-graph-dynamics/compactify.ts": [],
+    "src/_experimental/force-graph-dynamics/configSequencePlayer.ts": [
+      "TimedConfig",
+      "SequenceConfig",
+      "playConfigSequence"
+    ],
+    "src/_experimental/force-graph-dynamics/focusOnDegrees.ts": [],
+    "src/_experimental/force-graph-dynamics/focusWithTransparency.ts": [],
     "src/_experimental/force-graph-dynamics/pulsate.ts": [
+      "PulsateOptions",
       "pulsateNodes"
+    ],
+    "src/_experimental/force-graph-dynamics/randomizeVisible.ts": [],
+    "src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts": [
+      "generateRandomConfig",
+      "SongVisualizationConfig",
+      "createSongVisualizationTimeline"
+    ],
+    "src/_experimental/force-graph-dynamics/transition.ts": [
+      "TransitionOptions",
+      "transitionToConfig"
+    ],
+    "src/_experimental/lumina/imageSegmentation.ts": [
+      "Color",
+      "ConnectedComponent"
+    ],
+    "src/_experimental/lumina/images.ts": [],
+    "src/_experimental/mp3/SongAnnotation.ts": [
+      "SongAnnotationId",
+      "SongAnnotationData",
+      "SongAnnotationDataArgs",
+      "SongAnnotation"
+    ],
+    "src/_experimental/mp3/data.ts": [],
+    "src/_experimental/mp3/demoSongAnnotations247.ts": [],
+    "src/_experimental/webgl/simulations/solarSystemHelpers.ts": [
+      "Moon",
+      "PlanetSystem"
     ],
     "src/_experimental/yasgui/yasguiHelpers.ts": [
       "bfsQuery"
     ],
-    "src/data/graphs/blobMesh.ts": [
-      "createBlobMesh"
-    ],
-    "src/core/layouts/GraphvizLayoutEngine.ts": [
-      "GraphvizLayoutEngine"
-    ],
-    "src/core/layouts/LayoutEngine.ts": [
-      "getLayoutWorker",
-      "LayoutEngine"
-    ],
-    "src/store/sceneGraphHooks.ts": [
-      "applyLayoutAndTriggerAppUpdate",
-      "computeLayoutAndTriggerAppUpdate",
-      "computeLayoutAndTriggerUpdateForCurrentSceneGraph"
-    ],
-    "src/api/webpagesApi.ts": [
-      "saveWebpage",
-      "listWebpages",
-      "getWebpage"
-    ],
     "src/api/annotationsApi.ts": [
+      "TextSelectionAnnotationData",
       "saveAnnotation",
       "listAnnotations",
       "getAnnotation"
     ],
-    "src/core/serializers/toFromJson.ts": [
-      "serializeSceneGraphToJson",
-      "deserializeSceneGraphFromJson",
-      "compressSceneGraphJsonForUrl",
-      "decompressSceneGraphJsonFromUrl"
-    ],
-    "src/api/supabaseProjects.ts": [
-      "saveProjectToSupabase",
-      "listProjects",
-      "getProject",
-      "deleteProject",
-      "updateProject"
-    ],
     "src/api/projectActions.ts": [
+      "ProjectActionResult",
       "exportProject",
       "deleteProjectAction",
       "copyProject",
@@ -3901,24 +5873,474 @@
       "handleProjectActionResult",
       "confirmAction"
     ],
+    "src/api/supabaseProjects.ts": [
+      "SupabaseProject",
+      "UpdateProjectParams",
+      "saveProjectToSupabase",
+      "listProjects",
+      "getProject",
+      "deleteProject",
+      "updateProject"
+    ],
+    "src/api/webpagesApi.ts": [
+      "Webpage",
+      "saveWebpage",
+      "listWebpages",
+      "getWebpage"
+    ],
+    "src/assets/imageBoxes/demo_SceneGraph_ImageGallery_ImageBoxes.ts": [],
+    "src/assets/imageBoxes/demo_SceneGraph_SolvayConference_ImageBoxes.ts": [],
+    "src/assets/imageBoxes/demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes.ts": [],
+    "src/assets/imageBoxes/demo_SceneGraph_Thinking_ImageBoxes.ts": [],
+    "src/assets/imageBoxes/imageBoxes256.ts": [],
+    "src/assets/imageBoxes/imageBoxes259.ts": [],
+    "src/assets/imageBoxes/imageBoxes263.ts": [],
+    "src/assets/imageBoxes/solvay_annotations.ts": [],
+    "src/components/MenuConfig.ts": [
+      "IMenuConfigCallbacks",
+      "MenuConfig"
+    ],
+    "src/components/annotations/exampleDefinitionCards.ts": [],
+    "src/components/applets/ChatGptImporter/chatGptImportUtils.ts": [
+      "ChatMessage",
+      "ParsedConversation",
+      "fetchChatGptConversation",
+      "parseConversationsJson",
+      "parseConversationItem",
+      "createFormattedConversationDocument",
+      "getRoleLabel",
+      "importChatGptConversation",
+      "getLabelForRole",
+      "getTypeForRole",
+      "importChatGptFromFile",
+      "importParsedConversation",
+      "downsampleConversations"
+    ],
+    "src/components/applets/ChatGptImporter/services/WebLLMClient.ts": [
+      "WebLLMClientConfig",
+      "ExtendedCompletionParams",
+      "WebLLMClient"
+    ],
+    "src/components/applets/ChatGptImporter/services/conversationsImporter.ts": [
+      "Metadata",
+      "Conversation",
+      "ConversationsData",
+      "importConversations",
+      "createTopicNodes",
+      "createKeywordNodes",
+      "importConversationsWithStructure"
+    ],
+    "src/components/applets/ChatGptImporter/services/llmService.ts": [],
+    "src/components/applets/ChatGptImporter/services/llmStudioService.ts": [
+      "SceneGraphCommand",
+      "LLMStudioOptions",
+      "getSystemPromptWithCommands",
+      "getCommandsContextForLLM",
+      "callLLMStudioAPI",
+      "normalizeMessages",
+      "getEnhancedSystemPrompt",
+      "checkLLMStudioAvailability"
+    ],
+    "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts": [
+      "DocumentTags",
+      "AnalysisProgress",
+      "analyzeDocumentForTags",
+      "analyzeAllDocuments",
+      "applyTagsToDocuments",
+      "exportTagsToJson",
+      "runConversationsAnalysis"
+    ],
+    "src/components/applets/ChatGptImporter/services/sceneGraphController.ts": [
+      "CommandDefinition"
+    ],
+    "src/components/applets/ChatGptImporter/services/testLlm.ts": [
+      "main"
+    ],
+    "src/components/applets/Lexical/nodes/MentionNode.ts": [
+      "SerializedMentionNode",
+      "$convertMentionElement",
+      "MentionNode",
+      "$createMentionNode",
+      "$isMentionNode"
+    ],
+    "src/components/applets/StoryCards/cards/utils.ts": [
+      "StoryCardOptions"
+    ],
+    "src/components/applets/WikipediaViewer/factorGraphDataUrl.ts": [],
+    "src/components/common/saveAnnotationToSceneGraph.ts": [
+      "ResourceSpecifier"
+    ],
+    "src/components/common/sharedContextMenuItems.ts": [],
+    "src/components/filters/FilterRuleDefinition.ts": [
+      "FilterOperator",
+      "FilterRuleMode",
+      "FilterRuleDefinition"
+    ],
+    "src/components/markdown/markdownLoader.ts": [
+      "loadMarkdownFile"
+    ],
+    "src/components/shared/FormSchemaTypes.ts": [
+      "FormSchemaField",
+      "FormSchema",
+      "FormFieldProps"
+    ],
+    "src/components/types/StoryTypes.ts": [
+      "StoryNode"
+    ],
+    "src/components/utils/markdownUtils.ts": [
+      "extractFirstImageSrc",
+      "removeFirstImage"
+    ],
+    "src/configs/hotkeyConfig.ts": [],
+    "src/controllers/RenderingManager.ts": [
+      "Position",
+      "DisplayConfigData",
+      "DisplayConfig",
+      "EntitiesDisplayConfig",
+      "RenderingConfig",
+      "RenderingManager__DisplayMode",
+      "RenderingManager"
+    ],
+    "src/controllers/SceneGraphCache.ts": [
+      "SceneGraphCache"
+    ],
+    "src/controllers/__tests__/layoutHelpers.test.ts": [],
+    "src/controllers/graphvizHelpers.ts": [
+      "Node3DPositionData",
+      "GraphvizOutput",
+      "Node3DPosition"
+    ],
+    "src/controllers/graphvizJsonParser.ts": [
+      "GraphvizNode",
+      "GraphvizJSON",
+      "NodePosition"
+    ],
+    "src/core/analysis/__tests__/pathSearch.test.ts": [],
+    "src/core/analysis/degree.ts": [
+      "EdgesToDegreeResult"
+    ],
+    "src/core/analysis/pathSearch.ts": [],
+    "src/core/converters/mermaidjs/mermaidGraphConverter.ts": [],
+    "src/core/filters/filterEngine.ts": [],
+    "src/core/force-graph/ForceGraphManager.ts": [
+      "ForceGraphManager"
+    ],
+    "src/core/force-graph/SceneGraphController.ts": [
+      "SceneGraphController"
+    ],
+    "src/core/force-graph/createForceGraph.ts": [
+      "selectNodesInSelectionBox",
+      "IForceGraph3dCameraData",
+      "updateHighlight"
+    ],
+    "src/core/force-graph/forceGraphController.ts": [
+      "IForceGraphEventHandlers",
+      "IForceGraphInstanceController",
+      "IForceGraphNode",
+      "IForceGraphEdge",
+      "ForceGraphInstanceController"
+    ],
+    "src/core/force-graph/forceGraphHelpers.ts": [
+      "findNodeInForceGraph"
+    ],
+    "src/core/geometry/convertCoordinates.ts": [
+      "Dimension"
+    ],
+    "src/core/graphAlgorithms/getAllPaths.ts": [
+      "getDownstreamNodes",
+      "getUpstreamNodes",
+      "getAllPaths",
+      "findOriginNodes",
+      "getEdgesBetweenNodes",
+      "getEntirePath"
+    ],
+    "src/core/layouts/CustomLayoutEngine.ts": [
+      "IGraphvizOutput",
+      "INode3DPosition"
+    ],
+    "src/core/layouts/GraphologyLayoutEngine.ts": [
+      "GraphologyLayoutEngine",
+      "extractPositionsFromGraphlogyGraph"
+    ],
+    "src/core/layouts/GraphvizLayoutEngine.ts": [
+      "GraphvizLayoutEngine"
+    ],
+    "src/core/layouts/GraphvizLayoutType.ts": [],
+    "src/core/layouts/LayoutEngine.ts": [
+      "getLayoutWorker",
+      "LayoutEngine"
+    ],
+    "src/core/layouts/LayoutWorker.ts": [
+      "LayoutWorkerMessage",
+      "_LayoutWorkerResponse",
+      "deserializeSceneGraph",
+      "handleComputeLayout"
+    ],
+    "src/core/layouts/imageBoxUtils.ts": [],
+    "src/core/layouts/imageLayoutEngine.ts": [
+      "ImageLayoutOptions"
+    ],
+    "src/core/layouts/layoutEngineTypes.ts": [
+      "LayoutEngineOption",
+      "ILayoutEngineResult"
+    ],
+    "src/core/layouts/layoutHelpers.ts": [
+      "Dimensions",
+      "NodePositionData",
+      "createGraphologyGraph",
+      "normalizePositions",
+      "scalePositions",
+      "centerPositions",
+      "fitToRect"
+    ],
+    "src/core/layouts/renderImageBox.ts": [
+      "ImageBox",
+      "ImageData"
+    ],
+    "src/core/model/ConvertSceneGraphToGraphviz.ts": [],
+    "src/core/model/DisplayManager.ts": [
+      "IDisplayManagerData",
+      "DisplayManager"
+    ],
+    "src/core/model/Edge.ts": [
+      "EdgeId",
+      "DisplayEdgeData",
+      "DisplayEdgeDataArgs",
+      "EdgeData",
+      "EdgeDataArgs",
+      "Edge"
+    ],
+    "src/core/model/Graph.test.ts": [],
+    "src/core/model/Graph.ts": [
+      "NodeIds",
+      "EdgeIds",
+      "NodesContainer",
+      "EdgesContainer",
+      "GraphArgs",
+      "Graph"
+    ],
+    "src/core/model/GraphBuilder.ts": [
+      "GraphBuilder",
+      "EntitiesMetadata",
+      "GraphMetadata",
+      "GraphStastics"
+    ],
+    "src/core/model/GraphUtils.ts": [],
+    "src/core/model/Node.ts": [
+      "NodeId",
+      "DisplayNodeData",
+      "DisplayNodeDataArgs",
+      "NodeData",
+      "NodeDataArgs"
+    ],
+    "src/core/model/SceneGraph.ts": [
+      "ISceneGraph",
+      "ISceneGraphListeners",
+      "ISceneGraphMetadata",
+      "ISceneGraphArgs",
+      "SceneGraphData",
+      "SceneGraph"
+    ],
+    "src/core/model/SerializedSceneGraph.ts": [
+      "SerializedSceneGraph"
+    ],
+    "src/core/model/__tests__/Graph.test.ts": [],
+    "src/core/model/entity/__tests__/entitiesContainer.test.ts": [],
+    "src/core/model/entity/__tests__/entitiesContainer_deepCopy.test.ts": [],
+    "src/core/model/entity/abstractEntity.ts": [
+      "EntityId",
+      "Tag",
+      "EntityData",
+      "EntityDataArgs",
+      "FullEntityType",
+      "fromDefault",
+      "IEntity",
+      "AbstractEntity",
+      "Entity"
+    ],
+    "src/core/model/entity/entitiesContainer.ts": [
+      "JSONString",
+      "EntitiesContainer"
+    ],
+    "src/core/model/entity/entityCache.ts": [
+      "EntityCache"
+    ],
+    "src/core/model/entity/entityIds.ts": [
+      "EntityIds"
+    ],
+    "src/core/model/forceConsistency.ts": [
+      "IForceConsistencyResult"
+    ],
+    "src/core/model/graphDiff.ts": [
+      "IGraphDiffResult"
+    ],
+    "src/core/model/mergeSceneGraphs.ts": [],
+    "src/core/model/utils.ts": [],
+    "src/core/model/validateEntitiesContainer.ts": [],
+    "src/core/model/validateSceneGraph.ts": [
+      "ISceneGraphValidationResult"
+    ],
+    "src/core/processors/imageBoxProcessor.ts": [],
+    "src/core/react-flow/exportGraphDataForReactFlow.ts": [],
+    "src/core/serializers/__tests__/toFromJson.test.ts": [],
+    "src/core/serializers/__tests__/toFromSongAnnotationContainer.test.ts": [],
+    "src/core/serializers/fromDot.ts": [
+      "deserializeDotToSceneGraph"
+    ],
+    "src/core/serializers/fromGraphml.ts": [
+      "deserializeGraphmlToSceneGraph"
+    ],
+    "src/core/serializers/fromSvg.ts": [
+      "Point",
+      "PathData"
+    ],
+    "src/core/serializers/sceneGraphLoader.ts": [
+      "FileFormat",
+      "loadSceneGraphFromFile"
+    ],
+    "src/core/serializers/sceneGraphSaver.ts": [],
+    "src/core/serializers/toDot.ts": [
+      "serializeSceneGraphToDot"
+    ],
+    "src/core/serializers/toFromJson.ts": [
+      "serializeSceneGraphToJson",
+      "deserializeSceneGraphFromJson",
+      "compressSceneGraphJsonForUrl",
+      "decompressSceneGraphJsonFromUrl"
+    ],
+    "src/core/serializers/toFromSongAnnotationContainer.ts": [
+      "serializeSongAnnotationContainerToJson",
+      "deserializeSongAnnotationContainerFromJson"
+    ],
+    "src/core/serializers/toGraphml.ts": [
+      "serializeSceneGraphToGraphml"
+    ],
+    "src/core/storage/IPersistentStore.ts": [
+      "StoredSceneGraphInfo",
+      "IPersistentStore"
+    ],
+    "src/core/storage/PersistentStoreManager.ts": [
+      "PersistentStoreManager"
+    ],
+    "src/core/storage/__tests__/PersistentStoreManager.test.ts": [],
+    "src/core/types/ImageAnnotation.ts": [
+      "ImageAnnotationData",
+      "ImageAnnotationId",
+      "ImageAnnotationDataArgs",
+      "ImageAnnotation"
+    ],
+    "src/core/types/ImageBoxData.ts": [
+      "ImageBoxData"
+    ],
+    "src/core/types/StoryCard.ts": [
+      "StoryCard",
+      "StoryCardId",
+      "StoryCardData",
+      "StoryCardDataArgs"
+    ],
+    "src/core/utils/imageProcessing.ts": [],
+    "src/core/webgl/CameraHelper.ts": [
+      "CameraHelper"
+    ],
+    "src/core/webgl/selectionArea.ts": [
+      "SelectionBoxGroup",
+      "extractSelectionBoxGroups"
+    ],
+    "src/core/webgl/simulations/applyParticleEffects.ts": [
+      "applyParticleEffects"
+    ],
+    "src/core/webgl/simulations/geometryHelpers.ts": [],
+    "src/core/webgl/webglHelpers.ts": [
+      "extractIntersection",
+      "extractIntersections",
+      "ScreenCoordinates",
+      "getImagePixelCoordinates",
+      "convertPixelCoordinatesToPositions"
+    ],
+    "src/data/DemoSceneGraphs.ts": [
+      "SceneGraphCategory",
+      "DemoSceneGraphTree",
+      "getAllDemoSceneGraphCategories",
+      "getDemoSceneGraphTree"
+    ],
+    "src/data/datasets/academic-works.ts": [
+      "MajorWork",
+      "Person",
+      "Field"
+    ],
     "src/data/demo-graphs/interfaceAstToSceneGraph.ts": [
+      "InterfaceAST",
       "extractReferences",
       "demo_scenegraph_ast"
+    ],
+    "src/data/demo-graphs/random/randomBig.ts": [],
+    "src/data/demo-graphs/random/randomBiggest.ts": [],
+    "src/data/demo-graphs/story-cards/demo_scenegraph_unigraph_applications.ts": [],
+    "src/data/graphs/Feature.ts": [
+      "SubFeature",
+      "Feature",
+      "FeatureSet",
+      "createFeatureSet"
+    ],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph_ComplexExpansion.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_ImageGallery.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_Thinking.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_TreeOfLife.ts": [
+      "TreeNode",
+      "TreeLink"
+    ],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_e8petrieProjection.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_scenegraph_numbers_story.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_scenegraph_service_mesh.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_story_cards.tsx.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_wikipedia_articles.ts": [],
+    "src/data/graphs/__tests__/sceneGraphLib.test.ts": [],
+    "src/data/graphs/academicsKGraph.ts": [],
+    "src/data/graphs/blobMesh.ts": [
+      "BlobNodeMetadata",
+      "createBlobMesh"
+    ],
+    "src/data/graphs/demo-3.ts": [],
+    "src/data/graphs/demo_all_writings_graph.ts": [],
+    "src/data/graphs/demo_components_terms_links.ts": [],
+    "src/data/graphs/demo_notes_axiomatic_systems_and_primitives.ts": [],
+    "src/data/graphs/demo_notes_complexity_and_primitives.ts": [],
+    "src/data/graphs/demo_terms_axiomatic_links.ts": [],
+    "src/data/graphs/demo_terms_unigraph_overview_links.ts": [],
+    "src/data/graphs/demo_unigraph_components.ts": [],
+    "src/data/graphs/demo_unigraph_overview.ts": [],
+    "src/data/graphs/demo_writing_terms.ts": [],
+    "src/data/graphs/e8Petrie2d.ts": [],
+    "src/data/graphs/e8PetrieProjection.ts": [
+      "Vector8"
+    ],
+    "src/data/graphs/graphManagementWorkflow.ts": [],
+    "src/data/graphs/graphManagementWorkflow2.ts": [],
+    "src/data/graphs/graphmanagementworkflow3.ts": [],
+    "src/data/graphs/notableQuotes.ts": [],
+    "src/data/graphs/semanticWebDiagram.ts": [],
+    "src/data/graphs/sphereMesh.ts": [
+      "SphereNodeMetadata",
+      "createSphereMesh"
+    ],
+    "src/data/graphs/sphericalMesh.ts": [
+      "createCylindricalMesh"
     ],
     "src/data/graphs/thinkers1Graph.ts": [
       "KnowledgeGraphBuilder"
     ],
-    "src/utils/svgLoader.ts": [
-      "loadSvgFromUrl",
-      "findClosestNode"
-    ],
-    "src/utils/graphUtils.ts": [
-      "generateRandomNodes",
-      "generateRandomEdges",
-      "generateRandomGraph",
-      "addRandomCluster"
-    ],
+    "src/data/graphs/thinkers2Graph.ts": [],
+    "src/data/graphs/thoughtDiagram.ts": [],
+    "src/data/graphs/unigraph.ts": [],
+    "src/data/graphs/unigraph2.ts": [],
     "src/data/models/StoryCard.ts": [
+      "StoryCardEntity",
       "createStoryCard",
       "createMarkdownStoryCard",
       "addStoryCardToGraph",
@@ -3932,23 +6354,47 @@
       "createStoryGraphFromTree",
       "exportStoryTree"
     ],
-    "src/core/types/StoryCard.ts": [
-      "StoryCard"
+    "src/hooks/commandPaletteUtils.ts": [
+      "commandMatchesQueryUnordered",
+      "getCommandMatchScore"
     ],
-    "src/data/graphs/Feature.ts": [
-      "createFeatureSet"
+    "src/hooks/useCommandPalette.ts": [
+      "Command"
     ],
-    "src/data/graphs/sphereMesh.ts": [
-      "createSphereMesh"
+    "src/hooks/useHotkeys.ts": [
+      "HotkeyAction"
     ],
-    "src/data/graphs/sphericalMesh.ts": [
-      "createCylindricalMesh"
+    "src/hooks/useSvgSceneGraph.ts": [
+      "fetchSvgSceneGraph",
+      "useSvgSceneGraph"
     ],
-    "src/data/DemoSceneGraphs.ts": [
-      "getAllDemoSceneGraphCategories",
-      "getDemoSceneGraphTree"
+    "src/store/TagManager.ts": [
+      "DisplayConfigManager"
+    ],
+    "src/store/__tests__/graphInteractionStore.test.ts": [],
+    "src/store/activeFilterStore.ts": [
+      "Filter",
+      "ActiveFiltersState"
+    ],
+    "src/store/activeLayoutStore.ts": [
+      "LayoutJobStatus",
+      "Layout",
+      "ActiveLayoutsState"
+    ],
+    "src/store/activeLegendConfigStore.ts": [
+      "ActiveLegendConfigState"
+    ],
+    "src/store/appConfigStore.ts": [
+      "AppConfigActions",
+      "AppState"
+    ],
+    "src/store/chatHistoryStore.ts": [
+      "ChatHistoryState"
     ],
     "src/store/dialogStore.ts": [
+      "ILayoutManagerState",
+      "ISceneGraphDetailViewState",
+      "DialogState",
       "setShowLoadSceneGraphWindow",
       "setShowSaveSceneGraphDialog",
       "setShowSaveAsNewProjectDialog",
@@ -3961,124 +6407,66 @@
       "setShowFilterWindow",
       "setShowCommandPalette"
     ],
-    "src/components/applets/ChatGptImporter/services/WebLLMClient.ts": [
-      "WebLLMClient"
+    "src/store/documentStore.ts": [
+      "DocumentState",
+      "DocumentStore"
     ],
-    "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts": [
-      "analyzeDocumentForTags",
-      "analyzeAllDocuments",
-      "applyTagsToDocuments",
-      "exportTagsToJson",
-      "runConversationsAnalysis"
+    "src/store/forceGraphConfigStore.ts": [
+      "IForceGraphRenderConfig"
     ],
-    "src/components/MenuConfig.ts": [
-      "MenuConfig"
+    "src/store/graphInteractionStore.ts": [
+      "GraphInteractionState"
     ],
-    "src/components/applets/ChatGptImporter/chatGptImportUtils.ts": [
-      "fetchChatGptConversation",
-      "parseConversationsJson",
-      "parseConversationItem",
-      "createFormattedConversationDocument",
-      "getRoleLabel",
-      "importChatGptConversation",
-      "getLabelForRole",
-      "getTypeForRole",
-      "importChatGptFromFile",
-      "importParsedConversation",
-      "downsampleConversations"
+    "src/store/mouseControlsStore.ts": [
+      "MouseControlMode",
+      "SelectionBox",
+      "MouseControlsState"
     ],
-    "src/components/applets/ChatGptImporter/services/conversationsImporter.ts": [
-      "importConversations",
-      "createTopicNodes",
-      "createKeywordNodes",
-      "importConversationsWithStructure"
+    "src/store/notificationStore.ts": [
+      "NotificationType",
+      "Notification",
+      "NotificationStore"
     ],
-    "src/core/force-graph/SceneGraphController.ts": [
-      "SceneGraphController"
+    "src/store/reactFlowConfigStore.ts": [
+      "ReactFlowConfigState"
     ],
-    "src/components/applets/ChatGptImporter/services/llmStudioService.ts": [
-      "getSystemPromptWithCommands",
-      "getCommandsContextForLLM",
-      "callLLMStudioAPI",
-      "normalizeMessages",
-      "getEnhancedSystemPrompt",
-      "checkLLMStudioAvailability"
+    "src/store/sceneGraphHooks.ts": [
+      "applyLayoutAndTriggerAppUpdate",
+      "computeLayoutAndTriggerAppUpdate",
+      "computeLayoutAndTriggerUpdateForCurrentSceneGraph"
     ],
-    "src/components/applets/ChatGptImporter/services/testLlm.ts": [
-      "main"
+    "src/store/userStore.ts": [
+      "User",
+      "UserStore"
     ],
-    "src/components/applets/Lexical/nodes/MentionNode.ts": [
-      "$convertMentionElement",
-      "MentionNode",
-      "$createMentionNode",
-      "$isMentionNode"
+    "src/store/workspaceConfigStore.ts": [
+      "ISidebarConfig",
+      "SectionWidthConfig",
+      "WorkspaceConfigState"
     ],
-    "src/core/graphAlgorithms/getAllPaths.ts": [
-      "getDownstreamNodes",
-      "getUpstreamNodes",
-      "getAllPaths",
-      "findOriginNodes",
-      "getEdgesBetweenNodes",
-      "getEntirePath"
+    "src/utils/__tests__/filterUtils.test.ts": [],
+    "src/utils/colorUtils.ts": [
+      "RGB"
     ],
-    "src/components/markdown/markdownLoader.ts": [
-      "loadMarkdownFile"
+    "src/utils/failedLoadTracker.ts": [],
+    "src/utils/filterUtils.ts": [],
+    "src/utils/forceGraphDebugUtils.ts": [],
+    "src/utils/generateAnnotations.ts": [
+      "Annotation"
     ],
-    "src/components/utils/markdownUtils.ts": [
-      "extractFirstImageSrc",
-      "removeFirstImage"
+    "src/utils/graphUtils.ts": [
+      "RandomNodeOptions",
+      "RandomEdgeOptions",
+      "generateRandomNodes",
+      "generateRandomEdges",
+      "generateRandomGraph",
+      "addRandomCluster"
     ],
-    "src/controllers/SceneGraphCache.ts": [
-      "SceneGraphCache"
-    ],
-    "src/core/force-graph/forceGraphController.ts": [
-      "ForceGraphInstanceController"
-    ],
-    "src/core/layouts/LayoutWorker.ts": [
-      "deserializeSceneGraph",
-      "handleComputeLayout"
-    ],
-    "src/core/serializers/toFromSongAnnotationContainer.ts": [
-      "serializeSongAnnotationContainerToJson",
-      "deserializeSongAnnotationContainerFromJson"
-    ],
-    "src/core/serializers/fromDot.ts": [
-      "deserializeDotToSceneGraph"
-    ],
-    "src/core/serializers/fromGraphml.ts": [
-      "deserializeGraphmlToSceneGraph"
-    ],
-    "src/core/serializers/sceneGraphLoader.ts": [
-      "loadSceneGraphFromFile"
-    ],
-    "src/core/serializers/toDot.ts": [
-      "serializeSceneGraphToDot"
-    ],
-    "src/core/serializers/toGraphml.ts": [
-      "serializeSceneGraphToGraphml"
-    ],
-    "src/core/storage/PersistentStoreManager.ts": [
-      "PersistentStoreManager"
-    ],
-    "src/core/types/ImageAnnotation.ts": [
-      "ImageAnnotation"
-    ],
-    "src/core/webgl/CameraHelper.ts": [
-      "CameraHelper"
-    ],
-    "src/core/webgl/simulations/applyParticleEffects.ts": [
-      "applyParticleEffects"
-    ],
-    "src/hooks/commandPaletteUtils.ts": [
-      "commandMatchesQueryUnordered",
-      "getCommandMatchScore"
-    ],
-    "src/hooks/useSvgSceneGraph.ts": [
-      "fetchSvgSceneGraph",
-      "useSvgSceneGraph"
-    ],
-    "src/store/TagManager.ts": [
-      "DisplayConfigManager"
+    "src/utils/supabaseClient.ts": [],
+    "src/utils/svgLoader.ts": [
+      "loadSvgFromUrl",
+      "ILoadSvgToSceneGraphOptions",
+      "findClosestNode"
     ],
     "src/utils/urlUtils.ts": [
       "replaceUnigraphUrlsWithLocalhost",
@@ -4087,142 +6475,356 @@
     ]
   },
   "_directories": {
-    "src/core/model/entity": [
-      "src/core/model/entity/abstractEntity.ts",
-      "src/core/model/entity/entityIds.ts",
-      "src/core/model/entity/entitiesContainer.ts",
-      "src/core/model/entity/entityCache.ts"
+    "src": [
+      "src/AppConfig.ts"
     ],
-    "src/core/model": [
-      "src/core/model/Node.ts",
-      "src/core/model/Edge.ts",
-      "src/core/model/Graph.ts",
-      "src/core/model/GraphBuilder.ts",
-      "src/core/model/SceneGraph.ts",
-      "src/core/model/DisplayManager.ts"
-    ],
-    "src/core/layouts": [
-      "src/core/layouts/layoutHelpers.ts",
-      "src/core/layouts/GraphologyLayoutEngine.ts",
-      "src/core/layouts/GraphvizLayoutEngine.ts",
-      "src/core/layouts/LayoutEngine.ts",
-      "src/core/layouts/LayoutWorker.ts"
-    ],
-    "src/controllers": [
-      "src/controllers/RenderingManager.ts",
-      "src/controllers/SceneGraphCache.ts"
-    ],
-    "src/core/webgl": [
-      "src/core/webgl/webglHelpers.ts",
-      "src/core/webgl/selectionArea.ts",
-      "src/core/webgl/CameraHelper.ts"
-    ],
-    "src/core/force-graph": [
-      "src/core/force-graph/forceGraphHelpers.ts",
-      "src/core/force-graph/createForceGraph.ts",
-      "src/core/force-graph/ForceGraphManager.ts",
-      "src/core/force-graph/SceneGraphController.ts",
-      "src/core/force-graph/forceGraphController.ts"
+    "src/__mocks__": [
+      "src/__mocks__/fileMock.ts"
     ],
     "src/_experimental/exampleCode": [
       "src/_experimental/exampleCode/forceGraph3dCamera.ts"
     ],
-    "src/_experimental/mp3": [
-      "src/_experimental/mp3/SongAnnotation.ts"
-    ],
+    "src/_experimental": [],
     "src/_experimental/force-graph-dynamics": [
+      "src/_experimental/force-graph-dynamics/247-2.ts",
+      "src/_experimental/force-graph-dynamics/addCluster.ts",
+      "src/_experimental/force-graph-dynamics/addRandomEdges.ts",
+      "src/_experimental/force-graph-dynamics/addRandomNodes.ts",
       "src/_experimental/force-graph-dynamics/animationRunner.ts",
-      "src/_experimental/force-graph-dynamics/transition.ts",
-      "src/_experimental/force-graph-dynamics/configSequencePlayer.ts",
-      "src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts",
       "src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts",
       "src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts",
+      "src/_experimental/force-graph-dynamics/applyRandomEffects.ts",
       "src/_experimental/force-graph-dynamics/applyRandomEffects2.ts",
       "src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts",
-      "src/_experimental/force-graph-dynamics/pulsate.ts"
+      "src/_experimental/force-graph-dynamics/burstNodeSpawner.ts",
+      "src/_experimental/force-graph-dynamics/compactify.ts",
+      "src/_experimental/force-graph-dynamics/configSequencePlayer.ts",
+      "src/_experimental/force-graph-dynamics/focusOnDegrees.ts",
+      "src/_experimental/force-graph-dynamics/focusWithTransparency.ts",
+      "src/_experimental/force-graph-dynamics/pulsate.ts",
+      "src/_experimental/force-graph-dynamics/randomizeVisible.ts",
+      "src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts",
+      "src/_experimental/force-graph-dynamics/transition.ts"
     ],
+    "src/_experimental/lumina": [
+      "src/_experimental/lumina/imageSegmentation.ts",
+      "src/_experimental/lumina/images.ts"
+    ],
+    "src/_experimental/mp3": [
+      "src/_experimental/mp3/SongAnnotation.ts",
+      "src/_experimental/mp3/data.ts",
+      "src/_experimental/mp3/demoSongAnnotations247.ts"
+    ],
+    "src/_experimental/webgl/simulations": [
+      "src/_experimental/webgl/simulations/solarSystemHelpers.ts"
+    ],
+    "src/_experimental/webgl": [],
     "src/_experimental/yasgui": [
       "src/_experimental/yasgui/yasguiHelpers.ts"
     ],
-    "src/data/graphs": [
-      "src/data/graphs/blobMesh.ts",
-      "src/data/graphs/thinkers1Graph.ts",
-      "src/data/graphs/Feature.ts",
-      "src/data/graphs/sphereMesh.ts",
-      "src/data/graphs/sphericalMesh.ts"
-    ],
-    "src/store": [
-      "src/store/sceneGraphHooks.ts",
-      "src/store/dialogStore.ts",
-      "src/store/TagManager.ts"
-    ],
     "src/api": [
-      "src/api/webpagesApi.ts",
       "src/api/annotationsApi.ts",
+      "src/api/projectActions.ts",
       "src/api/supabaseProjects.ts",
-      "src/api/projectActions.ts"
+      "src/api/webpagesApi.ts"
     ],
-    "src/core/serializers": [
-      "src/core/serializers/toFromJson.ts",
-      "src/core/serializers/toFromSongAnnotationContainer.ts",
-      "src/core/serializers/fromDot.ts",
-      "src/core/serializers/fromGraphml.ts",
-      "src/core/serializers/sceneGraphLoader.ts",
-      "src/core/serializers/toDot.ts",
-      "src/core/serializers/toGraphml.ts"
+    "src/assets/imageBoxes": [
+      "src/assets/imageBoxes/demo_SceneGraph_ImageGallery_ImageBoxes.ts",
+      "src/assets/imageBoxes/demo_SceneGraph_SolvayConference_ImageBoxes.ts",
+      "src/assets/imageBoxes/demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes.ts",
+      "src/assets/imageBoxes/demo_SceneGraph_Thinking_ImageBoxes.ts",
+      "src/assets/imageBoxes/imageBoxes256.ts",
+      "src/assets/imageBoxes/imageBoxes259.ts",
+      "src/assets/imageBoxes/imageBoxes263.ts",
+      "src/assets/imageBoxes/solvay_annotations.ts"
     ],
-    "src/data/demo-graphs": [
-      "src/data/demo-graphs/interfaceAstToSceneGraph.ts"
-    ],
-    "src/utils": [
-      "src/utils/svgLoader.ts",
-      "src/utils/graphUtils.ts",
-      "src/utils/urlUtils.ts"
-    ],
-    "src/data/models": [
-      "src/data/models/StoryCard.ts"
-    ],
-    "src/core/types": [
-      "src/core/types/StoryCard.ts",
-      "src/core/types/ImageAnnotation.ts"
-    ],
-    "src/data": [
-      "src/data/DemoSceneGraphs.ts"
-    ],
-    "src/components/applets/ChatGptImporter/services": [
-      "src/components/applets/ChatGptImporter/services/WebLLMClient.ts",
-      "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts",
-      "src/components/applets/ChatGptImporter/services/conversationsImporter.ts",
-      "src/components/applets/ChatGptImporter/services/llmStudioService.ts",
-      "src/components/applets/ChatGptImporter/services/testLlm.ts"
-    ],
+    "src/assets": [],
     "src/components": [
       "src/components/MenuConfig.ts"
+    ],
+    "src/components/annotations": [
+      "src/components/annotations/exampleDefinitionCards.ts"
     ],
     "src/components/applets/ChatGptImporter": [
       "src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
     ],
+    "src/components/applets": [],
+    "src/components/applets/ChatGptImporter/services": [
+      "src/components/applets/ChatGptImporter/services/WebLLMClient.ts",
+      "src/components/applets/ChatGptImporter/services/conversationsImporter.ts",
+      "src/components/applets/ChatGptImporter/services/llmService.ts",
+      "src/components/applets/ChatGptImporter/services/llmStudioService.ts",
+      "src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts",
+      "src/components/applets/ChatGptImporter/services/sceneGraphController.ts",
+      "src/components/applets/ChatGptImporter/services/testLlm.ts"
+    ],
     "src/components/applets/Lexical/nodes": [
       "src/components/applets/Lexical/nodes/MentionNode.ts"
     ],
-    "src/core/graphAlgorithms": [
-      "src/core/graphAlgorithms/getAllPaths.ts"
+    "src/components/applets/Lexical": [],
+    "src/components/applets/StoryCards/cards": [
+      "src/components/applets/StoryCards/cards/utils.ts"
+    ],
+    "src/components/applets/StoryCards": [],
+    "src/components/applets/WikipediaViewer": [
+      "src/components/applets/WikipediaViewer/factorGraphDataUrl.ts"
+    ],
+    "src/components/common": [
+      "src/components/common/saveAnnotationToSceneGraph.ts",
+      "src/components/common/sharedContextMenuItems.ts"
+    ],
+    "src/components/filters": [
+      "src/components/filters/FilterRuleDefinition.ts"
     ],
     "src/components/markdown": [
       "src/components/markdown/markdownLoader.ts"
     ],
+    "src/components/shared": [
+      "src/components/shared/FormSchemaTypes.ts"
+    ],
+    "src/components/types": [
+      "src/components/types/StoryTypes.ts"
+    ],
     "src/components/utils": [
       "src/components/utils/markdownUtils.ts"
     ],
+    "src/configs": [
+      "src/configs/hotkeyConfig.ts"
+    ],
+    "src/controllers": [
+      "src/controllers/RenderingManager.ts",
+      "src/controllers/SceneGraphCache.ts",
+      "src/controllers/graphvizHelpers.ts",
+      "src/controllers/graphvizJsonParser.ts"
+    ],
+    "src/controllers/__tests__": [
+      "src/controllers/__tests__/layoutHelpers.test.ts"
+    ],
+    "src/core/analysis/__tests__": [
+      "src/core/analysis/__tests__/pathSearch.test.ts"
+    ],
+    "src/core/analysis": [
+      "src/core/analysis/degree.ts",
+      "src/core/analysis/pathSearch.ts"
+    ],
+    "src/core": [],
+    "src/core/converters/mermaidjs": [
+      "src/core/converters/mermaidjs/mermaidGraphConverter.ts"
+    ],
+    "src/core/converters": [],
+    "src/core/filters": [
+      "src/core/filters/filterEngine.ts"
+    ],
+    "src/core/force-graph": [
+      "src/core/force-graph/ForceGraphManager.ts",
+      "src/core/force-graph/SceneGraphController.ts",
+      "src/core/force-graph/createForceGraph.ts",
+      "src/core/force-graph/forceGraphController.ts",
+      "src/core/force-graph/forceGraphHelpers.ts"
+    ],
+    "src/core/geometry": [
+      "src/core/geometry/convertCoordinates.ts"
+    ],
+    "src/core/graphAlgorithms": [
+      "src/core/graphAlgorithms/getAllPaths.ts"
+    ],
+    "src/core/layouts": [
+      "src/core/layouts/CustomLayoutEngine.ts",
+      "src/core/layouts/GraphologyLayoutEngine.ts",
+      "src/core/layouts/GraphvizLayoutEngine.ts",
+      "src/core/layouts/GraphvizLayoutType.ts",
+      "src/core/layouts/LayoutEngine.ts",
+      "src/core/layouts/LayoutWorker.ts",
+      "src/core/layouts/imageBoxUtils.ts",
+      "src/core/layouts/imageLayoutEngine.ts",
+      "src/core/layouts/layoutEngineTypes.ts",
+      "src/core/layouts/layoutHelpers.ts",
+      "src/core/layouts/renderImageBox.ts"
+    ],
+    "src/core/model": [
+      "src/core/model/ConvertSceneGraphToGraphviz.ts",
+      "src/core/model/DisplayManager.ts",
+      "src/core/model/Edge.ts",
+      "src/core/model/Graph.test.ts",
+      "src/core/model/Graph.ts",
+      "src/core/model/GraphBuilder.ts",
+      "src/core/model/GraphUtils.ts",
+      "src/core/model/Node.ts",
+      "src/core/model/SceneGraph.ts",
+      "src/core/model/SerializedSceneGraph.ts",
+      "src/core/model/forceConsistency.ts",
+      "src/core/model/graphDiff.ts",
+      "src/core/model/mergeSceneGraphs.ts",
+      "src/core/model/utils.ts",
+      "src/core/model/validateEntitiesContainer.ts",
+      "src/core/model/validateSceneGraph.ts"
+    ],
+    "src/core/model/__tests__": [
+      "src/core/model/__tests__/Graph.test.ts"
+    ],
+    "src/core/model/entity/__tests__": [
+      "src/core/model/entity/__tests__/entitiesContainer.test.ts",
+      "src/core/model/entity/__tests__/entitiesContainer_deepCopy.test.ts"
+    ],
+    "src/core/model/entity": [
+      "src/core/model/entity/abstractEntity.ts",
+      "src/core/model/entity/entitiesContainer.ts",
+      "src/core/model/entity/entityCache.ts",
+      "src/core/model/entity/entityIds.ts"
+    ],
+    "src/core/processors": [
+      "src/core/processors/imageBoxProcessor.ts"
+    ],
+    "src/core/react-flow": [
+      "src/core/react-flow/exportGraphDataForReactFlow.ts"
+    ],
+    "src/core/serializers/__tests__": [
+      "src/core/serializers/__tests__/toFromJson.test.ts",
+      "src/core/serializers/__tests__/toFromSongAnnotationContainer.test.ts"
+    ],
+    "src/core/serializers": [
+      "src/core/serializers/fromDot.ts",
+      "src/core/serializers/fromGraphml.ts",
+      "src/core/serializers/fromSvg.ts",
+      "src/core/serializers/sceneGraphLoader.ts",
+      "src/core/serializers/sceneGraphSaver.ts",
+      "src/core/serializers/toDot.ts",
+      "src/core/serializers/toFromJson.ts",
+      "src/core/serializers/toFromSongAnnotationContainer.ts",
+      "src/core/serializers/toGraphml.ts"
+    ],
     "src/core/storage": [
+      "src/core/storage/IPersistentStore.ts",
       "src/core/storage/PersistentStoreManager.ts"
     ],
+    "src/core/storage/__tests__": [
+      "src/core/storage/__tests__/PersistentStoreManager.test.ts"
+    ],
+    "src/core/types": [
+      "src/core/types/ImageAnnotation.ts",
+      "src/core/types/ImageBoxData.ts",
+      "src/core/types/StoryCard.ts"
+    ],
+    "src/core/utils": [
+      "src/core/utils/imageProcessing.ts"
+    ],
+    "src/core/webgl": [
+      "src/core/webgl/CameraHelper.ts",
+      "src/core/webgl/selectionArea.ts",
+      "src/core/webgl/webglHelpers.ts"
+    ],
     "src/core/webgl/simulations": [
-      "src/core/webgl/simulations/applyParticleEffects.ts"
+      "src/core/webgl/simulations/applyParticleEffects.ts",
+      "src/core/webgl/simulations/geometryHelpers.ts"
+    ],
+    "src/data": [
+      "src/data/DemoSceneGraphs.ts"
+    ],
+    "src/data/datasets": [
+      "src/data/datasets/academic-works.ts"
+    ],
+    "src/data/demo-graphs": [
+      "src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+    ],
+    "src/data/demo-graphs/random": [
+      "src/data/demo-graphs/random/randomBig.ts",
+      "src/data/demo-graphs/random/randomBiggest.ts"
+    ],
+    "src/data/demo-graphs/story-cards": [
+      "src/data/demo-graphs/story-cards/demo_scenegraph_unigraph_applications.ts"
+    ],
+    "src/data/graphs": [
+      "src/data/graphs/Feature.ts",
+      "src/data/graphs/academicsKGraph.ts",
+      "src/data/graphs/blobMesh.ts",
+      "src/data/graphs/demo-3.ts",
+      "src/data/graphs/demo_all_writings_graph.ts",
+      "src/data/graphs/demo_components_terms_links.ts",
+      "src/data/graphs/demo_notes_axiomatic_systems_and_primitives.ts",
+      "src/data/graphs/demo_notes_complexity_and_primitives.ts",
+      "src/data/graphs/demo_terms_axiomatic_links.ts",
+      "src/data/graphs/demo_terms_unigraph_overview_links.ts",
+      "src/data/graphs/demo_unigraph_components.ts",
+      "src/data/graphs/demo_unigraph_overview.ts",
+      "src/data/graphs/demo_writing_terms.ts",
+      "src/data/graphs/e8Petrie2d.ts",
+      "src/data/graphs/e8PetrieProjection.ts",
+      "src/data/graphs/graphManagementWorkflow.ts",
+      "src/data/graphs/graphManagementWorkflow2.ts",
+      "src/data/graphs/graphmanagementworkflow3.ts",
+      "src/data/graphs/notableQuotes.ts",
+      "src/data/graphs/semanticWebDiagram.ts",
+      "src/data/graphs/sphereMesh.ts",
+      "src/data/graphs/sphericalMesh.ts",
+      "src/data/graphs/thinkers1Graph.ts",
+      "src/data/graphs/thinkers2Graph.ts",
+      "src/data/graphs/thoughtDiagram.ts",
+      "src/data/graphs/unigraph.ts",
+      "src/data/graphs/unigraph2.ts"
+    ],
+    "src/data/graphs/Gallery_Demos": [
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_ArtCollection.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph_ComplexExpansion.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_ImageGallery.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGalleryTransparent.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_Thinking.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_TreeOfLife.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_e8petrieProjection.ts",
+      "src/data/graphs/Gallery_Demos/demo_scenegraph_numbers_story.ts",
+      "src/data/graphs/Gallery_Demos/demo_scenegraph_service_mesh.ts",
+      "src/data/graphs/Gallery_Demos/demo_story_cards.tsx.ts",
+      "src/data/graphs/Gallery_Demos/demo_wikipedia_articles.ts"
+    ],
+    "src/data/graphs/__tests__": [
+      "src/data/graphs/__tests__/sceneGraphLib.test.ts"
+    ],
+    "src/data/models": [
+      "src/data/models/StoryCard.ts"
     ],
     "src/hooks": [
       "src/hooks/commandPaletteUtils.ts",
+      "src/hooks/useCommandPalette.ts",
+      "src/hooks/useHotkeys.ts",
       "src/hooks/useSvgSceneGraph.ts"
+    ],
+    "src/store": [
+      "src/store/TagManager.ts",
+      "src/store/activeFilterStore.ts",
+      "src/store/activeLayoutStore.ts",
+      "src/store/activeLegendConfigStore.ts",
+      "src/store/appConfigStore.ts",
+      "src/store/chatHistoryStore.ts",
+      "src/store/dialogStore.ts",
+      "src/store/documentStore.ts",
+      "src/store/forceGraphConfigStore.ts",
+      "src/store/graphInteractionStore.ts",
+      "src/store/mouseControlsStore.ts",
+      "src/store/notificationStore.ts",
+      "src/store/reactFlowConfigStore.ts",
+      "src/store/sceneGraphHooks.ts",
+      "src/store/userStore.ts",
+      "src/store/workspaceConfigStore.ts"
+    ],
+    "src/store/__tests__": [
+      "src/store/__tests__/graphInteractionStore.test.ts"
+    ],
+    "src/utils/__tests__": [
+      "src/utils/__tests__/filterUtils.test.ts"
+    ],
+    "src/utils": [
+      "src/utils/colorUtils.ts",
+      "src/utils/failedLoadTracker.ts",
+      "src/utils/filterUtils.ts",
+      "src/utils/forceGraphDebugUtils.ts",
+      "src/utils/generateAnnotations.ts",
+      "src/utils/graphUtils.ts",
+      "src/utils/supabaseClient.ts",
+      "src/utils/svgLoader.ts",
+      "src/utils/urlUtils.ts"
     ]
   }
 }
