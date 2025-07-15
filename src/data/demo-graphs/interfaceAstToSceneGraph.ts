@@ -104,12 +104,44 @@ export async function demo_scenegraph_ast(
       fields,
       description: data.description || undefined,
     };
+
+    // Compose classData for ResizableClassCard if this is a class
+    let classData = undefined;
+    if (data.kind === "class") {
+      // Data members
+      const classFields = fields;
+      // Methods
+      const methods = data.methods
+        ? Object.entries(data.methods).map(([methodName, methodData]) => ({
+            name: methodName,
+            arguments: Object.entries(methodData.arguments || {}).map(
+              ([argName, argType]) => ({
+                name: argName,
+                type: argType,
+              })
+            ),
+            returnType: methodData.returnType,
+          }))
+        : [];
+      classData = {
+        name,
+        description: data.description || undefined,
+        fields: classFields,
+        methods,
+      };
+    }
+
+    if (classData) {
+      console.log("classData", classData);
+    }
+
     graph.createNode({
       id: name,
       label: name,
-      type: "definition",
+      type: data.kind === "class" ? "class" : "definition",
       userData: {
         definition: definitionData,
+        ...(classData ? { classData } : {}),
       },
     });
 

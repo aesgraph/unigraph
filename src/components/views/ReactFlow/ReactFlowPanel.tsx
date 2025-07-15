@@ -45,6 +45,7 @@ import WebpageNode from "./nodes/WebpageNode";
 import "@xyflow/react/dist/style.css";
 import { EdgeId } from "../../../core/model/Edge";
 import ResizableAnnotationCard from "../../annotations/ResizableAnnotationCard";
+import ResizableClassCard from "../../annotations/ResizableClassCard";
 import ResizableDefinitionCard from "../../annotations/ResizableDefinitionCard";
 import ResizerNode from "./nodes/resizerNode";
 
@@ -96,12 +97,30 @@ const DefinitionNode = (props: any) => {
   );
 };
 
+// ClassNode component for class nodes
+const ClassNode = (props: any) => {
+  const data = props.data;
+  if (!data || !data.classData) return <div>Invalid class</div>;
+  return (
+    <ResizableClassCard
+      name={data.classData.name}
+      description={data.classData.description}
+      fields={data.classData.fields}
+      methods={data.classData.methods}
+      dimensions={data.dimensions}
+      onResizeEnd={data.onResizeEnd}
+      style={props.style}
+    />
+  );
+};
+
 export const nodeTypes = {
   customNode: CustomNode, // Register the custom node component
   resizerNode: ResizerNode,
   annotation: AnnotationNode,
   webpage: WebpageNode,
   definition: DefinitionNode,
+  class: ClassNode,
 };
 
 // Add a style tag for selected and hovered nodes

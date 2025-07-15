@@ -1395,6 +1395,10 @@ const AppContent = ({
           node.type === "definition"
             ? (node.data.userData as any).definition
             : undefined,
+        classData:
+          node.type === "class"
+            ? (node.data.userData as any).classData
+            : undefined,
       },
       style: {
         background: RenderingManager.getColor(
@@ -1406,6 +1410,13 @@ const AppContent = ({
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
     }));
+
+    console.log(
+      "nodesWithPositions",
+      nodesWithPositions.filter((node) => {
+        return node.type === "class";
+      })
+    );
 
     return (
       <div
