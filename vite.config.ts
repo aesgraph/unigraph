@@ -80,6 +80,9 @@ export default defineConfig({
     "process.env": {},
   },
 
+  // Security: Prevent environment variables from being bundled
+  envPrefix: "VITE_",
+
   // CSS configuration
   css: {
     modules: {

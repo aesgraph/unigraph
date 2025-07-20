@@ -50,7 +50,11 @@
   gap: 10px;
   margin: 12px 16px;
   padding: 12px;
-  background-color: color-mix(in srgb, var(--workspace-error, #f44336) 10%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-error, #f44336) 10%,
+    transparent
+  );
   border-radius: 4px;
   color: var(--workspace-error, #d32f2f);
 }
@@ -61,7 +65,11 @@
 }
 
 .api-unavailable-notice code {
-  background-color: color-mix(in srgb, var(--workspace-text, #333) 6%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-text, #333) 6%,
+    transparent
+  );
   padding: 2px 4px;
   border-radius: 3px;
   font-family: monospace;
@@ -80,7 +88,11 @@
   font-size: 13px;
   color: var(--workspace-text-secondary, #666);
   padding: 8px 12px;
-  background-color: color-mix(in srgb, var(--workspace-text, #333) 3%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-text, #333) 3%,
+    transparent
+  );
   border-radius: 4px;
   margin-top: 8px;
 }
@@ -93,8 +105,51 @@
   display: block;
   font-family: monospace;
   padding: 4px;
-  background-color: color-mix(in srgb, var(--workspace-text, #333) 5%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-text, #333) 5%,
+    transparent
+  );
   border-radius: 3px;
+}
+
+.endpoint-type {
+  margin: 8px 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.custom-badge {
+  background-color: var(--workspace-warning, #ff9800);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.endpoint-indicator {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+}
+
+.endpoint-indicator.custom {
+  background-color: var(--workspace-warning, #ff9800);
+  color: white;
+}
+
+.endpoint-indicator.production {
+  background-color: var(--workspace-success, #4caf50);
+  color: white;
 }
 
 .ai-chat-actions {
@@ -115,7 +170,10 @@
 }
 
 .ai-chat-settings-button:hover {
-  background-color: var(--workspace-surface-hover, color-mix(in srgb, var(--workspace-text, #333) 5%, transparent));
+  background-color: var(
+    --workspace-surface-hover,
+    color-mix(in srgb, var(--workspace-text, #333) 5%, transparent)
+  );
 }
 
 /* Settings panel */
@@ -162,7 +220,11 @@
 }
 
 .load-model-button:hover:not(:disabled) {
-  background-color: color-mix(in srgb, var(--workspace-primary, #4285f4) 85%, black);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-primary, #4285f4) 85%,
+    black
+  );
 }
 
 .load-model-button:disabled {
@@ -192,7 +254,11 @@
 }
 
 .clear-history-button:hover {
-  background-color: color-mix(in srgb, var(--workspace-error, #d32f2f) 10%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-error, #d32f2f) 10%,
+    transparent
+  );
   border-color: var(--workspace-error, #d32f2f);
 }
 
@@ -231,12 +297,39 @@
 
 .ai-chat-message.system {
   align-self: center;
-  background-color: color-mix(in srgb, var(--workspace-warning, #f5e2ba) 80%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-warning, #f5e2ba) 80%,
+    transparent
+  );
   color: color-mix(in srgb, var(--workspace-warning, #664d03) 90%, black);
   font-style: italic;
   max-width: 90%;
   text-align: center;
   font-size: 0.9em;
+}
+
+/* Error message styling with better contrast */
+.ai-chat-message.error {
+  align-self: center;
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-error, #f44336) 15%,
+    transparent
+  );
+  color: var(--workspace-error, #d32f2f);
+  border: 1px solid
+    color-mix(in srgb, var(--workspace-error, #f44336) 30%, transparent);
+  font-weight: 500;
+  max-width: 90%;
+  text-align: center;
+  font-size: 0.9em;
+  box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
+}
+
+.ai-chat-message.error .message-timestamp {
+  color: color-mix(in srgb, var(--workspace-error, #d32f2f) 80%, black);
+  font-weight: 400;
 }
 
 .message-timestamp {
@@ -338,7 +431,11 @@
 }
 
 .ai-chat-send-button:hover:not(:disabled) {
-  background-color: color-mix(in srgb, var(--workspace-primary, #4285f4) 85%, black);
+  background-color: color-mix(
+    in srgb,
+    var(--workspace-primary, #4285f4) 85%,
+    black
+  );
 }
 
 .ai-chat-send-button:disabled {

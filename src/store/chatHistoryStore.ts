@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export interface ChatMessage {
   id: string;
-  role: "user" | "assistant" | "system";
+  role: "user" | "assistant" | "system" | "error";
   content: string;
   timestamp: Date;
 }

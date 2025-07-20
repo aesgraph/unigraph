@@ -19,6 +19,7 @@ import EntityTableV2 from "../common/EntityTableV2";
 import { ThemeWorkspaceProvider } from "../providers/ThemeWorkspaceProvider";
 import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
+import SystemMonitorView from "./SystemMonitorView";
 
 // Create custom views that include our AIChatPanel and SemanticWebQueryPanel
 const aiChatView = {
@@ -50,6 +51,14 @@ const forceGraph3DViewV2 = {
   icon: "🚀",
   component: (props: any) => <ForceGraph3DViewV2 {...props} />,
   category: "visualization",
+};
+
+const systemMonitorView = {
+  id: "system-monitor",
+  title: "System Monitor",
+  icon: "📊",
+  component: (props: any) => <SystemMonitorView {...props} />,
+  category: "system",
 };
 
 // EntityTableV2 wrapper component
@@ -679,6 +688,7 @@ registerViews([
   entityTableV2View,
   customThemedPanelView,
   themeInheritanceDemoView,
+  systemMonitorView,
 ]);
 
 // Example: Create a custom theme for demonstration

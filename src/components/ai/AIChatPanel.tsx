@@ -1,15 +1,17 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import {
   AlertTriangle,
   Cloud,
   Database,
+  Globe,
   Send,
   Settings,
   Trash2,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
-import { useTheme, getColor } from "@aesgraph/app-shell";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
 import { addNotification } from "../../store/notificationStore";
+import { useUserStore } from "../../store/userStore";
 import {
   callLLMStudioAPI,
   checkLLMStudioAvailability,
@@ -21,7 +23,7 @@ interface AIChatPanelProps {
 }
 
 // API provider types
-type ApiProvider = "openai" | "llm-studio";
+type ApiProvider = "openai" | "llm-studio" | "live-chat";
 
 const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   // Get theme from app-shell
@@ -29,6 +31,8 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   const theme = appShellTheme.theme;
   // Use chat history from store
   const { messages, addMessage, clearHistory } = useChatHistoryStore();
+  // Use user store for authentication
+  const { user, isSignedIn } = useUserStore();
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -38,15 +42,39 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   const [apiProvider, setApiProvider] = useState<ApiProvider>("llm-studio");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get OpenAI API key from environment
+  // Get OpenAI API key from environment (optional)
   const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
+  // Get live chat endpoint URL from environment
+  const liveChatUrl =
+    import.meta.env.VITE_LIVE_CHAT_URL || import.meta.env.VITE_DEFAULT_CHAT_URL;
+
+  // Determine if this is a custom endpoint or production
+  const isCustomEndpoint = useCallback(() => {
+    const defaultUrl = import.meta.env.VITE_DEFAULT_CHAT_URL;
+    return liveChatUrl !== defaultUrl;
+  }, [liveChatUrl]);
+
+  const getEndpointType = () => {
+    if (isCustomEndpoint()) {
+      return "Custom";
+    }
+    return "Server";
+  };
 
   // Check API availability and determine provider
   useEffect(() => {
     const checkApi = async () => {
       if (openaiApiKey) {
-        // If we have an OpenAI API key, use that
+        // If we have an OpenAI API key, use that first
         setApiProvider("openai");
+        setApiAvailable(true);
+      } else if (liveChatUrl) {
+        // If using a custom endpoint (like localhost), use live chat without auth requirement
+        setApiProvider("live-chat");
+        setApiAvailable(true);
+      } else if (isSignedIn && user) {
+        // If no OpenAI key but user is signed in, use live chat endpoint
+        setApiProvider("live-chat");
         setApiAvailable(true);
       } else {
         // Otherwise check if LLM Studio is available
@@ -59,13 +87,20 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
 
     // Set up periodic availability check for LLM Studio (only if we're using it)
     const checkInterval = setInterval(async () => {
-      if (!openaiApiKey) {
+      if (apiProvider === "llm-studio" && !openaiApiKey && !isSignedIn) {
         setApiAvailable(await checkLLMStudioAvailability());
       }
     }, 10000); // Check every 10 seconds
 
     return () => clearInterval(checkInterval);
-  }, [openaiApiKey]);
+  }, [
+    openaiApiKey,
+    isSignedIn,
+    user,
+    apiProvider,
+    isCustomEndpoint,
+    liveChatUrl,
+  ]);
 
   // Scroll to bottom of messages
   useEffect(() => {
@@ -107,6 +142,89 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
     return data.choices[0]?.message?.content || "No response received";
   };
 
+  // Call Live Chat API
+  const callLiveChatAPI = async (
+    chatMessages: ChatMessage[]
+  ): Promise<string> => {
+    // For custom endpoints (like localhost), don't require authentication
+    const isCustom = isCustomEndpoint();
+
+    if (!isCustom && (!isSignedIn || !user)) {
+      throw new Error("User not authenticated");
+    }
+
+    // Prepare headers
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    // Try to get session token for both custom and production endpoints
+    try {
+      const {
+        data: { session },
+      } = await import("../../utils/supabaseClient").then((m) =>
+        m.supabase.auth.getSession()
+      );
+
+      if (session?.access_token) {
+        headers.Authorization = `Bearer ${session.access_token}`;
+      } else if (!isCustom) {
+        // Only require auth for production endpoints
+        throw new Error("No access token available");
+      }
+    } catch (error) {
+      if (!isCustom) {
+        throw error; // Re-throw for production endpoints
+      }
+      // For custom endpoints, continue without auth
+    }
+
+    const response = await fetch(liveChatUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        messages: chatMessages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
+        temperature: temperature,
+        max_tokens: 1000,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+
+      // Handle CORS errors specifically, or not being on user whitelist
+      if (response.status === 0 || response.statusText === "") {
+        if (
+          errorData &&
+          typeof errorData.error === "string" &&
+          errorData.error.includes("User is not authorized")
+        ) {
+          throw new Error("User is not authorized");
+        }
+        throw new Error(`Please log in to use chat`);
+      }
+
+      // Handle access denied error specifically
+      if (
+        response.status === 403 &&
+        errorData.error &&
+        errorData.error.includes("aesgraph@gmail.com")
+      ) {
+        throw new Error(`🔒 Access Denied: ${errorData.error}`);
+      }
+
+      throw new Error(
+        `Live Chat API error: ${response.status} ${response.statusText} - ${errorData.error || "Unknown error"}`
+      );
+    }
+
+    const data = await response.json();
+    return data.message || "No response received";
+  };
+
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading || apiAvailable === false) return;
 
@@ -143,12 +261,22 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
           "You are a helpful AI assistant. Provide concise, accurate answers.",
       });
 
+      // Filter out any messages with an invalid role
+      const validRoles = ["system", "user", "assistant"];
+      const filteredChatMessages = chatMessages.filter((msg) =>
+        validRoles.includes(msg.role)
+      );
+
       // Call appropriate API based on provider
       let response: string;
       if (apiProvider === "openai") {
-        response = await callOpenAIAPI(chatMessages);
+        response = await callOpenAIAPI(filteredChatMessages);
+      } else if (apiProvider === "live-chat") {
+        response = await callLiveChatAPI(filteredChatMessages);
       } else {
-        response = await callLLMStudioAPI(chatMessages, { temperature });
+        response = await callLLMStudioAPI(filteredChatMessages, {
+          temperature,
+        });
       }
 
       // Add AI response to persistent store
@@ -160,17 +288,46 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
       });
     } catch (error) {
       console.error("Error generating response:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      // Handle different types of errors with user-friendly messages
+      let userFriendlyMessage = "";
+      let isAccessDenied = false;
+
+      if (
+        errorMessage.includes("User is not authorized") ||
+        (errorMessage.includes("401 Unauthorized") && isSignedIn)
+      ) {
+        userFriendlyMessage =
+          "Please contact aesgraph@gmail.com for authorization to use chat";
+      } else if (
+        errorMessage.includes("401 Unauthorized") ||
+        errorMessage.includes("User not authenticated") ||
+        errorMessage.includes("Authorization header required")
+      ) {
+        userFriendlyMessage = "Please log in to use chat";
+      } else if (
+        errorMessage.includes("Access Denied") ||
+        errorMessage.includes("aesgraph@gmail.com")
+      ) {
+        userFriendlyMessage = `🔒 ${errorMessage}`;
+        isAccessDenied = true;
+      } else {
+        userFriendlyMessage = `Sorry, I encountered an error: ${errorMessage}`;
+      }
+
       addNotification({
-        message: `Error: ${error instanceof Error ? error.message : String(error)}`,
+        message: userFriendlyMessage,
         type: "error",
-        duration: 5000,
+        duration: isAccessDenied ? 15000 : 5000,
       });
 
       // Add error message to persistent store
       addMessage({
         id: `error-${Date.now()}`,
-        role: "system",
-        content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        role: "error",
+        content: userFriendlyMessage,
         timestamp: new Date(),
       });
     } finally {
@@ -182,6 +339,32 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const getProviderDisplayName = (provider: ApiProvider): string => {
+    switch (provider) {
+      case "live-chat":
+        return "Live Chat";
+      case "openai":
+        return "OpenAI";
+      case "llm-studio":
+        return "LLM Studio";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getProviderIcon = (provider: ApiProvider) => {
+    switch (provider) {
+      case "live-chat":
+        return <Globe size={16} />;
+      case "openai":
+        return <Cloud size={16} />;
+      case "llm-studio":
+        return <Database size={16} />;
+      default:
+        return <Database size={16} />;
     }
   };
 
@@ -213,11 +396,11 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
       {/* Header with settings button */}
       <div className="ai-chat-header">
         <div className="ai-chat-title">
-          {apiProvider === "openai" ? "OpenAI Chat" : "LLM Studio Chat"}
+          {getProviderDisplayName(apiProvider)}
           {apiAvailable === false && (
             <span
               className="api-status error"
-              title="LLM Studio server not available"
+              title={`${getProviderDisplayName(apiProvider)} not available`}
             >
               <AlertTriangle size={16} />
             </span>
@@ -225,21 +408,22 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
           {apiAvailable === true && (
             <span
               className="api-status connected"
-              title={`Connected to ${apiProvider === "openai" ? "OpenAI API" : "LLM Studio"}`}
+              title={`Connected to ${getProviderDisplayName(apiProvider)}`}
             >
               •
             </span>
           )}
           <span
             className="api-provider-icon"
-            title={`Using ${apiProvider === "openai" ? "OpenAI API" : "Local LLM Studio"}`}
+            title={`Using ${getProviderDisplayName(apiProvider)}`}
           >
-            {apiProvider === "openai" ? (
-              <Cloud size={16} />
-            ) : (
-              <Database size={16} />
-            )}
+            {getProviderIcon(apiProvider)}
           </span>
+          {apiProvider === "live-chat" && isCustomEndpoint() && (
+            <span className="endpoint-indicator custom" title="Custom endpoint">
+              Custom
+            </span>
+          )}
         </div>
         <div className="ai-chat-actions">
           <button
@@ -272,6 +456,24 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
           <div className="settings-api-info">
             {apiProvider === "openai" ? (
               <p>Using OpenAI API with environment variable API key</p>
+            ) : apiProvider === "live-chat" ? (
+              <div>
+                <p>Using Live Chat API at:</p>
+                <code>{liveChatUrl}</code>
+                <p className="endpoint-type">
+                  <strong>Endpoint Type:</strong> {getEndpointType()}
+                  {isCustomEndpoint() && (
+                    <span className="custom-badge">Custom</span>
+                  )}
+                </p>
+                {isSignedIn ? (
+                  <p className="auth-status connected">
+                    ✅ Authenticated as {user?.email}
+                  </p>
+                ) : (
+                  <p className="auth-status error">❌ Not authenticated</p>
+                )}
+              </div>
             ) : (
               <>
                 <p>Using local LLM Studio API at:</p>
@@ -292,13 +494,15 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
       )}
 
       {/* API not available message */}
-      {apiAvailable === false && apiProvider === "llm-studio" && (
+      {apiAvailable === false && (
         <div className="api-unavailable-notice">
           <AlertTriangle size={20} />
           <p>
-            LLM Studio API is not available. Please make sure LLM Studio is
-            running at <code>http://localhost:1234</code> or add OpenAI API key
-            to your environment variables.
+            {apiProvider === "live-chat"
+              ? "Live Chat API is not available. Please sign in to use the live chat endpoint."
+              : apiProvider === "llm-studio"
+                ? "LLM Studio API is not available. Please make sure LLM Studio is running at http://localhost:1234."
+                : "API is not available. Please check your configuration."}
           </p>
         </div>
       )}
@@ -338,7 +542,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
           className="ai-chat-input"
           placeholder={
             apiAvailable === false
-              ? "LLM Studio server not available..."
+              ? `${getProviderDisplayName(apiProvider)} not available...`
               : "Type a message..."
           }
           value={inputValue}
