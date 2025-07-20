@@ -13,12 +13,12 @@ import {
 } from "@aesgraph/app-shell";
 import "@aesgraph/app-shell/dist/app-shell.css";
 import React from "react";
-import EntityTableV2 from "../common/EntityTableV2";
+import { getCurrentSceneGraph } from "../../store/appConfigStore";
 import AIChatPanel from "../ai/AIChatPanel";
+import EntityTableV2 from "../common/EntityTableV2";
 import { ThemeWorkspaceProvider } from "../providers/ThemeWorkspaceProvider";
 import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
-import { getCurrentSceneGraph } from "../../store/appConfigStore";
 
 // Create custom views that include our AIChatPanel and SemanticWebQueryPanel
 const aiChatView = {
