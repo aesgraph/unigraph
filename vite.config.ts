@@ -78,6 +78,21 @@ export default defineConfig({
     global: "globalThis",
     // Add process polyfill
     "process.env": {},
+    // Inject Vercel environment variables into the client
+    __VERCEL_ENV_VARS__: JSON.stringify(
+      Object.keys(process.env)
+        .filter((key) => key.startsWith("VITE_"))
+        .reduce(
+          (acc, key) => {
+            const value = process.env[key];
+            if (value !== undefined) {
+              acc[key] = value;
+            }
+            return acc;
+          },
+          {} as Record<string, string>
+        )
+    ),
   },
 
   // Security: Prevent environment variables from being bundled

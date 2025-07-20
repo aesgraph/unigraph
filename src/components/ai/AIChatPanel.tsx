@@ -12,6 +12,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
 import { addNotification } from "../../store/notificationStore";
 import { useUserStore } from "../../store/userStore";
+import { getEnvVar } from "../../utils/envUtils";
+import { supabase } from "../../utils/supabaseClient";
 import {
   callLLMStudioAPI,
   checkLLMStudioAvailability,
@@ -19,7 +21,7 @@ import {
 import "./AIChatPanel.css";
 
 interface AIChatPanelProps {
-  [key: string]: any; // Accept any props for flexibility
+  className?: string;
 }
 
 // API provider types
@@ -43,14 +45,14 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Get OpenAI API key from environment (optional)
-  const openaiApiKey = import.meta.env.VITE_OPENAI_API_KEY || "";
+  const openaiApiKey = getEnvVar("VITE_OPENAI_API_KEY") || "";
   // Get live chat endpoint URL from environment
   const liveChatUrl =
-    import.meta.env.VITE_LIVE_CHAT_URL || import.meta.env.VITE_DEFAULT_CHAT_URL;
+    getEnvVar("VITE_LIVE_CHAT_URL") || getEnvVar("VITE_DEFAULT_CHAT_URL");
 
   // Determine if this is a custom endpoint or production
   const isCustomEndpoint = useCallback(() => {
-    const defaultUrl = import.meta.env.VITE_DEFAULT_CHAT_URL;
+    const defaultUrl = getEnvVar("VITE_DEFAULT_CHAT_URL");
     return liveChatUrl !== defaultUrl;
   }, [liveChatUrl]);
 
@@ -72,37 +74,23 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
         // If using a custom endpoint (like localhost), use live chat without auth requirement
         setApiProvider("live-chat");
         setApiAvailable(true);
-      } else if (isSignedIn && user) {
-        // If no OpenAI key but user is signed in, use live chat endpoint
-        setApiProvider("live-chat");
-        setApiAvailable(true);
       } else {
-        // Otherwise check if LLM Studio is available
-        setApiProvider("llm-studio");
-        setApiAvailable(await checkLLMStudioAvailability());
+        // Check if LLM Studio is available
+        try {
+          const available = await checkLLMStudioAvailability();
+          setApiProvider("llm-studio");
+          setApiAvailable(available);
+        } catch (error) {
+          console.error("LLM Studio not available:", error);
+          setApiAvailable(false);
+        }
       }
     };
 
     checkApi();
+  }, [openaiApiKey, liveChatUrl]);
 
-    // Set up periodic availability check for LLM Studio (only if we're using it)
-    const checkInterval = setInterval(async () => {
-      if (apiProvider === "llm-studio" && !openaiApiKey && !isSignedIn) {
-        setApiAvailable(await checkLLMStudioAvailability());
-      }
-    }, 10000); // Check every 10 seconds
-
-    return () => clearInterval(checkInterval);
-  }, [
-    openaiApiKey,
-    isSignedIn,
-    user,
-    apiProvider,
-    isCustomEndpoint,
-    liveChatUrl,
-  ]);
-
-  // Scroll to bottom of messages
+  // Auto-scroll to bottom when new messages are added
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -153,30 +141,31 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
       throw new Error("User not authenticated");
     }
 
+    // Check if liveChatUrl is defined
+    if (!liveChatUrl) {
+      throw new Error("Live chat URL not configured");
+    }
+
     // Prepare headers
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
-    // Try to get session token for both custom and production endpoints
-    try {
-      const {
-        data: { session },
-      } = await import("../../utils/supabaseClient").then((m) =>
-        m.supabase.auth.getSession()
-      );
-
-      if (session?.access_token) {
-        headers.Authorization = `Bearer ${session.access_token}`;
-      } else if (!isCustom) {
-        // Only require auth for production endpoints
-        throw new Error("No access token available");
+    // Add authentication header for production endpoints
+    if (!isCustom) {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers["Authorization"] = `Bearer ${session.access_token}`;
+        } else {
+          throw new Error("No access token available");
+        }
+        // eslint-disable-next-line unused-imports/no-unused-vars
+      } catch (error) {
+        throw new Error("Authentication failed");
       }
-    } catch (error) {
-      if (!isCustom) {
-        throw error; // Re-throw for production endpoints
-      }
-      // For custom endpoints, continue without auth
     }
 
     const response = await fetch(liveChatUrl, {

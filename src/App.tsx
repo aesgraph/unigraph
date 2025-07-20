@@ -18,7 +18,6 @@ import PathAnalysisWizard, {
 import ImageGalleryV2 from "./components/applets/ImageGallery/ImageGalleryV2";
 import ImageGalleryV3 from "./components/applets/ImageGallery/ImageGalleryV3";
 import Workspace from "./components/appWorkspace/Workspace";
-import AppShellView from "./components/views/AppShellView";
 import CommandPalette from "./components/commandPalette/CommandPalette";
 import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
 import EntityDataDisplayCard from "./components/common/EntityDataDisplayCard";
@@ -33,9 +32,11 @@ import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/sceneGraph/SceneGraphDetailView";
 import SceneGraphTitle from "./components/sceneGraph/SceneGraphTitle";
+import AppShellView from "./components/views/AppShellView";
 import ReactFlowPanel, {
   nodeTypes,
 } from "./components/views/ReactFlow/ReactFlowPanel";
+import { debugEnvVars } from "./utils/envUtils";
 
 import AudioAnnotator from "./_experimental/mp3/AudioAnnotator";
 import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
@@ -172,6 +173,11 @@ import useWorkspaceConfigStore, {
   setShowToolbar,
 } from "./store/workspaceConfigStore";
 import { initializeMainForceGraph } from "./utils/forceGraphInitializer";
+
+// Debug environment variables in development
+if (process.env.NODE_ENV === "development") {
+  debugEnvVars();
+}
 
 // Import the persistent store
 
