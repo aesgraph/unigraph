@@ -7,7 +7,7 @@ import {
   Trash2,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { useTheme, getColor } from "app-shell";
+import { useTheme, getColor } from "@aesgraph/app-shell";
 import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
 import { addNotification } from "../../store/notificationStore";
 import {

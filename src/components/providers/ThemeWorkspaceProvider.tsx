@@ -4,8 +4,8 @@ import {
   ThemeVariables,
   WorkspaceProvider,
   useWorkspace,
-} from "app-shell";
-import type { WorkspaceConfig } from "app-shell";
+} from "@aesgraph/app-shell";
+import type { WorkspaceConfig } from "@aesgraph/app-shell";
 
 interface ThemeWorkspaceProviderProps {
   children: React.ReactNode;

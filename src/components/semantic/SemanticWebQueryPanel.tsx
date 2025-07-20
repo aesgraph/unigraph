@@ -10,7 +10,7 @@ import {
 import { AgGridReact } from "ag-grid-react";
 import React, { useEffect, useState } from "react";
 import { Parser as SparqlParser } from "sparqljs";
-import { useTheme, getColor } from "app-shell";
+import { useTheme, getColor } from "@aesgraph/app-shell";
 import SelectDropdown from "../common/SelectDropdown";
 import styles from "./SemanticWebQueryPanel.module.css";
 

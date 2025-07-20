@@ -1,5 +1,5 @@
 import React from "react";
-import { WorkspaceConfig, ThemeId } from "app-shell";
+import { WorkspaceConfig, ThemeId } from "@aesgraph/app-shell";
 
 const AppShellTest: React.FC = () => {
   // Example configuration using app-shell types

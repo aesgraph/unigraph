@@ -10,8 +10,8 @@ import {
   registerViews,
   themes,
   useTheme,
-} from "app-shell";
-import "app-shell/dist/app-shell.css";
+} from "@aesgraph/app-shell";
+import "@aesgraph/app-shell/dist/app-shell.css";
 import React from "react";
 import EntityTableV2 from "../common/EntityTableV2";
 import AIChatPanel from "../ai/AIChatPanel";
