@@ -1,4 +1,4 @@
-import { Theme, ThemeId, commonSizes } from "app-shell";
+import { Theme, ThemeId, commonSizes } from "@aesgraph/app-shell";
 
 /**
  * Custom Unigraph theme with a modern, vibrant color palette

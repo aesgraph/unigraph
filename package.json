@@ -49,7 +49,6 @@
     "ag-grid-community": "^34.0.2",
     "ag-grid-react": "^34.0.2",
     "antd": "^5.23.3",
-    "app-shell": "file:../app-shell",
     "codemirror": "^6.0.2",
     "cytoscape": "^3.31.0",
     "cytoscape-dagre": "^2.5.0",

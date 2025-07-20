@@ -1,5 +1,9 @@
 import React from "react";
-import { Workspace, WorkspaceProvider, WorkspaceConfig } from "@aesgraph/app-shell";
+import {
+  Workspace,
+  WorkspaceProvider,
+  WorkspaceConfig,
+} from "@aesgraph/app-shell";
 
 const WorkspaceTest: React.FC = () => {
   const PANE_COLLAPSE_THRESHOLD = 80;
