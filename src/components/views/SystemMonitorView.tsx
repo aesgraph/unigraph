@@ -245,15 +245,6 @@ const SystemMonitorView: React.FC = () => {
     setItems(sampleItems);
   }, []);
 
-  const addItem = (item: Omit<SystemItem, "id" | "timestamp">) => {
-    const newItem: SystemItem = {
-      ...item,
-      id: `${item.type}-${Date.now()}`,
-      timestamp: new Date(),
-    };
-    setItems((prev) => [...prev, newItem]);
-  };
-
   const clearItems = () => {
     setItems([]);
   };
