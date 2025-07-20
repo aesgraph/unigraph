@@ -14,34 +14,36 @@ interface ImportMeta {
 }
 
 // SVG imports
-declare module '*.svg' {
-  import * as React from 'react';
-  export const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement> & { title?: string }>;
+declare module "*.svg" {
+  import * as React from "react";
+  export const ReactComponent: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & { title?: string }
+  >;
   const src: string;
   export default src;
 }
 
 // Raw SVG imports
-declare module '*.svg?raw' {
+declare module "*.svg?raw" {
   const content: string;
   export default content;
 }
 
 // CSS Modules
-declare module '*.module.css' {
+declare module "*.module.css" {
   const classes: { readonly [key: string]: string };
   export default classes;
 }
 
 // Web Workers
-declare module '*.worker.ts' {
+declare module "*.worker.ts" {
   class WebpackWorker extends Worker {
     constructor();
   }
   export default WebpackWorker;
 }
 
-declare module '*.worker.js' {
+declare module "*.worker.js" {
   class WebpackWorker extends Worker {
     constructor();
   }

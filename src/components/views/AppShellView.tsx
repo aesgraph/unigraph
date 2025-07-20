@@ -55,10 +55,10 @@ const forceGraph3DViewV2 = {
 // EntityTableV2 wrapper component
 const EntityTableV2Wrapper: React.FC = () => {
   const sceneGraph = getCurrentSceneGraph();
-  
+
   if (!sceneGraph) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <div style={{ padding: "20px", textAlign: "center" }}>
         <p>No scene graph available. Please load a graph first.</p>
       </div>
     );
@@ -66,11 +66,11 @@ const EntityTableV2Wrapper: React.FC = () => {
 
   // Get all entities from the scene graph
   const allNodes = sceneGraph.getGraph().getNodes();
-  
+
   return (
-    <div style={{ height: '100%', width: '100%', padding: '10px' }}>
-      <EntityTableV2 
-        container={allNodes} 
+    <div style={{ height: "100%", width: "100%", padding: "10px" }}>
+      <EntityTableV2
+        container={allNodes}
         sceneGraph={sceneGraph}
         maxHeight="100%"
       />

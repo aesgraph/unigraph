@@ -8,7 +8,7 @@ import { loadSvgToSceneGraph } from "../../../utils/svgLoader";
 export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
   try {
     // Fetch the SVG content from public directory
-    const response = await fetch('/svgs/e8petrie.svg');
+    const response = await fetch("/svgs/e8petrie.svg");
     const svgContent = await response.text();
     // console.log("svg content is ", svgContent);
     return loadSvgToSceneGraph(svgContent, {
@@ -42,7 +42,7 @@ export const createE8_4_21_t2_b8_PetrieSceneGraph =
   async (): Promise<SceneGraph> => {
     try {
       // Fetch the SVG content from public directory
-      const response = await fetch('/svgs/e8petrie_421t2b6.svg');
+      const response = await fetch("/svgs/e8petrie_421t2b6.svg");
       const svgContent = await response.text();
       // console.log("svg content is ", svgContent);
       return loadSvgToSceneGraph(svgContent, {

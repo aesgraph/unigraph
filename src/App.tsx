@@ -155,9 +155,7 @@ import {
   setHoveredNodeIds,
   setSelectedNodeId,
 } from "./store/graphInteractionStore";
-import {
-  useMouseControlsStore,
-} from "./store/mouseControlsStore";
+import { useMouseControlsStore } from "./store/mouseControlsStore";
 import { addNotification } from "./store/notificationStore";
 import {
   applyActiveFilterToAppInstance,
@@ -734,14 +732,14 @@ const AppContent = ({
 
   const initializeForceGraph = useCallback(() => {
     if (!forceGraphRef.current) return;
-    
+
     const newInstance = initializeMainForceGraph(
       forceGraphRef.current,
       handleNodesRightClick,
       handleBackgroundRightClick,
       forceGraph3dOptions.layout
     );
-    
+
     // The instance is already set as the main instance by initializeMainForceGraph
     // but we need to return it for any additional setup if needed
     return newInstance;

@@ -18,7 +18,7 @@ const ForceGraph3DViewV2: React.FC = () => {
     if (graphRef.current && containerRef.current) {
       const container = containerRef.current;
       const rect = container.getBoundingClientRect();
-      
+
       if (rect.width > 0 && rect.height > 0) {
         graphRef.current.width(rect.width).height(rect.height);
       }

@@ -348,7 +348,17 @@ export async function demo_scenegraph_ast(
     console.log(
       `Created scene graph with ${graph.getNodes().size()} nodes and ${graph.getEdges().size()} edges`
     );
-    console.log("Node types created:", Array.from(new Set(graph.getNodes().toArray().map(n => n.getType()))));
+    console.log(
+      "Node types created:",
+      Array.from(
+        new Set(
+          graph
+            .getNodes()
+            .toArray()
+            .map((n) => n.getType())
+        )
+      )
+    );
 
     return new SceneGraph({
       graph,

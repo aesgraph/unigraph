@@ -186,24 +186,29 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   };
 
   return (
-    <div 
+    <div
       className="ai-chat-panel"
-      style={{
-        '--workspace-background': getColor(theme.colors, 'workspaceBackground'),
-        '--workspace-panel': getColor(theme.colors, 'workspacePanel'),
-        '--workspace-text': getColor(theme.colors, 'text'),
-        '--workspace-text-secondary': getColor(theme.colors, 'textSecondary'),
-        '--workspace-text-muted': getColor(theme.colors, 'textMuted'),
-        '--workspace-border': getColor(theme.colors, 'border'),
-        '--workspace-border-hover': getColor(theme.colors, 'borderHover'),
-        '--workspace-surface': getColor(theme.colors, 'surface'),
-        '--workspace-surface-hover': getColor(theme.colors, 'surfaceHover'),
-        '--workspace-primary': getColor(theme.colors, 'primary'),
-        '--workspace-accent': getColor(theme.colors, 'accent'),
-        '--workspace-error': getColor(theme.colors, 'error'),
-        '--workspace-success': getColor(theme.colors, 'success'),
-        '--workspace-warning': getColor(theme.colors, 'warning'),
-      } as React.CSSProperties}
+      style={
+        {
+          "--workspace-background": getColor(
+            theme.colors,
+            "workspaceBackground"
+          ),
+          "--workspace-panel": getColor(theme.colors, "workspacePanel"),
+          "--workspace-text": getColor(theme.colors, "text"),
+          "--workspace-text-secondary": getColor(theme.colors, "textSecondary"),
+          "--workspace-text-muted": getColor(theme.colors, "textMuted"),
+          "--workspace-border": getColor(theme.colors, "border"),
+          "--workspace-border-hover": getColor(theme.colors, "borderHover"),
+          "--workspace-surface": getColor(theme.colors, "surface"),
+          "--workspace-surface-hover": getColor(theme.colors, "surfaceHover"),
+          "--workspace-primary": getColor(theme.colors, "primary"),
+          "--workspace-accent": getColor(theme.colors, "accent"),
+          "--workspace-error": getColor(theme.colors, "error"),
+          "--workspace-success": getColor(theme.colors, "success"),
+          "--workspace-warning": getColor(theme.colors, "warning"),
+        } as React.CSSProperties
+      }
     >
       {/* Header with settings button */}
       <div className="ai-chat-header">
