@@ -12,10 +12,10 @@
 
 ```bash
 # ✅ Correct way
-VITE_OPENAI_API_KEY=sk-...
+VITE_OPENAI_API_KEY=sk-...  # pragma: allowlist secret
 
 # ❌ Wrong way - never do this
-const apiKey = "sk-...";
+const apiKey = "sk-...";  # pragma: allowlist secret
 ```
 
 ### 3. **Build Security**
