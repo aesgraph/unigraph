@@ -102,4 +102,5 @@ class Edge extends AbstractEntity<EdgeId, EdgeData> {
   }
 }
 
-export { Edge, EdgeData };
+export { Edge };
+export type { EdgeData };

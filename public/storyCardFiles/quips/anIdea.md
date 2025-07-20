@@ -1,7 +1,7 @@
 <table style="border-spacing: 0; border-collapse: collapse; width: 100%;">
   <tr>
     <td style="vertical-align: top; width: 300px; padding-right: 20px; padding-bottom: 40px;">
-      <img src="storyCardFiles/quips/frame1.png" alt="Frame 1" width="300"/>
+      <img src="/storyCardFiles/quips/frame1.png" alt="Frame 1" width="300"/>
     </td>
     <td style="vertical-align: top; padding-bottom: 40px;">
       <p>I've been thinking about it for a long time.<br>
@@ -13,7 +13,7 @@
   </tr>
   <tr>
     <td style="vertical-align: top; padding-right: 20px; padding-bottom: 40px;">
-      <img src="storyCardFiles/quips/frame2.png" alt="Frame 2" width="300"/>
+      <img src="/storyCardFiles/quips/frame2.png" alt="Frame 2" width="300"/>
     </td>
     <td style="vertical-align: top; padding-bottom: 40px;">
       <p>I'll do my best to define components of the idea<br>
@@ -22,7 +22,7 @@
   </tr>
   <tr>
     <td style="vertical-align: top; padding-right: 20px; padding-bottom: 40px;">
-      <img src="storyCardFiles/quips/frame3.png" alt="Frame 3" width="300"/>
+      <img src="/storyCardFiles/quips/frame3.png" alt="Frame 3" width="300"/>
     </td>
     <td style="vertical-align: top; padding-bottom: 40px;">
       <p>Some may say the component or vocabulary is wrong.</p>
@@ -30,7 +30,7 @@
   </tr>
   <tr>
     <td style="vertical-align: top; padding-right: 20px; padding-bottom: 40px;">
-      <img src="storyCardFiles/quips/frame4.png" alt="Frame 4" width="300"/>
+      <img src="/storyCardFiles/quips/frame4.png" alt="Frame 4" width="300"/>
     </td>
     <td style="vertical-align: top; padding-bottom: 40px;">
       <p>And I'll think about it deeply.</p>
@@ -38,7 +38,7 @@
   </tr>
   <tr>
     <td style="vertical-align: top; padding-right: 20px;">
-      <img src="storyCardFiles/quips/frame5.png" alt="Frame 5" width="300"/>
+      <img src="/storyCardFiles/quips/frame5.png" alt="Frame 5" width="300"/>
     </td>
     <td style="vertical-align: top;">
       <p>Maybe it'll change... or not.<br>

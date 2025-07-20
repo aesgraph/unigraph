@@ -80,7 +80,6 @@ export const processYasguiResults = (results: any, sceneGraph: SceneGraph) => {
   sceneGraph.notifyGraphChanged();
 };
 
-import fetch from "node-fetch";
 import { getRandomColorFromPalette } from "../../utils/colorUtils";
 
 export async function bfsQuery(

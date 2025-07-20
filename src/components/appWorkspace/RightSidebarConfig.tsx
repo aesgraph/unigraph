@@ -110,7 +110,7 @@ export const createDefaultRightMenus = (
       id: "ai-chat",
       label: "AI Chat",
       icon: <MessageCircle size={20} className={styles.menuIcon} />,
-      content: <AIChatPanel isDarkMode={isDarkMode} />,
+      content: <AIChatPanel />,
     },
   ];
 

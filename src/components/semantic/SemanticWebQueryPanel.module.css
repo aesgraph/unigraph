@@ -1,0 +1,202 @@
+/* SemanticWebQueryPanel.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  background-color: var(--background, #fff);
+  color: var(--text-color, #333);
+  padding: 24px;
+}
+
+.endpointRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.endpointLabel {
+  font-weight: 500;
+}
+
+.endpointSelect {
+  min-width: 220px;
+}
+
+.customEndpointInput {
+  min-width: 320px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #ccc);
+  background-color: var(--input-background, #fff);
+  color: var(--text-color, #333);
+}
+
+.examplesRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.examplesLabel {
+  font-weight: 500;
+}
+
+.examplesSelect {
+  min-width: 260px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color, #ccc);
+  background-color: var(--input-background, #fff);
+  color: var(--text-color, #333);
+  font-size: 15px;
+}
+
+.querySection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.queryLabel {
+  font-weight: 500;
+}
+
+.queryEditor {
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #ccc);
+  overflow: hidden;
+  background-color: var(--input-background, #fff);
+}
+
+.lintError {
+  color: var(--error-color, #dc2626);
+  margin-top: 6px;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 4px 0;
+}
+
+.actionRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.runButton {
+  background-color: var(--primary-color, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  opacity: 1;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.runButton:hover {
+  background-color: var(--primary-hover, #1d4ed8);
+}
+
+.runButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.addToSceneGraphButton {
+  background-color: var(--success-color, #059669);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.addToSceneGraphButton:hover {
+  background-color: var(--success-hover, #047857);
+}
+
+.resultsSection {
+  flex: 1;
+  overflow: auto;
+  margin-top: 8px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.error {
+  color: var(--error-color, #dc2626);
+  margin-bottom: 8px;
+}
+
+.gridContainer {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  background-color: var(--grid-background, #fff);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.noResults {
+  color: var(--muted-text, #888);
+}
+
+.footer {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted-text, #444);
+  text-align: right;
+  padding: 4px 0 0 0;
+  border-top: 1px solid var(--border-color, #eee);
+  min-height: 24px;
+}
+
+/* Dark theme variables */
+:root {
+  --background: #fff;
+  --text-color: #333;
+  --border-color: #ccc;
+  --input-background: #fff;
+  --grid-background: #fff;
+  --muted-text: #666;
+  --error-color: #dc2626;
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --success-color: #059669;
+  --success-hover: #047857;
+}
+
+/* Dark mode support using CSS custom properties */
+.container[data-theme="dark"] {
+  --background: #18181b;
+  --text-color: #fff;
+  --border-color: #374151;
+  --input-background: #23232a;
+  --grid-background: #23232a;
+  --muted-text: #aaa;
+  --error-color: #ef4444;
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --success-color: #10b981;
+  --success-hover: #059669;
+}
+
+/* AG Grid cell styles for theming */
+.gridCell {
+  user-select: text;
+  color: var(--text-color);
+  background-color: var(--grid-background);
+  font-family: monospace;
+}

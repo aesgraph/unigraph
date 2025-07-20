@@ -51,6 +51,13 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
         Gallery
       </button>
       <button
+        className={`tab ${activeView === "AppShell" ? "active" : ""}`}
+        style={{ maxWidth: "10px" }}
+        onClick={() => onViewChange("AppShell", true)}
+      >
+        Shell
+      </button>
+      <button
         className={`tab ${activeView === "Graphviz" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
         onClick={() => onViewChange("Graphviz", true)}

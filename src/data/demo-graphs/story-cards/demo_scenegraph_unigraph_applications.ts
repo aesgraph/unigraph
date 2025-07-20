@@ -40,7 +40,7 @@ export const demo_Unigraph_Applications = () => {
       description:
         "What would it take to create real magic? How would we technically achieve transfiguration?",
       tags: ["unigraph", "magic", "applications"],
-      markdownFile: "/public/storyCardFiles/magicExplained/intro.md",
+      markdownFile: "/storyCardFiles/magicExplained/intro.md",
     },
   });
 

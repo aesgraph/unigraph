@@ -10,7 +10,6 @@ import React, {
 import ImageGallery from "./_experimental/lumina/galleryTestbed/ImageGallery";
 import ImageBoxCreator from "./_experimental/lumina/ImageBoxCreator";
 import Lumina from "./_experimental/lumina/Lumina";
-import YasguiPanel from "./_experimental/yasgui/YasguiPanel";
 import "./App.css";
 import { AppConfig, DEFAULT_APP_CONFIG } from "./AppConfig";
 import PathAnalysisWizard, {
@@ -19,6 +18,7 @@ import PathAnalysisWizard, {
 import ImageGalleryV2 from "./components/applets/ImageGallery/ImageGalleryV2";
 import ImageGalleryV3 from "./components/applets/ImageGallery/ImageGalleryV3";
 import Workspace from "./components/appWorkspace/Workspace";
+import AppShellView from "./components/views/AppShellView";
 import CommandPalette from "./components/commandPalette/CommandPalette";
 import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
 import EntityDataDisplayCard from "./components/common/EntityDataDisplayCard";
@@ -57,6 +57,7 @@ import { getNodeContextMenuItems } from "./components/common/singleNodeContextMe
 import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import SaveAsNewProjectDialog from "./components/projects/SaveAsNewProjectDialog";
+import SemanticWebQueryPanel from "./components/semantic/SemanticWebQueryPanel";
 import { enableZoomAndPanOnSvg } from "./components/svg/appHelpers";
 import { getHotkeyConfig } from "./configs/hotkeyConfig";
 import { AppContextProvider } from "./context/AppContext";
@@ -70,8 +71,6 @@ import {
   RenderingManager__DisplayMode,
 } from "./controllers/RenderingManager";
 import {
-  bindEventsToGraphInstance,
-  createForceGraph,
   updateNodePositions,
   zoomToFit,
 } from "./core/force-graph/createForceGraph";
@@ -157,7 +156,6 @@ import {
   setSelectedNodeId,
 } from "./store/graphInteractionStore";
 import {
-  applyMouseClickModeFromInteractivityFlags,
   useMouseControlsStore,
 } from "./store/mouseControlsStore";
 import { addNotification } from "./store/notificationStore";
@@ -175,6 +173,7 @@ import useWorkspaceConfigStore, {
   setRightSidebarConfig,
   setShowToolbar,
 } from "./store/workspaceConfigStore";
+import { initializeMainForceGraph } from "./utils/forceGraphInitializer";
 
 // Import the persistent store
 
@@ -238,6 +237,7 @@ export type RenderingView =
   | "ForceGraph3d"
   | "ReactFlow"
   | "Gallery" // Add new view type
+  | "AppShell" // Add new view type
   | "Simulation"
   | "Yasgui" // Add new view type
   | "Editor"; // Add new view type
@@ -733,52 +733,20 @@ const AppContent = ({
   );
 
   const initializeForceGraph = useCallback(() => {
-    console.log(
-      "Creating new force graph instance...",
-      currentSceneGraph.getDisplayConfig(),
-      getActiveLayoutResult()?.positions,
-      currentSceneGraph.getDisplayConfig().nodePositions ??
-        getActiveLayoutResult()?.positions,
-      forceGraph3dOptions.layout
-    );
-    const newInstance = createForceGraph(
-      currentSceneGraph,
-      forceGraphRef.current!,
-      currentSceneGraph.getDisplayConfig().nodePositions,
-      currentSceneGraph.getForceGraphRenderConfig(),
-      forceGraph3dOptions.layout
-    );
-    setForceGraphInstance(newInstance);
-    bindEventsToGraphInstance(
-      newInstance,
-      currentSceneGraph,
+    if (!forceGraphRef.current) return;
+    
+    const newInstance = initializeMainForceGraph(
+      forceGraphRef.current,
       handleNodesRightClick,
-      handleBackgroundRightClick
+      handleBackgroundRightClick,
+      forceGraph3dOptions.layout
     );
-
-    // Apply mouse click mode from interactivityFlags if specified
-    const interactivityFlags =
-      currentSceneGraph.getData().defaultAppConfig?.interactivityFlags;
-    if (interactivityFlags?.mouseClickMode) {
-      // console.log(
-      //   "Applying mouse click mode to new ForceGraph3D instance:",
-      //   interactivityFlags.mouseClickMode
-      // );
-      applyMouseClickModeFromInteractivityFlags(
-        interactivityFlags.mouseClickMode
-      );
-    }
-
-    // Remove the automatic zoomToFit that overrides camera settings
-    // Camera settings are now handled in createForceGraph and ForceGraphManager
-
-    setTimeout(() => {
-      newInstance?.onEngineTick(() => {});
-    }, 800);
+    
+    // The instance is already set as the main instance by initializeMainForceGraph
+    // but we need to return it for any additional setup if needed
+    return newInstance;
   }, [
-    currentSceneGraph,
     forceGraph3dOptions.layout,
-    setForceGraphInstance,
     handleNodesRightClick,
     handleBackgroundRightClick,
   ]);
@@ -1997,21 +1965,23 @@ const AppContent = ({
       return null;
     }
 
-    return (
-      <div
-        id="yasgui"
-        style={{
-          position: "absolute",
-          top: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 10,
-        }}
-      >
-        <YasguiPanel sceneGraph={currentSceneGraph} />
-      </div>
-    );
-  }, [activeView, currentSceneGraph]);
+    return <SemanticWebQueryPanel />;
+
+    // return (
+    //   <div
+    //     id="yasgui"
+    //     style={{
+    //       position: "absolute",
+    //       top: 0,
+    //       width: "100%",
+    //       height: "100%",
+    //       zIndex: 10,
+    //     }}
+    //   >
+    //     <YasguiPanel sceneGraph={currentSceneGraph} />
+    //   </div>
+    // );
+  }, [activeView]);
 
   const maybeRenderNodeDocumentEditor = () => {
     // Return nothing if not in Editor view or no active document
@@ -2091,6 +2061,7 @@ const AppContent = ({
                 defaultLinksEnabled={false}
               />
             )}
+            {activeView === "AppShell" && <AppShellView />}
             {activeView in simulations && getSimulation(activeView)}
           </div>
         </Workspace>

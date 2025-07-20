@@ -330,15 +330,25 @@ export class MenuConfig {
           },
           "Load annotations": {
             action: () => {
-              supabase.auth.getUser().then(({ data, error }) => {
-                if (error || !data?.user) {
-                  // Handle error or not signed in
-                  return;
-                }
-                console.log("Loading annotations for user:", data.user.id);
-                loadAnnotationsToSceneGraph(data.user.id, this.sceneGraph);
-                console.log("Annotations loaded", this.sceneGraph);
-              });
+              supabase.auth
+                .getUser()
+                .then(
+                  ({
+                    data,
+                    error,
+                  }: {
+                    data: { user?: { id: string } } | null;
+                    error: any;
+                  }) => {
+                    if (error || !data?.user) {
+                      // Handle error or not signed in
+                      return;
+                    }
+                    console.log("Loading annotations for user:", data.user.id);
+                    loadAnnotationsToSceneGraph(data.user.id, this.sceneGraph);
+                    console.log("Annotations loaded", this.sceneGraph);
+                  }
+                );
             },
           },
           "TEST: Conversation Analysis": {

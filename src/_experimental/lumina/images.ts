@@ -1,49 +1,36 @@
-import imageA from "/public/images/art/Untitled_Artwork 256.png";
-import imageE from "/public/images/art/Untitled_Artwork 257.png";
-import imageH from "/public/images/art/Untitled_Artwork 258.png";
-import imageI from "/public/images/art/Untitled_Artwork 263.png";
-
-export const demo_SceneGraph_ArtCollection_Images: { [key: string]: any } = {
-  "/public/images/art/Untitled_Artwork 256.png": imageA,
-  "/public/images/art/Untitled_Artwork 257.png": imageE,
-  "/public/images/art/Untitled_Artwork 258.png": imageH,
-  "/public/images/art/Untitled_Artwork 263.png": imageI,
+export const demo_SceneGraph_ArtCollection_Images: { [key: string]: string } = {
+  "/images/art/Untitled_Artwork 256.png": "/images/art/Untitled_Artwork 256.png",
+  "/images/art/Untitled_Artwork 257.png": "/images/art/Untitled_Artwork 257.png",
+  "/images/art/Untitled_Artwork 258.png": "/images/art/Untitled_Artwork 258.png",
+  "/images/art/Untitled_Artwork 263.png": "/images/art/Untitled_Artwork 263.png",
 };
 
-import demo1 from "/public/images/wikipedia/Solvay_conference_1927.jpg";
-export const demo1_images: { [key: string]: any } = {
-  "/public/images/wikipedia/Solvay_conference_1927.jpg": demo1,
+export const demo1_images: { [key: string]: string } = {
+  "/images/wikipedia/Solvay_conference_1927.jpg": "/images/wikipedia/Solvay_conference_1927.jpg",
 };
 
-import aesgraph_slide1 from "/public/images/aesgraph/slide1.png";
-import demo3_2 from "/public/images/demo/StackedGallery/slide0.png";
-import demo3_3 from "/public/images/demo/StackedGallery/slide1.png";
 export const demo_SceneGraph_StackedImageGallery_images: {
-  [key: string]: any;
+  [key: string]: string;
 } = {
-  "/public/images/aesgraph/slide1.png": aesgraph_slide1,
-  "/public/images/demo/StackedGallery/slide0.png": demo3_2,
-  "/public/images/demo/StackedGallery/slide1.png": demo3_3,
+  "/images/aesgraph/slide1.png": "/images/aesgraph/slide1.png",
+  "/images/demo/StackedGallery/slide0.png": "/images/demo/StackedGallery/slide0.png",
+  "/images/demo/StackedGallery/slide1.png": "/images/demo/StackedGallery/slide1.png",
 };
 
-import demo4_1 from "/public/images/demo/StackedGalleryTransparent/1.png";
-import demo4_2 from "/public/images/demo/StackedGalleryTransparent/2.png";
-import demo4_3 from "/public/images/demo/StackedGalleryTransparent/3.png";
 export const demo_SceneGraph_StackedImageGalleryTransparent_images: {
-  [key: string]: any;
+  [key: string]: string;
 } = {
-  "/public/images/demo/StackedGalleryTransparent/1.png": demo4_1,
-  "/public/images/demo/StackedGalleryTransparent/2.png": demo4_2,
-  "/public/images/demo/StackedGalleryTransparent/3.png": demo4_3,
+  "/images/demo/StackedGalleryTransparent/1.png": "/images/demo/StackedGalleryTransparent/1.png",
+  "/images/demo/StackedGalleryTransparent/2.png": "/images/demo/StackedGalleryTransparent/2.png",
+  "/images/demo/StackedGalleryTransparent/3.png": "/images/demo/StackedGalleryTransparent/3.png",
 };
 
-export const demo_SceneGraph_ImageGallery_images: { [key: string]: any } = {
-  "/public/images/aesgraph/slide1.png": aesgraph_slide1,
+export const demo_SceneGraph_ImageGallery_images: { [key: string]: string } = {
+  "/images/aesgraph/slide1.png": "/images/aesgraph/slide1.png",
 };
 
-import thinking from "/public/images/art/Untitled_Artwork 258.png";
-export const demo_SceneGraph_Thinking_images: { [key: string]: any } = {
-  "/public/images/art/Untitled_Artwork 258.png": thinking,
+export const demo_SceneGraph_Thinking_images: { [key: string]: string } = {
+  "/images/art/Untitled_Artwork 258.png": "/images/art/Untitled_Artwork 258.png",
 };
 
 // Variable pointing to the app/public/images path

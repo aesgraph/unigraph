@@ -173,4 +173,5 @@ export const loadStoryCardsFromJson = (
   return storyCardEntities;
 };
 
-export { StoryCard, StoryCardData };
+export { StoryCard };
+export type { StoryCardData };

@@ -107,6 +107,10 @@ module.exports = {
     fallback: {
       path: require.resolve("path-browserify"),
     },
+    alias: {
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({

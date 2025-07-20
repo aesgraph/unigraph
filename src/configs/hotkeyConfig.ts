@@ -105,6 +105,7 @@ export const getHotkeyConfig = (
     },
     "c",
     {
+      shiftKey: true,
       description: "Copy SceneGraph URL",
     }
   ),

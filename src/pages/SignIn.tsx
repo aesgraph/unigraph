@@ -5,7 +5,8 @@ import { supabase } from "../utils/supabaseClient";
 // Immediate check for authentication - runs before React renders
 if (typeof window !== "undefined" && window.opener) {
   // This is a popup window, check auth immediately
-  supabase.auth.getSession().then(({ data: { session } }) => {
+  supabase.auth.getSession().then(({ data }: { data: { session: any } }) => {
+    const { session } = data;
     if (session?.user) {
       console.log(
         "SignIn: User already authenticated, closing popup immediately"
@@ -115,7 +116,7 @@ export default function SignIn() {
   // Listen for auth state changes to close popup only after OAuth completion
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (event: any, session: any) => {
         console.log(
           "SignIn: Auth state change:",
           event,

@@ -87,4 +87,5 @@ export const loadFromJson = (data: ImageBoxData[]) => {
   return imageAnnotationEntities;
 };
 
-export { ImageAnnotation, ImageAnnotationData };
+export { ImageAnnotation };
+export type { ImageAnnotationData };

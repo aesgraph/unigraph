@@ -1,1 +1,1 @@
-<img src="storyCardFiles/unigraph/imageBoxCreator.jpg" width="500" />
+<img src="/storyCardFiles/unigraph/imageBoxCreator.jpg" width="500" />

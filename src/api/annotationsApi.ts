@@ -102,11 +102,16 @@ export const loadAnnotationsToSceneGraph = async (
 
     // Collect unique page_urls from annotations
     // Collect unique page_urls from annotations (handle both text and image annotations)
-    const pageUrls = Array.from(
+    interface AnnotationWithWebpageParent extends Annotation {
+      parent_resource_type: "webpage";
+      parent_resource_id: string;
+    }
+
+    const pageUrls: string[] = Array.from(
       new Set(
-        annotations
+        (annotations as AnnotationWithWebpageParent[])
           .filter((a) => {
-            return a.parent_resource_type == "webpage";
+            return a.parent_resource_type === "webpage";
           })
           .map((a) => {
             return a.parent_resource_id;
@@ -125,7 +130,7 @@ export const loadAnnotationsToSceneGraph = async (
       urlToWebpage.set(webpage.url, webpage);
     });
 
-    annotations.forEach((annotation) => {
+    annotations.forEach((annotation: any) => {
       // Create annotation node
       const annotationNode = sceneGraph
         .getGraph()

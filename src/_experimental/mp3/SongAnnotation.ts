@@ -53,4 +53,5 @@ class SongAnnotation extends AbstractEntity<
   }
 }
 
-export { SongAnnotation, SongAnnotationData };
+export { SongAnnotation };
+export type { SongAnnotationData };
