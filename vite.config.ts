@@ -1,29 +1,50 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import eslint from 'vite-plugin-eslint'
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
+import { defineConfig } from "vite";
+import eslint from "vite-plugin-eslint";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
+  root: ".",
   plugins: [
     react(),
     eslint({
-      include: ['src/**/*.{js,jsx,ts,tsx}']
+      include: ["src/**/*.{js,jsx,ts,tsx}"],
     }),
     viteStaticCopy({
       targets: [
         {
-          src: 'public/*',
-          dest: ''
+          src: "public/data",
+          dest: "data",
         },
         {
-          src: 'docs/*',
-          dest: 'docs'
-        }
-      ]
-    })
+          src: "public/images",
+          dest: "images",
+        },
+        {
+          src: "public/svgs",
+          dest: "svgs",
+        },
+        {
+          src: "public/storyCardFiles",
+          dest: "storyCardFiles",
+        },
+        {
+          src: "public/writing_samples",
+          dest: "writing_samples",
+        },
+        {
+          src: "public/docs-structure.json",
+          dest: "",
+        },
+        {
+          src: "docs/*",
+          dest: "docs",
+        },
+      ],
+    }),
   ],
-  
+
   // Development server configuration
   server: {
     port: 3000,
@@ -35,7 +56,7 @@ export default defineConfig({
 
   // Build configuration
   build: {
-    outDir: 'dist',
+    outDir: "dist",
     sourcemap: true,
     // Increase chunk size warning limit for large dependencies
     chunkSizeWarningLimit: 1000,
@@ -44,46 +65,53 @@ export default defineConfig({
   // Path resolution
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      'path': 'path-browserify'
+      "@": resolve(__dirname, "src"),
+      path: "path-browserify",
     },
-    extensions: ['.tsx', '.ts', '.js', '.jsx']
+    extensions: [".tsx", ".ts", ".js", ".jsx"],
   },
 
   // Define environment variables and polyfills
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
     // Add global polyfill for Node.js packages used in browser
-    global: 'globalThis',
+    global: "globalThis",
     // Add process polyfill
-    'process.env': {},
+    "process.env": {},
   },
 
   // CSS configuration
   css: {
     modules: {
-      localsConvention: 'camelCase',
-      generateScopedName: '[name]__[local]___[hash:base64:5]'
-    }
+      localsConvention: "camelCase",
+      generateScopedName: "[name]__[local]___[hash:base64:5]",
+    },
   },
 
   // Web Workers support
   worker: {
-    format: 'es'
+    format: "es",
   },
 
   // Optimization
   optimizeDeps: {
     include: [
-      'react',
-      'react-dom',
-      'three',
-      '@xyflow/react',
-      'cytoscape',
-      'graphology'
-    ]
+      "react",
+      "react-dom",
+      "three",
+      "@xyflow/react",
+      "cytoscape",
+      "graphology",
+    ],
   },
 
   // Asset handling
-  assetsInclude: ['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.svg', '**/*.gif', '**/*.webp']
-})
+  assetsInclude: [
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.png",
+    "**/*.svg",
+    "**/*.gif",
+    "**/*.webp",
+  ],
+});
