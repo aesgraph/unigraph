@@ -70,10 +70,23 @@ export class WebLLMClient {
       ...engineParams
     } = params || {};
 
+    // Filter out messages with invalid roles (like 'error') and convert to API format
+    const validMessages = messages
+      .filter(
+        (msg) =>
+          msg.role === "system" ||
+          msg.role === "user" ||
+          msg.role === "assistant"
+      )
+      .map((msg) => ({
+        role: msg.role as "system" | "user" | "assistant",
+        content: msg.content,
+      }));
+
     // If singleMessage is true, only use the last message in the array
     const messagesToUse = singleMessage
-      ? [messages[messages.length - 1]]
-      : messages;
+      ? [validMessages[validMessages.length - 1]]
+      : validMessages;
 
     // If forceNewConvo is true, clear the conversation history first
     if (forceNewConvo) {
@@ -92,9 +105,22 @@ export class WebLLMClient {
   public async streamChatCompletion(messages: ChatMessage[]): Promise<string> {
     if (!this.engine) throw new Error("Engine not loaded");
 
+    // Filter out messages with invalid roles (like 'error') and convert to API format
+    const validMessages = messages
+      .filter(
+        (msg) =>
+          msg.role === "system" ||
+          msg.role === "user" ||
+          msg.role === "assistant"
+      )
+      .map((msg) => ({
+        role: msg.role as "system" | "user" | "assistant",
+        content: msg.content,
+      }));
+
     // Chunks is an AsyncGenerator object
     const chunks = await this.engine.chat.completions.create({
-      messages,
+      messages: validMessages,
       temperature: 1,
       stream: true, // <-- Enable streaming
       stream_options: { include_usage: true },

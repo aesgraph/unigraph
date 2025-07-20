@@ -117,11 +117,35 @@ export async function callLLMStudioAPI(
     }
 
     // Ensure messages alternate user/assistant correctly
-    formattedMessages = normalizeMessages(formattedMessages);
+    // Filter out messages with invalid roles (like 'error') before normalizing
+    const validFormattedMessages = formattedMessages
+      .filter(
+        (msg) =>
+          msg.role === "system" ||
+          msg.role === "user" ||
+          msg.role === "assistant"
+      )
+      .map((msg) => ({
+        role: msg.role as "system" | "user" | "assistant",
+        content: msg.content,
+      }));
+
+    formattedMessages = normalizeMessages(validFormattedMessages);
 
     console.log(
       "Sending to API with normalized conversation history:",
       formattedMessages
+    );
+
+    // Filter out messages with invalid roles (like 'error') before sending to API
+    const validMessages = formattedMessages.filter(
+      (msg) =>
+        msg.role === "system" || msg.role === "user" || msg.role === "assistant"
+    );
+
+    console.log(
+      "Sending to API with normalized conversation history:",
+      validMessages
     );
 
     const response = await fetch(API_URL, {
