@@ -1,5 +1,6 @@
 import { Info } from "lucide-react";
 import React, { useMemo } from "react";
+import { useTheme, getColor } from "@aesgraph/app-shell";
 import { findNodeInForceGraph } from "../../core/force-graph/forceGraphHelpers";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { flyToNode } from "../../core/webgl/webglHelpers";
@@ -89,6 +90,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
   handleShowEntityTables,
   handleLoadSceneGraph,
 }) => {
+  const { theme } = useTheme();
+  
   const { showToolbar, leftSidebarConfig, rightSidebarConfig } =
     useWorkspaceConfigStore();
 
@@ -168,6 +171,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
         style={{
           height: "100%",
           top: 0,
+          backgroundColor: getColor(theme.colors, "workspacePanel"),
         }}
         menuItems={config.mainMenus}
         bottomElements={config.bottomElements}
@@ -195,6 +199,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
     activeFilter,
     handleLoadSceneGraph,
     showLayoutManager,
+    theme.colors,
   ]);
 
   // Monitor for selected node to show dynamic section
@@ -278,6 +283,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
         style={{
           height: "100%",
           top: 0,
+          backgroundColor: getColor(theme.colors, "workspacePanel"),
         }}
         title="Controls"
         menuItems={menuItems}
@@ -318,6 +324,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
     controlMode,
     handleFitToView,
     handleShowEntityTables,
+    theme.colors,
   ]);
 
   const _renderSidebarPanel = (menu: MenuItem, isActive: boolean) => {
@@ -343,15 +350,30 @@ const Workspace: React.FC<WorkspaceProps> = ({
   };
 
   return (
-    <div className={styles.workspace}>
+    <div 
+      className={styles.workspace}
+      style={{
+        backgroundColor: getColor(theme.colors, "workspaceBackground"),
+      }}
+    >
       {renderUniappToolbar}
       <NotificationManager />
-      <div className={styles.content}>
+      <div 
+        className={styles.content}
+        style={{
+          backgroundColor: getColor(theme.colors, "workspaceBackground"),
+        }}
+      >
         <div className={styles.sidebarLayer}>{renderLeftSideBar}</div>
-        <main className={styles.main}>
-          {/* Remove the NodeDocumentEditor rendering logic and just show the graph */}
-          <div className={styles.graphContainer}>{children}</div>
-        </main>
+        <div 
+          className={styles.mainContent}
+          style={{
+            margin: theme.sizes.spacing.sm, // Add small margin using theme spacing
+            backgroundColor: getColor(theme.colors, "workspacePanel"), // Use workspace panel color for the main content area
+          }}
+        >
+          {children}
+        </div>
         <div className={styles.sidebarLayer}>{renderRightSideBar}</div>
       </div>
     </div>

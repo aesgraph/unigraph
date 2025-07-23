@@ -1,50 +1,47 @@
 .workspace {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
+  height: 100%; /* Full viewport minus status bar height */
+  width: 100%; /* Changed from 100vw to 100% to inherit parent width */
   overflow: hidden;
 }
 
 .toolbar {
-  height: 40px;
+  height: var(--toolbar-height, 40px);
   z-index: 1100;
+  flex-shrink: 0;
 }
 
 .content {
   flex: 1;
   display: flex;
-  position: relative;
   overflow: hidden;
-  height: calc(100vh - var(--toolbar-height, 0px));
 }
 
 .main {
   flex: 1;
   position: relative;
   overflow: hidden;
-  isolation: isolate; /* Create stacking context */
   display: flex;
   flex-direction: column;
-}
-
-.graphContainer {
-  position: fixed;
-  top: var(--toolbar-height, 40px);
-  left: 0;
-  right: 0;
-  bottom: 0;
+  min-width: 0;
   z-index: 1;
 }
 
-.sidebarLayer {
+.mainContent {
+  flex: 1;
   position: relative;
-  z-index: 2;
-  pointer-events: none; /* Allow clicking through to graph */
+  overflow: hidden;
+  min-height: 0; /* Important: Allow flex child to shrink */
+  display: flex; /* Make it a flex container for AppShellWorkspace */
+  flex-direction: column; /* Stack children vertically */
 }
 
-.sidebarLayer > * {
-  pointer-events: auto; /* Re-enable pointer events for sidebar content */
+.sidebarLayer {
+  flex-shrink: 0;
+  display: flex;
+  position: relative;
+  z-index: 10;
 }
 
 .documentEditorContainer {

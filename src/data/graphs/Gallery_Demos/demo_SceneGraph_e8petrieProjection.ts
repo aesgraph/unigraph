@@ -1,5 +1,5 @@
-import { SceneGraph } from "../../../core/model/SceneGraph";
 import { PresetLayoutType } from "../../../core/layouts/layoutEngineTypes";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 import { loadSvgToSceneGraph } from "../../../utils/svgLoader";
 
 /**

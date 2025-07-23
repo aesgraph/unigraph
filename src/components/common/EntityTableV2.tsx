@@ -1,9 +1,5 @@
 import type { ColDef } from "ag-grid-community";
-import {
-  AllCommunityModule,
-  ModuleRegistry,
-  themeBalham,
-} from "ag-grid-community";
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { ArrowUpLeft, Trash2 } from "lucide-react";
 import React, {
@@ -14,6 +10,7 @@ import React, {
   useState,
 } from "react";
 import ReactDOM from "react-dom";
+import { useTheme } from "@aesgraph/app-shell";
 import { useAppContext } from "../../context/AppContext";
 import { RenderingManager } from "../../controllers/RenderingManager";
 import { Entity } from "../../core/model/entity/abstractEntity";
@@ -25,6 +22,7 @@ import EntityJsonViewer from "./EntityJsonViewer";
 import styles from "./EntityTableV2.module.css";
 import EntityTagsSelectorDropdown from "./EntityTagsSelectorDropdown";
 import EntityTypeSelectDropdown from "./EntityTypeSelectDropdown";
+import { createThemedAgGridContainer } from "../../utils/aggridThemeUtils";
 
 // Register AG Grid modules
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -51,6 +49,9 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
   const [jsonViewerEntity, setJsonViewerEntity] = useState<Entity | null>(null);
 
   const { setEditingEntity, setJsonEditEntity } = useAppContext();
+
+  // Get theme from app-shell
+  const { theme } = useTheme();
 
   // Grid API reference - moved up so cell renderers can access it
   const gridRef = useRef<AgGridReact<Entity>>(null);
@@ -286,10 +287,10 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
             left: dropdownPosition.left,
             width: dropdownPosition.width,
             zIndex: 2147483647,
-            backgroundColor: "white",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            backgroundColor: theme.colors.surface,
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: theme.sizes.borderRadius.sm,
+            boxShadow: theme.sizes.shadow.md,
             margin: 0,
             padding: 0,
           }}
@@ -307,10 +308,10 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
               textAlign: "left",
               cursor: "pointer",
               fontSize: "14px",
-              color: "#1976d2",
+              color: theme.colors.primary,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f8f9fa";
+              e.currentTarget.style.backgroundColor = theme.colors.surfaceHover;
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "transparent";
@@ -340,8 +341,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
           <button
             onClick={handleGoTo}
             style={{
-              background: "#f8f9fa", // AG Grid default cell background
-              color: "#1976d2", // AG Grid blue or your theme's accent
+              background: theme.colors.surface,
+              color: theme.colors.primary,
               border: "none",
               borderRadius: "50%",
               padding: "4px",
@@ -352,8 +353,12 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
               justifyContent: "center",
               transition: "background 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#e0e0e0")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#f8f9fa")}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = theme.colors.surfaceHover)
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = theme.colors.surface)
+            }
             title="Go to entity"
           >
             <ArrowUpLeft size={16} />
@@ -363,8 +368,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
             <button
               onClick={handleMoreOptionsClick}
               style={{
-                background: "#f8f9fa",
-                color: "#555",
+                background: theme.colors.surface,
+                color: theme.colors.textSecondary,
                 border: "none",
                 borderRadius: "50%",
                 padding: "4px",
@@ -379,10 +384,10 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
                 transition: "background 0.2s",
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "#e0e0e0")
+                (e.currentTarget.style.background = theme.colors.surfaceHover)
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "#f8f9fa")
+                (e.currentTarget.style.background = theme.colors.surface)
               }
               title="More options"
             >
@@ -1041,8 +1046,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
         <button
           onClick={handleDelete}
           style={{
-            background: "#f8f9fa",
-            color: "#dc3545",
+            background: theme.colors.surface,
+            color: theme.colors.error,
             border: "none",
             borderRadius: "50%",
             padding: "4px",
@@ -1053,8 +1058,12 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
             justifyContent: "center",
             transition: "background 0.2s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#ffeaea")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "#f8f9fa")}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = `${theme.colors.error}20`)
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = theme.colors.surface)
+          }
           title="Delete entity"
         >
           <Trash2 size={16} />
@@ -1308,7 +1317,6 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
   // Prevent unnecessary grid refreshes by memoizing the grid configuration
   const gridConfig = useMemo(
     () => ({
-      theme: themeBalham,
       domLayout: "normal" as const,
       rowSelection: "single" as const,
       animateRows: true,
@@ -1348,8 +1356,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
           console.log("Row data at grid ready:", rowData);
           console.log("Column definitions at grid ready:", columnDefs);
         }}
-        overlayNoRowsTemplate={`<span style="color:#888;">No entities found</span>`}
-        overlayLoadingTemplate={`<span style="color:#1976d2;">Loading entities...</span>`}
+        overlayNoRowsTemplate={`<span style="color:${theme.colors.textMuted};">No entities found</span>`}
+        overlayLoadingTemplate={`<span style="color:${theme.colors.primary};">Loading entities...</span>`}
       />
     ),
     [
@@ -1363,6 +1371,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       onModelUpdated,
       onColumnResized,
       gridConfig,
+      theme.colors.textMuted,
+      theme.colors.primary,
     ]
   );
 
@@ -1375,7 +1385,8 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
       }}
     >
       <div
-        className={`${styles.agGridContainer} ${styles.customScrollbar}`}
+        className={`${styles.agGridContainer} ${styles.customScrollbar} ag-theme-alpine`}
+        style={createThemedAgGridContainer(theme)}
         onContextMenu={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -1391,6 +1402,11 @@ const EntityTableV2: React.FC<EntityTableV2Props> = ({
           style={{
             top: contextMenu.mouseY,
             left: contextMenu.mouseX,
+            backgroundColor: theme.colors.surface,
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: theme.sizes.borderRadius.sm,
+            boxShadow: theme.sizes.shadow.md,
+            color: theme.colors.text,
           }}
           onClick={(e) => e.stopPropagation()}
         >

@@ -140,6 +140,10 @@ export interface IMenuConfigCallbacks {
   showFilterWindow: () => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
   showChatGptImporter: () => void;
+  // Workspace management callbacks
+  showWorkspaceManager?: () => void;
+  loadWorkspaceConfig?: () => void;
+  saveWorkspaceConfig?: () => void;
 }
 
 export class MenuConfig {
@@ -213,6 +217,28 @@ export class MenuConfig {
               // TODO: Implement Open project manager
               console.log("Open project manager");
             },
+          },
+        },
+      },
+      Workspace: {
+        submenu: {
+          Load: {
+            action: () => {
+              this.callbacks.loadWorkspaceConfig?.();
+            },
+            tooltip: "Load saved workspace layout",
+          },
+          "Save as": {
+            action: () => {
+              this.callbacks.saveWorkspaceConfig?.();
+            },
+            tooltip: "Save current workspace layout",
+          },
+          "Open Manager": {
+            action: () => {
+              this.callbacks.showWorkspaceManager?.();
+            },
+            tooltip: "Manage workspace configurations",
           },
         },
       },

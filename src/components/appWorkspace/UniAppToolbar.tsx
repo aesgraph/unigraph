@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useTheme, getColor } from "@aesgraph/app-shell";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import GraphSearch from "../common/GraphSearch";
 import GraphViewTabs from "./GraphViewTabs";
@@ -128,6 +129,7 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
   simulationList,
   style,
 }) => {
+  const { theme } = useTheme();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   const handleMenuMouseEnter = (menuName: string) => {
@@ -253,7 +255,15 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
   };
 
   return (
-    <nav className="uni-app-toolbar" style={style}>
+    <nav 
+      className="uni-app-toolbar" 
+      style={{
+        backgroundColor: getColor(theme.colors, "workspaceTitleBackground"),
+        color: getColor(theme.colors, "workspaceTitleText"),
+        borderBottom: `1px solid ${getColor(theme.colors, "border")}`,
+        ...style,
+      }}
+    >
       <div className="menu-left">{renderMenu(config)}</div>
       <div className="search-center">{renderGraphSearch()}</div>
       <div className="menu-right">{renderGraphViewButtons()}</div>

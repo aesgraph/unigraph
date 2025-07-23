@@ -1,9 +1,9 @@
+import GravitySimulation3 from "@/_experimental/webgl/simulations/GravitySimulation3";
 import {
-  Workspace as AppShellWorkspace,
   ExampleThemedComponent,
+  LayoutManager,
   Theme,
   ThemeId,
-  WorkspaceConfig,
   commonSizes,
   defaultViews,
   getColor,
@@ -15,10 +15,12 @@ import "@aesgraph/app-shell/dist/app-shell.css";
 import React from "react";
 import { getCurrentSceneGraph } from "../../store/appConfigStore";
 import AIChatPanel from "../ai/AIChatPanel";
+import WikipediaArticleViewer_FactorGraph from "../applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
 import EntityTableV2 from "../common/EntityTableV2";
-import { ThemeWorkspaceProvider } from "../providers/ThemeWorkspaceProvider";
 import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
+import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
+import NodeLegendView from "./NodeLegendView";
 import SystemMonitorView from "./SystemMonitorView";
 
 // Create custom views that include our AIChatPanel and SemanticWebQueryPanel
@@ -26,7 +28,9 @@ const aiChatView = {
   id: "ai-chat",
   title: "AI Chat",
   icon: "💬",
-  component: (props: any) => <AIChatPanel {...props} />,
+  component: (props: any) => (
+    <AIChatPanel sessionId="appshell-chat" {...props} />
+  ),
 };
 
 const semanticWebQueryView = {
@@ -34,7 +38,11 @@ const semanticWebQueryView = {
   title: "SPARQL Query",
   icon: "🔍",
   component: (props: any) => (
-    <SemanticWebQueryPanel theme={props.theme} {...props} />
+    <SemanticWebQueryPanel
+      sessionId="appshell-chat"
+      theme={props.theme}
+      {...props}
+    />
   ),
 };
 
@@ -58,7 +66,24 @@ const systemMonitorView = {
   title: "System Monitor",
   icon: "📊",
   component: (props: any) => <SystemMonitorView {...props} />,
-  category: "system",
+  category: "tools",
+};
+
+// Create legend views
+const nodeLegendView = {
+  id: "node-legend",
+  title: "Node Legend",
+  icon: "🔵",
+  component: (props: any) => <NodeLegendView {...props} />,
+  category: "data",
+};
+
+const edgeLegendView = {
+  id: "edge-legend",
+  title: "Edge Legend",
+  icon: "🔗",
+  component: (props: any) => <EdgeLegendView {...props} />,
+  category: "data",
 };
 
 // EntityTableV2 wrapper component
@@ -678,9 +703,38 @@ const themeInheritanceDemoView = {
   component: (props: any) => <ThemeInheritanceDemo {...props} />,
 };
 
+// Wikipedia Factor Graph viewer
+const wikipediaFactorGraphView = {
+  id: "wikipedia-factor-graph",
+  title: "Wikipedia Factor Graph",
+  icon: "📖",
+  component: (props: any) => (
+    <WikipediaArticleViewer_FactorGraph
+      initialArticle="Factor graph"
+      highlightKeywords={[]}
+      customTerms={{
+        "sum-product": "A message-passing algorithm used in factor graphs",
+        enabling: "Making something possible or easier",
+      }}
+      {...props}
+    />
+  ),
+  category: "tools",
+};
+
+const gravitySimulationView = {
+  id: "gravity-simulation",
+  title: "Gravity Simulation",
+  icon: "🌌",
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  component: (props: any) => <GravitySimulation3 />,
+  category: "tools",
+};
+
 // Register all views as a single array
 registerViews([
   ...defaultViews,
+  gravitySimulationView,
   aiChatView,
   semanticWebQueryView,
   forceGraph3DView,
@@ -689,6 +743,9 @@ registerViews([
   customThemedPanelView,
   themeInheritanceDemoView,
   systemMonitorView,
+  nodeLegendView,
+  edgeLegendView,
+  wikipediaFactorGraphView,
 ]);
 
 // Example: Create a custom theme for demonstration
@@ -737,40 +794,10 @@ const customUnigraphTheme: Theme = {
 Object.assign(themes, { "unigraph-custom": customUnigraphTheme });
 
 const AppShellView: React.FC = () => {
-  // Create a sample workspace configuration
-
-  const workspaceConfig: Partial<WorkspaceConfig> = {
-    theme: "dark" as ThemeId,
-    leftPane: {
-      defaultSize: 250,
-      maxSize: 500,
-      minSize: 100,
-      collapseThreshold: 80,
-      collapsedSize: 8,
-    },
-    rightPane: {
-      defaultSize: 300,
-      maxSize: 400,
-      minSize: 150,
-      collapseThreshold: 80,
-      collapsedSize: 8,
-    },
-    bottomPane: {
-      defaultSize: 200,
-      maxSize: 300,
-      minSize: 100,
-      collapseThreshold: 80,
-      collapsedSize: 8,
-    },
-  };
-
   return (
-    <div style={{ height: "100%", width: "100%" }}>
-      {/* Use combined provider that syncs ThemeProvider with workspace theme */}
-      <ThemeWorkspaceProvider initialConfig={workspaceConfig}>
-        <AppShellWorkspace />
-      </ThemeWorkspaceProvider>
-    </div>
+    // <div className={styles.appContainer}>
+    <LayoutManager />
+    // </div>
   );
 };
 

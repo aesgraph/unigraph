@@ -15,6 +15,7 @@
   position: relative;
   z-index: 50; /* Higher z-index than panel */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow to sidebar */
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
 }
 
 .sidebarHeader {
@@ -467,14 +468,25 @@
 }
 
 .sidePanel {
-  display: none; /* Hide the old inline panel */
+  background-color: #2d3748;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.1s ease;
+  will-change: width;
+  box-sizing: border-box;
+  border-left: 1px solid #4a5568;
+  position: relative;
+  min-width: 180px;
+  max-width: 800px;
 }
 
 /* New full-height side panel */
 .fullHeightSidePanel {
-  position: fixed;
+  position: absolute;
   top: 0;
-  height: 100vh;
+  height: 100%;
   width: 240px; /* Reduce from 280px/260px to 240px */
   min-width: 180px; /* Reduce minimum width */
   max-width: 800px; /* Reduce maximum width */
@@ -496,22 +508,22 @@
 .resizeHandle.left {
   position: absolute;
   top: 0;
-  right: 0;
-  width: 8px; /* Wider for easier grabbing */
+  right: -4px;
+  width: 8px;
   height: 100%;
   cursor: e-resize;
   background-color: transparent;
   transition: background-color 0.2s;
-  z-index: 60; /* Make sure it's above other content */
-  touch-action: none; /* Prevent scrolling during resize */
+  z-index: 60;
+  touch-action: none;
 }
 
 /* Resize handle for right panel (appears on left edge) */
 .resizeHandle.right {
   position: absolute;
   top: 0;
-  left: 0;
-  width: 8px; /* Wider for easier grabbing */
+  left: -4px;
+  width: 8px;
   height: 100%;
   cursor: w-resize;
   background-color: transparent;

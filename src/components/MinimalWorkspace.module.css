@@ -1,0 +1,63 @@
+/* Simple app layout styles */
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.topBar {
+  height: 60px;
+  background-color: #2d3748;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.topBarTitle {
+  margin: 0;
+  font-size: 18px;
+}
+
+.topBarNav {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+}
+
+.topBarButton {
+  background: transparent;
+  border: 1px solid #4a5568;
+  color: white;
+  /* padding: 8px 16px; */
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.topBarButton:hover {
+  background-color: #4a5568;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.statusBar {
+  height: 30px;
+  background-color: #4a5568;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 12px;
+  border-top: 1px solid #2d3748;
+}

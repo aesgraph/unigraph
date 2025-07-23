@@ -23,11 +23,7 @@
     },
     "types": ["vite/client"]
   },
-  "include": [
-    "src/**/*",
-    "src/declaration.d.ts",
-    "vite.config.ts"
-  ],
+  "include": ["src/**/*", "src/declaration.d.ts", "vite.config.ts"],
   "exclude": [
     "node_modules",
     "dist",

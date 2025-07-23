@@ -52,6 +52,9 @@ export default defineConfig({
     host: true,
     // Ensure proper MIME types for all image formats
     middlewareMode: false,
+    fs: {
+      allow: [".."],
+    },
   },
 
   // Build configuration
@@ -121,6 +124,11 @@ export default defineConfig({
       "cytoscape",
       "graphology",
     ],
+    exclude: ["@aesgraph/app-shell"],
+    force: true,
+    esbuildOptions: {
+      resolveExtensions: [".tsx", ".ts", ".js", ".jsx", ".css"],
+    },
   },
 
   // Asset handling

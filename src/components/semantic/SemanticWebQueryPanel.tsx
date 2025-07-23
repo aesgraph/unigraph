@@ -1,3 +1,4 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import { StreamLanguage } from "@codemirror/language";
 import { sparql } from "@codemirror/legacy-modes/mode/sparql";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -10,8 +11,9 @@ import {
 import { AgGridReact } from "ag-grid-react";
 import React, { useEffect, useState } from "react";
 import { Parser as SparqlParser } from "sparqljs";
-import { useTheme, getColor } from "@aesgraph/app-shell";
+import { log } from "../../utils/logger";
 import SelectDropdown from "../common/SelectDropdown";
+import { useSemanticWebQuerySession } from "./SemanticWebQueryContext";
 import styles from "./SemanticWebQueryPanel.module.css";
 
 // Predefined SPARQL endpoints
@@ -78,6 +80,7 @@ interface SemanticWebQueryPanelProps {
   defaultQuery?: string;
   isDarkMode?: boolean;
   theme?: string; // Theme from AppShell workspace
+  sessionId?: string; // Session ID for context
 }
 
 const DEFAULT_QUERY = `SELECT ?subject ?predicate ?object WHERE {
@@ -95,10 +98,14 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
   defaultQuery,
   isDarkMode = false,
   theme: legacyTheme, // Renamed to avoid conflict
+  sessionId = "default-semantic-panel",
 }) => {
   // Use app-shell theme if available, fallback to legacy theme detection
   const appShellTheme = useTheme();
   const hasAppShellTheme = appShellTheme && appShellTheme.theme;
+
+  // Use semantic web query context
+  const { query, setQuery } = useSemanticWebQuerySession(sessionId);
 
   // Determine if dark mode based on app-shell theme or legacy props
   const isThemeDark = hasAppShellTheme
@@ -111,13 +118,21 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     ENDPOINTS.find((e) => e.value === defaultEndpoint) || ENDPOINTS[0]
   );
   const [customEndpoint, setCustomEndpoint] = useState("");
-  const [query, setQuery] = useState(defaultQuery || DEFAULT_QUERY);
   const [results, setResults] = useState<any[] | null>(null);
   const [columns, setColumns] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lintError, setLintError] = useState<string | null>(null);
   const [selectedExample, setSelectedExample] = useState<number | null>(null);
+
+  // Initialize query from defaultQuery prop if context query is empty
+  useEffect(() => {
+    if (!query && defaultQuery) {
+      setQuery(defaultQuery);
+    } else if (!query) {
+      setQuery(DEFAULT_QUERY);
+    }
+  }, [query, defaultQuery, setQuery]);
 
   const effectiveEndpoint =
     endpoint.value === "custom" ? customEndpoint : endpoint.value;
@@ -137,6 +152,14 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     setError(null);
     setResults(null);
     setColumns([]);
+
+    // Log query execution start
+    log.info(`Executing SPARQL query`, "SemanticWebQueryPanel", {
+      sessionId,
+      endpoint: effectiveEndpoint,
+      query: query.substring(0, 200) + (query.length > 200 ? "..." : ""),
+    });
+
     try {
       const url = `${effectiveEndpoint}?query=${encodeURIComponent(query)}&format=json`;
       const response = await fetch(url);
@@ -146,8 +169,27 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
         throw new Error("Malformed SPARQL result");
       setColumns(data.head.vars);
       setResults(data.results.bindings);
+
+      // Log successful query execution
+      log.queryExecuted(
+        query,
+        effectiveEndpoint,
+        data.results.bindings.length,
+        {
+          sessionId,
+          columns: data.head.vars,
+          resultCount: data.results.bindings.length,
+        }
+      );
     } catch (e: any) {
-      setError(e.message || String(e));
+      const errorMessage = e.message || String(e);
+      setError(errorMessage);
+
+      // Log query error
+      log.queryError(query, effectiveEndpoint, errorMessage, {
+        sessionId,
+        error: e,
+      });
     } finally {
       setLoading(false);
     }

@@ -40,6 +40,15 @@ const initializeApp = async () => {
   }
   // --- End block ---
 
+  // --- Add this block for minimal workspace test ---
+  if (window.location.pathname === "/minimal-workspace") {
+    const MinimalWorkspace = (await import("./components/MinimalWorkspace"))
+      .default;
+    root.render(<MinimalWorkspace />);
+    return;
+  }
+  // --- End block ---
+
   const urlParams = new URLSearchParams(window.location.search);
 
   // Get graph from URL only - don't auto-load most recent project
@@ -49,6 +58,9 @@ const initializeApp = async () => {
   const svgUrl = urlParams.get("svgUrl") ?? undefined;
   const activeView = urlParams.get("view") ?? undefined;
   const activeLayout = urlParams.get("layout") ?? undefined;
+
+  // Check for minimal workspace test
+  const testMinimalWorkspace = urlParams.get("test") === "minimal-workspace";
 
   // Support loading a scenegraph from the #scenegraph= hash fragment
   const sceneGraphParam = urlParams.get("scenegraph");
@@ -144,6 +156,14 @@ const initializeApp = async () => {
   }
   if (activeLayout) {
     setActiveLayout(activeLayout as LayoutEngineOption);
+  }
+
+  // Render minimal workspace test if requested
+  if (testMinimalWorkspace) {
+    const MinimalWorkspace = (await import("./components/MinimalWorkspace"))
+      .default;
+    root.render(<MinimalWorkspace />);
+    return;
   }
 
   root.render(

@@ -13,21 +13,24 @@ import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
 import { addNotification } from "../../store/notificationStore";
 import { useUserStore } from "../../store/userStore";
 import { getEnvVar } from "../../utils/envUtils";
-import { supabase } from "../../utils/supabaseClient";
-import {
-  callLLMStudioAPI,
-  checkLLMStudioAvailability,
-} from "../applets/ChatGptImporter/services/llmStudioService";
+import { log } from "../../utils/logger";
+import { checkLLMStudioAvailability } from "../applets/ChatGptImporter/services/llmStudioService";
+import { useSemanticWebQuerySession } from "../semantic/SemanticWebQueryContext";
 import "./AIChatPanel.css";
+import { AIResponse, ApiProvider, sendAIMessage } from "./aiQueryLogic";
+import { SEMANTIC_TOOLS, parseToolCallArguments } from "./aiTools";
 
 interface AIChatPanelProps {
   className?: string;
+  sessionId?: string; // Optional session ID for semantic queries
 }
 
 // API provider types
-type ApiProvider = "openai" | "llm-studio" | "live-chat";
+// type ApiProvider = "openai" | "llm-studio" | "live-chat";
 
-const AIChatPanel: React.FC<AIChatPanelProps> = () => {
+const AIChatPanel: React.FC<AIChatPanelProps> = ({
+  sessionId = "ai-chat-panel",
+}) => {
   // Get theme from app-shell
   const appShellTheme = useTheme();
   const theme = appShellTheme.theme;
@@ -35,6 +38,8 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   const { messages, addMessage, clearHistory } = useChatHistoryStore();
   // Use user store for authentication
   const { user, isSignedIn } = useUserStore();
+  // Use semantic web query session
+  const { setQuery: setSemanticQuery } = useSemanticWebQuerySession(sessionId);
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +47,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
   const [temperature, setTemperature] = useState(0.7);
   const [apiAvailable, setApiAvailable] = useState<boolean | null>(null);
   const [apiProvider, setApiProvider] = useState<ApiProvider>("llm-studio");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   // Get OpenAI API key from environment (optional)
   const openaiApiKey = getEnvVar("VITE_OPENAI_API_KEY") || "";
@@ -90,128 +95,102 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
     checkApi();
   }, [openaiApiKey, liveChatUrl]);
 
-  // Auto-scroll to bottom when new messages are added
+  // Safe auto-scroll using scrollTop instead of scrollIntoView
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      const container = messagesContainerRef.current;
+      // Use scrollTop instead of scrollIntoView to avoid layout issues
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 0);
+    }
   }, [messages]);
 
-  // Call OpenAI API
-  const callOpenAIAPI = async (
-    chatMessages: ChatMessage[]
-  ): Promise<string> => {
-    if (!openaiApiKey) {
-      throw new Error("OpenAI API key not found");
-    }
+  // Process tool calls and route them appropriately
+  const processToolCalls = (toolCalls: any[]) => {
+    toolCalls.forEach((toolCall) => {
+      if (toolCall.function.name === "semantic_query") {
+        try {
+          const args = parseToolCallArguments(toolCall);
+          const formattedQuery = prettyPrintSparql(args.query);
+          setSemanticQuery(formattedQuery);
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openaiApiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: chatMessages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
-        temperature: temperature,
-        max_tokens: 1000,
-      }),
+          // Log the tool call
+          log.toolSuccess("semantic_query", args.description, {
+            sessionId,
+            query: args.query,
+            formattedQuery,
+            toolCallId: toolCall.id,
+          });
+        } catch (error) {
+          console.error("Failed to process semantic query tool call:", error);
+          log.toolError(
+            "semantic_query",
+            error instanceof Error ? error.message : String(error),
+            {
+              sessionId,
+              toolCallId: toolCall.id,
+            }
+          );
+        }
+      }
+      // Add more tool handlers here as needed
     });
-
-    if (!response.ok) {
-      throw new Error(
-        `OpenAI API error: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-    return data.choices[0]?.message?.content || "No response received";
   };
 
-  // Call Live Chat API
-  const callLiveChatAPI = async (
-    chatMessages: ChatMessage[]
-  ): Promise<string> => {
-    // For custom endpoints (like localhost), don't require authentication
-    const isCustom = isCustomEndpoint();
+  // Pretty print SPARQL query for better readability
+  const prettyPrintSparql = (query: string): string => {
+    try {
+      // Basic SPARQL formatting
+      const formatted = query
+        // Add line breaks after common SPARQL keywords
+        .replace(
+          /\b(SELECT|WHERE|OPTIONAL|FILTER|LIMIT|ORDER BY|GROUP BY|HAVING|UNION|PREFIX|ASK|CONSTRUCT|DESCRIBE)\b/gi,
+          "\n$1"
+        )
+        // Add line breaks after opening braces
+        .replace(/\{/g, " {\n  ")
+        // Add line breaks before closing braces
+        .replace(/\}/g, "\n}")
+        // Add line breaks after semicolons
+        .replace(/;/g, ";\n")
+        // Add line breaks after dots (triple separators)
+        .replace(/ \./g, " .\n  ")
+        // Clean up multiple line breaks
+        .replace(/\n\s*\n/g, "\n")
+        // Add proper indentation
+        .split("\n")
+        .map((line, index) => {
+          const trimmed = line.trim();
+          if (!trimmed) return "";
 
-    if (!isCustom && (!isSignedIn || !user)) {
-      throw new Error("User not authenticated");
+          // Determine indentation level
+          let indent = "";
+          if (trimmed.startsWith("}")) {
+            indent = "  ".repeat(Math.max(0, index > 0 ? 1 : 0));
+          } else if (trimmed.startsWith("{")) {
+            indent = "  ".repeat(1);
+          } else if (
+            trimmed.match(
+              /^\b(SELECT|WHERE|OPTIONAL|FILTER|LIMIT|ORDER BY|GROUP BY|HAVING|UNION|PREFIX|ASK|CONSTRUCT|DESCRIBE)\b/i
+            )
+          ) {
+            indent = "";
+          } else {
+            indent = "  ".repeat(2);
+          }
+
+          return indent + trimmed;
+        })
+        .filter((line) => line !== "")
+        .join("\n")
+        .trim();
+
+      return formatted;
+    } catch (error) {
+      console.warn("Failed to pretty print SPARQL query:", error);
+      return query; // Return original if formatting fails
     }
-
-    // Check if liveChatUrl is defined
-    if (!liveChatUrl) {
-      throw new Error("Live chat URL not configured");
-    }
-
-    // Prepare headers
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-
-    // Add authentication header for production endpoints
-    if (!isCustom) {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (session?.access_token) {
-          headers["Authorization"] = `Bearer ${session.access_token}`;
-        } else {
-          throw new Error("No access token available");
-        }
-        // eslint-disable-next-line unused-imports/no-unused-vars
-      } catch (error) {
-        throw new Error("Authentication failed");
-      }
-    }
-
-    const response = await fetch(liveChatUrl, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        messages: chatMessages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
-        temperature: temperature,
-        max_tokens: 1000,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-
-      // Handle CORS errors specifically, or not being on user whitelist
-      if (response.status === 0 || response.statusText === "") {
-        if (
-          errorData &&
-          typeof errorData.error === "string" &&
-          errorData.error.includes("User is not authorized")
-        ) {
-          throw new Error("User is not authorized");
-        }
-        throw new Error(`Please log in to use chat`);
-      }
-
-      // Handle access denied error specifically
-      if (
-        response.status === 403 &&
-        errorData.error &&
-        errorData.error.includes("aesgraph@gmail.com")
-      ) {
-        throw new Error(`🔒 Access Denied: ${errorData.error}`);
-      }
-
-      throw new Error(
-        `Live Chat API error: ${response.status} ${response.statusText} - ${errorData.error || "Unknown error"}`
-      );
-    }
-
-    const data = await response.json();
-    return data.message || "No response received";
   };
 
   const handleSendMessage = async () => {
@@ -228,6 +207,13 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
     addMessage(userMessage);
     setInputValue("");
     setIsLoading(true);
+
+    // Log the user message
+    log.info(`User message sent`, "AIChatPanel", {
+      sessionId,
+      messageLength: userMessage.content.length,
+      apiProvider,
+    });
 
     try {
       // Convert to messages format for API
@@ -247,7 +233,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
         timestamp: new Date(),
         role: "system",
         content:
-          "You are a helpful AI assistant. Provide concise, accurate answers.",
+          "You are a helpful AI assistant with access to semantic web tools. When users ask for information that could be retrieved from a knowledge graph or database, use the semantic_query tool to generate appropriate SPARQL queries. For example, if someone asks 'fetch star wars characters from dbpedia', you should use the semantic_query tool with a SPARQL query that searches for Star Wars characters in DBpedia.",
       });
 
       // Filter out any messages with an invalid role
@@ -256,29 +242,92 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
         validRoles.includes(msg.role)
       );
 
-      // Call appropriate API based on provider
-      let response: string;
-      if (apiProvider === "openai") {
-        response = await callOpenAIAPI(filteredChatMessages);
-      } else if (apiProvider === "live-chat") {
-        response = await callLiveChatAPI(filteredChatMessages);
-      } else {
-        response = await callLLMStudioAPI(filteredChatMessages, {
-          temperature,
-        });
+      // Log AI request
+      log.info(`Sending AI request`, "AIChatPanel", {
+        sessionId,
+        messageCount: filteredChatMessages.length,
+        apiProvider,
+        hasTools: apiProvider === "openai",
+      });
+
+      // Call the generic sendAIMessage function with semantic tools
+      const response: AIResponse = await sendAIMessage({
+        chatMessages: filteredChatMessages,
+        apiProvider,
+        openaiApiKey: openaiApiKey || "",
+        liveChatUrl: liveChatUrl || "",
+        isCustomEndpoint: isCustomEndpoint(),
+        isSignedIn,
+        user,
+        temperature,
+        tools: apiProvider === "openai" ? SEMANTIC_TOOLS : undefined, // Only use tools with OpenAI
+      });
+
+      // Debug logging
+      console.log("AI Response:", {
+        content: response.content,
+        contentLength: response.content?.length,
+        hasToolCalls: !!response.toolCalls,
+        toolCallsCount: response.toolCalls?.length,
+        toolCalls: response.toolCalls,
+      });
+
+      // Process any tool calls
+      if (response.toolCalls && response.toolCalls.length > 0) {
+        log.info(
+          `Processing ${response.toolCalls.length} tool calls`,
+          "AIChatPanel",
+          {
+            sessionId,
+            toolCalls: response.toolCalls.map((tc) => tc.function.name),
+          }
+        );
+        processToolCalls(response.toolCalls);
       }
 
       // Add AI response to persistent store
+      let responseContent = response.content;
+
+      // If no content, empty content, or "No response received" but we have tool calls, provide a helpful message
+      if (
+        (!responseContent ||
+          responseContent.trim() === "" ||
+          responseContent === "No response received") &&
+        response.toolCalls &&
+        response.toolCalls.length > 0
+      ) {
+        responseContent = `SPARQL query generated in ${sessionId} panel`;
+      } else if (!responseContent || responseContent.trim() === "") {
+        responseContent = "No response received";
+      }
+
+      console.log("Final response content:", responseContent);
+
       addMessage({
         id: `assistant-${Date.now()}`,
         role: "assistant",
-        content: response,
+        content: responseContent,
         timestamp: new Date(),
+      });
+
+      // Log successful AI response
+      log.success(`AI response received`, "AIChatPanel", {
+        sessionId,
+        responseLength: responseContent.length,
+        hasToolCalls: !!response.toolCalls,
+        toolCallsCount: response.toolCalls?.length,
       });
     } catch (error) {
       console.error("Error generating response:", error);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
+
+      // Log the error
+      log.error(`AI request failed`, "AIChatPanel", {
+        sessionId,
+        error: errorMessage,
+        apiProvider,
+      });
 
       // Handle different types of errors with user-friendly messages
       let userFriendlyMessage = "";
@@ -497,7 +546,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
       )}
 
       {/* Message history */}
-      <div className="ai-chat-messages">
+      <div className="ai-chat-messages" ref={messagesContainerRef}>
         {messages.map((message) => (
           <div key={message.id} className={`ai-chat-message ${message.role}`}>
             <div className="message-content">
@@ -522,7 +571,6 @@ const AIChatPanel: React.FC<AIChatPanelProps> = () => {
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input area */}

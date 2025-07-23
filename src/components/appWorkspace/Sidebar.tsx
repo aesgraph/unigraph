@@ -376,28 +376,16 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      {/* Full-height side panels for active section */}
+      {/* Side panel as adjacent element in flex container */}
       {activeSection &&
         menuItems.find((item) => item.id === activeSection)?.content && (
           <div
             ref={panelRef}
-            className={styles.fullHeightSidePanel}
+            className={styles.sidePanel}
             style={{
-              [position === "left" ? "left" : "right"]: isOpen
-                ? "150px"
-                : minimal
-                  ? "0px"
-                  : "60px",
-              // Adjust top position and height based on toolbar presence
-              top: showToolbar
-                ? `var(--toolbar-height, ${toolbarHeight})`
-                : "0",
-              height: showToolbar
-                ? `calc(100vh - var(--toolbar-height, ${toolbarHeight}))`
-                : "100vh",
-              width: `${getInitialWidth(activeSectionId)}px`, // Apply dynamic width
-              willChange: isResizing ? "width" : "auto", // Add will-change for better performance during resize
-              transitionProperty: isResizing ? "none" : "width", // Disable transitions during resize
+              width: `${getInitialWidth(activeSectionId)}px`,
+              willChange: isResizing ? "width" : "auto",
+              transitionProperty: isResizing ? "none" : "width",
             }}
           >
             <div className={styles.sidePanelHeader}>
@@ -405,7 +393,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 {menuItems.find((item) => item.id === activeSection)?.label}
               </h3>
               <button
-                onClick={handleCloseSection} // Use the new handler here
+                onClick={handleCloseSection}
                 className={styles.closeButton}
               >
                 {position === "left" ? (

@@ -20,30 +20,29 @@
 /* Custom scrollbar styling that won't interfere with AG Grid */
 .customScrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db #f5f6fa;
+  /* Use CSS custom properties for theming */
+  scrollbar-color: var(--ag-border-color) var(--ag-background-color);
 }
 
 .customScrollbar::-webkit-scrollbar {
   width: 10px;
-  background: #f5f6fa;
+  background: var(--ag-background-color);
 }
 
 .customScrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--ag-border-color);
   border-radius: 6px;
 }
 
 .customScrollbar::-webkit-scrollbar-thumb:hover {
-  background: #bfc7d1;
+  background: var(--ag-active-color);
 }
 
 /* Context menu styling */
 .contextMenu {
   position: fixed;
-  background-color: white;
-  border: 1px solid #ddd;
+  /* Theme colors will be applied via inline styles */
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   min-width: 150px;
 }
@@ -52,12 +51,12 @@
   padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--ag-border-color);
   transition: background-color 0.2s ease;
 }
 
 .contextMenuItem:hover {
-  background-color: #f5f5f5;
+  background-color: var(--ag-row-hover-color);
 }
 
 .contextMenuItem:last-child {

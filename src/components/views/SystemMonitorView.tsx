@@ -18,16 +18,8 @@ import {
   X,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { LogEntry, logger, LogLevel } from "../../utils/logger";
 import "./SystemMonitorView.css";
-
-interface LogEntry {
-  id: string;
-  timestamp: Date;
-  level: "info" | "warn" | "error" | "debug";
-  message: string;
-  source?: string;
-  metadata?: Record<string, any>;
-}
 
 interface Notification {
   id: string;
@@ -50,7 +42,6 @@ interface LongRunningTask {
 }
 
 type ItemType = "log" | "notification" | "task";
-type LogLevel = LogEntry["level"];
 type NotificationType = Notification["type"];
 type TaskStatus = LongRunningTask["status"];
 type ViewMode = "list" | "table";
@@ -70,6 +61,8 @@ interface SystemItem {
   taskName?: string;
   persistent?: boolean;
   metadata?: Record<string, any>;
+  data?: any;
+  category?: string;
 }
 
 const SystemMonitorView: React.FC = () => {
@@ -85,6 +78,50 @@ const SystemMonitorView: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [autoScroll, setAutoScroll] = useState(true);
   const itemsEndRef = useRef<HTMLDivElement>(null);
+
+  // Subscribe to logger events
+  useEffect(() => {
+    const subscriptionId = logger.subscribe((logEntry: LogEntry) => {
+      const systemItem: SystemItem = {
+        id: logEntry.id,
+        type: "log",
+        timestamp: logEntry.timestamp,
+        message: logEntry.message,
+        source: logEntry.source,
+        level: logEntry.level,
+        metadata: logEntry.data,
+        data: logEntry.data,
+        category: logEntry.category,
+      };
+
+      setItems((prevItems) => {
+        const newItems = [...prevItems, systemItem];
+        // Keep only the last 500 items to prevent memory issues
+        return newItems.slice(-500);
+      });
+    });
+
+    // Load existing logs
+    const existingLogs = logger.getLogs();
+    const existingItems: SystemItem[] = existingLogs.map((logEntry) => ({
+      id: logEntry.id,
+      type: "log",
+      timestamp: logEntry.timestamp,
+      message: logEntry.message,
+      source: logEntry.source,
+      level: logEntry.level,
+      metadata: logEntry.data,
+      data: logEntry.data,
+      category: logEntry.category,
+    }));
+
+    setItems(existingItems);
+
+    // Cleanup subscription on unmount
+    return () => {
+      logger.unsubscribe(subscriptionId);
+    };
+  }, []);
 
   // Auto-scroll to bottom when new items arrive
   useEffect(() => {
@@ -160,92 +197,8 @@ const SystemMonitorView: React.FC = () => {
     setSortedItems(sorted);
   }, [filteredItems, sortField, sortDirection]);
 
-  // Add sample data for demonstration
-  useEffect(() => {
-    const sampleItems: SystemItem[] = [
-      // Sample logs
-      {
-        id: "log-1",
-        type: "log",
-        timestamp: new Date(Date.now() - 5000),
-        level: "info",
-        message: "System monitor initialized",
-        source: "SystemMonitorView",
-      },
-      {
-        id: "log-2",
-        type: "log",
-        timestamp: new Date(Date.now() - 3000),
-        level: "warn",
-        message: "API rate limit approaching",
-        source: "APIClient",
-        metadata: { endpoint: "/api/chat", limit: 100, current: 85 },
-      },
-      {
-        id: "log-3",
-        type: "log",
-        timestamp: new Date(Date.now() - 1000),
-        level: "error",
-        message: "Failed to connect to live chat endpoint",
-        source: "AIChatPanel",
-        metadata: { url: "http://localhost:3000/api/chat", status: 401 },
-      },
-      // Sample notifications
-      {
-        id: "notif-1",
-        type: "notification",
-        timestamp: new Date(Date.now() - 10000),
-        notificationType: "info",
-        message: "Welcome to Unigraph!",
-      },
-      {
-        id: "notif-2",
-        type: "notification",
-        timestamp: new Date(Date.now() - 5000),
-        notificationType: "warning",
-        message: "Please log in to use chat",
-        persistent: true,
-      },
-      {
-        id: "notif-3",
-        type: "notification",
-        timestamp: new Date(Date.now() - 2000),
-        notificationType: "success",
-        message: "Graph data loaded successfully",
-      },
-      // Sample tasks
-      {
-        id: "task-1",
-        type: "task",
-        timestamp: new Date(Date.now() - 15000),
-        taskStatus: "completed",
-        taskProgress: 100,
-        taskName: "Loading graph data",
-        message: "Successfully loaded 1,234 nodes and 2,567 edges",
-      },
-      {
-        id: "task-2",
-        type: "task",
-        timestamp: new Date(Date.now() - 8000),
-        taskStatus: "running",
-        taskProgress: 65,
-        taskName: "Processing layout",
-        message: "Calculating force-directed layout...",
-      },
-      {
-        id: "task-3",
-        type: "task",
-        timestamp: new Date(Date.now() - 3000),
-        taskStatus: "pending",
-        taskName: "Exporting data",
-        message: "Waiting for layout completion",
-      },
-    ];
-
-    setItems(sampleItems);
-  }, []);
-
   const clearItems = () => {
+    logger.clearLogs();
     setItems([]);
   };
 

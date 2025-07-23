@@ -1,9 +1,5 @@
+import { LayoutManager, WorkspaceConfig } from "@aesgraph/app-shell";
 import React from "react";
-import {
-  Workspace,
-  WorkspaceProvider,
-  WorkspaceConfig,
-} from "@aesgraph/app-shell";
 
 const WorkspaceTest: React.FC = () => {
   const PANE_COLLAPSE_THRESHOLD = 80;
@@ -38,9 +34,7 @@ const WorkspaceTest: React.FC = () => {
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <h2>Unigraph App with App-Shell Workspace</h2>
-      <WorkspaceProvider initialConfig={workspaceConfig}>
-        <Workspace />
-      </WorkspaceProvider>
+      <LayoutManager />
     </div>
   );
 };

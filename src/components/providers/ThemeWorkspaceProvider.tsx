@@ -1,11 +1,6 @@
-import React from "react";
-import {
-  ThemeProvider,
-  ThemeVariables,
-  WorkspaceProvider,
-  useWorkspace,
-} from "@aesgraph/app-shell";
 import type { WorkspaceConfig } from "@aesgraph/app-shell";
+import { ThemeVariables } from "@aesgraph/app-shell";
+import React from "react";
 
 interface ThemeWorkspaceProviderProps {
   children: React.ReactNode;
@@ -18,13 +13,7 @@ interface ThemeWorkspaceProviderProps {
 const ThemedWorkspaceContent: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { currentTheme } = useWorkspace();
-
-  return (
-    <ThemeProvider themeId={currentTheme}>
-      <ThemeVariables>{children}</ThemeVariables>
-    </ThemeProvider>
-  );
+  return <ThemeVariables>{children}</ThemeVariables>;
 };
 
 /**
@@ -33,11 +22,8 @@ const ThemedWorkspaceContent: React.FC<{ children: React.ReactNode }> = ({
  */
 export const ThemeWorkspaceProvider: React.FC<ThemeWorkspaceProviderProps> = ({
   children,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   initialConfig,
 }) => {
-  return (
-    <WorkspaceProvider initialConfig={initialConfig}>
-      <ThemedWorkspaceContent>{children}</ThemedWorkspaceContent>
-    </WorkspaceProvider>
-  );
+  return <ThemedWorkspaceContent>{children}</ThemedWorkspaceContent>;
 };

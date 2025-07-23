@@ -17,7 +17,6 @@ import PathAnalysisWizard, {
 } from "./components/analysis/PathAnalysisWizard";
 import ImageGalleryV2 from "./components/applets/ImageGallery/ImageGalleryV2";
 import ImageGalleryV3 from "./components/applets/ImageGallery/ImageGalleryV3";
-import Workspace from "./components/appWorkspace/Workspace";
 import CommandPalette from "./components/commandPalette/CommandPalette";
 import ContextMenu, { ContextMenuItem } from "./components/common/ContextMenu";
 import EntityDataDisplayCard from "./components/common/EntityDataDisplayCard";
@@ -32,12 +31,15 @@ import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
 import NodeEditorWizard from "./components/NodeEditorWizard";
 import SceneGraphDetailView from "./components/sceneGraph/SceneGraphDetailView";
 import SceneGraphTitle from "./components/sceneGraph/SceneGraphTitle";
-import AppShellView from "./components/views/AppShellView";
+import WorkspaceV2 from "./components/WorkspaceV2";
+// import { Workspace as AppShellWorkspace } from "@aesgraph/app-shell";
+// import AppShellView from "./components/views/AppShellView";
 import ReactFlowPanel, {
   nodeTypes,
 } from "./components/views/ReactFlow/ReactFlowPanel";
 import { debugEnvVars } from "./utils/envUtils";
 
+import { AppShellProvider } from "@aesgraph/app-shell";
 import AudioAnnotator from "./_experimental/mp3/AudioAnnotator";
 import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
 import SolarSystem from "./_experimental/webgl/simulations/solarSystemSimulation";
@@ -58,6 +60,7 @@ import { getNodeContextMenuItems } from "./components/common/singleNodeContextMe
 import { LayoutComputationDialog } from "./components/dialogs/LayoutComputationDialog";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import SaveAsNewProjectDialog from "./components/projects/SaveAsNewProjectDialog";
+import { SemanticWebQueryProvider } from "./components/semantic/SemanticWebQueryContext";
 import SemanticWebQueryPanel from "./components/semantic/SemanticWebQueryPanel";
 import { enableZoomAndPanOnSvg } from "./components/svg/appHelpers";
 import { getHotkeyConfig } from "./configs/hotkeyConfig";
@@ -173,6 +176,8 @@ import useWorkspaceConfigStore, {
   setShowToolbar,
 } from "./store/workspaceConfigStore";
 import { initializeMainForceGraph } from "./utils/forceGraphInitializer";
+// import { ThemeWorkspaceProvider } from "./components/providers/ThemeWorkspaceProvider";
+// import { Workspace as AppShellWorkspace } from "@aesgraph/app-shell";
 
 // Debug environment variables in development
 if (process.env.NODE_ENV === "development") {
@@ -301,6 +306,7 @@ const AppContent = ({
     setReactFlowInstance,
   } = useAppConfigStore();
 
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const { showToolbar } = useWorkspaceConfigStore();
   const {
     nodeLegendConfig,
@@ -1487,11 +1493,12 @@ const AppContent = ({
       <div
         style={{
           position: "absolute",
+          top: 0,
           left: 0,
           right: 0,
           bottom: 0,
           width: "100%",
-          height: "calc(100vh)",
+          height: "100%",
           overflow: "hidden",
           backgroundColor: "#ffffff",
         }}
@@ -1508,20 +1515,21 @@ const AppContent = ({
           id="force-graph"
           ref={forceGraphRef}
           style={{
-            position: "fixed",
-            top: showToolbar ? "var(--toolbar-height, 40px)" : 0,
+            position: "absolute",
+            top: 0,
             left: 0,
             right: 0,
             bottom: 0,
             background: "black",
             zIndex: 1,
+            borderRadius: "8px", // Match the mainContent border radius
             visibility: activeView === "Editor" ? "hidden" : "visible", // Hide but keep in DOM when in Editor view
           }}
         />
       );
     }
     return null;
-  }, [activeView, showToolbar]);
+  }, [activeView]);
 
   const _handleUpdateForceGraphScene = useCallback(
     (sceneGraph: SceneGraph) => {
@@ -1969,7 +1977,7 @@ const AppContent = ({
       return null;
     }
 
-    return <SemanticWebQueryPanel />;
+    return <SemanticWebQueryPanel sessionId="yasgui-panel" />;
 
     // return (
     //   <div
@@ -2025,7 +2033,7 @@ const AppContent = ({
           onClose={() => setCommandPaletteOpen(false)}
           onExecuteCommand={executeCommand}
         />
-        <Workspace
+        <WorkspaceV2
           menuConfig={menuConfig}
           currentSceneGraph={currentSceneGraph}
           isDarkMode={isDarkMode}
@@ -2039,9 +2047,9 @@ const AppContent = ({
           renderLayoutModeRadio={renderLayoutModeRadio}
           showFilterWindow={() => setShowFilter(true)}
           showFilterManager={() => setShowFilterManager(true)}
-          showPathAnalysis={() => setShowPathAnalysis(true)}
           renderNodeLegend={renderNodeLegend}
           renderEdgeLegend={renderEdgeLegend}
+          showPathAnalysis={() => setShowPathAnalysis(true)}
           showLoadSceneGraphWindow={() => setShowLoadSceneGraphWindow(true)}
           showSaveSceneGraphDialog={() => setShowSaveSceneGraphDialog(true)}
           showLayoutManager={(mode: "save" | "load") =>
@@ -2051,24 +2059,42 @@ const AppContent = ({
           handleShowEntityTables={() => setShowEntityTables(true)}
           handleLoadSceneGraph={handleLoadSceneGraph}
         >
-          {/* Main content */}
-          <div style={{ height: "100%", position: "relative" }}>
-            {maybeRenderGraphviz}
-            {maybeRenderForceGraph3D}
-            {maybeRenderReactFlow}
-            {maybeRenderYasgui}
-            {maybeRenderNodeDocumentEditor()}
-            {activeView === "Gallery" && (
+          {maybeRenderGraphviz}
+          {maybeRenderForceGraph3D}
+          {maybeRenderReactFlow}
+          {maybeRenderYasgui}
+          {maybeRenderNodeDocumentEditor()}
+          {activeView === "Gallery" && (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            >
               <ImageGalleryV3
                 sceneGraph={currentSceneGraph}
                 addRandomImageBoxes={false}
                 defaultLinksEnabled={false}
               />
-            )}
-            {activeView === "AppShell" && <AppShellView />}
-            {activeView in simulations && getSimulation(activeView)}
-          </div>
-        </Workspace>
+            </div>
+          )}
+          {activeView in simulations && (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            >
+              {getSimulation(activeView)}
+            </div>
+          )}
+        </WorkspaceV2>
         {maybeRenderSaveSceneGraphWindow}
         {maybeRenderSaveAsNewProjectDialog}
         {getShowEntityDataCard() && getHoveredNodeIds().size > 0 && (
@@ -2079,20 +2105,6 @@ const AppContent = ({
           />
         )}
 
-        {/* {getSelectedNodeId() && forceGraphInstance && (
-          <NodeDisplayCard
-            nodeId={getSelectedNodeId()!}
-            sceneGraph={currentSceneGraph}
-            position={
-              getNodeMousePosition(
-                selectedGraphNode,
-                forceGraphInstance
-              )!
-            }
-            onNodeSelect={handleSelectResult}
-            onClose={() => setSelectedNodeId(null)}
-          />
-        )} */}
         {contextMenu && (
           <ContextMenu
             x={contextMenu.x}
@@ -2232,15 +2244,6 @@ const AppContent = ({
             isDarkMode={isDarkMode}
           />
         )}
-        {/* {showLayoutManager.show && (
-          <LayoutManager
-            sceneGraph={currentSceneGraph}
-            onClose={() => setShowLayoutManager({ mode: "save", show: false })}
-            onLayoutLoad={handleLoadLayout}
-            isDarkMode={isDarkMode}
-            mode={showLayoutManager.mode}
-          />
-        )} */}
         {showFilter && (
           <FilterWindow
             sceneGraph={currentSceneGraph}
@@ -2307,14 +2310,18 @@ const App: React.FC<AppProps> = ({
 }) => {
   return (
     <MousePositionProvider>
-      <AppContent
-        defaultGraph={defaultGraph}
-        svgUrl={svgUrl}
-        defaultActiveView={defaultActiveView}
-        defaultActiveLayout={defaultActiveLayout}
-        shouldShowLoadDialog={shouldShowLoadDialog}
-        defaultSerializedSceneGraph={defaultSerializedSceneGraph}
-      />
+      <AppShellProvider>
+        <SemanticWebQueryProvider>
+          <AppContent
+            defaultGraph={defaultGraph}
+            svgUrl={svgUrl}
+            defaultActiveView={defaultActiveView}
+            defaultActiveLayout={defaultActiveLayout}
+            shouldShowLoadDialog={shouldShowLoadDialog}
+            defaultSerializedSceneGraph={defaultSerializedSceneGraph}
+          />
+        </SemanticWebQueryProvider>
+      </AppShellProvider>
       <LayoutComputationDialog />
     </MousePositionProvider>
   );
