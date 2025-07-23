@@ -11,7 +11,7 @@ import {
   themes,
   useTheme,
 } from "@aesgraph/app-shell";
-import "@aesgraph/app-shell/dist/app-shell.css";
+import "@aesgraph/app-shell/app-shell.css";
 import React from "react";
 import { getCurrentSceneGraph } from "../../store/appConfigStore";
 import AIChatPanel from "../ai/AIChatPanel";

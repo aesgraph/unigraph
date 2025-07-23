@@ -1,6 +1,6 @@
 import { getActiveView, getCurrentSceneGraph } from "@/store/appConfigStore";
 import React from "react";
-import "@aesgraph/app-shell/dist/app-shell.css";
+import "@aesgraph/app-shell/app-shell.css";
 import Workspace from "./appWorkspace/Workspace";
 import styles from "./MinimalWorkspace.module.css";
 import AppShellView from "./views/AppShellView";
