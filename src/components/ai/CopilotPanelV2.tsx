@@ -95,9 +95,14 @@ const CopilotPanelV2: React.FC<CopilotPanelV2Props> = ({ className }) => {
         <button onClick={clearHistory}>Clear</button>
       </div>
 
-      <div 
+      <div
         ref={messagesContainerRef}
-        style={{ height: "300px", overflow: "auto", border: "1px solid #ccc", padding: "10px" }}
+        style={{
+          height: "300px",
+          overflow: "auto",
+          border: "1px solid #ccc",
+          padding: "10px",
+        }}
       >
         {messages.length === 0 ? (
           <p>Start a conversation!</p>

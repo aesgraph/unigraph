@@ -91,7 +91,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
   handleLoadSceneGraph,
 }) => {
   const { theme } = useTheme();
-  
+
   const { showToolbar, leftSidebarConfig, rightSidebarConfig } =
     useWorkspaceConfigStore();
 
@@ -350,7 +350,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={styles.workspace}
       style={{
         backgroundColor: getColor(theme.colors, "workspaceBackground"),
@@ -358,14 +358,14 @@ const Workspace: React.FC<WorkspaceProps> = ({
     >
       {renderUniappToolbar}
       <NotificationManager />
-      <div 
+      <div
         className={styles.content}
         style={{
           backgroundColor: getColor(theme.colors, "workspaceBackground"),
         }}
       >
         <div className={styles.sidebarLayer}>{renderLeftSideBar}</div>
-        <div 
+        <div
           className={styles.mainContent}
           style={{
             margin: theme.sizes.spacing.sm, // Add small margin using theme spacing

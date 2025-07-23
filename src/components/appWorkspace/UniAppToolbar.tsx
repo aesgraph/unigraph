@@ -255,8 +255,8 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
   };
 
   return (
-    <nav 
-      className="uni-app-toolbar" 
+    <nav
+      className="uni-app-toolbar"
       style={{
         backgroundColor: getColor(theme.colors, "workspaceTitleBackground"),
         color: getColor(theme.colors, "workspaceTitleText"),
