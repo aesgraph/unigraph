@@ -39,6 +39,46 @@ export const SEMANTIC_QUERY_TOOL: OpenAITool = {
   },
 };
 
+// Workspace Layout Tool
+export const WORKSPACE_LAYOUT_TOOL: OpenAITool = {
+  type: "function",
+  function: {
+    name: "add_view_to_panel",
+    description:
+      "Add a view to a specific panel in the workspace layout. Use this when users want to open or switch to different views like AI Chat, SPARQL Query, ForceGraph 3D, etc.",
+    parameters: {
+      type: "object",
+      properties: {
+        viewId: {
+          type: "string",
+          enum: [
+            "ai-chat",
+            "semantic-web-query",
+            "force-graph-3d-v2",
+            "system-monitor",
+            "node-legend",
+            "edge-legend",
+            "entity-table-v2",
+            "custom-themed-panel",
+            "theme-inheritance-demo",
+            "wikipedia-factor-graph",
+            "gravity-simulation",
+          ],
+          description:
+            "The ID of the view to add. Available views: ai-chat (AI Chat), semantic-web-query (SPARQL Query), force-graph-3d-v2 (3D Graph), system-monitor (System Monitor), node-legend (Node Legend), edge-legend (Edge Legend), entity-table-v2 (Entity Table), custom-themed-panel (Theme Demo), theme-inheritance-demo (Theme Inheritance), wikipedia-factor-graph (Wikipedia Viewer), gravity-simulation (Gravity Simulation)",
+        },
+        panelId: {
+          type: "string",
+          enum: ["left", "center", "right", "bottom"],
+          description:
+            "The panel to add the view to. left: navigation/tools, center: main content, right: details/properties, bottom: logs/terminal",
+        },
+      },
+      required: ["viewId", "panelId"],
+    },
+  },
+};
+
 // Knowledge Graph Search Tool
 export const KNOWLEDGE_GRAPH_SEARCH_TOOL: OpenAITool = {
   type: "function",
@@ -139,7 +179,8 @@ export function combineTools(...tools: OpenAITool[]): OpenAITool[] {
 // Predefined tool sets for common use cases
 export const SEMANTIC_TOOLS = combineTools(
   SEMANTIC_QUERY_TOOL,
-  KNOWLEDGE_GRAPH_SEARCH_TOOL
+  KNOWLEDGE_GRAPH_SEARCH_TOOL,
+  WORKSPACE_LAYOUT_TOOL
 );
 
 export const GRAPH_ANALYSIS_TOOLS = combineTools(

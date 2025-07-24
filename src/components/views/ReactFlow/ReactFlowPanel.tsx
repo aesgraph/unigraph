@@ -16,6 +16,7 @@ import {
 } from "@xyflow/react";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { SelectionMode } from "reactflow";
+import { useTheme, getColor } from "@aesgraph/app-shell";
 import { Annotation } from "../../../api/annotationsApi";
 import {
   MOUSE_HOVERED_NODE_COLOR,
@@ -170,6 +171,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   onBackgroundContextMenu,
   onNodeDragStop,
 }) => {
+  const { theme } = useTheme();
   const reactFlowWrapper = useRef(null);
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
   const selectionChangeRef = useRef(false);
@@ -428,95 +430,160 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   );
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        margin: 0,
-        padding: 0,
-        overflow: "hidden",
-        position: "absolute",
-        top: 0,
-        left: 0,
-      }}
-      ref={reactFlowWrapper}
-    >
-      <ReactFlowProvider>
-        <ReactFlow
-          onlyRenderVisibleElements={true}
-          selectionMode={SelectionMode.Partial}
-          selectionOnDrag={true}
-          selectNodesOnDrag={false}
-          panOnDrag={[2]}
-          panOnScroll={false}
-          multiSelectionKeyCode="Shift"
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={handleNodesChange}
-          onEdgesChange={handleEdgesChange}
-          onNodeDragStop={onNodeDragStop}
-          onInit={handleInit} // Use the properly typed handler
-          onNodeContextMenu={(event, node) =>
-            handleNodeContextMenu(event, node)
-          }
-          onPaneContextMenu={(event) =>
-            onBackgroundContextMenu?.(
-              event as React.MouseEvent<Element, MouseEvent>
-            )
-          }
-          onPaneClick={handlePaneClick}
-          onNodeMouseEnter={handleNodeMouseEnter}
-          onNodeMouseLeave={handleNodeMouseLeave}
-          onNodeClick={handleNodeClick}
-          onSelectionChange={handleSelectionChange}
-          onNodeDoubleClick={handleNodeDoubleClick}
-          fitView={true}
-          minZoom={0.1}
-          maxZoom={500}
-          connectionLineType={ConnectionLineType.Bezier}
-          snapToGrid={reactFlowConfig.snapToGrid}
-          snapGrid={reactFlowConfig.snapGrid}
-          defaultEdgeOptions={{
-            type: reactFlowConfig.connectionLineStyle || "smoothstep",
-            style: {
-              strokeWidth: reactFlowConfig.edgeStrokeWidth,
-              fontSize: reactFlowConfig.edgeFontSize,
-            },
-          }}
-          nodeTypes={nodeTypes}
-          style={
-            {
-              width: "100%",
-              height: "100%",
-              margin: 0,
-              padding: 0,
-              "--node-border-radius": `${reactFlowConfig.nodeBorderRadius}px`,
-              "--node-stroke-width": `${reactFlowConfig.nodeStrokeWidth}px`,
-              "--node-font-size": `${reactFlowConfig.nodeFontSize}px`,
-            } as React.CSSProperties
-          }
-        >
-          <Controls />
-          {reactFlowConfig.minimap && (
-            <MiniMap
-              style={{
-                position: "absolute",
-                bottom: 5,
-                right: 60 + 5, // Position to the left of the right sidebar
-              }}
-            />
-          )}
-          <Background
-            variant={
-              reactFlowConfig.backgroundVariant || BackgroundVariant.Dots
+    <>
+      <ReactFlowStyles />
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          margin: 0,
+          padding: 0,
+          overflow: "hidden",
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
+        ref={reactFlowWrapper}
+      >
+        <ReactFlowProvider>
+          <ReactFlow
+            onlyRenderVisibleElements={true}
+            selectionMode={SelectionMode.Partial}
+            selectionOnDrag={true}
+            selectNodesOnDrag={false}
+            panOnDrag={[2]}
+            panOnScroll={false}
+            multiSelectionKeyCode="Shift"
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={handleNodesChange}
+            onEdgesChange={handleEdgesChange}
+            onNodeDragStop={onNodeDragStop}
+            onInit={handleInit} // Use the properly typed handler
+            onNodeContextMenu={(event, node) =>
+              handleNodeContextMenu(event, node)
             }
-            gap={reactFlowConfig.backgroundGap}
-            size={reactFlowConfig.backgroundSize}
-          />
-        </ReactFlow>
-      </ReactFlowProvider>
-    </div>
+            onPaneContextMenu={(event) =>
+              onBackgroundContextMenu?.(
+                event as React.MouseEvent<Element, MouseEvent>
+              )
+            }
+            onPaneClick={handlePaneClick}
+            onNodeMouseEnter={handleNodeMouseEnter}
+            onNodeMouseLeave={handleNodeMouseLeave}
+            onNodeClick={handleNodeClick}
+            onSelectionChange={handleSelectionChange}
+            onNodeDoubleClick={handleNodeDoubleClick}
+            fitView={true}
+            minZoom={0.1}
+            maxZoom={500}
+            connectionLineType={ConnectionLineType.Bezier}
+            snapToGrid={reactFlowConfig.snapToGrid}
+            snapGrid={reactFlowConfig.snapGrid}
+            defaultEdgeOptions={{
+              type: reactFlowConfig.connectionLineStyle || "smoothstep",
+              style: {
+                strokeWidth: reactFlowConfig.edgeStrokeWidth,
+                fontSize: reactFlowConfig.edgeFontSize,
+              },
+            }}
+            nodeTypes={nodeTypes}
+            style={
+              {
+                width: "100%",
+                height: "100%",
+                margin: 0,
+                padding: 0,
+                "--node-border-radius": `${reactFlowConfig.nodeBorderRadius}px`,
+                "--node-stroke-width": `${reactFlowConfig.nodeStrokeWidth}px`,
+                "--node-font-size": `${reactFlowConfig.nodeFontSize}px`,
+              } as React.CSSProperties
+            }
+          >
+            <Controls
+              style={{
+                backgroundColor: getColor(theme.colors, "surface"),
+                border: `1px solid ${getColor(theme.colors, "border")}`,
+              }}
+              className="react-flow__controls"
+            />
+            {reactFlowConfig.minimap && (
+              <MiniMap
+                style={{
+                  position: "absolute",
+                  bottom: 0, // Increased from 5 to avoid the "React Flow" text
+                  right: 0, // Position to the left of the right sidebar
+                  backgroundColor: getColor(theme.colors, "surface"),
+                  border: `1px solid ${getColor(theme.colors, "border")}`,
+                  zIndex: 10, // Ensure it's above other elements
+                }}
+                nodeColor={getColor(theme.colors, "primary")}
+                maskColor={getColor(theme.colors, "surface")}
+              />
+            )}
+            <Background
+              variant={
+                reactFlowConfig.backgroundVariant || BackgroundVariant.Dots
+              }
+              gap={reactFlowConfig.backgroundGap}
+              size={reactFlowConfig.backgroundSize}
+            />
+          </ReactFlow>
+        </ReactFlowProvider>
+      </div>
+    </>
   );
 };
 
 export default ReactFlowPanel;
+
+// Add theme-aware styles for React Flow controls
+const ReactFlowStyles = () => {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      .react-flow__controls {
+        background-color: ${getColor(theme.colors, "surface")} !important;
+        border: 1px solid ${getColor(theme.colors, "border")} !important;
+      }
+      
+      .react-flow__controls button {
+        background-color: ${getColor(theme.colors, "surface")} !important;
+        border: 1px solid ${getColor(theme.colors, "border")} !important;
+        color: ${getColor(theme.colors, "text")} !important;
+      }
+      
+      .react-flow__controls button:hover {
+        background-color: ${getColor(theme.colors, "surfaceHover")} !important;
+        border-color: ${getColor(theme.colors, "borderHover")} !important;
+      }
+      
+      .react-flow__minimap {
+        background-color: ${getColor(theme.colors, "surface")} !important;
+        border: 1px solid ${getColor(theme.colors, "border")} !important;
+      }
+      
+      .react-flow__minimap .react-flow__minimap-mask {
+        fill: ${getColor(theme.colors, "surface")} !important;
+      }
+      
+      .react-flow__minimap .react-flow__minimap-node {
+        fill: ${getColor(theme.colors, "primary")} !important;
+      }
+      
+      /* Hide the "React Flow" attribution text that interferes with minimap positioning */
+      .react-flow__attribution {
+        display: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, [theme]);
+
+  return null;
+};

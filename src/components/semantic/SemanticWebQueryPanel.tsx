@@ -3,11 +3,7 @@ import { StreamLanguage } from "@codemirror/language";
 import { sparql } from "@codemirror/legacy-modes/mode/sparql";
 import { oneDark } from "@codemirror/theme-one-dark";
 import CodeMirror from "@uiw/react-codemirror";
-import {
-  AllCommunityModule,
-  ModuleRegistry,
-  themeBalham,
-} from "ag-grid-community";
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import React, { useEffect, useState } from "react";
 import { Parser as SparqlParser } from "sparqljs";
@@ -15,6 +11,7 @@ import { log } from "../../utils/logger";
 import SelectDropdown from "../common/SelectDropdown";
 import { useSemanticWebQuerySession } from "./SemanticWebQueryContext";
 import styles from "./SemanticWebQueryPanel.module.css";
+import { createThemedAgGridContainer } from "../../utils/aggridThemeUtils";
 
 // Predefined SPARQL endpoints
 const ENDPOINTS = [
@@ -429,10 +426,14 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
         )}
         {results && results.length > 0 && (
           <div
-            className={`${isThemeDark ? "ag-theme-balham-dark" : "ag-theme-balham"} ${styles.gridContainer}`}
+            className={`ag-theme-alpine ${styles.gridContainer}`}
+            style={
+              hasAppShellTheme
+                ? createThemedAgGridContainer(appShellTheme.theme)
+                : {}
+            }
           >
             <AgGridReact
-              theme={themeBalham}
               rowData={agGridRowData}
               columnDefs={agGridColumnDefs}
               rowHeight={24}
@@ -447,8 +448,16 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
               domLayout="normal"
               suppressMenuHide={false}
               animateRows={true}
-              overlayNoRowsTemplate={`<span style='color:#888;'>No results</span>`}
-              overlayLoadingTemplate={`<span style='color:#1976d2;'>Loading...</span>`}
+              overlayNoRowsTemplate={
+                hasAppShellTheme
+                  ? `<span style='color:${getColor(appShellTheme.theme.colors, "textMuted")};'>No results</span>`
+                  : `<span style='color:#888;'>No results</span>`
+              }
+              overlayLoadingTemplate={
+                hasAppShellTheme
+                  ? `<span style='color:${getColor(appShellTheme.theme.colors, "primary")};'>Loading...</span>`
+                  : `<span style='color:#1976d2;'>Loading...</span>`
+              }
             />
           </div>
         )}

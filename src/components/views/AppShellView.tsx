@@ -22,6 +22,10 @@ import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
 import NodeLegendView from "./NodeLegendView";
 import SystemMonitorView from "./SystemMonitorView";
+import ReactFlowPanelV2 from "./ReactFlowPanelV2";
+import AboutView from "./AboutView";
+import DevToolsView from "./DevToolsView";
+import LexicalEditorV2 from "../applets/Lexical/LexicalEditor";
 
 // Create custom views that include our AIChatPanel and SemanticWebQueryPanel
 const aiChatView = {
@@ -722,6 +726,30 @@ const wikipediaFactorGraphView = {
   category: "tools",
 };
 
+const reactFlowPanelV2View = {
+  id: "react-flow-panel-v2",
+  title: "ReactFlow Panel V2",
+  icon: "🔄",
+  component: (props: any) => <ReactFlowPanelV2 {...props} />,
+  category: "visualization",
+};
+
+const aboutView = {
+  id: "about",
+  title: "About",
+  icon: "ℹ️",
+  component: (props: any) => <AboutView {...props} />,
+  category: "help",
+};
+
+const devToolsView = {
+  id: "dev-tools",
+  title: "Dev Tools",
+  icon: "🔧",
+  component: (props: any) => <DevToolsView {...props} />,
+  category: "development",
+};
+
 const gravitySimulationView = {
   id: "gravity-simulation",
   title: "Gravity Simulation",
@@ -731,8 +759,16 @@ const gravitySimulationView = {
   category: "tools",
 };
 
-// Register all views as a single array
-registerViews([
+const lexicalEditorView = {
+  id: "lexical-editor",
+  title: "Lexical Editor",
+  icon: "📝",
+  component: (props: any) => <LexicalEditorV2 {...props} />,
+  category: "editing",
+};
+
+// Define all views
+const allViews = [
   ...defaultViews,
   gravitySimulationView,
   aiChatView,
@@ -746,7 +782,11 @@ registerViews([
   nodeLegendView,
   edgeLegendView,
   wikipediaFactorGraphView,
-]);
+  reactFlowPanelV2View,
+  aboutView,
+  devToolsView,
+  lexicalEditorView,
+];
 
 // Example: Create a custom theme for demonstration
 const customUnigraphTheme: Theme = {
@@ -794,6 +834,19 @@ const customUnigraphTheme: Theme = {
 Object.assign(themes, { "unigraph-custom": customUnigraphTheme });
 
 const AppShellView: React.FC = () => {
+  // Register views when component mounts
+  React.useEffect(() => {
+    console.log(
+      "AppShellView: Registering views:",
+      allViews.map((v) => ({
+        id: v.id,
+        title: v.title,
+        category: (v as any).category,
+      }))
+    );
+    registerViews(allViews);
+  }, []);
+
   return (
     // <div className={styles.appContainer}>
     <LayoutManager />

@@ -32,10 +32,11 @@ import WorkspaceSettings from "../common/WorkspaceSettings";
 import FilterManagerV2 from "../filters/FilterManagerV2";
 import LayoutManagerV2 from "../layouts/LayoutManagerV2";
 import ProjectManager from "../projects/ProjectManager"; // Import the new component
-import ProfileIcon from "../user/ProfileIcon";
+
 import ForceGraphRenderConfigEditor from "../views/ForceGraph3d/ForceGraphRenderConfigEditor";
 import ReactFlowConfigEditor from "../views/ReactFlow/ReactFlowConfigEditor";
 import styles from "./Sidebar.module.css";
+import ProfileIcon from "../user/ProfileIcon";
 
 const allLayoutLabels = [
   ...Object.values(GraphvizLayoutType),

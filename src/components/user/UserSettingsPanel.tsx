@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { useTheme, getColor } from "@aesgraph/app-shell";
+import {
+  customUnigraphTheme,
+  unigraphWarmTheme,
+} from "../../themes/customUnigraphTheme";
 
 interface UserSettingsPanelProps {
   isVisible: boolean;
@@ -22,50 +27,81 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
   onSignIn,
 }) => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const [hoveredTheme, setHoveredTheme] = useState<string | null>(null);
+
+  // Get theme context
+  const { theme, themeId, setTheme, themes: availableThemes } = useTheme();
 
   if (!isVisible) return null;
 
-  // Panel background: pleasant, neutral grey for both modes
-  const panelBg = "#4a5568";
-  const borderColor = isDarkMode ? "#444" : "#cfd8dc";
+  // Add custom Unigraph themes to available themes
+  const allThemes = {
+    ...availableThemes,
+    "unigraph-custom": customUnigraphTheme,
+    "unigraph-warm": unigraphWarmTheme,
+  };
 
   // Helper function to get button styles with hover effects
   const getButtonStyles = (buttonType: string, baseColor: string) => {
     const isHovered = hoveredButton === buttonType;
-    const baseBg = isDarkMode ? "#23272f" : "#fff";
-    const hoverBg = isDarkMode ? "#2d3748" : "#f8f9fa";
+    const baseBg = getColor(theme.colors, "surface");
+    const hoverBg = getColor(theme.colors, "surfaceHover");
 
     // Determine border color on hover based on button type
     let hoverBorderColor = baseColor;
     if (isHovered) {
       if (buttonType === "logout") {
-        hoverBorderColor = "#e53935"; // Red for logout
-      } else if (isDarkMode) {
-        hoverBorderColor = "#666"; // Light gray for dark mode
+        hoverBorderColor = getColor(theme.colors, "error");
       } else {
-        hoverBorderColor = "#1976d2"; // Blue for light mode
+        hoverBorderColor = getColor(theme.colors, "primary");
       }
     }
 
     return {
       width: "100%",
-      padding: "10px 0",
+      padding: `${theme.sizes.spacing.sm} 0`,
       background: isHovered ? hoverBg : baseBg,
       border: `1px solid ${hoverBorderColor}`,
-      borderRadius: 7,
+      borderRadius: theme.sizes.borderRadius.md,
       textAlign: "center" as const,
       cursor: "pointer",
-      fontSize: 15,
+      fontSize: theme.sizes.fontSize.sm,
       color: baseColor,
       outline: "none",
       fontWeight: buttonType === "signIn" ? 600 : "normal",
-      transition:
-        "background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease",
-      boxShadow: isHovered
-        ? isDarkMode
-          ? `0 0 0 1px rgba(255,255,255,0.1), 0 2px 8px rgba(0,0,0,0.3)`
-          : `0 0 0 1px rgba(25,118,210,0.2), 0 2px 8px rgba(0,0,0,0.1)`
-        : "none",
+      transition: "all 0.15s ease",
+      boxShadow: isHovered ? theme.sizes.shadow.sm : "none",
+    };
+  };
+
+  // Helper function to get theme option styles
+  const getThemeOptionStyles = (themeKey: string) => {
+    const isSelected = themeKey === themeId;
+    const isHovered = hoveredTheme === themeKey;
+    const themeData = allThemes[themeKey as keyof typeof allThemes];
+
+    if (!themeData) return {};
+
+    return {
+      padding: `${theme.sizes.spacing.xs} ${theme.sizes.spacing.sm}`,
+      background: isSelected
+        ? getColor(theme.colors, "primary")
+        : isHovered
+          ? getColor(theme.colors, "surfaceHover")
+          : getColor(theme.colors, "surface"),
+      color: isSelected
+        ? getColor(theme.colors, "textInverse")
+        : getColor(theme.colors, "text"),
+      borderRadius: theme.sizes.borderRadius.sm,
+      fontSize: theme.sizes.fontSize.xs,
+      border: `1px solid ${
+        isSelected
+          ? getColor(theme.colors, "primary")
+          : getColor(theme.colors, "border")
+      }`,
+      cursor: "pointer",
+      transition: "all 0.15s ease",
+      boxShadow: isHovered ? theme.sizes.shadow.sm : "none",
     };
   };
 
@@ -74,90 +110,151 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
       id={panelId || "profile-dropdown-panel"}
       style={{
         position: "fixed",
-        left: 72, // margin from left sidebar
-        bottom: 16,
+        left: 80, // To the right of the left sidebar (72px + 8px margin)
+        bottom: 40, // Above the status bar (30px + 10px margin)
         zIndex: 10000,
-        background: panelBg,
-        border: `1px solid ${borderColor}`,
-        borderRadius: 12,
-        boxShadow: "0 4px 24px 0 rgba(0,0,0,0.18)",
-        minWidth: 220,
-        maxWidth: "calc(100vw - 88px)",
-        padding: "16px 0 12px 0",
+        background: getColor(theme.colors, "surface"),
+        border: `1px solid ${getColor(theme.colors, "border")}`,
+        borderRadius: theme.sizes.borderRadius.lg,
+        boxShadow: theme.sizes.shadow.lg,
+        minWidth: 280,
+        maxWidth: "calc(100vw - 100px)",
+        padding: `${theme.sizes.spacing.md} 0 ${theme.sizes.spacing.sm} 0`,
         display: "flex",
         flexDirection: "column",
-        gap: 10,
+        gap: theme.sizes.spacing.sm,
         alignItems: "stretch",
       }}
     >
-      {/* Theme toggle row */}
+      {/* Theme Selection Section */}
       <div
         style={{
-          padding: "0 18px 8px 18px",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
+          padding: `0 ${theme.sizes.spacing.md}`,
+          borderBottom: `1px solid ${getColor(theme.colors, "border")}`,
+          paddingBottom: theme.sizes.spacing.sm,
         }}
       >
-        <span
+        <div
           style={{
-            fontSize: 15,
-            color: isDarkMode ? "#ffffff" : "#ffffff",
-            flex: 1,
+            fontSize: theme.sizes.fontSize.sm,
+            color: getColor(theme.colors, "text"),
+            fontWeight: 600,
+            marginBottom: theme.sizes.spacing.sm,
             userSelect: "none",
           }}
         >
           Theme
-        </span>
-        <button
-          onClick={onToggleDarkMode}
+        </div>
+        <div
           style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: theme.sizes.spacing.xs,
+            maxHeight: "120px",
+            overflowY: "auto",
+          }}
+        >
+          {Object.entries(allThemes).map(([key, themeData]) => (
+            <div
+              key={key}
+              style={{
+                ...getThemeOptionStyles(key),
+                textAlign: "center",
+                padding: `${theme.sizes.spacing.xs} ${theme.sizes.spacing.xs}`,
+                fontSize: theme.sizes.fontSize.xs,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              onClick={() => setTheme(key)}
+              onMouseEnter={() => setHoveredTheme(key)}
+              onMouseLeave={() => setHoveredTheme(null)}
+              title={themeData.name}
+            >
+              {themeData.name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Legacy Dark Mode Toggle (for backward compatibility) */}
+      {onToggleDarkMode && (
+        <div
+          style={{
+            padding: `0 ${theme.sizes.spacing.md}`,
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            width: 38,
-            height: 22,
-            borderRadius: 12,
-            border: `1px solid ${isDarkMode ? "#1976d2" : "#bdbdbd"}`,
-            background: isDarkMode ? "#222b36" : "#fff",
-            cursor: "pointer",
-            padding: 0,
-            transition: "background 0.15s, border 0.15s",
-            position: "relative",
+            gap: theme.sizes.spacing.sm,
           }}
-          aria-label={
-            isDarkMode ? "Switch to light mode" : "Switch to dark mode"
-          }
         >
-          <div
+          <span
             style={{
-              width: 18,
-              height: 18,
-              borderRadius: "50%",
-              background: isDarkMode ? "#1976d2" : "#bdbdbd",
-              position: "absolute",
-              left: isDarkMode ? 16 : 2,
-              top: 1.5,
-              transition:
-                "left 0.18s cubic-bezier(.4,0,.2,1), background 0.18s",
+              fontSize: theme.sizes.fontSize.sm,
+              color: getColor(theme.colors, "text"),
+              flex: 1,
+              userSelect: "none",
+            }}
+          >
+            Legacy Dark Mode
+          </span>
+          <button
+            onClick={onToggleDarkMode}
+            style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#fff",
-              fontSize: 13,
+              width: 38,
+              height: 22,
+              borderRadius: 12,
+              border: `1px solid ${
+                isDarkMode
+                  ? getColor(theme.colors, "primary")
+                  : getColor(theme.colors, "border")
+              }`,
+              background: isDarkMode
+                ? getColor(theme.colors, "primary")
+                : getColor(theme.colors, "surface"),
+              cursor: "pointer",
+              padding: 0,
+              transition: "all 0.15s ease",
+              position: "relative",
             }}
+            aria-label={
+              isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
           >
-            {isDarkMode ? "🌙" : "☀️"}
-          </div>
-        </button>
-      </div>
+            <div
+              style={{
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                background: isDarkMode
+                  ? getColor(theme.colors, "textInverse")
+                  : getColor(theme.colors, "textMuted"),
+                position: "absolute",
+                left: isDarkMode ? 16 : 2,
+                top: 1.5,
+                transition: "left 0.18s cubic-bezier(.4,0,.2,1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: getColor(theme.colors, "textInverse"),
+                fontSize: 13,
+              }}
+            >
+              {isDarkMode ? "🌙" : "☀️"}
+            </div>
+          </button>
+        </div>
+      )}
+
       {/* Auth-related actions */}
       <div
         style={{
-          padding: "0 14px",
+          padding: `0 ${theme.sizes.spacing.sm}`,
           display: "flex",
           flexDirection: "column",
-          gap: 8,
+          gap: theme.sizes.spacing.xs,
         }}
       >
         {isSignedIn ? (
@@ -165,7 +262,7 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
             <button
               style={getButtonStyles(
                 "switchAccount",
-                isDarkMode ? "#e2e8f0" : "#222"
+                getColor(theme.colors, "text")
               )}
               onClick={() => {
                 console.log("UserSettingsPanel: Switch Account button clicked");
@@ -177,7 +274,7 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
               Switch Account
             </button>
             <button
-              style={getButtonStyles("logout", "#e53935")}
+              style={getButtonStyles("logout", getColor(theme.colors, "error"))}
               onClick={onSignOut}
               onMouseEnter={() => setHoveredButton("logout")}
               onMouseLeave={() => setHoveredButton(null)}
@@ -187,7 +284,7 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
           </>
         ) : (
           <button
-            style={getButtonStyles("signIn", "#1976d2")}
+            style={getButtonStyles("signIn", getColor(theme.colors, "primary"))}
             onClick={onSignIn}
             onMouseEnter={() => setHoveredButton("signIn")}
             onMouseLeave={() => setHoveredButton(null)}

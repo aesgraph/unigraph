@@ -22,6 +22,7 @@ type DialogState = {
   showFilterManager: ILayoutManagerState;
   showFilterWindow: boolean;
   isCommandPaletteOpen: boolean;
+  showWorkspaceManager: boolean;
 
   setShowLoadSceneGraphWindow: (show: boolean) => void;
   setShowSaveSceneGraphDialog: (show: boolean) => void;
@@ -34,6 +35,7 @@ type DialogState = {
   setShowFilterManager: (mode: "save" | "load", show: boolean) => void;
   setShowFilterWindow: (show: boolean) => void;
   setCommandPaletteOpen: (open: boolean) => void;
+  setShowWorkspaceManager: (show: boolean) => void;
 };
 
 const useDialogStore = create<DialogState>((set) => ({
@@ -48,6 +50,7 @@ const useDialogStore = create<DialogState>((set) => ({
   showFilterManager: { mode: "load", show: false },
   showFilterWindow: false,
   isCommandPaletteOpen: false,
+  showWorkspaceManager: false,
 
   setShowLoadSceneGraphWindow: (show) =>
     set({ showLoadSceneGraphWindow: show }),
@@ -68,6 +71,7 @@ const useDialogStore = create<DialogState>((set) => ({
     set({ showFilterManager: { mode, show } }),
   setShowFilterWindow: (show) => set({ showFilterWindow: show }),
   setCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
+  setShowWorkspaceManager: (show) => set({ showWorkspaceManager: show }),
 }));
 
 // Public methods for controlling dialogs
@@ -117,6 +121,10 @@ export function setShowFilterWindow(show: boolean) {
 // Public methods for controlling the command palette
 export function setShowCommandPalette(open: boolean) {
   useDialogStore.getState().setCommandPaletteOpen(open);
+}
+
+export function setShowWorkspaceManager(show: boolean) {
+  useDialogStore.getState().setShowWorkspaceManager(show);
 }
 
 export default useDialogStore;

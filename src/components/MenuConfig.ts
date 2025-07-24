@@ -56,6 +56,7 @@ import {
   setShowCommandPalette,
   setShowLoadSceneGraphWindow,
   setShowSaveAsNewProjectDialog,
+  setShowWorkspaceManager,
 } from "../store/dialogStore";
 import { clearDocuments, getAllDocuments } from "../store/documentStore";
 
@@ -144,6 +145,12 @@ export interface IMenuConfigCallbacks {
   showWorkspaceManager?: () => void;
   loadWorkspaceConfig?: () => void;
   saveWorkspaceConfig?: () => void;
+  // AppShell workspace functions
+  appShellWorkspaceFunctions?: {
+    saveCurrentLayout: (name: string) => Promise<any>;
+    applyWorkspaceLayout: (id: string) => Promise<boolean>;
+    getAllWorkspaces: () => any[];
+  };
 }
 
 export class MenuConfig {
@@ -223,22 +230,80 @@ export class MenuConfig {
       Workspace: {
         submenu: {
           Load: {
-            action: () => {
-              this.callbacks.loadWorkspaceConfig?.();
-            },
-            tooltip: "Load saved workspace layout",
+            submenu: (() => {
+              // Use AppShell workspace state actions to get available workspaces
+              const { applyWorkspaceLayout, getAllWorkspaces } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+
+              if (!applyWorkspaceLayout || !getAllWorkspaces) {
+                return {
+                  "No workspaces available": {
+                    action: () => {
+                      console.log("Workspace state functions not available");
+                    },
+                  },
+                };
+              }
+
+              const workspaces = getAllWorkspaces();
+              if (workspaces.length === 0) {
+                return {
+                  "No saved workspaces": {
+                    action: () => {
+                      console.log("No saved workspaces available");
+                    },
+                  },
+                };
+              }
+
+              // Create a menu item for each available workspace
+              const workspaceMenuItems: {
+                [key: string]: { action: () => void };
+              } = {};
+
+              workspaces.forEach((workspace) => {
+                workspaceMenuItems[workspace.name] = {
+                  action: () => {
+                    applyWorkspaceLayout(workspace.id);
+                  },
+                };
+              });
+
+              return workspaceMenuItems;
+            })(),
           },
           "Save as": {
             action: () => {
-              this.callbacks.saveWorkspaceConfig?.();
+              // Use AppShell workspace state actions
+              const { saveCurrentLayout } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+              if (saveCurrentLayout) {
+                const workspaceName = prompt("Enter workspace name:");
+                if (workspaceName) {
+                  saveCurrentLayout(workspaceName);
+                }
+              } else {
+                console.log("Workspace state functions not available");
+              }
             },
-            tooltip: "Save current workspace layout",
           },
           "Open Manager": {
             action: () => {
-              this.callbacks.showWorkspaceManager?.();
+              setShowWorkspaceManager(true);
             },
-            tooltip: "Manage workspace configurations",
+          },
+          "Reset to Empty": {
+            action: () => {
+              // Use AppShell workspace state actions to load the clean workspace
+              const { applyWorkspaceLayout } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+              if (applyWorkspaceLayout) {
+                // Load the clean workspace by its ID
+                applyWorkspaceLayout("clean-workspace");
+              } else {
+                console.log("Workspace state functions not available");
+              }
+            },
           },
         },
       },

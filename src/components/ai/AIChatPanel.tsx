@@ -15,6 +15,7 @@ import { useUserStore } from "../../store/userStore";
 import { getEnvVar } from "../../utils/envUtils";
 import { log } from "../../utils/logger";
 import { checkLLMStudioAvailability } from "../applets/ChatGptImporter/services/llmStudioService";
+import { useCommandProcessor } from "../commandPalette/CommandProcessor";
 import { useSemanticWebQuerySession } from "../semantic/SemanticWebQueryContext";
 import "./AIChatPanel.css";
 import { AIResponse, ApiProvider, sendAIMessage } from "./aiQueryLogic";
@@ -40,6 +41,8 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
   const { user, isSignedIn } = useUserStore();
   // Use semantic web query session
   const { setQuery: setSemanticQuery } = useSemanticWebQuerySession(sessionId);
+  // Use command processor for workspace layout commands
+  const { processCommand } = useCommandProcessor();
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +51,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
   const [apiAvailable, setApiAvailable] = useState<boolean | null>(null);
   const [apiProvider, setApiProvider] = useState<ApiProvider>("llm-studio");
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Get OpenAI API key from environment (optional)
   const openaiApiKey = getEnvVar("VITE_OPENAI_API_KEY") || "";
@@ -67,6 +71,17 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
     }
     return "Server";
   };
+
+  // Check if we're using a Vercel endpoint (should hide endpoint info)
+  const isVercelEndpoint = useCallback(() => {
+    if (!liveChatUrl) return false;
+    try {
+      const url = new URL(liveChatUrl);
+      return url.hostname.includes("vercel");
+    } catch {
+      return false;
+    }
+  }, [liveChatUrl]);
 
   // Check API availability and determine provider
   useEffect(() => {
@@ -95,14 +110,37 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
     checkApi();
   }, [openaiApiKey, liveChatUrl]);
 
+  // Auto-focus input field when component mounts
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  // Re-focus input when loading state changes from true to false (message sent)
+  useEffect(() => {
+    if (!isLoading && inputRef.current) {
+      // Small delay to ensure DOM is fully updated
+      const timeoutId = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 10);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isLoading]);
+
   // Safe auto-scroll using scrollTop instead of scrollIntoView
   useEffect(() => {
     if (messagesContainerRef.current) {
       const container = messagesContainerRef.current;
-      // Use scrollTop instead of scrollIntoView to avoid layout issues
-      setTimeout(() => {
-        container.scrollTop = container.scrollHeight;
-      }, 0);
+      // Use requestAnimationFrame to ensure DOM is ready and avoid layout issues
+      requestAnimationFrame(() => {
+        if (container) {
+          container.scrollTop = container.scrollHeight;
+        }
+      });
     }
   }, [messages]);
 
@@ -126,6 +164,38 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           console.error("Failed to process semantic query tool call:", error);
           log.toolError(
             "semantic_query",
+            error instanceof Error ? error.message : String(error),
+            {
+              sessionId,
+              toolCallId: toolCall.id,
+            }
+          );
+        }
+      } else if (toolCall.function.name === "add_view_to_panel") {
+        try {
+          const args = parseToolCallArguments(toolCall);
+
+          // Process the workspace layout command
+          processCommand("workspace_layout_tool", {
+            viewId: args.viewId,
+            panelId: args.panelId,
+          });
+
+          // Log the tool call
+          log.toolSuccess(
+            "add_view_to_panel",
+            `Added ${args.viewId} to ${args.panelId} panel`,
+            {
+              sessionId,
+              viewId: args.viewId,
+              panelId: args.panelId,
+              toolCallId: toolCall.id,
+            }
+          );
+        } catch (error) {
+          console.error("Failed to process workspace layout tool call:", error);
+          log.toolError(
+            "add_view_to_panel",
             error instanceof Error ? error.message : String(error),
             {
               sessionId,
@@ -296,7 +366,58 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
         response.toolCalls &&
         response.toolCalls.length > 0
       ) {
-        responseContent = `SPARQL query generated in ${sessionId} panel`;
+        // Generate appropriate response based on the tool calls
+        const toolCallNames = response.toolCalls.map((tc) => tc.function.name);
+
+        if (toolCallNames.includes("semantic_query")) {
+          responseContent = `SPARQL query generated in ${sessionId} panel`;
+        } else if (toolCallNames.includes("add_view_to_panel")) {
+          // Extract view and panel info from the tool call
+          const viewToolCall = response.toolCalls.find(
+            (tc) => tc.function.name === "add_view_to_panel"
+          );
+          if (viewToolCall) {
+            try {
+              const args = parseToolCallArguments(viewToolCall);
+              const viewId = args.viewId;
+              const panelId = args.panelId;
+
+              // Get friendly names for the view and panel
+              const viewNames: Record<string, string> = {
+                "ai-chat": "AI Chat",
+                "semantic-web-query": "SPARQL Query",
+                "force-graph-3d-v2": "ForceGraph 3D",
+                "system-monitor": "System Monitor",
+                "node-legend": "Node Legend",
+                "edge-legend": "Edge Legend",
+                "entity-table-v2": "Entity Table",
+                "custom-themed-panel": "Theme Demo",
+                "theme-inheritance-demo": "Theme Inheritance",
+                "wikipedia-factor-graph": "Wikipedia Factor Graph",
+                "gravity-simulation": "Gravity Simulation",
+              };
+
+              const panelNames: Record<string, string> = {
+                left: "left panel",
+                center: "center panel",
+                right: "right panel",
+                bottom: "bottom panel",
+              };
+
+              const viewName = viewNames[viewId] || viewId;
+              const panelName = panelNames[panelId] || panelId;
+
+              responseContent = `Opened ${viewName} in the ${panelName}`;
+              // eslint-disable-next-line unused-imports/no-unused-vars
+            } catch (error) {
+              responseContent = "View opened successfully";
+            }
+          } else {
+            responseContent = "View opened successfully";
+          }
+        } else {
+          responseContent = "Action completed successfully";
+        }
       } else if (!responseContent || responseContent.trim() === "") {
         responseContent = "No response received";
       }
@@ -457,11 +578,16 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           >
             {getProviderIcon(apiProvider)}
           </span>
-          {apiProvider === "live-chat" && isCustomEndpoint() && (
-            <span className="endpoint-indicator custom" title="Custom endpoint">
-              Custom
-            </span>
-          )}
+          {apiProvider === "live-chat" &&
+            isCustomEndpoint() &&
+            !isVercelEndpoint() && (
+              <span
+                className="endpoint-indicator custom"
+                title="Custom endpoint"
+              >
+                Custom
+              </span>
+            )}
         </div>
         <div className="ai-chat-actions">
           <button
@@ -496,14 +622,20 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
               <p>Using OpenAI API with environment variable API key</p>
             ) : apiProvider === "live-chat" ? (
               <div>
-                <p>Using Live Chat API at:</p>
-                <code>{liveChatUrl}</code>
-                <p className="endpoint-type">
-                  <strong>Endpoint Type:</strong> {getEndpointType()}
-                  {isCustomEndpoint() && (
-                    <span className="custom-badge">Custom</span>
-                  )}
-                </p>
+                {!isVercelEndpoint() ? (
+                  <>
+                    <p>Using Live Chat API at:</p>
+                    <code>{liveChatUrl}</code>
+                    <p className="endpoint-type">
+                      <strong>Endpoint Type:</strong> {getEndpointType()}
+                      {isCustomEndpoint() && (
+                        <span className="custom-badge">Custom</span>
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <p>Using Live Chat API</p>
+                )}
                 {isSignedIn ? (
                   <p className="auth-status connected">
                     ✅ Authenticated as {user?.email}
@@ -576,6 +708,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       {/* Input area */}
       <div className="ai-chat-input-container">
         <textarea
+          ref={inputRef}
           className="ai-chat-input"
           placeholder={
             apiAvailable === false

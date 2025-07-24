@@ -120,6 +120,59 @@ export const WikipediaArticleViewer_FactorGraph: React.FC<
         document.head.appendChild(link);
       }
     });
+
+    // Add CSS overrides to ensure normal text colors
+    const styleId = "wikipedia-viewer-overrides";
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement("style");
+      style.id = styleId;
+      style.textContent = `
+        .wikipedia-article-viewer {
+          color: #333 !important;
+        }
+        .wikipedia-article-viewer * {
+          color: inherit !important;
+        }
+        .wikipedia-article-viewer p,
+        .wikipedia-article-viewer div,
+        .wikipedia-article-viewer span,
+        .wikipedia-article-viewer li,
+        .wikipedia-article-viewer td,
+        .wikipedia-article-viewer th {
+          color: #333 !important;
+        }
+        .wikipedia-article-viewer h1,
+        .wikipedia-article-viewer h2,
+        .wikipedia-article-viewer h3,
+        .wikipedia-article-viewer h4,
+        .wikipedia-article-viewer h5,
+        .wikipedia-article-viewer h6 {
+          color: #333 !important;
+        }
+        .wikipedia-article-viewer a {
+          color: #0645ad !important;
+        }
+        .wikipedia-article-viewer a:hover {
+          color: #0b0080 !important;
+        }
+        .wikipedia-article-viewer a:visited {
+          color: #5a3696 !important;
+        }
+        /* Preserve highlighting colors */
+        .wikipedia-article-viewer span[style*="background-color: yellow"] {
+          color: black !important;
+        }
+        .wikipedia-defined-term {
+          color: #0645ad !important;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+        .wikipedia-defined-term:hover {
+          color: #0b0080 !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
     // Do not remove CSS on unmount to avoid flicker
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

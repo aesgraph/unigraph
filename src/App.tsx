@@ -28,7 +28,9 @@ import LegendModeRadio from "./components/common/LegendModeRadio";
 import FilterManager from "./components/filters/FilterManager";
 import FilterWindow from "./components/filters/FilterWindow";
 import { IMenuConfigCallbacks, MenuConfig } from "./components/MenuConfig";
+import { useAppShell } from "@aesgraph/app-shell";
 import NodeEditorWizard from "./components/NodeEditorWizard";
+import WorkspaceManagerDialog from "./components/dialogs/WorkspaceManagerDialog";
 import SceneGraphDetailView from "./components/sceneGraph/SceneGraphDetailView";
 import SceneGraphTitle from "./components/sceneGraph/SceneGraphTitle";
 import WorkspaceV2 from "./components/WorkspaceV2";
@@ -40,6 +42,7 @@ import ReactFlowPanel, {
 import { debugEnvVars } from "./utils/envUtils";
 
 import { AppShellProvider } from "@aesgraph/app-shell";
+import InitialWorkspaceLoader from "./components/InitialWorkspaceLoader";
 import AudioAnnotator from "./_experimental/mp3/AudioAnnotator";
 import GravitySimulation3 from "./_experimental/webgl/simulations/GravitySimulation3";
 import SolarSystem from "./_experimental/webgl/simulations/solarSystemSimulation";
@@ -176,6 +179,8 @@ import useWorkspaceConfigStore, {
   setShowToolbar,
 } from "./store/workspaceConfigStore";
 import { initializeMainForceGraph } from "./utils/forceGraphInitializer";
+import { CommandProcessorProvider } from "./components/commandPalette/CommandProcessor";
+import { WorkspaceLayoutTool } from "./components/workspace/WorkspaceLayoutTool";
 // import { ThemeWorkspaceProvider } from "./components/providers/ThemeWorkspaceProvider";
 // import { Workspace as AppShellWorkspace } from "@aesgraph/app-shell";
 
@@ -289,6 +294,7 @@ const AppContent = ({
     showEntityTablesV2,
     // showLayoutManager,
     showSceneGraphDetailView,
+    showWorkspaceManager,
   } = useDialogStore();
 
   const {
@@ -1239,6 +1245,9 @@ const AppContent = ({
   //   [currentSceneGraph, forceGraphInstance, activeView]
   // );
 
+  const { saveCurrentLayout, applyWorkspaceLayout, getAllWorkspaces } =
+    useAppShell();
+
   const menuConfigInstance = useMemo(() => {
     const menuConfigCallbacks: IMenuConfigCallbacks = {
       handleSetSceneGraph,
@@ -1255,6 +1264,11 @@ const AppContent = ({
         setShowSceneGraphDetailView({ show: true, readOnly });
       },
       showChatGptImporter: () => setShowChatGptImporter(true),
+      appShellWorkspaceFunctions: {
+        saveCurrentLayout,
+        applyWorkspaceLayout,
+        getAllWorkspaces,
+      },
     };
     return new MenuConfig(
       menuConfigCallbacks,
@@ -1272,6 +1286,9 @@ const AppContent = ({
     setShowEntityTables,
     setShowLayoutManager,
     setShowSceneGraphDetailView,
+    saveCurrentLayout,
+    applyWorkspaceLayout,
+    getAllWorkspaces,
   ]);
 
   const menuConfig = useMemo(
@@ -2097,6 +2114,9 @@ const AppContent = ({
         </WorkspaceV2>
         {maybeRenderSaveSceneGraphWindow}
         {maybeRenderSaveAsNewProjectDialog}
+        {showWorkspaceManager && (
+          <WorkspaceManagerDialog isOpen={showWorkspaceManager} />
+        )}
         {getShowEntityDataCard() && getHoveredNodeIds().size > 0 && (
           <EntityDataDisplayCard
             entityData={currentSceneGraph
@@ -2310,18 +2330,23 @@ const App: React.FC<AppProps> = ({
 }) => {
   return (
     <MousePositionProvider>
-      <AppShellProvider>
-        <SemanticWebQueryProvider>
-          <AppContent
-            defaultGraph={defaultGraph}
-            svgUrl={svgUrl}
-            defaultActiveView={defaultActiveView}
-            defaultActiveLayout={defaultActiveLayout}
-            shouldShowLoadDialog={shouldShowLoadDialog}
-            defaultSerializedSceneGraph={defaultSerializedSceneGraph}
-          />
-        </SemanticWebQueryProvider>
-      </AppShellProvider>
+      <CommandProcessorProvider>
+        <WorkspaceLayoutTool />
+        <AppShellProvider>
+          <InitialWorkspaceLoader>
+            <SemanticWebQueryProvider>
+              <AppContent
+                defaultGraph={defaultGraph}
+                svgUrl={svgUrl}
+                defaultActiveView={defaultActiveView}
+                defaultActiveLayout={defaultActiveLayout}
+                shouldShowLoadDialog={shouldShowLoadDialog}
+                defaultSerializedSceneGraph={defaultSerializedSceneGraph}
+              />
+            </SemanticWebQueryProvider>
+          </InitialWorkspaceLoader>
+        </AppShellProvider>
+      </CommandProcessorProvider>
       <LayoutComputationDialog />
     </MousePositionProvider>
   );
