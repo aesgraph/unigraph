@@ -138,7 +138,7 @@ export const initialWorkspaces: WorkspaceState[] = [
         "Workspace focused on graph visualization with ForceGraph 3D",
     },
     layout: {
-      horizontal: [20, 80, 0], // 20% left, 80% center, 0% right
+      horizontal: [0, 50, 50], // 20% left, 80% center, 0% right
       vertical: [100, 0], // 100% top, 0% bottom
     },
     tabContainers: [
@@ -168,8 +168,15 @@ export const initialWorkspaces: WorkspaceState[] = [
       },
       {
         id: "right",
-        tabs: [],
-        activeTabId: undefined,
+        tabs: [
+          {
+            id: "react-flow-panel-v2",
+            title: "React Flow",
+            content: "react-flow-panel-v2",
+            closable: false,
+          },
+        ],
+        activeTabId: "react-flow-panel-v2",
       },
     ],
     theme: "dark",

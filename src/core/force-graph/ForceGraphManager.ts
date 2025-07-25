@@ -548,6 +548,7 @@ export class ForceGraphManager {
     instance.linkWidth(config.linkWidth);
     instance.nodeOpacity(config.nodeOpacity);
     instance.linkOpacity(config.linkOpacity);
+    instance.backgroundColor(config.backgroundColor || "#1a1a1a");
 
     // Use the helper methods for node and link rendering
     instance.nodeThreeObject((node) => {

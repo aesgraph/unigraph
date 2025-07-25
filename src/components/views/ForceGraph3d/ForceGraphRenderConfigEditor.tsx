@@ -106,16 +106,7 @@ const formSchema: FormSchema = {
     label: "Link Opacity",
     type: "number",
   },
-  chargeStrength: {
-    validate: (value) => {
-      if (value === null || value === undefined)
-        return "Charge strength is required";
-      if (isNaN(Number(value))) return "Charge strength must be a number";
-      return null;
-    },
-    label: "Charge Strength",
-    type: "number",
-  },
+
   // Camera controls
   cameraPositionX: {
     validate: (value) => {
@@ -123,7 +114,7 @@ const formSchema: FormSchema = {
       if (isNaN(Number(value))) return "Camera X must be a number";
       return null;
     },
-    label: "Camera Position X",
+    label: "Pos X",
     type: "number",
   },
   cameraPositionY: {
@@ -132,7 +123,7 @@ const formSchema: FormSchema = {
       if (isNaN(Number(value))) return "Camera Y must be a number";
       return null;
     },
-    label: "Camera Position Y",
+    label: "Pos Y",
     type: "number",
   },
   cameraPositionZ: {
@@ -141,7 +132,7 @@ const formSchema: FormSchema = {
       if (isNaN(Number(value))) return "Camera Z must be a number";
       return null;
     },
-    label: "Camera Position Z",
+    label: "Pos Z",
     type: "number",
   },
   cameraTargetX: {
@@ -150,7 +141,7 @@ const formSchema: FormSchema = {
       if (isNaN(Number(value))) return "Target X must be a number";
       return null;
     },
-    label: "Camera Target X",
+    label: "Target X",
     type: "number",
   },
   cameraTargetY: {
@@ -159,7 +150,7 @@ const formSchema: FormSchema = {
       if (isNaN(Number(value))) return "Target Y must be a number";
       return null;
     },
-    label: "Camera Target Y",
+    label: "Target Y",
     type: "number",
   },
   cameraTargetZ: {
@@ -168,7 +159,17 @@ const formSchema: FormSchema = {
       if (isNaN(Number(value))) return "Target Z must be a number";
       return null;
     },
-    label: "Camera Target Z",
+    label: "Target Z",
+    type: "number",
+  },
+  fontSize: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Font size is required";
+      if (isNaN(Number(value)) || Number(value) <= 0)
+        return "Font size must be a positive number";
+      return null;
+    },
+    label: "Font Size",
     type: "number",
   },
   initialZoom: {
@@ -181,6 +182,20 @@ const formSchema: FormSchema = {
     },
     label: "Initial Zoom",
     type: "number",
+  },
+  backgroundColor: {
+    validate: (value) => {
+      if (
+        !value ||
+        typeof value !== "string" ||
+        !/^#[0-9A-Fa-f]{6}$/.test(value)
+      ) {
+        return "Background color must be a valid hex color (e.g. #1a1a1a)";
+      }
+      return null;
+    },
+    label: "Background Color",
+    type: "color",
   },
 };
 
@@ -234,59 +249,78 @@ const FormField: React.FC<FormFieldProps> = ({
     onChange(event);
   };
 
+  // Safety check - if field doesn't exist in schema, don't render
+  if (!schema[name]) {
+    console.warn(`Field "${name}" not found in schema`);
+    return null;
+  }
+
   return (
-    <div className="form-field">
-      <div className="form-field-row">
-        <label className="form-label" htmlFor={name}>
-          {schema[name].label}
-        </label>
-        {schema[name].type === "checkbox" ? (
+    <div className="form-field-compact">
+      {schema[name].type === "checkbox" ? (
+        <input
+          id={name}
+          name={name}
+          type="checkbox"
+          checked={Boolean(value)}
+          onChange={onChange}
+          className={`form-input ${isDarkMode ? "dark-mode" : ""} ${
+            error ? "form-input-error" : ""
+          }`}
+        />
+      ) : schema[name].type === "color" ? (
+        <input
+          id={name}
+          name={name}
+          type="color"
+          value={value as string}
+          onChange={onChange}
+          className={`form-input ${isDarkMode ? "dark-mode" : ""} ${
+            error ? "form-input-error" : ""
+          }`}
+          style={{
+            width: "100%",
+            height: "2rem",
+            padding: 0,
+            border: "none",
+            background: "none",
+          }}
+        />
+      ) : (
+        <div className="number-input-container">
           <input
             id={name}
             name={name}
-            type="checkbox"
-            checked={Boolean(value)}
+            type="number"
+            value={value as number}
             onChange={onChange}
+            min={0}
+            max={name.includes("Opacity") ? 1 : undefined}
+            step={name.includes("Opacity") ? "0.1" : "1"}
             className={`form-input ${isDarkMode ? "dark-mode" : ""} ${
               error ? "form-input-error" : ""
             }`}
+            onInvalid={(e) => e.preventDefault()} // Prevent native validation popup
+            // noValidate // Disable HTML5 validation
           />
-        ) : (
-          <div className="number-input-container">
-            <input
-              id={name}
-              name={name}
-              type="number"
-              value={value as number}
-              onChange={onChange}
-              min={0}
-              max={name.includes("Opacity") ? 1 : undefined}
-              step={name.includes("Opacity") ? "0.1" : "1"}
-              className={`form-input ${isDarkMode ? "dark-mode" : ""} ${
-                error ? "form-input-error" : ""
-              }`}
-              onInvalid={(e) => e.preventDefault()} // Prevent native validation popup
-              // noValidate // Disable HTML5 validation
-            />
-            <div className="number-input-buttons">
-              <button
-                type="button"
-                onClick={handleIncrement}
-                className="spinner-button up"
-              >
-                ▲
-              </button>
-              <button
-                type="button"
-                onClick={handleDecrement}
-                className="spinner-button down"
-              >
-                ▼
-              </button>
-            </div>
+          <div className="number-input-buttons">
+            <button
+              type="button"
+              onClick={handleIncrement}
+              className="spinner-button up"
+            >
+              ▲
+            </button>
+            <button
+              type="button"
+              onClick={handleDecrement}
+              className="spinner-button down"
+            >
+              ▼
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       {error && <div className="form-error">{error}</div>}
     </div>
   );
@@ -351,10 +385,14 @@ const ForceGraphRenderConfigEditor: React.FC<
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-    const newValue =
-      type === "checkbox"
-        ? (e.target as HTMLInputElement).checked
-        : parseFloat(value);
+    let newValue: any;
+    if (type === "checkbox") {
+      newValue = (e.target as HTMLInputElement).checked;
+    } else if (type === "color") {
+      newValue = value;
+    } else {
+      newValue = parseFloat(value);
+    }
 
     setFormData((prev) => {
       const updated = { ...prev, [name]: newValue };
@@ -466,17 +504,221 @@ const ForceGraphRenderConfigEditor: React.FC<
       }`}
     >
       <form onSubmit={handleSubmit}>
-        {Object.keys(formSchema).map((fieldName) => (
+        {/* Custom Table Layout */}
+        <div className="config-table">
+          <div className="table-header">
+            <div className="table-cell header-cell"></div>
+            <div className="table-cell header-cell">Nodes</div>
+            <div className="table-cell header-cell">Links</div>
+          </div>
+
+          {/* Size Row */}
+          <div className="table-row">
+            <div className="table-cell label-cell">Size</div>
+            <div className="table-cell">
+              <FormField
+                name="nodeSize"
+                value={(formData as any).nodeSize}
+                error={errors.nodeSize}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="linkWidth"
+                value={(formData as any).linkWidth}
+                error={errors.linkWidth}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          </div>
+
+          {/* Opacity Row */}
+          <div className="table-row">
+            <div className="table-cell label-cell">Opacity</div>
+            <div className="table-cell">
+              <FormField
+                name="nodeOpacity"
+                value={(formData as any).nodeOpacity}
+                error={errors.nodeOpacity}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="linkOpacity"
+                value={(formData as any).linkOpacity}
+                error={errors.linkOpacity}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          </div>
+
+          {/* Labels Row */}
+          <div className="table-row">
+            <div className="table-cell label-cell">Labels</div>
+            <div className="table-cell">
+              <FormField
+                name="nodeTextLabels"
+                value={(formData as any).nodeTextLabels}
+                error={errors.nodeTextLabels}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="linkTextLabels"
+                value={(formData as any).linkTextLabels}
+                error={errors.linkTextLabels}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          </div>
+
+          {/* Font Size Row */}
+          <div className="table-row">
+            <div className="table-cell label-cell">Font Size</div>
+            <div className="table-cell">
+              <FormField
+                name="fontSize"
+                value={(formData as any).fontSize}
+                error={errors.fontSize}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <div className="empty-cell"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Background Color Row */}
+        <div className="section-header">Display</div>
+        <div className="form-field-group-2">
+          <div className="form-label">Background Color</div>
           <FormField
-            key={fieldName}
-            name={fieldName}
-            value={(formData as any)[fieldName]}
-            error={errors[fieldName]}
+            name="backgroundColor"
+            value={(formData as any).backgroundColor}
+            error={errors.backgroundColor}
             onChange={handleChange}
             schema={formSchema}
             isDarkMode={isDarkMode}
           />
-        ))}
+        </div>
+
+        {/* Camera Controls */}
+        <div className="section-header">Camera</div>
+        <div className="camera-table">
+          <div className="table-row camera-header-row">
+            <div className="table-cell header-cell"></div>
+            <div className="table-cell header-cell">X</div>
+            <div className="table-cell header-cell">Y</div>
+            <div className="table-cell header-cell">Z</div>
+          </div>
+          {/* Camera Position Row */}
+          <div className="table-row">
+            <div className="table-cell label-cell">Camera Position</div>
+            <div className="table-cell">
+              <FormField
+                name="cameraPositionX"
+                value={(formData as any).cameraPositionX}
+                error={errors.cameraPositionX}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="cameraPositionY"
+                value={(formData as any).cameraPositionY}
+                error={errors.cameraPositionY}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="cameraPositionZ"
+                value={(formData as any).cameraPositionZ}
+                error={errors.cameraPositionZ}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          </div>
+          {/* Camera Target Row */}
+          <div className="table-row">
+            <div className="table-cell label-cell">Camera Target</div>
+            <div className="table-cell">
+              <FormField
+                name="cameraTargetX"
+                value={(formData as any).cameraTargetX}
+                error={errors.cameraTargetX}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="cameraTargetY"
+                value={(formData as any).cameraTargetY}
+                error={errors.cameraTargetY}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+            <div className="table-cell">
+              <FormField
+                name="cameraTargetZ"
+                value={(formData as any).cameraTargetZ}
+                error={errors.cameraTargetZ}
+                onChange={handleChange}
+                schema={formSchema}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Initial Zoom */}
+        <div className="zoom-group">
+          <div className="zoom-label">Initial Zoom</div>
+          <div className="zoom-input">
+            <FormField
+              name="initialZoom"
+              value={(formData as any).initialZoom}
+              error={errors.initialZoom}
+              onChange={handleChange}
+              schema={formSchema}
+              isDarkMode={isDarkMode}
+            />
+          </div>
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="apply-button">
+            Apply Changes
+          </button>
+        </div>
       </form>
     </div>
   );

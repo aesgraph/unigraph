@@ -256,6 +256,38 @@
   text-decoration-color: #a0aec0;
 }
 
+.selectionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  color: white;
+  cursor: default;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.selectionButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.selectionLabel {
+  color: #a0aec0;
+  font-weight: normal;
+}
+
+.selectionName {
+  color: white;
+  font-weight: normal;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .workspacePanel {
   position: absolute;
   bottom: 35px;

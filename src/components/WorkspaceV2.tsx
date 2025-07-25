@@ -1,4 +1,9 @@
+import { SceneGraph } from "@/core/model/SceneGraph";
 import { getActiveView, getCurrentSceneGraph } from "@/store/appConfigStore";
+import useGraphInteractionStore, {
+  getSelectedNodeId,
+} from "@/store/graphInteractionStore";
+import useWorkspaceConfigStore from "@/store/workspaceConfigStore";
 import { useWorkspace } from "@aesgraph/app-shell";
 import "@aesgraph/app-shell/app-shell.css";
 import React, { useState } from "react";
@@ -11,7 +16,7 @@ import AppShellView from "./views/AppShellView";
 // Props interface that matches what Workspace needs
 interface WorkspaceV2Props {
   menuConfig: any;
-  currentSceneGraph: any;
+  currentSceneGraph: SceneGraph;
   isDarkMode: boolean;
   selectedSimulation: string;
   simulations: any;
@@ -66,12 +71,17 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
   } = useDialogStore();
 
   // Get workspace context
-  const { savedWorkspaces, currentWorkspace, applyWorkspaceLayout } =
+  const { currentWorkspace, savedWorkspaces, applyWorkspaceLayout } =
     useWorkspace();
+  // Filter out autosave workspaces
+  const visibleWorkspaces = savedWorkspaces.filter(
+    (w) => w.name !== "Autosaved"
+  );
+  const { setRightActiveSection } = useWorkspaceConfigStore();
+  const { selectedNodeIds } = useGraphInteractionStore();
 
-  // Get current scene graph name
   const currentGraphName =
-    getCurrentSceneGraph()?.getMetadata()?.name || "No Graph";
+    currentSceneGraph?.getMetadata()?.name || "No Project Loaded";
 
   // State for hover panel
   const [showHoverPanel, setShowHoverPanel] = useState(false);
@@ -264,6 +274,29 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
             </span>
           </div>
 
+          {/* Selection Status */}
+          <div className={styles.selectionButton}>
+            <span className={styles.selectionLabel}>Selection:</span>
+            <span className={styles.selectionName}>
+              {(() => {
+                const selectedNodeId = getSelectedNodeId();
+
+                if (selectedNodeIds.size === 0) {
+                  return "None";
+                } else if (selectedNodeIds.size === 1) {
+                  // Show the node name if available, otherwise the ID
+                  const nodeId =
+                    selectedNodeId || Array.from(selectedNodeIds)[0];
+                  const node = currentSceneGraph?.getGraph()?.getNode(nodeId);
+                  return node?.getLabel() || nodeId;
+                } else {
+                  // Show count for multiple selections
+                  return `${selectedNodeIds.size} nodes`;
+                }
+              })()}
+            </span>
+          </div>
+
           {/* Hover Panel */}
           {showHoverPanel && sceneGraph && (
             <div
@@ -348,7 +381,7 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
               </div>
               <div className={styles.workspacePanelContent}>
                 <div className={styles.workspaceGrid}>
-                  {savedWorkspaces.map((workspace) => (
+                  {visibleWorkspaces.map((workspace) => (
                     <div
                       key={workspace.id}
                       className={styles.workspaceOption}

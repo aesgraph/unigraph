@@ -9,6 +9,7 @@ import {
   Node,
   OnInit,
   OnSelectionChangeParams,
+  Position,
   ReactFlow,
   ReactFlowInstance,
   ReactFlowProvider,
@@ -17,6 +18,7 @@ import {
 } from "@xyflow/react";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { SelectionMode } from "reactflow";
+import { RenderingManager } from "../../controllers/RenderingManager";
 import {
   MOUSE_HOVERED_NODE_COLOR,
   SELECTED_NODE_COLOR,
@@ -24,13 +26,16 @@ import {
 import { NodeId, createNodeId } from "../../core/model/Node";
 import { EntityIds } from "../../core/model/entity/entityIds";
 import { exportGraphDataForReactFlow } from "../../core/react-flow/exportGraphDataForReactFlow";
+import {
+  getEdgeLegendConfig,
+  getNodeLegendConfig,
+} from "../../store/activeLegendConfigStore";
 import useAppConfigStore, {
   getCurrentSceneGraph,
+  getLegendMode,
 } from "../../store/appConfigStore";
 import { useDocumentStore } from "../../store/documentStore";
 import useGraphInteractionStore, {
-  getSelectedNodeId,
-  getSelectedNodeIds,
   setHoveredNodeId,
   setSelectedNodeId,
   setSelectedNodeIds,
@@ -39,7 +44,9 @@ import {
   getReactFlowConfig,
   subscribeToReactFlowConfigChanges,
 } from "../../store/reactFlowConfigStore";
-import useWorkspaceConfigStore from "../../store/workspaceConfigStore";
+import useWorkspaceConfigStore, {
+  setRightActiveSection,
+} from "../../store/workspaceConfigStore";
 import CustomNode from "./ReactFlow/nodes/CustomNode";
 import WebpageNode from "./ReactFlow/nodes/WebpageNode";
 import ResizerNode from "./ReactFlow/nodes/resizerNode";
@@ -47,11 +54,11 @@ import ResizerNode from "./ReactFlow/nodes/resizerNode";
 import "@xyflow/react/dist/style.css";
 import { EdgeId } from "../../core/model/Edge";
 
-// Node types mapping - simplified to avoid type conflicts
+// Node types mapping - using the exact same as ReactFlowPanel
 const nodeTypes = {
-  default: CustomNode,
+  customNode: CustomNode,
+  resizerNode: ResizerNode,
   webpage: WebpageNode,
-  resizer: ResizerNode,
 };
 
 // CSS styles for node selection and container constraints
@@ -59,24 +66,37 @@ const nodeStyles = document.createElement("style");
 nodeStyles.textContent = `
   .react-flow__node.selected {
     box-shadow: 0 0 0 2px ${SELECTED_NODE_COLOR} !important;
+    border: 2px solid ${SELECTED_NODE_COLOR} !important;
+    border-radius: 4px !important;
   }
-  .react-flow__node.hovered {
+
+  .react-flow__node-customNode.selected, .react-flow__node-resizerNode.selected {
+    outline: 2px solid ${SELECTED_NODE_COLOR} !important;
+    outline-offset: 2px;
+  }
+  
+  /* Add hover styles */
+  .react-flow__node:hover {
     box-shadow: 0 0 0 2px ${MOUSE_HOVERED_NODE_COLOR} !important;
+    border: 2px solid ${MOUSE_HOVERED_NODE_COLOR} !important;
+    border-radius: 4px !important;
   }
   
-  /* Ensure ReactFlow stays within its container */
-  .react-flow-panel-v2-container .react-flow {
-    position: relative !important;
-    width: 100% !important;
-    height: 100% !important;
+  .react-flow__node-customNode:hover:not(.selected), .react-flow__node-resizerNode:hover:not(.selected) {
+    outline: 2px solid ${MOUSE_HOVERED_NODE_COLOR} !important;
+    outline-offset: 2px;
   }
   
-  .react-flow-panel-v2-container .react-flow__viewport {
-    position: relative !important;
+  /* Make the selection rectangle not capture mouse events */
+  .react-flow__nodesselection-rect {
+    pointer-events: none !important;
+    z-index: 0 !important;
   }
   
-  .react-flow-panel-v2-container .react-flow__pane {
-    position: relative !important;
+  /* Ensure nodes remain clickable even when inside selection */
+  .react-flow__node {
+    pointer-events: all !important;
+    z-index: 10 !important;
   }
 `;
 
@@ -93,20 +113,13 @@ const ReactFlowStyles: React.FC<{ theme: any }> = ({ theme }) => {
         box-shadow: 0 0 0 2px ${MOUSE_HOVERED_NODE_COLOR} !important;
       }
       
-      /* Ensure ReactFlow stays within its container */
+      /* Ensure ReactFlow stays within its container - but don't override positioning */
       .react-flow-panel-v2-container .react-flow {
-        position: relative !important;
         width: 100% !important;
         height: 100% !important;
       }
       
-      .react-flow-panel-v2-container .react-flow__viewport {
-        position: relative !important;
-      }
-      
-      .react-flow-panel-v2-container .react-flow__pane {
-        position: relative !important;
-      }
+      /* Don't override viewport and pane positioning as it breaks drag selection */
       
       /* Theme the ReactFlow controls */
       .react-flow-panel-v2-container .react-flow__controls {
@@ -170,35 +183,73 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
   const selectionChangeRef = useRef(false);
 
+  const sceneGraph = getCurrentSceneGraph();
+  const reactFlowConfig = getReactFlowConfig();
+  const { setActiveDocument } = useDocumentStore();
   const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
   const { getActiveSection } = useWorkspaceConfigStore();
-  const { setActiveDocument } = useDocumentStore();
-  const { setActiveView, activeView, setReactFlowInstance } =
-    useAppConfigStore();
+  const { setActiveView: setAppActiveView, activeView } = useAppConfigStore();
 
-  // Get current scene graph
-  const sceneGraph = getCurrentSceneGraph();
+  // Get legend configurations for reactivity
+  const nodeLegendConfig = getNodeLegendConfig();
+  const edgeLegendConfig = getEdgeLegendConfig();
+  const legendMode = getLegendMode();
 
-  // Get configuration from the store
-  const reactFlowConfig = getReactFlowConfig();
-
-  // Export graph data for ReactFlow
+  // Export graph data for ReactFlow - using same approach as ReactFlow v1
   const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
     if (!sceneGraph) {
       return { nodes: [], edges: [] };
     }
-    return exportGraphDataForReactFlow(sceneGraph);
-  }, [sceneGraph]);
 
-  // PRE-PROCESS nodes to include selection state from global store
+    const data = exportGraphDataForReactFlow(sceneGraph);
+
+    // Apply the same styling as ReactFlow v1
+    const nodesWithPositions = data.nodes.map((node) => ({
+      ...node,
+      type: (node?.type ?? "") in nodeTypes ? node.type : "resizerNode", // Match main ReactFlow logic
+      style: {
+        background: RenderingManager.getColor(
+          sceneGraph.getGraph().getNode(node.id as NodeId),
+          nodeLegendConfig,
+          legendMode
+        ),
+        color: "#000000",
+      },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
+    }));
+
+    const edgesWithStyling = data.edges.map((edge) => ({
+      ...edge,
+      type: "default",
+      style: {
+        stroke: RenderingManager.getColor(
+          sceneGraph.getGraph().getEdge(edge.id as EdgeId),
+          edgeLegendConfig,
+          legendMode
+        ),
+      },
+      labelStyle: {
+        fill: RenderingManager.getColor(
+          sceneGraph.getGraph().getEdge(edge.id as EdgeId),
+          edgeLegendConfig,
+          legendMode
+        ),
+        fontWeight: 700,
+      },
+    }));
+
+    return {
+      nodes: nodesWithPositions,
+      edges: edgesWithStyling,
+    };
+  }, [sceneGraph, nodeLegendConfig, edgeLegendConfig, legendMode]);
+
+  // PRE-PROCESS nodes without selection state - let ReactFlow handle selection internally
   const processedNodes = useMemo(() => {
-    const selectedNodeId = getSelectedNodeId();
-    const selectedNodeIds = getSelectedNodeIds();
-
     return initialNodes.map((node) => ({
       ...node,
-      selected:
-        node.id === selectedNodeId || selectedNodeIds.has(node.id as NodeId),
+      selected: false, // Let ReactFlow manage selection state
     }));
   }, [initialNodes]);
 
@@ -225,6 +276,14 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     [originalOnEdgesChange]
   );
 
+  // Add the selection styles to the document head
+  useEffect(() => {
+    document.head.appendChild(nodeStyles);
+    return () => {
+      document.head.removeChild(nodeStyles);
+    };
+  }, []);
+
   // Update nodes when processedNodes change
   useEffect(() => {
     setNodes(processedNodes);
@@ -239,7 +298,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const handleInit: OnInit = useCallback(
     (instance: ReactFlowInstance) => {
       reactFlowInstance.current = instance;
-      setReactFlowInstance(instance);
+      // setReactFlowInstance(instance); // This line was removed as per the edit hint
 
       // Custom fit view for large graphs
       setTimeout(() => {
@@ -260,7 +319,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
         }
       }, 100);
     },
-    [setReactFlowInstance, nodes.length]
+    [nodes.length]
   );
 
   // Subscribe to ReactFlowConfig changes
@@ -300,11 +359,43 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     };
   }, [selectedNodeIds, selectedEdgeIds]);
 
+  // Critical effect: Update ReactFlow nodes when global selection state changes
+  // This ensures selections from other views (like ForceGraph3D) are reflected here
+  useEffect(() => {
+    if (reactFlowInstance.current) {
+      reactFlowInstance.current.setNodes((currentNodes) =>
+        currentNodes.map((n) => ({
+          ...n,
+          selected: selectedNodeIds.has(n.id as NodeId),
+        }))
+      );
+      reactFlowInstance.current.setEdges((currentEdges) =>
+        currentEdges.map((e) => ({
+          ...e,
+          selected: selectedEdgeIds.has(e.id as EdgeId),
+        }))
+      );
+    }
+  }, [selectedNodeIds, selectedEdgeIds]);
+
+  // Don't sync selection state automatically - let ReactFlow and our handlers manage it
+  // The sync effect was causing conflicts with ReactFlow's internal selection management
+
   // Handle node interactions
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    event.stopPropagation();
+    console.log("Node clicked:", node.id);
+    selectionChangeRef.current = true;
+
     const nodeId = createNodeId(node.id);
     setSelectedNodeId(nodeId);
     setSelectedNodeIds(new EntityIds([nodeId]));
+
+    // Open the node details panel
+    // setRightActiveSection("node-details");
+
+    // Don't manually update ReactFlow nodes - let ReactFlow handle selection state
+    // The manual update was causing conflicts with the selection change handler
   }, []);
 
   const handleNodeMouseEnter = useCallback(
@@ -321,36 +412,63 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const handleNodeDoubleClick = useCallback(
     (event: React.MouseEvent, node: Node) => {
       // Open document editor for the node
-      setActiveDocument(createNodeId(node.id));
-      setActiveView("document-editor");
+      setActiveDocument(node.id as NodeId);
+      setAppActiveView("document-editor");
     },
-    [setActiveDocument, setActiveView]
+    [setActiveDocument, setAppActiveView]
   );
 
   const handleSelectionChange = useCallback(
     (params: OnSelectionChangeParams) => {
+      console.log("handleSelectionChange called with:", params);
+
+      // Skip if this selection change was triggered by our node click handler
       if (selectionChangeRef.current) {
         selectionChangeRef.current = false;
+        console.log("Skipping selection change - triggered by node click");
         return;
       }
 
-      const selectedNodeIds = new EntityIds(
+      if (!params.nodes || params.nodes.length === 0) {
+        console.log("Clearing selection in handleSelectionChange");
+        setSelectedNodeIds(new EntityIds([]));
+        setSelectedNodeId(null);
+        return;
+      }
+
+      const newSelectedNodeIds = new EntityIds(
         params.nodes.map((node) => createNodeId(node.id))
       );
-      setSelectedNodeIds(selectedNodeIds);
+      console.log(
+        "Setting selection from handleSelectionChange:",
+        newSelectedNodeIds
+      );
+      setSelectedNodeIds(newSelectedNodeIds);
 
       if (params.nodes.length === 1) {
+        // Single node selection
+        console.log("Single node selection - setting selected node ID");
         setSelectedNodeId(createNodeId(params.nodes[0].id));
-      } else {
-        setSelectedNodeId(null);
       }
+      // For multi-node selection, don't touch the single node ID at all
+
+      // Always open the node details panel for any selection
+      // setRightActiveSection("node-details");
     },
     []
   );
 
   const handlePaneClick = useCallback(() => {
+    console.log("Pane clicked - clearing selection");
+    // Clear selection in global store for both single and multi-select
     setSelectedNodeId(null);
     setSelectedNodeIds(new EntityIds([]));
+
+    // Don't manually update ReactFlow nodes - let ReactFlow handle selection clearing
+    // The manual update was causing conflicts
+
+    // Close the node details panel if it's open
+    setRightActiveSection(null);
   }, []);
 
   const handleNodeContextMenu = useCallback(
@@ -389,8 +507,6 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
         height: "100%",
         position: "relative",
         overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
       }}
     >
       <ReactFlowStyles theme={theme} />
@@ -402,7 +518,6 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
           padding: 0,
           overflow: "hidden",
           position: "relative",
-          flex: 1,
         }}
         ref={reactFlowWrapper}
       >

@@ -1,3 +1,4 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import {
   Background,
   BackgroundVariant,
@@ -16,7 +17,6 @@ import {
 } from "@xyflow/react";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { SelectionMode } from "reactflow";
-import { useTheme, getColor } from "@aesgraph/app-shell";
 import { Annotation } from "../../../api/annotationsApi";
 import {
   MOUSE_HOVERED_NODE_COLOR,
@@ -37,9 +37,7 @@ import {
   getReactFlowConfig,
   subscribeToReactFlowConfigChanges,
 } from "../../../store/reactFlowConfigStore";
-import useWorkspaceConfigStore, {
-  setRightActiveSection,
-} from "../../../store/workspaceConfigStore";
+import { setRightActiveSection } from "../../../store/workspaceConfigStore";
 import CustomNode from "./nodes/CustomNode";
 import WebpageNode from "./nodes/WebpageNode";
 
@@ -177,7 +175,6 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
   const selectionChangeRef = useRef(false);
 
   const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
-  const { getActiveSection } = useWorkspaceConfigStore();
   const { setActiveDocument } = useDocumentStore();
   const { setActiveView, activeView } = useAppConfigStore();
 
@@ -292,16 +289,15 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
       if (selectedNodes.length === 1) {
         // Single node selection
         setSelectedNodeId(selectedNodes[0].id as NodeId);
-        if (getActiveSection("right") === null) {
-          // setRightActiveSection("node-details");
-        }
+        // setRightActiveSection("node-details");
       } else {
         // Multi-node selection
         const nodeIds = selectedNodes.map((node) => node.id as NodeId);
         setSelectedNodeIds(new EntityIds(nodeIds));
+        // setRightActiveSection("node-details");
       }
     },
-    [getActiveSection]
+    []
   );
 
   // Handle node hover

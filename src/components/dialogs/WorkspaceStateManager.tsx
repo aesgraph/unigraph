@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useAppShell } from "@aesgraph/app-shell";
 import type { WorkspaceState } from "@aesgraph/app-shell";
-import { Play, Edit, Copy, Trash2, Check, X } from "lucide-react";
+import { useAppShell } from "@aesgraph/app-shell";
+import { Check, Copy, Edit, Play, Trash2, X } from "lucide-react";
+import React, { useState } from "react";
 
 interface WorkspaceStateManagerProps {
   onClose?: () => void;
@@ -84,6 +84,11 @@ const WorkspaceStateManager: React.FC<WorkspaceStateManagerProps> = ({
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleString();
   };
+
+  // Filter out autosave workspaces
+  const visibleWorkspaces = savedWorkspaces.filter(
+    (w) => w.name !== "Autosaved"
+  );
 
   return (
     <div
@@ -176,9 +181,9 @@ const WorkspaceStateManager: React.FC<WorkspaceStateManagerProps> = ({
       {/* Saved Workspaces */}
       <div>
         <h3 style={{ margin: "0 0 15px 0", fontSize: "14px" }}>
-          Saved Workspaces ({savedWorkspaces.length})
+          Saved Workspaces ({visibleWorkspaces.length})
         </h3>
-        {savedWorkspaces.length === 0 ? (
+        {visibleWorkspaces.length === 0 ? (
           <div
             style={{
               textAlign: "center",
@@ -190,7 +195,7 @@ const WorkspaceStateManager: React.FC<WorkspaceStateManagerProps> = ({
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {savedWorkspaces.map((workspace) => (
+            {visibleWorkspaces.map((workspace) => (
               <div
                 key={workspace.id}
                 style={{

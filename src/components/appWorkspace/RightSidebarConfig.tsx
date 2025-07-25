@@ -5,10 +5,8 @@ import {
   List,
   MessageCircle,
   MessageSquare,
-  MoveIcon,
   Scan,
   Settings2,
-  SquareDashedMousePointerIcon,
   Table2,
 } from "lucide-react";
 import React from "react";
@@ -25,7 +23,6 @@ import ForceGraphLayoutRadio from "../views/ForceGraph3d/ForceGraphLayoutRadio";
 import styles from "./Sidebar.module.css";
 
 // Add this import
-import { toggleForceGraphMouseControls } from "../../store/sceneGraphHooks";
 import AIChatPanel from "../ai/AIChatPanel";
 import { ChatGptPanel } from "../applets/ChatGptImporter/ChatGptPanel";
 
@@ -193,28 +190,6 @@ export const rightFooterContent = (
 
   return (
     <nav className={styles.nav}>
-      {actions?.details?.activeView === "ForceGraph3d" && (
-        <div className={styles.menuItem}>
-          <button
-            className={`${styles.menuButton} ${styles.filterButton}`}
-            onClick={toggleForceGraphMouseControls}
-            title="Controls Mode"
-          >
-            {actions.details?.mouseControls === "orbital" ? (
-              <MoveIcon size={20} className={styles.menuIcon} />
-            ) : (
-              <SquareDashedMousePointerIcon
-                size={20}
-                className={styles.menuIcon}
-              />
-            )}
-
-            {isOpen && (
-              <span className={styles.menuText}>Toggle Mouse Controls</span>
-            )}
-          </button>
-        </div>
-      )}
       {/* Show Clear Filters button only when filters are active */}
       {hasActiveFilter && actions.onClearFilters && (
         <div className={styles.menuItem}>

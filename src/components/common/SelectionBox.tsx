@@ -6,7 +6,7 @@ const SelectionBox: React.FC = () => {
 
   if (!selectionBox.isActive) return null;
 
-  // Calculate position and dimensions
+  // Calculate position and dimensions (now local to parent container)
   const left = Math.min(selectionBox.startX, selectionBox.endX);
   const top = Math.min(selectionBox.startY, selectionBox.endY);
   const width = Math.abs(selectionBox.endX - selectionBox.startX);
@@ -23,7 +23,7 @@ const SelectionBox: React.FC = () => {
   return (
     <div
       style={{
-        position: "fixed",
+        position: "absolute",
         left,
         top,
         width,

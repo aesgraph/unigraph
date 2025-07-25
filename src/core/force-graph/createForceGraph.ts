@@ -51,6 +51,7 @@ import {
   getActiveSection,
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
+import { getLocalCoords } from "../../utils/getLocalCoords";
 import { ILayoutEngineResult } from "../layouts/layoutEngineTypes";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EdgeId } from "../model/Edge";
@@ -84,6 +85,7 @@ export const createForceGraph = (
     .nodeLabel("label")
     .nodeColor((node) => {
       if (getHoveredNodeIds().has(node.id as NodeId)) {
+        console.log("hovered node is ", node.id);
         return MOUSE_HOVERED_NODE_COLOR;
       } else if (
         getSelectedNodeId() === node.id ||
@@ -520,7 +522,8 @@ export const bindEventsToGraphInstance = (
           getHoveredNodeIds().size === 0
         ) {
           isDragging = true;
-          startSelectionBox(event.clientX, event.clientY, event.shiftKey);
+          const { x, y } = getLocalCoords(event, container);
+          startSelectionBox(x, y, event.shiftKey);
           // event.preventDefault();
         }
       }
@@ -533,7 +536,8 @@ export const bindEventsToGraphInstance = (
         isDragging &&
         !getIsDraggingNode()
       ) {
-        updateSelectionBox(event.clientX, event.clientY);
+        const { x, y } = getLocalCoords(event, container);
+        updateSelectionBox(x, y);
         event.preventDefault();
       }
     });
@@ -543,13 +547,7 @@ export const bindEventsToGraphInstance = (
       if (controlMode === "multiselection" && isDragging) {
         isDragging = false;
         endSelectionBox();
-
-        // Select nodes that are within the selection box
-        const adjustedSelectionBox = { ...getSelectionBox() };
-        adjustedSelectionBox.startY = adjustedSelectionBox.startY - 45; //@warn: this is a hack for the uniapptoolbar. forcegraph screencoords are relative to the forcegraph container. seleectionBox coords are relative to the full app container
-        adjustedSelectionBox.endY = adjustedSelectionBox.endY - 45;
-        selectNodesInSelectionBox(graph, sceneGraph, adjustedSelectionBox);
-
+        selectNodesInSelectionBox(graph, sceneGraph, getSelectionBox());
         event.preventDefault();
       }
     });
