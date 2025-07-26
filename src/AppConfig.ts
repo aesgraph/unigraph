@@ -68,7 +68,7 @@ export type AppConfig = {
 
 export const DEFAULT_APP_CONFIG = (): AppConfig => {
   return {
-    activeView: "ReactFlow",
+    activeView: "AppShell",
     activeSceneGraph: "Empty",
     windows: {
       showEntityDataCard: false,

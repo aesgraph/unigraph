@@ -26,26 +26,26 @@ export const convertThemeToAgGrid = (theme: Theme): Record<string, string> => {
     "--ag-row-border-color": theme.colors.border,
     "--ag-cell-horizontal-border": `solid ${theme.colors.border}`,
 
-    // Cell styling
-    "--ag-cell-horizontal-padding": theme.sizes.spacing.sm,
-    "--ag-cell-widget-spacing": theme.sizes.spacing.xs,
-    "--ag-widget-container-vertical-padding": theme.sizes.spacing.xs,
-    "--ag-widget-container-horizontal-padding": theme.sizes.spacing.sm,
-    "--ag-widget-vertical-spacing": theme.sizes.spacing.xs,
-    "--ag-widget-horizontal-spacing": theme.sizes.spacing.xs,
+    // Cell styling - Minimize padding for edge-to-edge display
+    "--ag-cell-horizontal-padding": "0px",
+    "--ag-cell-widget-spacing": "0px",
+    "--ag-widget-container-vertical-padding": "0px",
+    "--ag-widget-container-horizontal-padding": "0px",
+    "--ag-widget-vertical-spacing": "0px",
+    "--ag-widget-horizontal-spacing": "0px",
 
     // Typography
     "--ag-font-family":
       "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    "--ag-font-size": theme.sizes.fontSize.sm,
+    "--ag-font-size": "12px",
     "--ag-font-weight": "400",
     "--ag-font-weight-bold": "600",
 
     // Spacing and sizing
     "--ag-grid-size": "6px",
     "--ag-list-item-height": "40px",
-    "--ag-header-height": "50px",
-    "--ag-row-height": "48px",
+    "--ag-header-height": "40px",
+    "--ag-row-height": "32px",
     "--ag-border-radius": theme.sizes.borderRadius.sm,
     "--ag-grid-border-radius": theme.sizes.borderRadius.sm,
 
@@ -123,5 +123,11 @@ export const createThemedAgGridContainer = (
     height: "100%",
     display: "flex",
     flexDirection: "column",
+    overflow: "hidden", // Prevent container scrollbars, let AG Grid handle its own
+    margin: "0",
+    padding: "0",
+    // Additional AG Grid padding overrides
+    "--ag-wrapper-border-radius": "0",
+    "--ag-borders": "none",
   } as React.CSSProperties;
 };

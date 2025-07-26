@@ -178,8 +178,20 @@ export const initialWorkspaces: WorkspaceState[] = [
         ],
         activeTabId: "react-flow-panel-v2",
       },
+      {
+        id: "bottom",
+        tabs: [
+          {
+            id: "entity-table-v2",
+            title: "Entity Table",
+            content: "entity-table-v2",
+            closable: false,
+          },
+        ],
+        activeTabId: "entity-table-v2",
+      },
     ],
-    theme: "dark",
+    theme: "dracula",
   },
   {
     id: "force-graph-3d-expanded",

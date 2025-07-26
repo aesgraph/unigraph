@@ -25,7 +25,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@aesgraph/app-shell": "^1.0.12",
+    "@aesgraph/app-shell": "file:../app-shell",
     "@codemirror/legacy-modes": "^6.5.1",
     "@codemirror/theme-one-dark": "^6.1.3",
     "@emotion/react": "^11.14.0",

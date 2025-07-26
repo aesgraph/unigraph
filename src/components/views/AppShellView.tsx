@@ -13,19 +13,19 @@ import {
 } from "@aesgraph/app-shell";
 import "@aesgraph/app-shell/app-shell.css";
 import React from "react";
-import { getCurrentSceneGraph } from "../../store/appConfigStore";
+import useAppConfigStore from "../../store/appConfigStore";
 import AIChatPanel from "../ai/AIChatPanel";
+import LexicalEditorV2 from "../applets/Lexical/LexicalEditor";
 import WikipediaArticleViewer_FactorGraph from "../applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
 import EntityTableV2 from "../common/EntityTableV2";
 import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
+import AboutView from "./AboutView";
+import DevToolsView from "./DevToolsView";
 import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
 import NodeLegendView from "./NodeLegendView";
-import SystemMonitorView from "./SystemMonitorView";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
-import AboutView from "./AboutView";
-import DevToolsView from "./DevToolsView";
-import LexicalEditorV2 from "../applets/Lexical/LexicalEditor";
+import SystemMonitorView from "./SystemMonitorView";
 
 // Create custom views that include our AIChatPanel and SemanticWebQueryPanel
 const aiChatView = {
@@ -92,24 +92,32 @@ const edgeLegendView = {
 
 // EntityTableV2 wrapper component
 const EntityTableV2Wrapper: React.FC = () => {
-  const sceneGraph = getCurrentSceneGraph();
+  const { currentSceneGraph } = useAppConfigStore();
 
-  if (!sceneGraph) {
+  if (!currentSceneGraph) {
     return (
-      <div style={{ padding: "20px", textAlign: "center" }}>
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <p>No scene graph available. Please load a graph first.</p>
       </div>
     );
   }
 
   // Get all entities from the scene graph
-  const allNodes = sceneGraph.getGraph().getNodes();
+  const allNodes = currentSceneGraph.getGraph().getNodes();
 
   return (
-    <div style={{ height: "100%", width: "100%", padding: "10px" }}>
+    <div style={{ height: "100%", width: "100%", overflow: "hidden" }}>
       <EntityTableV2
         container={allNodes}
-        sceneGraph={sceneGraph}
+        sceneGraph={currentSceneGraph}
         maxHeight="100%"
       />
     </div>
@@ -833,23 +841,61 @@ const customUnigraphTheme: Theme = {
 // Note: In a real implementation, this could be done via a theme registration API
 Object.assign(themes, { "unigraph-custom": customUnigraphTheme });
 
+registerViews(allViews);
+
 const AppShellView: React.FC = () => {
-  // Register views when component mounts
-  React.useEffect(() => {
-    console.log(
-      "AppShellView: Registering views:",
-      allViews.map((v) => ({
-        id: v.id,
-        title: v.title,
-        category: (v as any).category,
-      }))
-    );
-    registerViews(allViews);
-  }, []);
+  // Create default layout configuration for Graph Visualization workspace
+  const createDefaultLayoutConfig = () => ({
+    layout: [0, 50, 50] as [number, number, number], // 0% left, 50% center, 50% right
+    bottomHeight: 25,
+    panes: {
+      left: {
+        tabs: [
+          {
+            id: "system-monitor",
+            title: "System Monitor",
+            content: "system-monitor",
+          },
+        ],
+        activeTabId: "system-monitor",
+      },
+      center: {
+        tabs: [
+          {
+            id: "force-graph-3d-v2",
+            title: "ForceGraph 3D",
+            content: "force-graph-3d-v2",
+          },
+        ],
+        activeTabId: "force-graph-3d-v2",
+      },
+      right: {
+        tabs: [
+          {
+            id: "react-flow-panel-v2",
+            title: "React Flow",
+            content: "react-flow-panel-v2",
+          },
+        ],
+        activeTabId: "react-flow-panel-v2",
+      },
+      bottom: {
+        tabs: [
+          {
+            id: "entity-table-v2",
+            title: "Entity Table",
+            content: "entity-table-v2",
+          },
+        ],
+        activeTabId: "entity-table-v2",
+      },
+    },
+    maximizedPane: null,
+  });
 
   return (
     // <div className={styles.appContainer}>
-    <LayoutManager />
+    <LayoutManager initialConfig={createDefaultLayoutConfig()} />
     // </div>
   );
 };
