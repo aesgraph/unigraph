@@ -113,8 +113,22 @@ const ReactFlowStyles: React.FC<{ theme: any }> = ({ theme }) => {
         box-shadow: 0 0 0 2px ${MOUSE_HOVERED_NODE_COLOR} !important;
       }
       
-      /* Ensure ReactFlow stays within its container - but don't override positioning */
+      /* Ensure ReactFlow stays within its container and handles resizing properly */
       .react-flow-panel-v2-container .react-flow {
+        width: 100% !important;
+        height: 100% !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+      
+      /* Ensure ReactFlow viewport handles resizing */
+      .react-flow-panel-v2-container .react-flow__viewport {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      
+      /* Ensure ReactFlow pane handles resizing */
+      .react-flow-panel-v2-container .react-flow__pane {
         width: 100% !important;
         height: 100% !important;
       }
@@ -358,6 +372,32 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
       unsubscribe();
     };
   }, [selectedNodeIds, selectedEdgeIds]);
+
+  // Handle container resize for AppShell pane changes
+  useEffect(() => {
+    if (!reactFlowWrapper.current || !reactFlowInstance.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      // Trigger ReactFlow to recalculate its dimensions
+      if (reactFlowInstance.current) {
+        // Small delay to ensure DOM has updated
+        setTimeout(() => {
+          reactFlowInstance.current?.fitView({
+            padding: 0.2,
+            includeHiddenNodes: false,
+            minZoom: 0.01,
+            maxZoom: 2,
+          });
+        }, 50);
+      }
+    });
+
+    resizeObserver.observe(reactFlowWrapper.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [reactFlowInstance.current]);
 
   // Critical effect: Update ReactFlow nodes when global selection state changes
   // This ensures selections from other views (like ForceGraph3D) are reflected here
