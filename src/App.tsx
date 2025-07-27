@@ -66,11 +66,11 @@ import InitialWorkspaceLoader from "./components/InitialWorkspaceLoader";
 import NodeDocumentEditor from "./components/NodeDocumentEditor";
 import SaveAsNewProjectDialog from "./components/projects/SaveAsNewProjectDialog";
 import { SemanticWebQueryProvider } from "./components/semantic/SemanticWebQueryContext";
-import SemanticWebQueryPanel from "./components/semantic/SemanticWebQueryPanel";
 import { enableZoomAndPanOnSvg } from "./components/svg/appHelpers";
 import ForceGraphRenderConfigEditor from "./components/views/ForceGraph3d/ForceGraphRenderConfigEditor";
 import { WorkspaceLayoutTool } from "./components/workspace/WorkspaceLayoutTool";
 import { getHotkeyConfig } from "./configs/hotkeyConfig";
+import { ApiProviderProvider } from "./context/ApiProviderContext";
 import { AppProvider, useAppContext } from "./context/AppContext";
 import {
   MousePositionProvider,
@@ -255,7 +255,6 @@ export type RenderingView =
   | "Gallery" // Add new view type
   | "AppShell" // Add new view type
   | "Simulation"
-  | "Yasgui" // Add new view type
   | "Editor"; // Add new view type
 
 const AppContent = ({
@@ -727,7 +726,7 @@ const AppContentInner = ({
   const handleCreateNode = useCallback(() => {
     setIsNodeEditorOpen(true);
     setContextMenu(null);
-  }, []);
+  }, [setContextMenu]);
 
   const handleCreateNodeSubmit = useCallback(
     (newNodeData: NodeDataArgs) => {
@@ -1382,11 +1381,12 @@ const AppContentInner = ({
       window.history.pushState({}, "", url.toString());
     },
     [
-      handleFitToView,
+      lastWorkspaceLayout,
       setActiveView,
       saveCurrentLayout,
+      getAllWorkspaces,
       applyWorkspaceLayout,
-      lastWorkspaceLayout,
+      handleFitToView,
     ]
   );
 
@@ -1959,7 +1959,13 @@ const AppContentInner = ({
       );
     }
     return null;
-  }, [activeView, showDisplayConfig, isDarkMode]);
+  }, [
+    activeView,
+    showDisplayConfig,
+    isDarkMode,
+    handleApplyForceGraphConfig,
+    currentSceneGraph,
+  ]);
 
   const _handleUpdateForceGraphScene = useCallback(
     (sceneGraph: SceneGraph) => {
@@ -2234,7 +2240,9 @@ const AppContentInner = ({
     [
       currentSceneGraph,
       forceGraphInstance,
+      setJsonEditEntity,
       setShowPathAnalysis,
+      setContextMenu,
       handleShowDeleteDialog,
     ]
   );
@@ -2250,7 +2258,7 @@ const AppContentInner = ({
         handleShowDeleteDialog
       );
     },
-    [currentSceneGraph, handleShowDeleteDialog]
+    [currentSceneGraph, handleShowDeleteDialog, setContextMenu]
   );
 
   // Update the existing getContextMenuItems function to handle multi-node selection
@@ -2382,29 +2390,6 @@ const AppContentInner = ({
     isDarkMode,
   ]);
 
-  const maybeRenderYasgui = useMemo(() => {
-    if (activeView !== "Yasgui") {
-      return null;
-    }
-
-    return <SemanticWebQueryPanel sessionId="yasgui-panel" />;
-
-    // return (
-    //   <div
-    //     id="yasgui"
-    //     style={{
-    //       position: "absolute",
-    //       top: 0,
-    //       width: "100%",
-    //       height: "100%",
-    //       zIndex: 10,
-    //     }}
-    //   >
-    //     <YasguiPanel sceneGraph={currentSceneGraph} />
-    //   </div>
-    // );
-  }, [activeView]);
-
   const maybeRenderNodeDocumentEditor = () => {
     // Return nothing if not in Editor view or no active document
     if (!getSelectedNodeId()) {
@@ -2471,7 +2456,6 @@ const AppContentInner = ({
         {maybeRenderGraphviz}
         {maybeRenderForceGraph3D}
         {maybeRenderReactFlow}
-        {maybeRenderYasgui}
         {maybeRenderNodeDocumentEditor()}
         {activeView === "Gallery" && (
           <div
@@ -2714,21 +2698,23 @@ const App: React.FC<AppProps> = ({
   return (
     <MousePositionProvider>
       <CommandProcessorProvider>
-        <WorkspaceLayoutTool />
-        <AppShellProvider>
-          <InitialWorkspaceLoader>
-            <SemanticWebQueryProvider>
-              <AppContent
-                defaultGraph={defaultGraph}
-                svgUrl={svgUrl}
-                defaultActiveView={defaultActiveView}
-                defaultActiveLayout={defaultActiveLayout}
-                shouldShowLoadDialog={shouldShowLoadDialog}
-                defaultSerializedSceneGraph={defaultSerializedSceneGraph}
-              />
-            </SemanticWebQueryProvider>
-          </InitialWorkspaceLoader>
-        </AppShellProvider>
+        <ApiProviderProvider>
+          <WorkspaceLayoutTool />
+          <AppShellProvider>
+            <InitialWorkspaceLoader>
+              <SemanticWebQueryProvider>
+                <AppContent
+                  defaultGraph={defaultGraph}
+                  svgUrl={svgUrl}
+                  defaultActiveView={defaultActiveView}
+                  defaultActiveLayout={defaultActiveLayout}
+                  shouldShowLoadDialog={shouldShowLoadDialog}
+                  defaultSerializedSceneGraph={defaultSerializedSceneGraph}
+                />
+              </SemanticWebQueryProvider>
+            </InitialWorkspaceLoader>
+          </AppShellProvider>
+        </ApiProviderProvider>
       </CommandProcessorProvider>
       <LayoutComputationDialog />
     </MousePositionProvider>

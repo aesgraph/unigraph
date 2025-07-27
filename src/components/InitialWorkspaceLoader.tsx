@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
 import { useAppShell } from "@aesgraph/app-shell";
+import React, { useEffect } from "react";
 import initialWorkspaces from "../config/initialWorkspaces";
 
 interface InitialWorkspaceLoaderProps {
@@ -57,15 +57,15 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
       }
     });
 
-    // If we added or updated workspaces and there's no current workspace, load the AI Chat & SPARQL workspace by default
-    if (addedOrUpdatedWorkspaces) {
-      const aiChatWorkspace = getAllWorkspaces().find(
-        (ws) => ws.id === "ai-chat-workspace"
-      );
-      if (aiChatWorkspace) {
-        console.log("Loading default AI Chat & SPARQL workspace");
-        applyWorkspaceLayout("ai-chat-workspace");
-      }
+    // Always load the code-editor-workspace on startup, regardless of saved layouts
+    const codeEditorWorkspace = getAllWorkspaces().find(
+      (ws) => ws.id === "code-editor-workspace"
+    );
+    if (codeEditorWorkspace) {
+      console.log("Loading default Code Editor workspace on startup");
+      // Clear any saved layout to ensure our default loads
+      localStorage.removeItem("unigraph-last-workspace-layout");
+      applyWorkspaceLayout("code-editor-workspace");
     }
   }, [getAllWorkspaces, saveWorkspace, applyWorkspaceLayout]);
 

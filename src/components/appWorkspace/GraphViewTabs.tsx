@@ -37,13 +37,6 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
         </button>
       )}
       <button
-        className={`tab ${activeView === "Yasgui" ? "active" : ""}`}
-        style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("Yasgui", true)}
-      >
-        Yasgui
-      </button>
-      <button
         className={`tab ${activeView === "Gallery" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
         onClick={() => onViewChange("Gallery", true)}

@@ -62,7 +62,7 @@ export const initialWorkspaces: WorkspaceState[] = [
         tabs: [
           {
             id: "semantic-web-query",
-            title: "SPARQL Query",
+            title: "SPARQL Querier",
             content: "semantic-web-query",
             closable: false,
           },
@@ -366,6 +366,50 @@ export const initialWorkspaces: WorkspaceState[] = [
           },
         ],
         activeTabId: "ai-chat",
+      },
+    ],
+    theme: "dark",
+  },
+  {
+    id: "code-editor-workspace",
+    name: "Code Editor",
+    timestamp: Date.now(),
+    config: {
+      description: "Workspace for writing code with monaco and ai chat",
+    },
+    layout: {
+      horizontal: [40, 0, 60], // 40% left, 0% center, 60% right
+      vertical: [100, 0], // 100% top, 0% bottom
+    },
+    tabContainers: [
+      {
+        id: "left",
+        tabs: [
+          {
+            id: "ai-chat",
+            title: "AI Chat",
+            content: "ai-chat",
+            closable: false,
+          },
+        ],
+        activeTabId: "ai-chat",
+      },
+      {
+        id: "center",
+        tabs: [],
+        activeTabId: undefined,
+      },
+      {
+        id: "right",
+        tabs: [
+          {
+            id: "monaco-editor",
+            title: "Monaco Editor",
+            content: "monaco-editor",
+            closable: false,
+          },
+        ],
+        activeTabId: "monaco-editor",
       },
     ],
     theme: "dark",

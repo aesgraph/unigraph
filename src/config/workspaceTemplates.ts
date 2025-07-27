@@ -1,4 +1,4 @@
-import type { WorkspaceState, ThemeId } from "@aesgraph/app-shell";
+import type { ThemeId, WorkspaceState } from "@aesgraph/app-shell";
 
 export interface WorkspaceTemplate {
   id: string;
@@ -94,7 +94,7 @@ export const workspaceTemplates: WorkspaceTemplate[] = [
         tabs: [
           {
             id: "semantic-web-query",
-            title: "SPARQL Query",
+            title: "SPARQL Querier",
             content: "semantic-web-query",
             closable: false,
           },

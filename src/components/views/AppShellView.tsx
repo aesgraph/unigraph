@@ -23,24 +23,27 @@ import AboutView from "./AboutView";
 import DevToolsView from "./DevToolsView";
 import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
+import MonacoEditorView from "./MonacoEditorView";
 import NodeLegendView from "./NodeLegendView";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
 import SystemMonitorView from "./SystemMonitorView";
+import { VIEW_DEFINITIONS } from "./viewDefinitions";
 
 // Create custom views that include our AIChatPanel and SemanticWebQueryPanel
 const aiChatView = {
-  id: "ai-chat",
-  title: "AI Chat",
-  icon: "💬",
+  id: VIEW_DEFINITIONS["ai-chat"].id,
+  title: VIEW_DEFINITIONS["ai-chat"].title,
+  icon: VIEW_DEFINITIONS["ai-chat"].icon,
   component: (props: any) => (
     <AIChatPanel sessionId="appshell-chat" {...props} />
   ),
+  category: VIEW_DEFINITIONS["ai-chat"].category,
 };
 
 const semanticWebQueryView = {
-  id: "semantic-web-query",
-  title: "SPARQL Query",
-  icon: "🔍",
+  id: VIEW_DEFINITIONS["semantic-web-query"].id,
+  title: VIEW_DEFINITIONS["semantic-web-query"].title,
+  icon: VIEW_DEFINITIONS["semantic-web-query"].icon,
   component: (props: any) => (
     <SemanticWebQueryPanel
       sessionId="appshell-chat"
@@ -48,46 +51,48 @@ const semanticWebQueryView = {
       {...props}
     />
   ),
+  category: VIEW_DEFINITIONS["semantic-web-query"].category,
 };
 
 const forceGraph3DView = {
-  id: "force-graph-3d",
-  title: "ForceGraph 3D",
-  icon: "🌐",
+  id: VIEW_DEFINITIONS["force-graph-3d"].id,
+  title: VIEW_DEFINITIONS["force-graph-3d"].title,
+  icon: VIEW_DEFINITIONS["force-graph-3d"].icon,
   component: (props: any) => <ForceGraph3DViewV2 {...props} />,
+  category: VIEW_DEFINITIONS["force-graph-3d"].category,
 };
 
 const forceGraph3DViewV2 = {
-  id: "force-graph-3d-v2",
-  title: "ForceGraph 3D V2",
-  icon: "🚀",
+  id: VIEW_DEFINITIONS["force-graph-3d-v2"].id,
+  title: VIEW_DEFINITIONS["force-graph-3d-v2"].title,
+  icon: VIEW_DEFINITIONS["force-graph-3d-v2"].icon,
   component: (props: any) => <ForceGraph3DViewV2 {...props} />,
-  category: "visualization",
+  category: VIEW_DEFINITIONS["force-graph-3d-v2"].category,
 };
 
 const systemMonitorView = {
-  id: "system-monitor",
-  title: "System Monitor",
-  icon: "📊",
+  id: VIEW_DEFINITIONS["system-monitor"].id,
+  title: VIEW_DEFINITIONS["system-monitor"].title,
+  icon: VIEW_DEFINITIONS["system-monitor"].icon,
   component: (props: any) => <SystemMonitorView {...props} />,
-  category: "tools",
+  category: VIEW_DEFINITIONS["system-monitor"].category,
 };
 
 // Create legend views
 const nodeLegendView = {
-  id: "node-legend",
-  title: "Node Legend",
-  icon: "🔵",
+  id: VIEW_DEFINITIONS["node-legend"].id,
+  title: VIEW_DEFINITIONS["node-legend"].title,
+  icon: VIEW_DEFINITIONS["node-legend"].icon,
   component: (props: any) => <NodeLegendView {...props} />,
-  category: "data",
+  category: VIEW_DEFINITIONS["node-legend"].category,
 };
 
 const edgeLegendView = {
-  id: "edge-legend",
-  title: "Edge Legend",
-  icon: "🔗",
+  id: VIEW_DEFINITIONS["edge-legend"].id,
+  title: VIEW_DEFINITIONS["edge-legend"].title,
+  icon: VIEW_DEFINITIONS["edge-legend"].icon,
   component: (props: any) => <EdgeLegendView {...props} />,
-  category: "data",
+  category: VIEW_DEFINITIONS["edge-legend"].category,
 };
 
 // EntityTableV2 wrapper component
@@ -125,11 +130,11 @@ const EntityTableV2Wrapper: React.FC = () => {
 };
 
 const entityTableV2View = {
-  id: "entity-table-v2",
-  title: "Entity Table V2",
-  icon: "📋",
+  id: VIEW_DEFINITIONS["entity-table-v2"].id,
+  title: VIEW_DEFINITIONS["entity-table-v2"].title,
+  icon: VIEW_DEFINITIONS["entity-table-v2"].icon,
   component: (props: any) => <EntityTableV2Wrapper {...props} />,
-  category: "data",
+  category: VIEW_DEFINITIONS["entity-table-v2"].category,
 };
 
 // Create a themed component using the useTheme hook
@@ -174,10 +179,11 @@ const CustomThemedPanel: React.FC = () => {
 };
 
 const customThemedPanelView = {
-  id: "custom-themed-panel",
-  title: "Theme Demo",
-  icon: "🎨",
+  id: VIEW_DEFINITIONS["custom-themed-panel"].id,
+  title: VIEW_DEFINITIONS["custom-themed-panel"].title,
+  icon: VIEW_DEFINITIONS["custom-themed-panel"].icon,
   component: (props: any) => <CustomThemedPanel {...props} />,
+  category: VIEW_DEFINITIONS["custom-themed-panel"].category,
 };
 
 // Create a component that inherits app-shell's current theme styles
@@ -709,17 +715,18 @@ const ThemeInheritanceDemo: React.FC = () => {
 };
 
 const themeInheritanceDemoView = {
-  id: "theme-inheritance-demo",
-  title: "Theme Inheritance",
-  icon: "🎭",
+  id: VIEW_DEFINITIONS["theme-inheritance-demo"].id,
+  title: VIEW_DEFINITIONS["theme-inheritance-demo"].title,
+  icon: VIEW_DEFINITIONS["theme-inheritance-demo"].icon,
   component: (props: any) => <ThemeInheritanceDemo {...props} />,
+  category: VIEW_DEFINITIONS["theme-inheritance-demo"].category,
 };
 
 // Wikipedia Factor Graph viewer
 const wikipediaFactorGraphView = {
-  id: "wikipedia-factor-graph",
-  title: "Wikipedia Factor Graph",
-  icon: "📖",
+  id: VIEW_DEFINITIONS["wikipedia-factor-graph"].id,
+  title: VIEW_DEFINITIONS["wikipedia-factor-graph"].title,
+  icon: VIEW_DEFINITIONS["wikipedia-factor-graph"].icon,
   component: (props: any) => (
     <WikipediaArticleViewer_FactorGraph
       initialArticle="Factor graph"
@@ -731,48 +738,56 @@ const wikipediaFactorGraphView = {
       {...props}
     />
   ),
-  category: "tools",
+  category: VIEW_DEFINITIONS["wikipedia-factor-graph"].category,
 };
 
 const reactFlowPanelV2View = {
-  id: "react-flow-panel-v2",
-  title: "ReactFlow Panel V2",
-  icon: "🔄",
+  id: VIEW_DEFINITIONS["react-flow-panel-v2"].id,
+  title: VIEW_DEFINITIONS["react-flow-panel-v2"].title,
+  icon: VIEW_DEFINITIONS["react-flow-panel-v2"].icon,
   component: (props: any) => <ReactFlowPanelV2 {...props} />,
-  category: "visualization",
+  category: VIEW_DEFINITIONS["react-flow-panel-v2"].category,
 };
 
 const aboutView = {
-  id: "about",
-  title: "About",
-  icon: "ℹ️",
+  id: VIEW_DEFINITIONS["about"].id,
+  title: VIEW_DEFINITIONS["about"].title,
+  icon: VIEW_DEFINITIONS["about"].icon,
   component: (props: any) => <AboutView {...props} />,
-  category: "help",
+  category: VIEW_DEFINITIONS["about"].category,
 };
 
 const devToolsView = {
-  id: "dev-tools",
-  title: "Dev Tools",
-  icon: "🔧",
+  id: VIEW_DEFINITIONS["dev-tools"].id,
+  title: VIEW_DEFINITIONS["dev-tools"].title,
+  icon: VIEW_DEFINITIONS["dev-tools"].icon,
   component: (props: any) => <DevToolsView {...props} />,
-  category: "development",
+  category: VIEW_DEFINITIONS["dev-tools"].category,
 };
 
 const gravitySimulationView = {
-  id: "gravity-simulation",
-  title: "Gravity Simulation",
-  icon: "🌌",
+  id: VIEW_DEFINITIONS["gravity-simulation"].id,
+  title: VIEW_DEFINITIONS["gravity-simulation"].title,
+  icon: VIEW_DEFINITIONS["gravity-simulation"].icon,
   // eslint-disable-next-line unused-imports/no-unused-vars
   component: (props: any) => <GravitySimulation3 />,
-  category: "tools",
+  category: VIEW_DEFINITIONS["gravity-simulation"].category,
 };
 
 const lexicalEditorView = {
-  id: "lexical-editor",
-  title: "Lexical Editor",
-  icon: "📝",
+  id: VIEW_DEFINITIONS["lexical-editor"].id,
+  title: VIEW_DEFINITIONS["lexical-editor"].title,
+  icon: VIEW_DEFINITIONS["lexical-editor"].icon,
   component: (props: any) => <LexicalEditorV2 {...props} />,
-  category: "editing",
+  category: VIEW_DEFINITIONS["lexical-editor"].category,
+};
+
+const monacoEditorView = {
+  id: VIEW_DEFINITIONS["monaco-editor"].id,
+  title: VIEW_DEFINITIONS["monaco-editor"].title,
+  icon: VIEW_DEFINITIONS["monaco-editor"].icon,
+  component: (props: any) => <MonacoEditorView {...props} />,
+  category: VIEW_DEFINITIONS["monaco-editor"].category,
 };
 
 // Define all views
@@ -794,6 +809,7 @@ const allViews = [
   aboutView,
   devToolsView,
   lexicalEditorView,
+  monacoEditorView,
 ];
 
 // Example: Create a custom theme for demonstration
@@ -855,6 +871,11 @@ const AppShellView: React.FC = () => {
             id: "system-monitor",
             title: "System Monitor",
             content: "system-monitor",
+          },
+          {
+            id: "monaco-editor",
+            title: "Monaco Editor",
+            content: "monaco-editor",
           },
         ],
         activeTabId: "system-monitor",

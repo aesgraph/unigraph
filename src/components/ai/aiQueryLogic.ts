@@ -21,13 +21,13 @@ export async function callOpenAIAPI(
   }
 
   const body: any = {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     messages: chatMessages.map((msg) => ({
       role: msg.role,
       content: msg.content,
     })),
     temperature,
-    max_tokens: 1000,
+    max_tokens: 3000,
   };
   if (tools) {
     body.tools = tools;

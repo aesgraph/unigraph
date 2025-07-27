@@ -5,13 +5,16 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import CodeMirror from "@uiw/react-codemirror";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import React, { useEffect, useState } from "react";
+import { Copy, Send, Settings, Zap } from "lucide-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Parser as SparqlParser } from "sparqljs";
+import { useApiProvider } from "../../context/ApiProviderContext";
+import { createThemedAgGridContainer } from "../../utils/aggridThemeUtils";
 import { log } from "../../utils/logger";
-import SelectDropdown from "../common/SelectDropdown";
+import { sendAIMessage } from "../ai/aiQueryLogic";
+import { SEMANTIC_QUERY_TOOL, parseToolCallArguments } from "../ai/aiTools";
 import { useSemanticWebQuerySession } from "./SemanticWebQueryContext";
 import styles from "./SemanticWebQueryPanel.module.css";
-import { createThemedAgGridContainer } from "../../utils/aggridThemeUtils";
 
 // Predefined SPARQL endpoints
 const ENDPOINTS = [
@@ -102,7 +105,32 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
   const hasAppShellTheme = appShellTheme && appShellTheme.theme;
 
   // Use semantic web query context
-  const { query, setQuery } = useSemanticWebQuerySession(sessionId);
+  const { query, setQuery, history, addToHistory } =
+    useSemanticWebQuerySession(sessionId);
+
+  // Initialize example queries in history if history is empty
+  useEffect(() => {
+    if (history.length === 0 && !examplesInitializedRef.current) {
+      // Add example queries to history with earlier timestamps so they appear at bottom
+      EXAMPLE_QUERIES.forEach((example, index) => {
+        // Create timestamps that are progressively earlier so examples appear at bottom
+        const exampleTimestamp = new Date(
+          Date.now() - (EXAMPLE_QUERIES.length - index) * 60000
+        ); // 1 minute apart
+        addToHistory(example.query, example.endpoint, exampleTimestamp);
+      });
+      examplesInitializedRef.current = true;
+    }
+  }, [history.length]);
+
+  // Debug history
+  useEffect(() => {
+    console.log("History updated:", history.length, history);
+  }, [history]);
+
+  // Use API provider context
+  const { apiProvider, openaiApiKey, liveChatUrl, isCustomEndpoint } =
+    useApiProvider();
 
   // Determine if dark mode based on app-shell theme or legacy props
   const isThemeDark = hasAppShellTheme
@@ -120,7 +148,24 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lintError, setLintError] = useState<string | null>(null);
-  const [selectedExample, setSelectedExample] = useState<number | null>(null);
+
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [showAskAI, setShowAskAI] = useState(true);
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [autoRunAIQueries, setAutoRunAIQueries] = useState(false);
+  const [editorHeight, setEditorHeight] = useState(200); // Default height
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeRef = useRef<HTMLDivElement>(null);
+  const startYRef = useRef<number>(0);
+  const startHeightRef = useRef<number>(200);
+  const currentQueryRef = useRef(query);
+  const examplesInitializedRef = useRef(false);
+
+  // Update ref when query changes
+  useEffect(() => {
+    currentQueryRef.current = query;
+  }, [query]);
 
   // Initialize query from defaultQuery prop if context query is empty
   useEffect(() => {
@@ -144,7 +189,8 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     }
   }, [query]);
 
-  const handleRunQuery = async () => {
+  // Helper function to run query with current value
+  const runQueryWithCurrentValue = async (queryToRun: string) => {
     setLoading(true);
     setError(null);
     setResults(null);
@@ -154,11 +200,12 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     log.info(`Executing SPARQL query`, "SemanticWebQueryPanel", {
       sessionId,
       endpoint: effectiveEndpoint,
-      query: query.substring(0, 200) + (query.length > 200 ? "..." : ""),
+      query:
+        queryToRun.substring(0, 200) + (queryToRun.length > 200 ? "..." : ""),
     });
 
     try {
-      const url = `${effectiveEndpoint}?query=${encodeURIComponent(query)}&format=json`;
+      const url = `${effectiveEndpoint}?query=${encodeURIComponent(queryToRun)}&format=json`;
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
@@ -169,7 +216,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
 
       // Log successful query execution
       log.queryExecuted(
-        query,
+        queryToRun,
         effectiveEndpoint,
         data.results.bindings.length,
         {
@@ -183,7 +230,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
       setError(errorMessage);
 
       // Log query error
-      log.queryError(query, effectiveEndpoint, errorMessage, {
+      log.queryError(queryToRun, effectiveEndpoint, errorMessage, {
         sessionId,
         error: e,
       });
@@ -192,64 +239,385 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     }
   };
 
+  const handleRunQuery = async () => {
+    if (!query.trim() || !effectiveEndpoint) return;
+
+    try {
+      await runQueryWithCurrentValue(query);
+      // Add to history when query is successfully run (no errors thrown)
+      console.log("Adding to history:", query, effectiveEndpoint);
+      addToHistory(query, effectiveEndpoint);
+    } catch (err) {
+      // Error is already handled by runQueryWithCurrentValue
+      console.error("Query execution failed:", err);
+    }
+  };
+
   const handleEndpointChange = (opt: any) => {
     setEndpoint(opt);
     if (opt.value !== "custom") setCustomEndpoint("");
   };
 
-  // Handler for example query selection
-  const handleExampleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const idx = parseInt(e.target.value, 10);
-    if (!isNaN(idx)) {
-      const example = EXAMPLE_QUERIES[idx];
-      setQuery(example.query);
-      // Optionally set endpoint if different
-      const endpointOption = ENDPOINTS.find(
-        (ep) => ep.value === example.endpoint
-      );
-      if (endpointOption) setEndpoint(endpointOption);
-      setSelectedExample(idx);
+  // Copy query to clipboard
+  const handleCopyQuery = async () => {
+    try {
+      await navigator.clipboard.writeText(query);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 1500); // Reset after 1.5 seconds
+      console.log("Query copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy query:", err);
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = query;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 1500); // Reset after 1.5 seconds
     }
   };
 
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startYRef.current = e.clientY;
+    startHeightRef.current = editorHeight;
+    setIsResizing(true);
+
+    // Add event listeners with passive: false to ensure they work
+    document.addEventListener("mousemove", handleResizeMove, {
+      passive: false,
+    });
+    document.addEventListener("mouseup", handleResizeEnd, { passive: false });
+  };
+
+  const handleResizeMove = (e: MouseEvent) => {
+    e.preventDefault();
+    if (!isResizing) return;
+
+    const deltaY = e.clientY - startYRef.current;
+    const newHeight = startHeightRef.current + deltaY;
+
+    // Set minimum and maximum heights
+    const minHeight = 100;
+    const maxHeight = 600;
+
+    if (newHeight >= minHeight && newHeight <= maxHeight) {
+      setEditorHeight(newHeight);
+    }
+  };
+
+  const handleResizeEnd = () => {
+    setIsResizing(false);
+    document.removeEventListener("mousemove", handleResizeMove);
+    document.removeEventListener("mouseup", handleResizeEnd);
+  };
+
+  // Simple resize handler using onMouseDown directly
+  const handleSimpleResize = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const startY = e.clientY;
+    const startHeight = editorHeight;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const deltaY = moveEvent.clientY - startY;
+      const newHeight = startHeight + deltaY;
+
+      const minHeight = 100;
+      const maxHeight = 600;
+
+      if (newHeight >= minHeight && newHeight <= maxHeight) {
+        setEditorHeight(newHeight);
+      }
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  // Ask AI to generate SPARQL query
+  const handleAskAI = async () => {
+    if (!aiQuery.trim()) return;
+
+    setAiLoading(true);
+    try {
+      // Create a chat message for the AI
+      const chatMessages = [
+        {
+          id: crypto.randomUUID(),
+          timestamp: new Date(),
+          role: "user" as const,
+          content: `Generate a SPARQL query for: ${aiQuery}. Use endpoint: ${effectiveEndpoint}. 
+
+IMPORTANT: Include all necessary PREFIX declarations at the beginning of the query. Common prefixes to consider:
+- PREFIX dbo: <http://dbpedia.org/ontology/>
+- PREFIX dbr: <http://dbpedia.org/resource/>
+- PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+- PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+- PREFIX wd: <http://www.wikidata.org/entity/>
+- PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+- PREFIX wikibase: <http://wikiba.se/ontology#>
+
+CRITICAL: Ensure the query follows proper SPARQL syntax:
+- Use valid subject-predicate-object triples
+- Use correct property names (e.g., dbo:manufacturer, not dbo:product)
+- For companies, use dbo:manufacturer to find products they make
+- For people, use dbo:birthPlace, dbo:occupation, etc.
+- Always end triples with a period (.)
+
+Example correct query structure:
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbr: <http://dbpedia.org/resource/>
+SELECT ?product ?label WHERE {
+  ?product dbo:manufacturer dbr:Apple_Inc. .
+  ?product rdfs:label ?label .
+  FILTER (lang(?label) = 'en') .
+}
+
+Return only the complete SPARQL query with prefixes, no explanations.`,
+        },
+      ];
+
+      // Use the sendAIMessage function to generate a SPARQL query
+      const response = await sendAIMessage({
+        chatMessages,
+        apiProvider,
+        openaiApiKey,
+        liveChatUrl,
+        isCustomEndpoint,
+        isSignedIn: false, // Not needed for SPARQL generation
+        user: null,
+        temperature: 0.7,
+        tools: [SEMANTIC_QUERY_TOOL],
+      });
+
+      // Process tool calls if present
+      if (response.toolCalls && response.toolCalls.length > 0) {
+        for (const toolCall of response.toolCalls) {
+          if (toolCall.function.name === "semantic_query") {
+            try {
+              const args = parseToolCallArguments(toolCall);
+              if (args.query) {
+                // Extract and format the SPARQL query
+                const sparqlQuery = cleanSparqlQuery(args.query);
+                setQuery(sparqlQuery);
+                setShowAskAI(false);
+                setAiQuery("");
+
+                // Auto-run the query if toggle is enabled
+                if (autoRunAIQueries) {
+                  // Use the actual query value instead of waiting for state update
+                  await runQueryWithCurrentValue(sparqlQuery);
+                }
+
+                return; // Success, exit early
+              }
+            } catch (error) {
+              console.error(
+                "Failed to parse semantic_query tool call arguments:",
+                error
+              );
+            }
+          }
+        }
+      }
+
+      // Fallback: if no tool calls or parsing failed, try to extract from content
+      if (response.content) {
+        // Try to extract SPARQL query from the response content
+        const content = response.content.trim();
+
+        // Look for SPARQL query patterns in the content
+        const sparqlPattern =
+          /(SELECT|ASK|CONSTRUCT|DESCRIBE)\s+.*?(?=\n\n|\n$|$)/gis;
+        const match = content.match(sparqlPattern);
+
+        if (match && match[0]) {
+          const sparqlQuery = cleanSparqlQuery(match[0]);
+          setQuery(sparqlQuery);
+          setShowAskAI(false);
+          setAiQuery("");
+
+          // Auto-run the query if toggle is enabled
+          if (autoRunAIQueries) {
+            await runQueryWithCurrentValue(sparqlQuery);
+          }
+
+          return;
+        }
+
+        // If no clear SPARQL pattern, use the entire content
+        const cleanedContent = cleanSparqlQuery(content);
+        setQuery(cleanedContent);
+        setShowAskAI(false);
+        setAiQuery("");
+
+        // Auto-run the query if toggle is enabled
+        if (autoRunAIQueries) {
+          await runQueryWithCurrentValue(cleanedContent);
+        }
+      } else {
+        throw new Error("No response received from AI");
+      }
+    } catch (error) {
+      console.error("Failed to generate SPARQL query:", error);
+      // Fallback: use a simple prompt to generate a basic query
+      const fallbackQuery = `# Generated query for: ${aiQuery}
+SELECT ?subject ?predicate ?object WHERE {
+  ?subject ?predicate ?object .
+  FILTER(CONTAINS(STR(?subject), "${aiQuery.split(" ")[0]}") ||
+         CONTAINS(STR(?object), "${aiQuery.split(" ")[0]}"))
+} LIMIT 100`;
+      setQuery(fallbackQuery);
+      setShowAskAI(false);
+      setAiQuery("");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  // Helper function to clean up SPARQL queries
+  const cleanSparqlQuery = (query: string): string => {
+    const cleaned = query
+      // Remove markdown code blocks (```sparql ... ``` or ``` ... ```)
+      .replace(/```(?:sparql)?\s*\n?/gi, "")
+      .replace(/```\s*$/gi, "")
+      // Remove leading/trailing whitespace
+      .trim()
+      // Remove any remaining markdown formatting
+      .replace(/^#\s*/gm, "") // Remove markdown headers
+      .replace(/^\*\s*/gm, "") // Remove markdown list items
+      .replace(/^-\s*/gm, "") // Remove markdown list items
+      // Clean up multiple newlines
+      .replace(/\n\s*\n/g, "\n")
+      // Fix SPARQL-specific issues
+      .replace(/\.\./g, ".") // Fix double periods
+      .replace(/\s+\.\s*/g, " . ") // Ensure proper spacing around periods
+      .replace(/\s*\{\s*/g, " {\n  ") // Format opening braces
+      .replace(/\s*\}\s*/g, "\n}") // Format closing braces
+      // Ensure proper line breaks for SPARQL keywords
+      .replace(
+        /\b(SELECT|WHERE|OPTIONAL|FILTER|LIMIT|ORDER BY|GROUP BY|HAVING|UNION|PREFIX|ASK|CONSTRUCT|DESCRIBE)\b/gi,
+        "\n$1"
+      )
+      // Final trim and cleanup
+      .trim()
+      .replace(/\n\s*\n/g, "\n") // Remove extra blank lines
+      .replace(/^\n+/, "") // Remove leading newlines
+      .replace(/\n+$/, ""); // Remove trailing newlines
+
+    // Basic SPARQL syntax validation and fixes
+    const lines = cleaned.split("\n");
+    const fixedLines = lines.map((line) => {
+      // Fix common SPARQL syntax issues
+      let fixedLine = line.trim();
+
+      // Ensure triples end with a period
+      if (
+        fixedLine.includes("?") &&
+        !fixedLine.endsWith(".") &&
+        !fixedLine.endsWith("{") &&
+        !fixedLine.endsWith("}") &&
+        !fixedLine.startsWith("PREFIX") &&
+        !fixedLine.startsWith("SELECT") &&
+        !fixedLine.startsWith("WHERE") &&
+        !fixedLine.startsWith("FILTER")
+      ) {
+        fixedLine += " .";
+      }
+
+      // Fix common property name mistakes
+      fixedLine = fixedLine.replace(/\bdbo:product\b/g, "dbo:manufacturer"); // dbo:product doesn't exist, use dbo:manufacturer
+
+      return fixedLine;
+    });
+
+    return fixedLines.join("\n");
+  };
+
   // Build AgGrid columnDefs from columns
-  const agGridColumnDefs = columns.map((col) => ({
-    headerName: col,
-    field: col,
-    sortable: true,
-    filter: true,
-    resizable: true,
-    minWidth: 120,
-    maxWidth: 400,
-    cellClass: styles.gridCell,
-    valueGetter: (params: any) => params.data[col]?.value || "",
-  }));
+  const agGridColumnDefs = useMemo(
+    () =>
+      columns.map((col) => ({
+        headerName: col,
+        field: col,
+        sortable: true,
+        filter: true,
+        resizable: true,
+        minWidth: 120,
+        maxWidth: 400,
+        cellClass: styles.gridCell,
+        valueGetter: (params: any) => params.data[col]?.value || "",
+      })),
+    [columns]
+  );
 
   // Build AgGrid rowData from results
-  const agGridRowData =
-    results?.map((row) => {
-      // Each row is an object: { col1: { value, ... }, col2: { value, ... }, ... }
-      // We'll keep as-is, and use valueGetter above
-      return row;
-    }) || [];
+  const agGridRowData = useMemo(
+    () =>
+      results?.map((row) => {
+        // Each row is an object: { col1: { value, ... }, col2: { value, ... }, ... }
+        // We'll keep as-is, and use valueGetter above
+        return row;
+      }) || [],
+    [results]
+  );
 
   // Generate dynamic styles from app-shell theme
-  const themeStyles = hasAppShellTheme
-    ? ({
-        backgroundColor: getColor(appShellTheme.theme.colors, "background"),
-        color: getColor(appShellTheme.theme.colors, "text"),
-        "--panel-bg": getColor(appShellTheme.theme.colors, "surface"),
-        "--panel-border": getColor(appShellTheme.theme.colors, "border"),
-        "--text-color": getColor(appShellTheme.theme.colors, "text"),
-        "--text-secondary": getColor(
-          appShellTheme.theme.colors,
-          "textSecondary"
-        ),
-        "--primary-color": getColor(appShellTheme.theme.colors, "primary"),
-        "--error-color": getColor(appShellTheme.theme.colors, "error"),
-        "--success-color": getColor(appShellTheme.theme.colors, "success"),
-      } as React.CSSProperties)
-    : {};
+  const themeStyles = useMemo(
+    () =>
+      hasAppShellTheme
+        ? ({
+            backgroundColor: getColor(appShellTheme.theme.colors, "background"),
+            color: getColor(appShellTheme.theme.colors, "text"),
+            "--panel-bg": getColor(appShellTheme.theme.colors, "surface"),
+            "--panel-border": getColor(appShellTheme.theme.colors, "border"),
+            "--text-color": getColor(appShellTheme.theme.colors, "text"),
+            "--text-secondary": getColor(
+              appShellTheme.theme.colors,
+              "textSecondary"
+            ),
+            "--primary-color": getColor(appShellTheme.theme.colors, "primary"),
+            "--error-color": getColor(appShellTheme.theme.colors, "error"),
+            "--success-color": getColor(appShellTheme.theme.colors, "success"),
+          } as React.CSSProperties)
+        : {},
+    [hasAppShellTheme, appShellTheme.theme.colors]
+  );
+
+  // Memoize AgGrid container styles
+  const agGridContainerStyle = useMemo(
+    () =>
+      hasAppShellTheme ? createThemedAgGridContainer(appShellTheme.theme) : {},
+    [hasAppShellTheme, appShellTheme.theme]
+  );
+
+  // Memoize overlay templates
+  const overlayNoRowsTemplate = useMemo(
+    () =>
+      hasAppShellTheme
+        ? `<span style='color:${getColor(appShellTheme.theme.colors, "textMuted")};'>No results</span>`
+        : `<span style='color:#888;'>No results</span>`,
+    [hasAppShellTheme, appShellTheme.theme.colors]
+  );
+
+  const overlayLoadingTemplate = useMemo(
+    () =>
+      hasAppShellTheme
+        ? `<span style='color:${getColor(appShellTheme.theme.colors, "primary")};'>Loading...</span>`
+        : `<span style='color:#1976d2;'>Loading...</span>`,
+    [hasAppShellTheme, appShellTheme.theme.colors]
+  );
 
   return (
     <div
@@ -257,86 +625,192 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
       data-theme={isThemeDark ? "dark" : "light"}
       style={themeStyles}
     >
-      <div className={styles.endpointRow}>
-        <span className={styles.endpointLabel}>Endpoint:</span>
-        <div className={styles.endpointSelect}>
-          <SelectDropdown
-            options={ENDPOINTS}
-            value={endpoint}
-            onChange={handleEndpointChange}
-            isDarkMode={isThemeDark}
-          />
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <h2>SPARQL Querier</h2>
         </div>
-        {endpoint.value === "custom" && (
-          <input
-            type="text"
-            placeholder="Enter custom endpoint URL"
-            value={customEndpoint}
-            onChange={(e) => setCustomEndpoint(e.target.value)}
-            className={styles.customEndpointInput}
-            style={
-              hasAppShellTheme
-                ? {
+        <div className={styles.headerRight}>
+          <p>Fetch data from the Semantic Web</p>
+        </div>
+      </div>
+
+      <div className={styles.querySection}>
+        <div className={styles.queryEditor}>
+          <div className={styles.queryEditorHeader}>
+            <div className={styles.headerLeft}>
+              <div className={styles.aiInputContainer}>
+                <input
+                  type="text"
+                  className={styles.aiInput}
+                  placeholder="Ask AI to write a SPARQL query..."
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleAskAI();
+                    } else if (e.key === "Escape") {
+                      setAiQuery("");
+                    }
+                  }}
+                  style={{
                     backgroundColor: getColor(
                       appShellTheme.theme.colors,
                       "surface"
                     ),
                     color: getColor(appShellTheme.theme.colors, "text"),
-                    borderColor: getColor(appShellTheme.theme.colors, "border"),
+                    border: `1px solid ${getColor(appShellTheme.theme.colors, "border")}`,
+                    borderRadius: `${appShellTheme.theme.sizes.borderRadius}px`,
+                    padding: `${appShellTheme.theme.sizes.spacing.sm}px`,
+                    fontSize: `${appShellTheme.theme.sizes.fontSize.sm}px`,
+                  }}
+                />
+                <button
+                  className={styles.sendAIButton}
+                  onClick={handleAskAI}
+                  disabled={aiLoading || !aiQuery.trim()}
+                  style={{
+                    backgroundColor: getColor(
+                      appShellTheme.theme.colors,
+                      "primary"
+                    ),
+                    color: getColor(appShellTheme.theme.colors, "textInverse"),
+                    border: `1px solid ${getColor(appShellTheme.theme.colors, "primary")}`,
+                    borderRadius: `${appShellTheme.theme.sizes.borderRadius}px`,
+                    padding: `${appShellTheme.theme.sizes.spacing.sm}px`,
+                    fontSize: `${appShellTheme.theme.sizes.fontSize.sm}px`,
+                  }}
+                >
+                  <Send size={16} />
+                </button>
+                <button
+                  className={styles.autoRunToggle}
+                  onClick={() => setAutoRunAIQueries(!autoRunAIQueries)}
+                  title={
+                    autoRunAIQueries
+                      ? "Auto mode: Queries will run automatically when AI generates them"
+                      : "Manual mode: Queries will not run automatically - click 'Run Query' to execute"
                   }
-                : {}
-            }
-          />
-        )}
-      </div>
-      {/* Example queries dropdown */}
-      <div className={styles.examplesRow}>
-        <span className={styles.examplesLabel}>Examples:</span>
-        <select
-          value={selectedExample !== null ? selectedExample : ""}
-          onChange={handleExampleChange}
-          className={styles.examplesSelect}
-          style={
-            hasAppShellTheme
-              ? {
-                  backgroundColor: getColor(
+                  style={{
+                    backgroundColor: autoRunAIQueries
+                      ? getColor(appShellTheme.theme.colors, "success")
+                      : getColor(appShellTheme.theme.colors, "surface"),
+                    color: autoRunAIQueries
+                      ? getColor(appShellTheme.theme.colors, "text")
+                      : getColor(appShellTheme.theme.colors, "text"),
+                    border: `1px solid ${
+                      autoRunAIQueries
+                        ? getColor(appShellTheme.theme.colors, "success")
+                        : getColor(appShellTheme.theme.colors, "border")
+                    }`,
+                    borderRadius: `${appShellTheme.theme.sizes.borderRadius}px`,
+                    padding: `${appShellTheme.theme.sizes.spacing.sm}px`,
+                    fontSize: `${appShellTheme.theme.sizes.fontSize.sm}px`,
+                  }}
+                >
+                  {autoRunAIQueries ? (
+                    <Zap size={16} />
+                  ) : (
+                    <Settings size={16} />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className={styles.headerRight}>
+              <button
+                className={styles.copyButton}
+                onClick={handleCopyQuery}
+                title={copySuccess ? "Copied!" : "Copy query to clipboard"}
+                style={{
+                  backgroundColor: copySuccess
+                    ? `${getColor(appShellTheme.theme.colors, "success")}20`
+                    : "transparent",
+                  color: copySuccess
+                    ? getColor(appShellTheme.theme.colors, "success")
+                    : getColor(appShellTheme.theme.colors, "textSecondary"),
+                  border: copySuccess
+                    ? `1px solid ${getColor(appShellTheme.theme.colors, "success")}`
+                    : "none",
+                  borderRadius: `${appShellTheme.theme.sizes.borderRadius}px`,
+                  padding: `${appShellTheme.theme.sizes.spacing.sm}px`,
+                  fontSize: `${appShellTheme.theme.sizes.fontSize.sm}px`,
+                  opacity: 0.7,
+                  outline: "none",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = `${getColor(appShellTheme.theme.colors, "textSecondary")}15`;
+                  e.currentTarget.style.color = getColor(
                     appShellTheme.theme.colors,
-                    "surface"
-                  ),
-                  color: getColor(appShellTheme.theme.colors, "text"),
-                  borderColor: getColor(appShellTheme.theme.colors, "border"),
-                }
-              : {}
-          }
-        >
-          <option value="" disabled>
-            Select an example query...
-          </option>
-          {EXAMPLE_QUERIES.map((ex, i) => (
-            <option key={i} value={i}>
-              {ex.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={styles.querySection}>
-        <span className={styles.queryLabel}>SPARQL Query:</span>
-        <div className={styles.queryEditor}>
-          <CodeMirror
-            value={query}
-            height="180px"
-            theme={isThemeDark ? oneDark : undefined}
-            extensions={[StreamLanguage.define(sparql)]}
-            onChange={(value) => setQuery(value)}
-            basicSetup={{
-              lineNumbers: true,
-              highlightActiveLine: true,
-              foldGutter: true,
-              autocompletion: true,
-            }}
+                    "primary"
+                  );
+                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = copySuccess
+                    ? `${getColor(appShellTheme.theme.colors, "success")}20`
+                    : "transparent";
+                  e.currentTarget.style.color = copySuccess
+                    ? getColor(appShellTheme.theme.colors, "success")
+                    : getColor(appShellTheme.theme.colors, "textSecondary");
+                  e.currentTarget.style.opacity = "0.7";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.1)";
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = `2px solid ${getColor(appShellTheme.theme.colors, "primary")}`;
+                  e.currentTarget.style.outlineOffset = "2px";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = "none";
+                }}
+              >
+                <Copy size={16} />
+              </button>
+            </div>
+          </div>
+          <div
+            className={styles.codeMirrorContainer}
+            style={{ height: `${editorHeight}px` }}
+          >
+            <CodeMirror
+              value={query}
+              onChange={setQuery}
+              extensions={[StreamLanguage.define(sparql)]}
+              theme={isThemeDark ? oneDark : undefined}
+              className={styles.codeMirror}
+              style={
+                hasAppShellTheme
+                  ? {
+                      backgroundColor: getColor(
+                        appShellTheme.theme.colors,
+                        "surface"
+                      ),
+                      color: getColor(appShellTheme.theme.colors, "text"),
+                      borderColor: getColor(
+                        appShellTheme.theme.colors,
+                        "border"
+                      ),
+                    }
+                  : {}
+              }
+            />
+          </div>
+          <div
+            ref={resizeRef}
+            className={styles.resizeHandle}
+            onMouseDown={handleSimpleResize}
             style={{
-              fontSize: 15,
-              fontFamily: "monospace",
+              cursor: "row-resize",
             }}
           />
         </div>
@@ -346,17 +820,158 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
             style={
               hasAppShellTheme
                 ? {
-                    color: getColor(appShellTheme.theme.colors, "error"),
-                    backgroundColor: `${getColor(appShellTheme.theme.colors, "error")}15`, // 15% opacity
-                    borderColor: getColor(appShellTheme.theme.colors, "error"),
+                    color: getColor(appShellTheme.theme.colors, "warning"),
+                    backgroundColor: `${getColor(appShellTheme.theme.colors, "warning")}15`, // 15% opacity
+                    borderColor: getColor(
+                      appShellTheme.theme.colors,
+                      "warning"
+                    ),
                   }
                 : {}
             }
           >
-            SPARQL Syntax Error: {lintError}
+            Syntax Error: {lintError}
           </div>
         )}
         <div className={styles.actionRow}>
+          {history.length > 0 && (
+            <div className={styles.historySection}>
+              <span className={styles.historyLabel}>History:</span>
+              <select
+                className={styles.historyDropdown}
+                onChange={(e) => {
+                  const selectedEntry = history.find(
+                    (h) => h.id === e.target.value
+                  );
+                  if (selectedEntry) {
+                    setQuery(selectedEntry.query);
+                    // Also update the endpoint if it's different
+                    if (selectedEntry.endpoint !== endpoint.value) {
+                      const endpointOption = ENDPOINTS.find(
+                        (ep) => ep.value === selectedEntry.endpoint
+                      );
+                      if (endpointOption) {
+                        setEndpoint(endpointOption);
+                      }
+                    }
+                  }
+                }}
+                value=""
+                style={
+                  hasAppShellTheme
+                    ? {
+                        backgroundColor: getColor(
+                          appShellTheme.theme.colors,
+                          "surface"
+                        ),
+                        color: getColor(appShellTheme.theme.colors, "text"),
+                        borderColor: getColor(
+                          appShellTheme.theme.colors,
+                          "border"
+                        ),
+                        borderRadius: `${appShellTheme.theme.sizes.borderRadius}px`,
+                        padding: `${appShellTheme.theme.sizes.spacing.sm}px`,
+                        fontSize: `${appShellTheme.theme.sizes.fontSize.sm}px`,
+                      }
+                    : {}
+                }
+              >
+                <option value="">Select previous query</option>
+                {[...history]
+                  .sort(
+                    (a, b) =>
+                      new Date(b.timestamp).getTime() -
+                      new Date(a.timestamp).getTime()
+                  )
+                  .map((entry) => {
+                    // Check if this is an example query by matching with EXAMPLE_QUERIES
+                    const exampleQuery = EXAMPLE_QUERIES.find(
+                      (ex) =>
+                        ex.query === entry.query &&
+                        ex.endpoint === entry.endpoint
+                    );
+
+                    if (exampleQuery) {
+                      return (
+                        <option key={entry.id} value={entry.id}>
+                          📚 {exampleQuery.label}
+                        </option>
+                      );
+                    }
+
+                    return (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.timestamp.toLocaleString()} -{" "}
+                        {entry.query.substring(0, 50)}...
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
+          )}
+          <div className={styles.endpointSection}>
+            <span className={styles.endpointLabel}>Endpoint:</span>
+            <select
+              className={styles.historyDropdown}
+              value={endpoint.value}
+              onChange={(e) => {
+                const selectedEndpoint = ENDPOINTS.find(
+                  (ep) => ep.value === e.target.value
+                );
+                if (selectedEndpoint) {
+                  setEndpoint(selectedEndpoint);
+                }
+              }}
+              style={
+                hasAppShellTheme
+                  ? {
+                      backgroundColor: getColor(
+                        appShellTheme.theme.colors,
+                        "surface"
+                      ),
+                      color: getColor(appShellTheme.theme.colors, "text"),
+                      borderColor: getColor(
+                        appShellTheme.theme.colors,
+                        "border"
+                      ),
+                      borderRadius: `${appShellTheme.theme.sizes.borderRadius}px`,
+                      padding: `${appShellTheme.theme.sizes.spacing.sm}px`,
+                      fontSize: `${appShellTheme.theme.sizes.fontSize.sm}px`,
+                    }
+                  : {}
+              }
+            >
+              {ENDPOINTS.map((ep) => (
+                <option key={ep.value} value={ep.value}>
+                  {ep.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          {endpoint.value === "custom" && (
+            <input
+              type="text"
+              placeholder="Enter custom endpoint URL"
+              value={customEndpoint}
+              onChange={(e) => setCustomEndpoint(e.target.value)}
+              className={styles.customEndpointInput}
+              style={
+                hasAppShellTheme
+                  ? {
+                      backgroundColor: getColor(
+                        appShellTheme.theme.colors,
+                        "surface"
+                      ),
+                      color: getColor(appShellTheme.theme.colors, "text"),
+                      borderColor: getColor(
+                        appShellTheme.theme.colors,
+                        "border"
+                      ),
+                    }
+                  : {}
+              }
+            />
+          )}
           <button
             onClick={handleRunQuery}
             disabled={loading || !effectiveEndpoint}
@@ -427,11 +1042,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
         {results && results.length > 0 && (
           <div
             className={`ag-theme-alpine ${styles.gridContainer}`}
-            style={
-              hasAppShellTheme
-                ? createThemedAgGridContainer(appShellTheme.theme)
-                : {}
-            }
+            style={agGridContainerStyle}
           >
             <AgGridReact
               rowData={agGridRowData}
@@ -442,22 +1053,20 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
                 resizable: true,
                 filter: true,
                 minWidth: 120,
-                maxWidth: 400,
+                maxWidth: undefined, // Remove max width constraint
                 floatingFilter: true,
+                flex: 1, // Make columns flexible
               }}
               domLayout="normal"
               suppressMenuHide={false}
               animateRows={true}
-              overlayNoRowsTemplate={
-                hasAppShellTheme
-                  ? `<span style='color:${getColor(appShellTheme.theme.colors, "textMuted")};'>No results</span>`
-                  : `<span style='color:#888;'>No results</span>`
-              }
-              overlayLoadingTemplate={
-                hasAppShellTheme
-                  ? `<span style='color:${getColor(appShellTheme.theme.colors, "primary")};'>Loading...</span>`
-                  : `<span style='color:#1976d2;'>Loading...</span>`
-              }
+              overlayNoRowsTemplate={overlayNoRowsTemplate}
+              overlayLoadingTemplate={overlayLoadingTemplate}
+              // Pagination configuration
+              pagination={true}
+              paginationPageSize={500}
+              paginationPageSizeSelector={[50, 100, 200, 500]}
+              suppressPaginationPanel={false}
             />
           </div>
         )}

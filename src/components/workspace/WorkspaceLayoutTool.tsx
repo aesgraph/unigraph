@@ -1,75 +1,20 @@
 import { useEffect } from "react";
 import { useCommandProcessor } from "../commandPalette/CommandProcessor";
+import { VIEW_DEFINITIONS } from "../views/viewDefinitions";
 
 const TOOL_ID = "workspace_layout_tool";
 
-// Available views with descriptions
-const AVAILABLE_VIEWS = {
-  "ai-chat": {
-    title: "AI Chat",
-    description:
-      "Interactive AI chat interface with support for semantic web queries and tool calls",
-    category: "communication",
-  },
-  "semantic-web-query": {
-    title: "SPARQL Query",
-    description:
-      "SPARQL query editor for semantic web data exploration and querying",
-    category: "data",
-  },
-  "force-graph-3d-v2": {
-    title: "ForceGraph 3D",
-    description:
-      "Interactive 3D force-directed graph visualization with physics simulation",
-    category: "visualization",
-  },
-  "system-monitor": {
-    title: "System Monitor",
-    description: "Real-time system monitoring and performance metrics display",
-    category: "tools",
-  },
-  "node-legend": {
-    title: "Node Legend",
-    description:
-      "Legend showing node types and their visual representations in the graph",
-    category: "data",
-  },
-  "edge-legend": {
-    title: "Edge Legend",
-    description:
-      "Legend showing edge types and their visual representations in the graph",
-    category: "data",
-  },
-  "entity-table-v2": {
-    title: "Entity Table",
-    description:
-      "Tabular view of all entities (nodes) in the current graph with filtering and sorting",
-    category: "data",
-  },
-  "custom-themed-panel": {
-    title: "Theme Demo",
-    description: "Demonstration of theme inheritance and styling capabilities",
-    category: "development",
-  },
-  "theme-inheritance-demo": {
-    title: "Theme Inheritance",
-    description:
-      "Interactive demo showing how components inherit theme styles from the workspace",
-    category: "development",
-  },
-  "wikipedia-factor-graph": {
-    title: "Wikipedia Factor Graph",
-    description:
-      "Interactive Wikipedia article viewer with factor graph visualization",
-    category: "tools",
-  },
-  "gravity-simulation": {
-    title: "Gravity Simulation",
-    description:
-      "WebGL-based gravity simulation with interactive particle physics",
-    category: "simulation",
-  },
-};
+// Available views with descriptions - automatically generated from shared definitions
+const AVAILABLE_VIEWS = Object.fromEntries(
+  Object.entries(VIEW_DEFINITIONS).map(([id, view]) => [
+    id,
+    {
+      title: view.title,
+      description: view.description,
+      category: view.category,
+    },
+  ])
+);
 
 // Available panels
 const AVAILABLE_PANELS = {
@@ -138,4 +83,4 @@ export const WorkspaceLayoutTool: React.FC = () => {
 };
 
 // Export the available views and panels for AI to use
-export { AVAILABLE_VIEWS, AVAILABLE_PANELS };
+export { AVAILABLE_PANELS, AVAILABLE_VIEWS };

@@ -1,45 +1,46 @@
 // OpenAI Tools/Function definitions for AI interactions
 
+import { getAvailableViewIds } from "../views/viewDefinitions";
+
 export interface OpenAITool {
   type: "function";
   function: {
     name: string;
     description: string;
     parameters: {
-      type: "object";
+      type: string;
       properties: Record<string, any>;
       required: string[];
     };
   };
 }
 
-// Semantic Web Query Tool
 export const SEMANTIC_QUERY_TOOL: OpenAITool = {
   type: "function",
   function: {
     name: "semantic_query",
     description:
-      "Execute a SPARQL query against the semantic web knowledge graph. Use this when you need to search for or retrieve information from the knowledge graph.",
+      "Query the semantic web data using SPARQL or natural language. Use this to explore and analyze the graph data. IMPORTANT: When generating SPARQL queries, always include all necessary PREFIX declarations at the beginning of the query. Common prefixes include dbo:, dbr:, foaf:, rdf:, rdfs:, wd:, wdt:, and wikibase:. Return complete, executable SPARQL queries with all required prefixes.",
     parameters: {
       type: "object",
       properties: {
         query: {
           type: "string",
           description:
-            "The SPARQL query to execute. Should be a valid SPARQL SELECT query.",
+            "The complete SPARQL query with PREFIX declarations, or natural language query to execute",
         },
-        description: {
+        queryType: {
           type: "string",
+          enum: ["sparql", "natural"],
           description:
-            "A brief description of what this query is trying to accomplish.",
+            "Type of query: 'sparql' for SPARQL queries, 'natural' for natural language queries",
         },
       },
-      required: ["query", "description"],
+      required: ["query", "queryType"],
     },
   },
 };
 
-// Workspace Layout Tool
 export const WORKSPACE_LAYOUT_TOOL: OpenAITool = {
   type: "function",
   function: {
@@ -51,33 +52,107 @@ export const WORKSPACE_LAYOUT_TOOL: OpenAITool = {
       properties: {
         viewId: {
           type: "string",
-          enum: [
-            "ai-chat",
-            "semantic-web-query",
-            "force-graph-3d-v2",
-            "system-monitor",
-            "node-legend",
-            "edge-legend",
-            "entity-table-v2",
-            "custom-themed-panel",
-            "theme-inheritance-demo",
-            "wikipedia-factor-graph",
-            "gravity-simulation",
-          ],
+          enum: getAvailableViewIds(),
           description:
-            "The ID of the view to add. Available views: ai-chat (AI Chat), semantic-web-query (SPARQL Query), force-graph-3d-v2 (3D Graph), system-monitor (System Monitor), node-legend (Node Legend), edge-legend (Edge Legend), entity-table-v2 (Entity Table), custom-themed-panel (Theme Demo), theme-inheritance-demo (Theme Inheritance), wikipedia-factor-graph (Wikipedia Viewer), gravity-simulation (Gravity Simulation)",
+            "The ID of the view to add. Available views: " +
+            getAvailableViewIds().join(", "),
         },
         panelId: {
           type: "string",
           enum: ["left", "center", "right", "bottom"],
-          description:
-            "The panel to add the view to. left: navigation/tools, center: main content, right: details/properties, bottom: logs/terminal",
+          description: "The ID of the panel to add the view to",
         },
       },
       required: ["viewId", "panelId"],
     },
   },
 };
+
+export const CODE_EDITOR_TOOL: OpenAITool = {
+  type: "function",
+  function: {
+    name: "edit_code",
+    description:
+      "Edit or generate code in the Monaco editor. Use this to write, modify, or update code in the code editor.",
+    parameters: {
+      type: "object",
+      properties: {
+        code: {
+          type: "string",
+          description: "The code content to write or append to the editor",
+        },
+        language: {
+          type: "string",
+          enum: [
+            "typescript",
+            "javascript",
+            "python",
+            "java",
+            "cpp",
+            "csharp",
+            "go",
+            "rust",
+            "html",
+            "css",
+            "json",
+            "markdown",
+            "sql",
+            "yaml",
+            "xml",
+          ],
+          description:
+            "The programming language for the code (optional - will use current language if not specified)",
+        },
+        description: {
+          type: "string",
+          description: "A brief description of what the code does (optional)",
+        },
+        replace: {
+          type: "boolean",
+          description:
+            "If true, replace the entire editor content. If false, append to existing content (default: false)",
+        },
+      },
+      required: ["code"],
+    },
+  },
+};
+
+export const WRITE_CODE_TOOL: OpenAITool = {
+  type: "function",
+  function: {
+    name: "write_code",
+    description:
+      "Write code to a file in the workspace. Use this to create or update code files.",
+    parameters: {
+      type: "object",
+      properties: {
+        filePath: {
+          type: "string",
+          description:
+            "The path to the file to write (e.g., 'src/components/MyComponent.tsx')",
+        },
+        code: {
+          type: "string",
+          description: "The code content to write to the file",
+        },
+        description: {
+          type: "string",
+          description: "A brief description of what the code does (optional)",
+        },
+      },
+      required: ["filePath", "code"],
+    },
+  },
+};
+
+// Export all tools
+export const ALL_AI_TOOLS = [
+  SEMANTIC_QUERY_TOOL,
+  WORKSPACE_LAYOUT_TOOL,
+  CODE_EDITOR_TOOL,
+  WRITE_CODE_TOOL,
+];
 
 // Knowledge Graph Search Tool
 export const KNOWLEDGE_GRAPH_SEARCH_TOOL: OpenAITool = {
@@ -180,7 +255,8 @@ export function combineTools(...tools: OpenAITool[]): OpenAITool[] {
 export const SEMANTIC_TOOLS = combineTools(
   SEMANTIC_QUERY_TOOL,
   KNOWLEDGE_GRAPH_SEARCH_TOOL,
-  WORKSPACE_LAYOUT_TOOL
+  WORKSPACE_LAYOUT_TOOL,
+  CODE_EDITOR_TOOL
 );
 
 export const GRAPH_ANALYSIS_TOOLS = combineTools(

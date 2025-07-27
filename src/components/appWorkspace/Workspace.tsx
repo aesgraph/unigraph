@@ -1,6 +1,6 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import { Info } from "lucide-react";
 import React, { useMemo } from "react";
-import { useTheme, getColor } from "@aesgraph/app-shell";
 import { findNodeInForceGraph } from "../../core/force-graph/forceGraphHelpers";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { flyToNode } from "../../core/webgl/webglHelpers";
@@ -31,13 +31,7 @@ import Sidebar from "./Sidebar";
 import UniAppToolbar, { IMenuConfig } from "./UniAppToolbar";
 import styles from "./Workspace.module.css";
 
-const sidebarDisabledViews = [
-  "Yasgui",
-  "Gallery",
-  "Simulation",
-  "Lexical",
-  "Editor",
-];
+const sidebarDisabledViews = ["Gallery", "Simulation", "Lexical", "Editor"];
 
 interface WorkspaceProps {
   menuConfig: IMenuConfig;

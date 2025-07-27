@@ -8,17 +8,19 @@ import {
   Settings,
   Trash2,
 } from "lucide-react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import useChatHistoryStore, { ChatMessage } from "../../store/chatHistoryStore";
+import React, { useEffect, useRef, useState } from "react";
+import { useApiProvider } from "../../context/ApiProviderContext";
+import useChatHistoryStore, {
+  ChatImage,
+  ChatMessage,
+} from "../../store/chatHistoryStore";
 import { addNotification } from "../../store/notificationStore";
 import { useUserStore } from "../../store/userStore";
-import { getEnvVar } from "../../utils/envUtils";
 import { log } from "../../utils/logger";
-import { checkLLMStudioAvailability } from "../applets/ChatGptImporter/services/llmStudioService";
 import { useCommandProcessor } from "../commandPalette/CommandProcessor";
 import { useSemanticWebQuerySession } from "../semantic/SemanticWebQueryContext";
 import "./AIChatPanel.css";
-import { AIResponse, ApiProvider, sendAIMessage } from "./aiQueryLogic";
+import { AIResponse, sendAIMessage } from "./aiQueryLogic";
 import { SEMANTIC_TOOLS, parseToolCallArguments } from "./aiTools";
 
 interface AIChatPanelProps {
@@ -43,72 +45,24 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
   const { setQuery: setSemanticQuery } = useSemanticWebQuerySession(sessionId);
   // Use command processor for workspace layout commands
   const { processCommand } = useCommandProcessor();
+  // Use API provider context
+  const {
+    apiProvider,
+    apiAvailable,
+    openaiApiKey,
+    liveChatUrl,
+    isCustomEndpoint,
+    isVercelEndpoint,
+    getEndpointType,
+  } = useApiProvider();
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [temperature, setTemperature] = useState(0.7);
-  const [apiAvailable, setApiAvailable] = useState<boolean | null>(null);
-  const [apiProvider, setApiProvider] = useState<ApiProvider>("llm-studio");
+  const [pastedImages, setPastedImages] = useState<ChatImage[]>([]);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  // Get OpenAI API key from environment (optional)
-  const openaiApiKey = getEnvVar("VITE_OPENAI_API_KEY") || "";
-  // Get live chat endpoint URL from environment
-  const liveChatUrl =
-    getEnvVar("VITE_LIVE_CHAT_URL") || getEnvVar("VITE_DEFAULT_CHAT_URL");
-
-  // Determine if this is a custom endpoint or production
-  const isCustomEndpoint = useCallback(() => {
-    const defaultUrl = getEnvVar("VITE_DEFAULT_CHAT_URL");
-    return liveChatUrl !== defaultUrl;
-  }, [liveChatUrl]);
-
-  const getEndpointType = () => {
-    if (isCustomEndpoint()) {
-      return "Custom";
-    }
-    return "Server";
-  };
-
-  // Check if we're using a Vercel endpoint (should hide endpoint info)
-  const isVercelEndpoint = useCallback(() => {
-    if (!liveChatUrl) return false;
-    try {
-      const url = new URL(liveChatUrl);
-      return url.hostname.includes("vercel");
-    } catch {
-      return false;
-    }
-  }, [liveChatUrl]);
-
-  // Check API availability and determine provider
-  useEffect(() => {
-    const checkApi = async () => {
-      if (openaiApiKey) {
-        // If we have an OpenAI API key, use that first
-        setApiProvider("openai");
-        setApiAvailable(true);
-      } else if (liveChatUrl) {
-        // If using a custom endpoint (like localhost), use live chat without auth requirement
-        setApiProvider("live-chat");
-        setApiAvailable(true);
-      } else {
-        // Check if LLM Studio is available
-        try {
-          const available = await checkLLMStudioAvailability();
-          setApiProvider("llm-studio");
-          setApiAvailable(available);
-        } catch (error) {
-          console.error("LLM Studio not available:", error);
-          setApiAvailable(false);
-        }
-      }
-    };
-
-    checkApi();
-  }, [openaiApiKey, liveChatUrl]);
 
   // Auto-focus input field when component mounts
   useEffect(() => {
@@ -203,6 +157,78 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
             }
           );
         }
+      } else if (toolCall.function.name === "edit_code") {
+        try {
+          const args = parseToolCallArguments(toolCall);
+
+          console.log("AIChatPanel edit_code args:", args);
+
+          // Process the code editing command
+          processCommand("monaco_editor_code_tool", {
+            code: args.code,
+            language: args.language,
+            description: args.description,
+            replace: args.replace !== undefined ? args.replace : true, // Default to true (replace) if not specified
+          });
+
+          // Log the tool call
+          log.toolSuccess(
+            "edit_code",
+            `Edited code in Monaco Editor${args.language ? ` (${args.language})` : ""}`,
+            {
+              sessionId,
+              language: args.language,
+              description: args.description,
+              replace: args.replace,
+              toolCallId: toolCall.id,
+            }
+          );
+        } catch (error) {
+          console.error("Failed to process code editing tool call:", error);
+          log.toolError(
+            "edit_code",
+            error instanceof Error ? error.message : String(error),
+            {
+              sessionId,
+              toolCallId: toolCall.id,
+            }
+          );
+        }
+      } else if (toolCall.function.name === "write_code") {
+        try {
+          const args = parseToolCallArguments(toolCall);
+
+          // Process the code generation command
+          processCommand("monaco_editor_code_tool", {
+            code: args.code,
+            language: args.language,
+            description: args.description,
+            replace: args.replace || false,
+          });
+
+          // Log the tool call
+          log.toolSuccess(
+            "write_code",
+            `Generated ${args.language || "code"} in Monaco Editor`,
+            {
+              sessionId,
+              language: args.language,
+              description: args.description,
+              replace: args.replace,
+              toolCallId: toolCall.id,
+            }
+          );
+        } catch (error) {
+          console.error("Failed to process code generation tool call:", error);
+          log.toolError(
+            "write_code",
+            error instanceof Error ? error.message : String(error),
+            {
+              sessionId,
+              toolCallId: toolCall.id,
+            }
+          );
+        }
       }
       // Add more tool handlers here as needed
     });
@@ -264,25 +290,27 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
   };
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading || apiAvailable === false) return;
+    if (!inputValue.trim() || isLoading) return; // No longer need apiAvailable === false
 
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
       role: "user",
       content: inputValue.trim(),
       timestamp: new Date(),
+      images: pastedImages.length > 0 ? pastedImages : undefined,
     };
 
     // Add user message to persistent store
     addMessage(userMessage);
     setInputValue("");
+    setPastedImages([]); // Clear pasted images after sending
     setIsLoading(true);
 
     // Log the user message
     log.info(`User message sent`, "AIChatPanel", {
       sessionId,
       messageLength: userMessage.content.length,
-      apiProvider,
+      // apiProvider, // No longer needed
     });
 
     try {
@@ -316,17 +344,17 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       log.info(`Sending AI request`, "AIChatPanel", {
         sessionId,
         messageCount: filteredChatMessages.length,
-        apiProvider,
-        hasTools: apiProvider === "openai",
+        // apiProvider, // No longer needed
+        hasTools: false, // No longer needed
       });
 
       // Call the generic sendAIMessage function with semantic tools
       const response: AIResponse = await sendAIMessage({
         chatMessages: filteredChatMessages,
         apiProvider,
-        openaiApiKey: openaiApiKey || "",
-        liveChatUrl: liveChatUrl || "",
-        isCustomEndpoint: isCustomEndpoint(),
+        openaiApiKey,
+        liveChatUrl,
+        isCustomEndpoint,
         isSignedIn,
         user,
         temperature,
@@ -371,6 +399,8 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
 
         if (toolCallNames.includes("semantic_query")) {
           responseContent = `SPARQL query generated in ${sessionId} panel`;
+        } else if (toolCallNames.includes("edit_code")) {
+          responseContent = "Code has been updated in the Monaco editor";
         } else if (toolCallNames.includes("add_view_to_panel")) {
           // Extract view and panel info from the tool call
           const viewToolCall = response.toolCalls.find(
@@ -387,6 +417,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
                 "ai-chat": "AI Chat",
                 "semantic-web-query": "SPARQL Query",
                 "force-graph-3d-v2": "ForceGraph 3D",
+                "monaco-editor": "Monaco Editor",
                 "system-monitor": "System Monitor",
                 "node-legend": "Node Legend",
                 "edge-legend": "Edge Legend",
@@ -447,7 +478,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       log.error(`AI request failed`, "AIChatPanel", {
         sessionId,
         error: errorMessage,
-        apiProvider,
+        // apiProvider, // No longer needed
       });
 
       // Handle different types of errors with user-friendly messages
@@ -501,12 +532,46 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
     }
   };
 
-  const getProviderDisplayName = (provider: ApiProvider): string => {
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.type.indexOf("image") !== -1) {
+        e.preventDefault();
+
+        const file = item.getAsFile();
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const dataUrl = event.target?.result as string;
+            const newImage: ChatImage = {
+              id: `img-${Date.now()}-${Math.random()}`,
+              dataUrl,
+              fileName: file.name,
+              fileType: file.type,
+              size: file.size,
+            };
+            setPastedImages((prev) => [...prev, newImage]);
+          };
+          reader.readAsDataURL(file);
+        }
+        break;
+      }
+    }
+  };
+
+  const removeImage = (imageId: string) => {
+    setPastedImages((prev) => prev.filter((img) => img.id !== imageId));
+  };
+
+  const getProviderDisplayName = (provider: string): string => {
     switch (provider) {
       case "live-chat":
         return "Live Chat";
       case "openai":
-        return "OpenAI";
+        return "ChatGPT";
       case "llm-studio":
         return "LLM Studio";
       default:
@@ -514,7 +579,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
     }
   };
 
-  const getProviderIcon = (provider: ApiProvider) => {
+  const getProviderIcon = (provider: string) => {
     switch (provider) {
       case "live-chat":
         return <Globe size={16} />;
@@ -578,16 +643,11 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           >
             {getProviderIcon(apiProvider)}
           </span>
-          {apiProvider === "live-chat" &&
-            isCustomEndpoint() &&
-            !isVercelEndpoint() && (
-              <span
-                className="endpoint-indicator custom"
-                title="Custom endpoint"
-              >
-                Custom
-              </span>
-            )}
+          {isCustomEndpoint && !isVercelEndpoint && (
+            <span className="endpoint-indicator custom" title="Custom endpoint">
+              Custom
+            </span>
+          )}
         </div>
         <div className="ai-chat-actions">
           <button
@@ -622,13 +682,13 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
               <p>Using OpenAI API with environment variable API key</p>
             ) : apiProvider === "live-chat" ? (
               <div>
-                {!isVercelEndpoint() ? (
+                {!isVercelEndpoint ? (
                   <>
                     <p>Using Live Chat API at:</p>
                     <code>{liveChatUrl}</code>
                     <p className="endpoint-type">
                       <strong>Endpoint Type:</strong> {getEndpointType()}
-                      {isCustomEndpoint() && (
+                      {isCustomEndpoint && (
                         <span className="custom-badge">Custom</span>
                       )}
                     </p>
@@ -688,6 +748,25 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
                   {i < message.content.split("\n").length - 1 && <br />}
                 </React.Fragment>
               ))}
+              {/* Display images if present */}
+              {message.images && message.images.length > 0 && (
+                <div className="message-images">
+                  {message.images.map((image) => (
+                    <div key={image.id} className="message-image-item">
+                      <img
+                        src={image.dataUrl}
+                        alt={image.fileName || "Message image"}
+                        className="message-image"
+                      />
+                      {image.fileName && (
+                        <div className="message-image-caption">
+                          {image.fileName}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="message-timestamp">
               {message.timestamp.toLocaleTimeString()}
@@ -707,17 +786,47 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
 
       {/* Input area */}
       <div className="ai-chat-input-container">
+        {/* Pasted images preview */}
+        {pastedImages.length > 0 && (
+          <div className="pasted-images-preview">
+            {pastedImages.map((image) => (
+              <div key={image.id} className="pasted-image-item">
+                <img
+                  src={image.dataUrl}
+                  alt={image.fileName || "Pasted image"}
+                  className="pasted-image-thumbnail"
+                />
+                <div className="pasted-image-info">
+                  <span className="pasted-image-name">
+                    {image.fileName || "Image"}
+                  </span>
+                  <span className="pasted-image-size">
+                    {(image.size / 1024).toFixed(1)} KB
+                  </span>
+                </div>
+                <button
+                  className="remove-image-button"
+                  onClick={() => removeImage(image.id)}
+                  title="Remove image"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <textarea
           ref={inputRef}
           className="ai-chat-input"
           placeholder={
             apiAvailable === false
               ? `${getProviderDisplayName(apiProvider)} not available...`
-              : "Type a message..."
+              : "Type a message... (or paste an image)"
           }
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           disabled={isLoading || apiAvailable === false}
         />
         <button

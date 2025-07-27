@@ -1,0 +1,160 @@
+// Shared view definitions for AppShell and WorkspaceLayoutTool
+// This ensures consistency between registered views and available views for AI tools
+
+export interface ViewDefinition {
+  id: string;
+  title: string;
+  icon: string;
+  category: string;
+  description: string;
+}
+
+export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
+  "ai-chat": {
+    id: "ai-chat",
+    title: "AI Chat",
+    icon: "💬",
+    category: "communication",
+    description:
+      "Interactive AI chat interface with support for semantic web queries and tool calls",
+  },
+  "semantic-web-query": {
+    id: "semantic-web-query",
+    title: "SPARQL Querier",
+    icon: "🔍",
+    category: "data",
+    description: "SPARQL querier for fetching data from the Semantic Web",
+  },
+  "force-graph-3d": {
+    id: "force-graph-3d",
+    title: "ForceGraph 3D",
+    icon: "🌐",
+    category: "visualization",
+    description:
+      "Interactive 3D force-directed graph visualization with physics simulation",
+  },
+  "force-graph-3d-v2": {
+    id: "force-graph-3d-v2",
+    title: "ForceGraph 3D V2",
+    icon: "🚀",
+    category: "visualization",
+    description:
+      "Interactive 3D force-directed graph visualization with physics simulation (V2)",
+  },
+  "monaco-editor": {
+    id: "monaco-editor",
+    title: "Monaco Editor",
+    icon: "💻",
+    category: "development",
+    description:
+      "Full-featured code editor with syntax highlighting, IntelliSense, and debugging support",
+  },
+  "system-monitor": {
+    id: "system-monitor",
+    title: "System Monitor",
+    icon: "📊",
+    category: "tools",
+    description: "Real-time system monitoring and performance metrics display",
+  },
+  "node-legend": {
+    id: "node-legend",
+    title: "Node Legend",
+    icon: "🔵",
+    category: "data",
+    description:
+      "Legend showing node types and their visual representations in the graph",
+  },
+  "edge-legend": {
+    id: "edge-legend",
+    title: "Edge Legend",
+    icon: "🔗",
+    category: "data",
+    description:
+      "Legend showing edge types and their visual representations in the graph",
+  },
+  "entity-table-v2": {
+    id: "entity-table-v2",
+    title: "Entity Table",
+    icon: "📋",
+    category: "data",
+    description:
+      "Tabular view of all entities (nodes) in the current graph with filtering and sorting",
+  },
+  "custom-themed-panel": {
+    id: "custom-themed-panel",
+    title: "Theme Demo",
+    icon: "🎨",
+    category: "development",
+    description: "Demonstration of theme inheritance and styling capabilities",
+  },
+  "theme-inheritance-demo": {
+    id: "theme-inheritance-demo",
+    title: "Theme Inheritance",
+    icon: "🎭",
+    category: "development",
+    description:
+      "Interactive demo showing how components inherit theme styles from the workspace",
+  },
+  "wikipedia-factor-graph": {
+    id: "wikipedia-factor-graph",
+    title: "Wikipedia Factor Graph",
+    icon: "📚",
+    category: "tools",
+    description:
+      "Interactive Wikipedia article viewer with factor graph visualization",
+  },
+  "gravity-simulation": {
+    id: "gravity-simulation",
+    title: "Gravity Simulation",
+    icon: "🌌",
+    category: "simulation",
+    description:
+      "WebGL-based gravity simulation with interactive particle physics",
+  },
+  "react-flow-panel-v2": {
+    id: "react-flow-panel-v2",
+    title: "ReactFlow Panel V2",
+    icon: "🔄",
+    category: "visualization",
+    description:
+      "Interactive ReactFlow diagram editor for workflow and process visualization",
+  },
+  about: {
+    id: "about",
+    title: "About",
+    icon: "ℹ️",
+    category: "help",
+    description: "Information about the application and its features",
+  },
+  "dev-tools": {
+    id: "dev-tools",
+    title: "Dev Tools",
+    icon: "🔧",
+    category: "development",
+    description: "Development tools and utilities for debugging and testing",
+  },
+  "lexical-editor": {
+    id: "lexical-editor",
+    title: "Lexical Editor",
+    icon: "📝",
+    category: "editing",
+    description: "Rich text editor built with Lexical framework",
+  },
+};
+
+// Helper function to get all available view IDs
+export const getAvailableViewIds = (): string[] => {
+  return Object.keys(VIEW_DEFINITIONS);
+};
+
+// Helper function to get view definition by ID
+export const getViewDefinition = (
+  viewId: string
+): ViewDefinition | undefined => {
+  return VIEW_DEFINITIONS[viewId];
+};
+
+// Helper function to get all view definitions
+export const getAllViewDefinitions = (): ViewDefinition[] => {
+  return Object.values(VIEW_DEFINITIONS);
+};
