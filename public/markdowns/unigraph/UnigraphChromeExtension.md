@@ -13,7 +13,7 @@ Some of the things you can do in Unigraph with saved web content:
 - Build applets or computational workflows that act on your data.
 - Use the web content to create information objects shareable with other users.
 
-#### **Example Use Cases**
+### **Example Use Cases**
 
 **Basic**
 
@@ -27,12 +27,12 @@ Some of the things you can do in Unigraph with saved web content:
 - A teacher assigned readings to a class of students. Using Unigraph and the chrome extension (and eventually desktop plugin), students can comment or ask questions on specific sections. Everyone can read and respond to each other over the Unigraph layer, and these comment trees become a compounding asset that can be composed with other Unigraph artifacts.
 - A software engineer is studying system design and ingests various designs and diagrams across the internet into a Unigraph project to create an 'ultimate diagram' that could not be captured in one static image or article.
 
-#### **Screenshots**
+### **Screenshots**
 
 ![](../../images/documentation/unigraphChromeExtension1.png)
 ![](../../images/documentation/unigraphChromeExtension2.png)
 
-#### **Current Functions**
+### **Current Functions**
 
 | Function           | Description                                                  |
 | ------------------ | ------------------------------------------------------------ |
@@ -46,7 +46,7 @@ Some of the things you can do in Unigraph with saved web content:
 Content can be saved with annotations (primary comment), a secondary comment, and tags.
 Annotations can be managed in Unigraph and annotations can be attached to other annotations.
 
-#### **Installation**
+### **Installation**
 
 Aesgraph does not currently have an official version of the Unigraph Chrome Extension that integrates into its stack, meaning users must have their own Unigraph stack and supply the appropriate credentials to UCE. Aesgraph is working on releasing a version that integrates into the Unigraph stack it currently hosts.
 

@@ -200,13 +200,77 @@
   border-spacing: 0;
   border-collapse: collapse;
   width: 100%;
+  margin: 16px 0;
+  border: 1px solid var(--border-color, #e1e4e8);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.markdown-content th,
+.markdown-excerpt th {
+  background-color: var(--surface-color, #f6f8fa);
+  color: var(--text-color, #24292e);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #e1e4e8);
+  border-right: 1px solid var(--border-color, #e1e4e8);
+}
+
+.markdown-content th:last-child,
+.markdown-excerpt th:last-child {
+  border-right: none;
 }
 
 .markdown-content td,
 .markdown-excerpt td {
-  padding: 0;
-  padding-bottom: 20px;
+  padding: 12px 16px;
   vertical-align: top;
+  border-bottom: 1px solid var(--border-color, #e1e4e8);
+  border-right: 1px solid var(--border-color, #e1e4e8);
+  background-color: var(--background-color, #ffffff);
+}
+
+.markdown-content td:last-child,
+.markdown-excerpt td:last-child {
+  border-right: none;
+}
+
+.markdown-content tr:last-child td,
+.markdown-excerpt tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-content tr:nth-child(even) td,
+.markdown-excerpt tr:nth-child(even) td {
+  background-color: var(--surface-color, #f6f8fa);
+}
+
+/* Dark mode support for tables */
+@media (prefers-color-scheme: dark) {
+  .markdown-content table,
+  .markdown-excerpt table {
+    border-color: var(--border-color, #30363d);
+  }
+
+  .markdown-content th,
+  .markdown-excerpt th {
+    background-color: var(--surface-color, #21262d);
+    color: var(--text-color, #f0f6fc);
+    border-color: var(--border-color, #30363d);
+  }
+
+  .markdown-content td,
+  .markdown-excerpt td {
+    background-color: var(--background-color, #0d1117);
+    border-color: var(--border-color, #30363d);
+    color: var(--text-color, #f0f6fc);
+  }
+
+  .markdown-content tr:nth-child(even) td,
+  .markdown-excerpt tr:nth-child(even) td {
+    background-color: var(--surface-color, #161b22);
+  }
 }
 
 .markdown-content td img,
