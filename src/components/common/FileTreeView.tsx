@@ -245,7 +245,7 @@ const FileTreeView: React.FC<FileTreeViewProps> = ({
     };
 
     fetchFileTree();
-  }, [rootPath]);
+  }, [log, rootPath]);
 
   // Filter tree based on search term and empty folder preference
   useEffect(() => {

@@ -203,6 +203,11 @@
       "title": "Home"
     },
     {
+      "path": "logging-system.md",
+      "type": "file",
+      "name": "logging-system.md"
+    },
+    {
       "path": "overview",
       "type": "directory",
       "children": [

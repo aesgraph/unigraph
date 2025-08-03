@@ -7,6 +7,13 @@
       "type": "directory",
       "children": [
         {
+          "path": "unigraph/UnigraphChromeExtension.md",
+          "type": "file",
+          "name": "UnigraphChromeExtension.md",
+          "title": "Unigraph Chrome Extension",
+          "order": 4
+        },
+        {
           "path": "unigraph/UnigraphOverview.md",
           "type": "file",
           "name": "UnigraphOverview.md",
