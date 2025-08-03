@@ -2107,6 +2107,12 @@ const AppContentInner = ({
 
   useEffect(() => {
     if (activeView === "ForceGraph3d" && forceGraphInstance) {
+      // Skip refreshing ForceGraph3D if in Physics mode to prevent unnecessary reinitialization
+      if (forceGraph3dOptions.layout === "Physics") {
+        console.log("Skipping ForceGraph3D refresh for Physics mode");
+        return;
+      }
+
       ForceGraphManager.refreshForceGraphInstance(
         forceGraphInstance,
         currentSceneGraph,
@@ -2151,7 +2157,8 @@ const AppContentInner = ({
     };
   }, [
     activeView,
-    currentLayoutResult,
+    // Skip currentLayoutResult dependency for Physics mode to prevent reinitialization
+    ...(forceGraph3dOptions.layout !== "Physics" ? [currentLayoutResult] : []),
     currentSceneGraph, // Add dependency on currentSceneGraph to trigger initialization when scene graph changes
     initializeForceGraph,
     setForceGraphInstance,
@@ -2190,7 +2197,8 @@ const AppContentInner = ({
     // window.history.pushState({}, "", url.toString());
   }, [
     forceGraphInstance,
-    currentLayoutResult, // Use this to trigger the effect when the layout result changes
+    // Skip currentLayoutResult dependency for Physics mode to prevent applying fixed positions
+    ...(forceGraph3dOptions.layout !== "Physics" ? [currentLayoutResult] : []),
     forceGraph3dOptions.layout,
     graphvizFitToView,
     currentSceneGraph, // Add dependency to access scene graph config
