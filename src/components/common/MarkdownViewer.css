@@ -2,27 +2,16 @@
 .markdown-title {
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid;
 }
 
 .markdown-title h1 {
   margin: 0;
   font-size: 2.5rem;
   font-weight: 600;
-  color: #333;
   line-height: 1.2;
   word-wrap: break-word;
   overflow-wrap: break-word;
-}
-
-@media (prefers-color-scheme: dark) {
-  .markdown-title {
-    border-bottom-color: #444;
-  }
-
-  .markdown-title h1 {
-    color: #e0e0e0;
-  }
 }
 
 /* Toggle button for raw markdown view */
@@ -38,16 +27,15 @@
   border-radius: 4px;
   cursor: pointer;
   font-family: monospace;
-  color: rgba(0, 0, 0, 0.6);
-  transition: color 0.2s;
+  transition: opacity 0.2s;
 }
 
 .markdown-toggle-button:hover {
-  color: rgba(0, 0, 0, 0.8);
+  opacity: 0.8;
 }
 
 .markdown-toggle-button.active {
-  color: rgba(0, 0, 0, 0.9);
+  opacity: 1;
 }
 
 .markdown-toggle-button:disabled {
@@ -58,29 +46,9 @@
 /* Raw markdown view styles */
 .markdown-raw-view {
   height: calc(100% - 40px);
-  border: 1px solid #e0e0e0;
+  border: 1px solid;
   border-radius: 4px;
   overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-  .markdown-toggle-button {
-    background-color: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  .markdown-toggle-button:hover {
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .markdown-toggle-button.active {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .markdown-raw-view {
-    border-color: #444;
-  }
 }
 
 /* Styles for defined terms */

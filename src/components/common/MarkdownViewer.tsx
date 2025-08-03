@@ -1,3 +1,4 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import Editor from "@monaco-editor/react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
@@ -46,6 +47,7 @@ function MarkdownViewer({
   onAnnotate = (text) => console.log("Annotate text:", text), // Default implementation
   showRawToggle = false, // Default to false - disabled by default
 }: MarkdownViewerProps) {
+  const { theme } = useTheme();
   const [html, setHtml] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -916,8 +918,13 @@ function MarkdownViewer({
     >
       {/* Title display */}
       {title && !showRawMarkdown && (
-        <div className="markdown-title">
-          <h1>{title}</h1>
+        <div
+          className="markdown-title"
+          style={{
+            borderBottomColor: getColor(theme.colors, "border"),
+          }}
+        >
+          <h1 style={{ color: getColor(theme.colors, "text") }}>{title}</h1>
         </div>
       )}
 
@@ -928,6 +935,9 @@ function MarkdownViewer({
           className={`markdown-toggle-button ${showRawMarkdown ? "active" : ""}`}
           title={showRawMarkdown ? "Show rendered view" : "Show raw markdown"}
           disabled={loading}
+          style={{
+            color: getColor(theme.colors, "textSecondary"),
+          }}
         >
           {showRawMarkdown ? "View markdown" : "View md text"}
         </button>
