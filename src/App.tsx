@@ -854,16 +854,22 @@ const AppContentInner = ({
         graph.getData().defaultAppConfig
       );
 
-      safeComputeLayout(
-        graph,
-        layoutToLoad,
-        graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout
-      ).then(() => {
+      // Check if we should set the scene graph immediately (for Physics mode)
+      const isPhysicsMode =
+        graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout ===
+          "Physics" &&
+        graph.getData().defaultAppConfig?.activeView === "ForceGraph3d";
+
+      // Helper function to set up scene graph and configuration
+      const setupSceneGraph = () => {
         setCurrentSceneGraph(graph);
-        // Update workspace state manager with current scenegraph
         workspaceStateManager.setCurrentSceneGraph(graph);
 
-        console.log("loaded layout", layoutToLoad);
+        console.log(
+          isPhysicsMode
+            ? "Physics mode - immediate setup"
+            : "Layout mode - setup after layout"
+        );
 
         setLegendMode(graph.getDisplayConfig().mode);
         setNodeLegendConfig(
@@ -887,12 +893,9 @@ const AppContentInner = ({
           },
         });
 
-        // DEV LOGIC
-        // graph.getEntityCache().addEntities(songAnnotation247_2_entities);
-        // graph.getEntityCache().addEntities(IMAGE_ANNOTATION_ENTITIES());
-
         setActiveFilter(graph.getData().defaultAppConfig?.activeFilter ?? null);
 
+        // Handle workspace config
         const workspaceConfig =
           graph.getData()?.defaultAppConfig?.workspaceConfig;
         if (workspaceConfig) {
@@ -906,7 +909,6 @@ const AppContentInner = ({
             setRightSidebarConfig(rightToSet);
             setRightActiveSection(rightToSet.activeSectionId ?? "default");
           }
-
           setShowToolbar(workspaceConfig?.showToolbar ?? true);
           if (workspaceConfig?.hideAll) {
             setShowToolbar(false);
@@ -923,7 +925,7 @@ const AppContentInner = ({
           }
         }
 
-        // Apply appShellLayout if specified in the scenegraph config
+        // Apply appShellLayout if specified
         const appShellLayout =
           graph.getData()?.defaultAppConfig?.appShellLayout;
         if (appShellLayout && applyWorkspaceLayout) {
@@ -935,21 +937,50 @@ const AppContentInner = ({
             );
           });
         } else {
-          // Try to restore workspace state from scenegraph if no appShellLayout specified
           const restored = workspaceStateManager.restoreWorkspaceState();
           if (restored) {
             console.log("Restored workspace state from scenegraph");
           }
         }
+      };
 
-        const tock = Date.now();
-        console.log("TOTAL TIME", tock - tick);
-        onLoaded?.(graph);
-        addNotification({
-          message: `Loaded SceneGraph: ${graph.getMetadata().name}`,
-          type: "success",
-          groupId: "load-scene-graph",
+      if (isPhysicsMode) {
+        console.log("Physics mode detected - setting scene graph immediately");
+        setupSceneGraph();
+
+        // Run layout computation in background for Physics mode
+        safeComputeLayout(
+          graph,
+          layoutToLoad,
+          graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout
+        )
+          .then(() => {
+            console.log(
+              "Background layout computation completed for Physics mode"
+            );
+          })
+          .catch((error) => {
+            console.warn("Background layout computation failed:", error);
+          });
+      } else {
+        // For non-Physics modes, wait for layout computation
+        safeComputeLayout(
+          graph,
+          layoutToLoad,
+          graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout
+        ).then(() => {
+          console.log("loaded layout", layoutToLoad);
+          setupSceneGraph();
         });
+      }
+
+      const tock = Date.now();
+      console.log("TOTAL TIME", tock - tick);
+      onLoaded?.(graph);
+      addNotification({
+        message: `Loaded SceneGraph: ${graph.getMetadata().name}`,
+        type: "success",
+        groupId: "load-scene-graph",
       });
     },
     [
