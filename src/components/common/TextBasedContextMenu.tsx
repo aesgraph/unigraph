@@ -156,7 +156,7 @@ const TextBasedContextMenu: React.FC<TextBasedContextMenuProps> = ({
             color: getColor(theme.colors, "text"),
             whiteSpace: "nowrap",
             fontSize: theme.sizes.fontSize.md,
-            borderRadius: theme.sizes.borderRadius.xs,
+            borderRadius: theme.sizes.borderRadius.sm,
             margin: "1px 4px",
           }}
           onMouseOver={(e) => {

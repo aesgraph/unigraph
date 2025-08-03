@@ -12,7 +12,7 @@ import "./DocumentationView.css";
 const DocumentationView: React.FC = () => {
   const { theme } = useTheme();
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [sidebarWidth, setSidebarWidth] = useState(280);
+  const [sidebarWidth, setSidebarWidth] = useState(370);
   const [sidebarMode, setSidebarMode] = useState<"tree" | "search">("tree");
   const currentSceneGraph = useAppConfigStore(
     (state) => state.currentSceneGraph

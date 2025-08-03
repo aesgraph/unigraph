@@ -8,6 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useComponentLogger } from "../../hooks/useLogger";
 import "./FileTreeView.css";
 
 interface FileNode {
@@ -38,6 +39,7 @@ const FileTreeView: React.FC<FileTreeViewProps> = ({
   hideEmptyFolders = true,
 }) => {
   const { theme } = useTheme();
+  const log = useComponentLogger("FileTreeView");
   const [fileTree, setFileTree] = useState<FileNode[]>([]);
   const [filteredTree, setFilteredTree] = useState<FileNode[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,10 +64,9 @@ const FileTreeView: React.FC<FileTreeViewProps> = ({
             "/markdowns"
           );
         } else {
-          console.warn(
-            "Could not load markdowns structure:",
-            markdownsResponse.status
-          );
+          log.warn("Could not load markdowns structure", {
+            status: markdownsResponse.status,
+          });
         }
 
         // Load docs structure
@@ -76,7 +77,9 @@ const FileTreeView: React.FC<FileTreeViewProps> = ({
           const docsData = await docsResponse.json();
           docsTree = await convertStructureToFileNodes(docsData, "/docs");
         } else {
-          console.warn("Could not load docs structure:", docsResponse.status);
+          log.warn("Could not load docs structure", {
+            status: docsResponse.status,
+          });
         }
 
         // Combine both trees
@@ -86,8 +89,8 @@ const FileTreeView: React.FC<FileTreeViewProps> = ({
         const processedTree = await processFolderOrdering(combinedTree);
 
         // Debug: Log the final tree structure
-        console.log(
-          "Final processed tree:",
+        log.debug(
+          "Final processed tree structure",
           processedTree.map((node) => ({
             name: node.name,
             displayName: node.displayName,
@@ -131,64 +134,26 @@ const FileTreeView: React.FC<FileTreeViewProps> = ({
             `Processing child: ${child.path}, name: ${name}, isIndex: ${isIndexFile}`
           );
 
-          // For markdown files, try to fetch metadata
+          // For markdown files, use metadata from structure file
           if (child.type === "file" && child.path.endsWith(".md")) {
-            try {
-              const fetchUrl = `${basePath}/${child.path}`;
-              console.log(`Fetching metadata from: ${fetchUrl}`);
-              const response = await fetch(fetchUrl);
-              if (response.ok) {
-                const content = await response.text();
-                console.log(
-                  `Content for ${child.path}:`,
-                  content.substring(0, 200) + "..."
-                );
-                // Parse YAML front matter
-                const frontMatterMatch = content.match(
-                  /^---\s*\n([\s\S]*?)\n---\s*\n/
-                );
-                if (frontMatterMatch) {
-                  const frontMatter = frontMatterMatch[1];
+            // Use metadata from structure file if available
+            if (child.title) {
+              title = child.title;
+              displayName = title;
+            } else {
+              // Fallback to filename
+              displayName = name.replace(".md", "");
+            }
 
-                  // Extract title - try both quoted and unquoted formats
-                  let titleMatch = frontMatter.match(
-                    /title:\s*["']([^"']+)["']/
-                  );
-                  if (titleMatch) {
-                    title = titleMatch[1];
-                    displayName = title;
-                  } else {
-                    // Try to extract title without quotes - match until end of line
-                    titleMatch = frontMatter.match(/title:\s*([^\r\n]+)/);
-                    if (titleMatch) {
-                      title = titleMatch[1].trim();
-                      displayName = title;
-                    }
-                  }
+            // Use order from structure file if available
+            if (child.order !== undefined) {
+              orderValue = child.order;
+            }
 
-                  // Debug logging for index files
-                  if (isIndexFile) {
-                    console.log(
-                      `Index file ${child.path}: frontmatter="${frontMatter}", title="${title}", displayName="${displayName}"`
-                    );
-                  }
-
-                  // Extract order
-                  const orderMatch = frontMatter.match(/order:\s*(\d+)/);
-                  if (orderMatch) {
-                    const order = parseInt(orderMatch[1], 10);
-                    if (!isNaN(order)) {
-                      // We'll set this after creating the node
-                      orderValue = order;
-                    }
-                  }
-                }
-              }
-            } catch (error) {
-              // Silently fail and use filename as fallback
-              console.debug(
-                `Could not fetch metadata for ${child.path}:`,
-                error
+            // Debug logging for index files
+            if (isIndexFile) {
+              console.log(
+                `Index file ${child.path}: title="${title}", displayName="${displayName}", order="${orderValue}"`
               );
             }
           }

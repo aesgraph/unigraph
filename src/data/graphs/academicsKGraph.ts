@@ -23,6 +23,7 @@ export const demo_sceneGraph_academicsKG = () => {
       forceGraph3dOptions: {
         layout: "Physics",
       },
+      appShellLayout: "clean-workspace",
     },
   });
 };

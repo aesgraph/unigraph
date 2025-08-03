@@ -9,8 +9,8 @@ import { Copy, Send, Settings, Zap } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Parser as SparqlParser } from "sparqljs";
 import { useApiProvider } from "../../context/ApiProviderContext";
+import { useComponentLogger } from "../../hooks/useLogger";
 import { createThemedAgGridContainer } from "../../utils/aggridThemeUtils";
-import { log } from "../../utils/logger";
 import { sendAIMessage } from "../ai/aiQueryLogic";
 import { SEMANTIC_QUERY_TOOL, parseToolCallArguments } from "../ai/aiTools";
 import { useSemanticWebQuerySession } from "./SemanticWebQueryContext";
@@ -100,6 +100,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
   theme: legacyTheme, // Renamed to avoid conflict
   sessionId = "default-semantic-panel",
 }) => {
+  const log = useComponentLogger("SemanticWebQueryPanel");
   // Use app-shell theme if available, fallback to legacy theme detection
   const appShellTheme = useTheme();
   const hasAppShellTheme = appShellTheme && appShellTheme.theme;
@@ -125,7 +126,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
 
   // Debug history
   useEffect(() => {
-    console.log("History updated:", history.length, history);
+    log.debug("History updated", { length: history.length, history });
   }, [history]);
 
   // Use API provider context
@@ -197,7 +198,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     setColumns([]);
 
     // Log query execution start
-    log.info(`Executing SPARQL query`, "SemanticWebQueryPanel", {
+    log.info(`Executing SPARQL query`, {
       sessionId,
       endpoint: effectiveEndpoint,
       query:
@@ -215,24 +216,23 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
       setResults(data.results.bindings);
 
       // Log successful query execution
-      log.queryExecuted(
-        queryToRun,
-        effectiveEndpoint,
-        data.results.bindings.length,
-        {
-          sessionId,
-          columns: data.head.vars,
-          resultCount: data.results.bindings.length,
-        }
-      );
+      log.info(`SPARQL query executed successfully`, {
+        sessionId,
+        query: queryToRun,
+        endpoint: effectiveEndpoint,
+        columns: data.head.vars,
+        resultCount: data.results.bindings.length,
+      });
     } catch (e: any) {
       const errorMessage = e.message || String(e);
       setError(errorMessage);
 
       // Log query error
-      log.queryError(queryToRun, effectiveEndpoint, errorMessage, {
+      log.error(`SPARQL query failed`, {
         sessionId,
-        error: e,
+        query: queryToRun,
+        endpoint: effectiveEndpoint,
+        error: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -245,11 +245,11 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     try {
       await runQueryWithCurrentValue(query);
       // Add to history when query is successfully run (no errors thrown)
-      console.log("Adding to history:", query, effectiveEndpoint);
+      log.debug("Adding to history", { query, endpoint: effectiveEndpoint });
       addToHistory(query, effectiveEndpoint);
     } catch (err) {
       // Error is already handled by runQueryWithCurrentValue
-      console.error("Query execution failed:", err);
+      log.error("Query execution failed", { error: err });
     }
   };
 
@@ -264,9 +264,9 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
       await navigator.clipboard.writeText(query);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 1500); // Reset after 1.5 seconds
-      console.log("Query copied to clipboard");
+      log.debug("Query copied to clipboard");
     } catch (err) {
-      console.error("Failed to copy query:", err);
+      log.error("Failed to copy query", { error: err });
       // Fallback for older browsers
       const textArea = document.createElement("textarea");
       textArea.value = query;
@@ -423,10 +423,9 @@ Return only the complete SPARQL query with prefixes, no explanations.`,
                 return; // Success, exit early
               }
             } catch (error) {
-              console.error(
-                "Failed to parse semantic_query tool call arguments:",
-                error
-              );
+              log.error("Failed to parse semantic_query tool call arguments", {
+                error,
+              });
             }
           }
         }
@@ -470,7 +469,7 @@ Return only the complete SPARQL query with prefixes, no explanations.`,
         throw new Error("No response received from AI");
       }
     } catch (error) {
-      console.error("Failed to generate SPARQL query:", error);
+      log.error("Failed to generate SPARQL query", { error });
       // Fallback: use a simple prompt to generate a basic query
       const fallbackQuery = `# Generated query for: ${aiQuery}
 SELECT ?subject ?predicate ?object WHERE {

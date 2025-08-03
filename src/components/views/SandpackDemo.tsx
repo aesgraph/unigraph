@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { Box, Typography, ToggleButtonGroup, ToggleButton, Paper } from '@mui/material';
-import { SandpackEditor, SandpackEditorFull } from './SandpackEditor';
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  ToggleButtonGroup,
+  ToggleButton,
+  Paper,
+} from "@mui/material";
+import { SandpackEditor, SandpackEditorFull } from "./SandpackEditor";
 
 const reactTemplate = {
-  '/App.js': `import React, { useState } from 'react';
+  "/App.js": `import React, { useState } from 'react';
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -29,7 +35,7 @@ export default function App() {
     </div>
   );
 }`,
-  '/styles.css': `body {
+  "/styles.css": `body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -48,11 +54,11 @@ div {
 
 button:hover {
   background-color: #0056b3 !important;
-}`
+}`,
 };
 
 const vanillaTemplate = {
-  '/index.html': `<!DOCTYPE html>
+  "/index.html": `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -76,7 +82,7 @@ const vanillaTemplate = {
   <script src="script.js"></script>
 </body>
 </html>`,
-  '/script.js': `document.addEventListener('DOMContentLoaded', () => {
+  "/script.js": `document.addEventListener('DOMContentLoaded', () => {
   const countElement = document.getElementById('count');
   const incrementBtn = document.getElementById('increment');
   const decrementBtn = document.getElementById('decrement');
@@ -98,7 +104,7 @@ const vanillaTemplate = {
     document.body.style.background = \`linear-gradient(135deg, \${e.target.value} 0%, #764ba2 100%)\`;
   });
 });`,
-  '/styles.css': `body {
+  "/styles.css": `body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -173,11 +179,11 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}`
+}`,
 };
 
 const vueTemplate = {
-  '/App.vue': `<template>
+  "/App.vue": `<template>
   <div class="app">
     <h1>Vue.js Counter App</h1>
     <div class="counter">
@@ -272,22 +278,24 @@ export default {
   border-radius: 5px;
   cursor: pointer;
 }
-</style>`
+</style>`,
 };
 
 const templates = {
   react: reactTemplate,
   vanilla: vanillaTemplate,
-  vue: vueTemplate
+  vue: vueTemplate,
 };
 
 export const SandpackDemo: React.FC = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState<'react' | 'vanilla' | 'vue'>('react');
-  const [editorMode, setEditorMode] = useState<'tabbed' | 'full'>('tabbed');
+  const [selectedTemplate, setSelectedTemplate] = useState<
+    "react" | "vanilla" | "vue"
+  >("react");
+  const [editorMode, setEditorMode] = useState<"tabbed" | "full">("tabbed");
 
   const handleTemplateChange = (
     event: React.MouseEvent<HTMLElement>,
-    newTemplate: 'react' | 'vanilla' | 'vue' | null,
+    newTemplate: "react" | "vanilla" | "vue" | null
   ) => {
     if (newTemplate !== null) {
       setSelectedTemplate(newTemplate);
@@ -296,7 +304,7 @@ export const SandpackDemo: React.FC = () => {
 
   const handleModeChange = (
     event: React.MouseEvent<HTMLElement>,
-    newMode: 'tabbed' | 'full' | null,
+    newMode: "tabbed" | "full" | null
   ) => {
     if (newMode !== null) {
       setEditorMode(newMode);
@@ -304,16 +312,18 @@ export const SandpackDemo: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+    <Box
+      sx={{ height: "100%", display: "flex", flexDirection: "column", p: 2 }}
+    >
       <Typography variant="h4" gutterBottom>
         Sandpack Editor Demo
       </Typography>
-      
+
       <Paper sx={{ p: 2, mb: 2 }}>
         <Typography variant="h6" gutterBottom>
           Configuration
         </Typography>
-        
+
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" gutterBottom>
             Template:
@@ -329,7 +339,7 @@ export const SandpackDemo: React.FC = () => {
             <ToggleButton value="vue">Vue.js</ToggleButton>
           </ToggleButtonGroup>
         </Box>
-        
+
         <Box>
           <Typography variant="body2" gutterBottom>
             Editor Mode:
@@ -346,17 +356,17 @@ export const SandpackDemo: React.FC = () => {
         </Box>
       </Paper>
 
-      <Box sx={{ flex: 1, overflow: 'hidden' }}>
-        {editorMode === 'tabbed' ? (
+      <Box sx={{ flex: 1, overflow: "hidden" }}>
+        {editorMode === "tabbed" ? (
           <SandpackEditor
-            template={selectedTemplate === 'vanilla' ? 'vanilla' : 'react'}
+            template={selectedTemplate === "vanilla" ? "vanilla" : "react"}
             files={templates[selectedTemplate]}
             height="100%"
             title={`${selectedTemplate.charAt(0).toUpperCase() + selectedTemplate.slice(1)} Template`}
           />
         ) : (
           <SandpackEditorFull
-            template={selectedTemplate === 'vanilla' ? 'vanilla' : 'react'}
+            template={selectedTemplate === "vanilla" ? "vanilla" : "react"}
             files={templates[selectedTemplate]}
             height="100%"
             title={`${selectedTemplate.charAt(0).toUpperCase() + selectedTemplate.slice(1)} Template - Full Layout`}
@@ -367,4 +377,4 @@ export const SandpackDemo: React.FC = () => {
   );
 };
 
-export default SandpackDemo; 
+export default SandpackDemo;

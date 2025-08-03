@@ -7,14 +7,11 @@
       "type": "directory",
       "children": [
         {
-          "path": "unigraph/UnigraphIframeExamples.md",
-          "type": "file",
-          "name": "UnigraphIframeExamples.md"
-        },
-        {
           "path": "unigraph/UnigraphOverview.md",
           "type": "file",
-          "name": "UnigraphOverview.md"
+          "name": "UnigraphOverview.md",
+          "title": "Unigraph Overview",
+          "order": 0
         },
         {
           "path": "unigraph/examples",
@@ -23,34 +20,46 @@
             {
               "path": "unigraph/examples/creatingGraphsProgrammatically.md",
               "type": "file",
-              "name": "creatingGraphsProgrammatically.md"
+              "name": "creatingGraphsProgrammatically.md",
+              "title": "Creating graphs programatically",
+              "order": 6
             },
             {
               "path": "unigraph/examples/dataUrlGraph.md",
               "type": "file",
-              "name": "dataUrlGraph.md"
+              "name": "dataUrlGraph.md",
+              "title": "Graph by data url",
+              "order": 4
             },
             {
               "path": "unigraph/examples/index.md",
               "type": "file",
-              "name": "index.md"
+              "name": "index.md",
+              "title": "Examples",
+              "order": 1
             },
             {
               "path": "unigraph/examples/knowledgeGraphOfAcademics.md",
               "type": "file",
-              "name": "knowledgeGraphOfAcademics.md"
+              "name": "knowledgeGraphOfAcademics.md",
+              "title": "A Knowledge Graph of Academics",
+              "order": 2
             },
             {
               "path": "unigraph/examples/unigraphApplicationsAndStoryCards.md",
               "type": "file",
-              "name": "unigraphApplicationsAndStoryCards.md"
+              "name": "unigraphApplicationsAndStoryCards.md",
+              "title": "Describing Unigraph with Story Cards",
+              "order": 3
             }
           ]
         },
         {
           "path": "unigraph/index.md",
           "type": "file",
-          "name": "index.md"
+          "name": "index.md",
+          "title": "Unigraph",
+          "order": 0
         }
       ]
     }

@@ -58,7 +58,7 @@
   left: 0;
   background-color: var(--submenu-bg, #333);
   border: 0.0625rem solid var(--submenu-border, #444);
-  z-index: 2001; /* Keep this lower than GraphSearch */
+  z-index: 2147483647; /* Maximum z-index to ensure it's above everything */
   list-style: none;
   padding: 0;
   margin: 0;
@@ -238,7 +238,7 @@
   left: 0;
   background-color: var(--submenu-bg, #333);
   border: 0.0625rem solid var(--submenu-border, #444);
-  z-index: 2001; /* Keep this lower than GraphSearch */
+  z-index: 2147483647; /* Maximum z-index to ensure it's above everything */
   list-style: none;
   padding: 0;
   margin: 0;

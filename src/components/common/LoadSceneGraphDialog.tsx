@@ -1,6 +1,7 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { RefreshCw } from "lucide-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import {
   getProject,
@@ -11,13 +12,12 @@ import {
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { deserializeDotToSceneGraph } from "../../core/serializers/fromDot";
 import { loadSceneGraphFromFile } from "../../core/serializers/sceneGraphLoader";
-import { DEMO_SCENE_GRAPHS } from "../../data/DemoSceneGraphs";
 import { fetchSvgSceneGraph } from "../../hooks/useSvgSceneGraph";
 import { addNotification } from "../../store/notificationStore";
 import { useUserStore } from "../../store/userStore"; // <-- new import for user state
-import DemosList, { DemoRow } from "./DemosList";
 import styles from "./LoadSceneGraphDialog.module.css";
 import ProjectsList from "./ProjectsList";
+import SceneGraphTreeView from "./SceneGraphTreeView";
 
 // Register AG Grid community modules (fixes AG Grid error #272)
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -25,16 +25,15 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 interface LoadSceneGraphDialogProps {
   onClose: () => void;
   onSelect: (graphKey: string) => void;
-  isDarkMode?: boolean;
   handleLoadSceneGraph: (sceneGraph: SceneGraph) => void;
 }
 
 const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
   onClose,
   onSelect,
-  isDarkMode,
   handleLoadSceneGraph,
 }) => {
+  const { theme } = useTheme();
   // Get user state from store
   const { isSignedIn } = useUserStore();
 
@@ -61,7 +60,6 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
       }
     }
   }, [activeTab, isSignedIn, userSelectedTab]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [textInput, setTextInput] = useState("");
   const [svgUrl, setSvgUrl] = useState("");
 
@@ -70,34 +68,6 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
   const [serverLoading, setServerLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [serverSearchTerm, setServerSearchTerm] = useState("");
-
-  // Transform demo scene graphs into table format
-  const demosList = useMemo<DemoRow[]>(() => {
-    const demos: DemoRow[] = [];
-    Object.entries(DEMO_SCENE_GRAPHS).forEach(([_, category]) => {
-      Object.keys(category.graphs).forEach((graphKey) => {
-        demos.push({
-          id: graphKey,
-          name: graphKey,
-          category: category.label,
-          description: `Demo graph from ${category.label} category`,
-        });
-      });
-    });
-    return demos;
-  }, []);
-
-  // Filter demos based on search term
-  const filteredDemos = useMemo(() => {
-    if (!searchTerm) return demosList;
-    return demosList.filter(
-      (demo) =>
-        demo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        demo.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (demo.description &&
-          demo.description.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-  }, [demosList, searchTerm]);
 
   console.log("LoadSceneGraphDialog - activeTab:", activeTab);
   console.log("LoadSceneGraphDialog - serverProjects:", serverProjects);
@@ -173,11 +143,6 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
         duration: 5000,
       });
     }
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
   };
 
   const handleImportFileToSceneGraph = useCallback(
@@ -365,21 +330,44 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
 
   return (
     <div
-      className={`${styles.overlay} ${isDarkMode ? styles.dark : ""}`}
+      className={styles.overlay}
       onClick={onClose}
+      style={{
+        backgroundColor: `rgba(0, 0, 0, 0.5)`,
+      }}
     >
-      <div className={styles.dialog} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.dialog}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          backgroundColor: getColor(theme.colors, "background"),
+          color: getColor(theme.colors, "text"),
+          border: `1px solid ${getColor(theme.colors, "border")}`,
+        }}
+      >
         <div className={styles.header}>
-          <h2>Load Scene Graph</h2>
+          <h2 style={{ color: getColor(theme.colors, "text") }}>
+            Load Scene Graph
+          </h2>
           <div className={styles.headerButtons}>
             <button
               onClick={handleCreateNewProject}
               className={styles.newProjectButton}
               title="Create a new empty project"
+              style={{
+                backgroundColor: getColor(theme.colors, "primary"),
+                color: getColor(theme.colors, "background"),
+              }}
             >
               New Project
             </button>
-            <button onClick={onClose} className={styles.closeButton}>
+            <button
+              onClick={onClose}
+              className={styles.closeButton}
+              style={{
+                color: getColor(theme.colors, "textSecondary"),
+              }}
+            >
               ×
             </button>
           </div>
@@ -393,6 +381,16 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
               setActiveTab("Server");
               setUserSelectedTab(true);
             }}
+            style={{
+              color:
+                activeTab === "Server"
+                  ? getColor(theme.colors, "primary")
+                  : getColor(theme.colors, "textSecondary"),
+              backgroundColor:
+                activeTab === "Server"
+                  ? getColor(theme.colors, "backgroundTertiary")
+                  : "transparent",
+            }}
           >
             Server
           </button>
@@ -403,6 +401,16 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
             onClick={() => {
               setActiveTab("Demos");
               setUserSelectedTab(true);
+            }}
+            style={{
+              color:
+                activeTab === "Demos"
+                  ? getColor(theme.colors, "primary")
+                  : getColor(theme.colors, "textSecondary"),
+              backgroundColor:
+                activeTab === "Demos"
+                  ? getColor(theme.colors, "backgroundTertiary")
+                  : "transparent",
             }}
           >
             Demos
@@ -415,6 +423,16 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
               setActiveTab("File");
               setUserSelectedTab(true);
             }}
+            style={{
+              color:
+                activeTab === "File"
+                  ? getColor(theme.colors, "primary")
+                  : getColor(theme.colors, "textSecondary"),
+              backgroundColor:
+                activeTab === "File"
+                  ? getColor(theme.colors, "backgroundTertiary")
+                  : "transparent",
+            }}
           >
             File
           </button>
@@ -425,6 +443,16 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
             onClick={() => {
               setActiveTab("Svg Url");
               setUserSelectedTab(true);
+            }}
+            style={{
+              color:
+                activeTab === "Svg Url"
+                  ? getColor(theme.colors, "primary")
+                  : getColor(theme.colors, "textSecondary"),
+              backgroundColor:
+                activeTab === "Svg Url"
+                  ? getColor(theme.colors, "backgroundTertiary")
+                  : "transparent",
             }}
           >
             Svg Url
@@ -437,24 +465,17 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
               accept=".json,.graphml,.svg,.dot"
               onChange={handleImportFileToSceneGraph}
               className={styles.fileInput}
+              style={{
+                color: getColor(theme.colors, "text"),
+              }}
             />
           </div>
         )}
         {activeTab === "Demos" && (
           <div className={styles.demosTab}>
-            <div className={styles.toolbar}>
-              <input
-                type="text"
-                placeholder="Search demos..."
-                className={styles.searchBar}
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-            <DemosList
-              demos={filteredDemos}
-              onDemoDoubleClick={handleSelect}
-              style={{ marginTop: 0, height: "calc(100% - 60px)" }}
+            <SceneGraphTreeView
+              onSceneGraphSelect={handleSelect}
+              selectedSceneGraph={undefined}
             />
           </div>
         )}
@@ -463,10 +484,22 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
             <textarea
               className={styles.textInput}
               placeholder="Paste SceneGraph JSON here..."
+              style={{
+                backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+                color: getColor(theme.colors, "text"),
+                border: `1px solid ${getColor(theme.colors, "border")}`,
+              }}
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
             />
-            <button className={styles.submitButton} onClick={handleTextSubmit}>
+            <button
+              className={styles.submitButton}
+              style={{
+                backgroundColor: getColor(theme.colors, "primary"),
+                color: getColor(theme.colors, "background"),
+              }}
+              onClick={handleTextSubmit}
+            >
               Load
             </button>
           </div>
@@ -477,11 +510,20 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
               type="text"
               placeholder="Enter Svg Url..."
               className={styles.svgUrlInput}
+              style={{
+                backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+                color: getColor(theme.colors, "text"),
+                border: `1px solid ${getColor(theme.colors, "border")}`,
+              }}
               value={svgUrl}
               onChange={(e) => setSvgUrl(e.target.value)}
             />
             <button
               className={styles.submitButton}
+              style={{
+                backgroundColor: getColor(theme.colors, "primary"),
+                color: getColor(theme.colors, "background"),
+              }}
               onClick={handleSvgUrlSubmit}
             >
               Load
@@ -491,15 +533,35 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
         {activeTab === "Server" && (
           <div className={styles.serverTab}>
             {!isSignedIn ? (
-              <div className={styles.loginPrompt}>
-                <div className={styles.loginContent}>
-                  <h3>Sign in to access your projects</h3>
-                  <p>
+              <div
+                className={styles.loginPrompt}
+                style={{
+                  backgroundColor: getColor(
+                    theme.colors,
+                    "backgroundSecondary"
+                  ),
+                  border: `1px solid ${getColor(theme.colors, "border")}`,
+                }}
+              >
+                <div
+                  className={styles.loginContent}
+                  style={{
+                    color: getColor(theme.colors, "text"),
+                  }}
+                >
+                  <h3 style={{ color: getColor(theme.colors, "text") }}>
+                    Sign in to access your projects
+                  </h3>
+                  <p style={{ color: getColor(theme.colors, "textSecondary") }}>
                     You need to be signed in to view and load projects from the
                     server.
                   </p>
                   <button
                     className={styles.loginButton}
+                    style={{
+                      backgroundColor: getColor(theme.colors, "primary"),
+                      color: getColor(theme.colors, "background"),
+                    }}
                     onClick={() => {
                       // Open signin page as popup with better dimensions and centering
                       const width = 800;

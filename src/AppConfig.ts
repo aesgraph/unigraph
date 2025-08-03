@@ -63,6 +63,7 @@ export type AppConfig = {
   activeFilter: Filter | null;
   legendMode: RenderingManager__DisplayMode;
   workspaceConfig?: WorkspaceConfig;
+  appShellLayout?: string;
   interactivityFlags?: InteractivityFlags;
 };
 
@@ -80,5 +81,6 @@ export const DEFAULT_APP_CONFIG = (): AppConfig => {
     legendMode: "type",
     activeFilter: null,
     interactivityFlags: DEFAULT_INTERACTIVITY_FLAGS,
+    appShellLayout: "documentation",
   };
 };

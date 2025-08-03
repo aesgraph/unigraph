@@ -10,13 +10,13 @@ import {
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useApiProvider } from "../../context/ApiProviderContext";
+import { useComponentLogger } from "../../hooks/useLogger";
 import useChatHistoryStore, {
   ChatImage,
   ChatMessage,
 } from "../../store/chatHistoryStore";
 import { addNotification } from "../../store/notificationStore";
 import { useUserStore } from "../../store/userStore";
-import { log } from "../../utils/logger";
 import { useCommandProcessor } from "../commandPalette/CommandProcessor";
 import { useSemanticWebQuerySession } from "../semantic/SemanticWebQueryContext";
 import "./AIChatPanel.css";
@@ -34,6 +34,7 @@ interface AIChatPanelProps {
 const AIChatPanel: React.FC<AIChatPanelProps> = ({
   sessionId = "ai-chat-panel",
 }) => {
+  const log = useComponentLogger("AIChatPanel");
   // Get theme from app-shell
   const appShellTheme = useTheme();
   const theme = appShellTheme.theme;
@@ -108,22 +109,18 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           setSemanticQuery(formattedQuery);
 
           // Log the tool call
-          log.toolSuccess("semantic_query", args.description, {
+          log.info(`Semantic query executed: ${args.description}`, {
             sessionId,
             query: args.query,
             formattedQuery,
             toolCallId: toolCall.id,
           });
         } catch (error) {
-          console.error("Failed to process semantic query tool call:", error);
-          log.toolError(
-            "semantic_query",
-            error instanceof Error ? error.message : String(error),
-            {
-              sessionId,
-              toolCallId: toolCall.id,
-            }
-          );
+          log.error("Failed to process semantic query tool call", {
+            error,
+            sessionId,
+            toolCallId: toolCall.id,
+          });
         }
       } else if (toolCall.function.name === "add_view_to_panel") {
         try {
@@ -136,32 +133,24 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           });
 
           // Log the tool call
-          log.toolSuccess(
-            "add_view_to_panel",
-            `Added ${args.viewId} to ${args.panelId} panel`,
-            {
-              sessionId,
-              viewId: args.viewId,
-              panelId: args.panelId,
-              toolCallId: toolCall.id,
-            }
-          );
+          log.info(`Added ${args.viewId} to ${args.panelId} panel`, {
+            sessionId,
+            viewId: args.viewId,
+            panelId: args.panelId,
+            toolCallId: toolCall.id,
+          });
         } catch (error) {
-          console.error("Failed to process workspace layout tool call:", error);
-          log.toolError(
-            "add_view_to_panel",
-            error instanceof Error ? error.message : String(error),
-            {
-              sessionId,
-              toolCallId: toolCall.id,
-            }
-          );
+          log.error("Failed to process workspace layout tool call", {
+            error,
+            sessionId,
+            toolCallId: toolCall.id,
+          });
         }
       } else if (toolCall.function.name === "edit_code") {
         try {
           const args = parseToolCallArguments(toolCall);
 
-          console.log("AIChatPanel edit_code args:", args);
+          log.debug("AIChatPanel edit_code args", { args });
 
           // Process the code editing command
           processCommand("monaco_editor_code_tool", {
@@ -172,8 +161,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           });
 
           // Log the tool call
-          log.toolSuccess(
-            "edit_code",
+          log.info(
             `Edited code in Monaco Editor${args.language ? ` (${args.language})` : ""}`,
             {
               sessionId,
@@ -184,15 +172,11 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
             }
           );
         } catch (error) {
-          console.error("Failed to process code editing tool call:", error);
-          log.toolError(
-            "edit_code",
-            error instanceof Error ? error.message : String(error),
-            {
-              sessionId,
-              toolCallId: toolCall.id,
-            }
-          );
+          log.error("Failed to process code editing tool call", {
+            error,
+            sessionId,
+            toolCallId: toolCall.id,
+          });
         }
       } else if (toolCall.function.name === "write_code") {
         try {
@@ -207,27 +191,19 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           });
 
           // Log the tool call
-          log.toolSuccess(
-            "write_code",
-            `Generated ${args.language || "code"} in Monaco Editor`,
-            {
-              sessionId,
-              language: args.language,
-              description: args.description,
-              replace: args.replace,
-              toolCallId: toolCall.id,
-            }
-          );
+          log.info(`Generated ${args.language || "code"} in Monaco Editor`, {
+            sessionId,
+            language: args.language,
+            description: args.description,
+            replace: args.replace,
+            toolCallId: toolCall.id,
+          });
         } catch (error) {
-          console.error("Failed to process code generation tool call:", error);
-          log.toolError(
-            "write_code",
-            error instanceof Error ? error.message : String(error),
-            {
-              sessionId,
-              toolCallId: toolCall.id,
-            }
-          );
+          log.error("Failed to process code generation tool call", {
+            error,
+            sessionId,
+            toolCallId: toolCall.id,
+          });
         }
       }
       // Add more tool handlers here as needed
@@ -284,7 +260,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
 
       return formatted;
     } catch (error) {
-      console.warn("Failed to pretty print SPARQL query:", error);
+      log.warn("Failed to pretty print SPARQL query", { error });
       return query; // Return original if formatting fails
     }
   };
@@ -307,7 +283,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
     setIsLoading(true);
 
     // Log the user message
-    log.info(`User message sent`, "AIChatPanel", {
+    log.info(`User message sent`, {
       sessionId,
       messageLength: userMessage.content.length,
       // apiProvider, // No longer needed
@@ -341,7 +317,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       );
 
       // Log AI request
-      log.info(`Sending AI request`, "AIChatPanel", {
+      log.info(`Sending AI request`, {
         sessionId,
         messageCount: filteredChatMessages.length,
         // apiProvider, // No longer needed
@@ -362,7 +338,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       });
 
       // Debug logging
-      console.log("AI Response:", {
+      log.debug("AI Response", {
         content: response.content,
         contentLength: response.content?.length,
         hasToolCalls: !!response.toolCalls,
@@ -372,14 +348,10 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
 
       // Process any tool calls
       if (response.toolCalls && response.toolCalls.length > 0) {
-        log.info(
-          `Processing ${response.toolCalls.length} tool calls`,
-          "AIChatPanel",
-          {
-            sessionId,
-            toolCalls: response.toolCalls.map((tc) => tc.function.name),
-          }
-        );
+        log.info(`Processing ${response.toolCalls.length} tool calls`, {
+          sessionId,
+          toolCalls: response.toolCalls.map((tc) => tc.function.name),
+        });
         processToolCalls(response.toolCalls);
       }
 
@@ -463,19 +435,18 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
       });
 
       // Log successful AI response
-      log.success(`AI response received`, "AIChatPanel", {
+      log.info(`AI response received`, {
         sessionId,
         responseLength: responseContent.length,
         hasToolCalls: !!response.toolCalls,
         toolCallsCount: response.toolCalls?.length,
       });
     } catch (error) {
-      console.error("Error generating response:", error);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
 
       // Log the error
-      log.error(`AI request failed`, "AIChatPanel", {
+      log.error(`AI request failed`, {
         sessionId,
         error: errorMessage,
         // apiProvider, // No longer needed

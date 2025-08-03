@@ -81,17 +81,17 @@ const SystemMonitorView: React.FC = () => {
 
   // Subscribe to logger events
   useEffect(() => {
-    const subscriptionId = logger.subscribe((logEntry: LogEntry) => {
+    const unsubscribe = logger.subscribe((logEntry: LogEntry) => {
       const systemItem: SystemItem = {
-        id: logEntry.id,
+        id: `${logEntry.timestamp.getTime()}-${Math.random()}`,
         type: "log",
         timestamp: logEntry.timestamp,
         message: logEntry.message,
-        source: logEntry.source,
+        source: logEntry.context,
         level: logEntry.level,
         metadata: logEntry.data,
         data: logEntry.data,
-        category: logEntry.category,
+        category: logEntry.context,
       };
 
       setItems((prevItems) => {
@@ -104,23 +104,21 @@ const SystemMonitorView: React.FC = () => {
     // Load existing logs
     const existingLogs = logger.getLogs();
     const existingItems: SystemItem[] = existingLogs.map((logEntry) => ({
-      id: logEntry.id,
+      id: `${logEntry.timestamp.getTime()}-${Math.random()}`,
       type: "log",
       timestamp: logEntry.timestamp,
       message: logEntry.message,
-      source: logEntry.source,
+      source: logEntry.context,
       level: logEntry.level,
       metadata: logEntry.data,
       data: logEntry.data,
-      category: logEntry.category,
+      category: logEntry.context,
     }));
 
     setItems(existingItems);
 
     // Cleanup subscription on unmount
-    return () => {
-      logger.unsubscribe(subscriptionId);
-    };
+    return unsubscribe;
   }, []);
 
   // Auto-scroll to bottom when new items arrive
@@ -240,13 +238,15 @@ const SystemMonitorView: React.FC = () => {
     switch (item.type) {
       case "log":
         switch (item.level) {
-          case "info":
+          case LogLevel.INFO:
             return <Info size={12} />;
-          case "warn":
+          case LogLevel.WARN:
             return <AlertTriangle size={12} />;
-          case "error":
+          case LogLevel.ERROR:
             return <X size={12} />;
-          case "debug":
+          case LogLevel.DEBUG:
+            return <Settings size={12} />;
+          case LogLevel.TRACE:
             return <Settings size={12} />;
         }
         break;
@@ -282,7 +282,7 @@ const SystemMonitorView: React.FC = () => {
   const getItemTypeLabel = (item: SystemItem) => {
     switch (item.type) {
       case "log":
-        return item.level?.toUpperCase() || "LOG";
+        return item.level !== undefined ? LogLevel[item.level] : "LOG";
       case "notification":
         return item.notificationType?.toUpperCase() || "NOTIF";
       case "task":
@@ -294,14 +294,16 @@ const SystemMonitorView: React.FC = () => {
     switch (item.type) {
       case "log":
         switch (item.level) {
-          case "info":
+          case LogLevel.INFO:
             return "var(--workspace-primary)";
-          case "warn":
+          case LogLevel.WARN:
             return "var(--workspace-warning)";
-          case "error":
+          case LogLevel.ERROR:
             return "var(--workspace-error)";
-          case "debug":
+          case LogLevel.DEBUG:
             return "var(--workspace-text-muted)";
+          case LogLevel.TRACE:
+            return "var(--workspace-text-secondary)";
         }
         break;
       case "notification":
@@ -640,10 +642,18 @@ const SystemMonitorView: React.FC = () => {
                 className="filter-select"
               >
                 <option value="all">All Levels</option>
-                <option value="debug">Debug ({getLevelCount("debug")})</option>
-                <option value="info">Info ({getLevelCount("info")})</option>
-                <option value="warn">Warning ({getLevelCount("warn")})</option>
-                <option value="error">Error ({getLevelCount("error")})</option>
+                <option value="debug">
+                  Debug ({getLevelCount(LogLevel.DEBUG)})
+                </option>
+                <option value="info">
+                  Info ({getLevelCount(LogLevel.INFO)})
+                </option>
+                <option value="warn">
+                  Warning ({getLevelCount(LogLevel.WARN)})
+                </option>
+                <option value="error">
+                  Error ({getLevelCount(LogLevel.ERROR)})
+                </option>
               </select>
             </div>
           ) : null}

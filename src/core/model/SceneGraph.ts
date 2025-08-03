@@ -1,3 +1,4 @@
+import { WorkspaceState } from "@aesgraph/app-shell";
 import { AppConfig, DEFAULT_APP_CONFIG } from "../../AppConfig";
 import {
   CLONE_RENDERING_CONFIG,
@@ -84,6 +85,8 @@ export type SceneGraphData = {
   defaultAppConfig?: AppConfig;
   committed_DisplayConfig: RenderingConfig;
   documents: ObjectOf<DocumentState>; // for storing additional documents, by entityId for now
+  // current app config
+  workspaceState?: WorkspaceState;
 };
 
 export class SceneGraph {
@@ -156,6 +159,19 @@ export class SceneGraph {
 
   getDocument(storageKey: string) {
     return this.data.documents[storageKey];
+  }
+
+  // Workspace state management
+  getWorkspaceState(): WorkspaceState | undefined {
+    return this.data.workspaceState;
+  }
+
+  setWorkspaceState(workspaceState: WorkspaceState) {
+    this.data.workspaceState = workspaceState;
+  }
+
+  clearWorkspaceState() {
+    delete this.data.workspaceState;
   }
 
   // clearDocuments() {

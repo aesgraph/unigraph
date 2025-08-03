@@ -55,6 +55,47 @@ class MarkdownsStructureGenerator {
     return hash.digest("hex");
   }
 
+  // Extract metadata from markdown file content
+  extractMetadata(filePath) {
+    try {
+      const content = fs.readFileSync(filePath, "utf8");
+
+      // Parse YAML front matter
+      const frontMatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
+      if (frontMatterMatch) {
+        const frontMatter = frontMatterMatch[1];
+        const metadata = {};
+
+        // Extract title - try both quoted and unquoted formats
+        let titleMatch = frontMatter.match(/title:\s*["']([^"']+)["']/);
+        if (titleMatch) {
+          metadata.title = titleMatch[1];
+        } else {
+          // Try to extract title without quotes - match until end of line
+          titleMatch = frontMatter.match(/title:\s*([^\r\n]+)/);
+          if (titleMatch) {
+            metadata.title = titleMatch[1].trim();
+          }
+        }
+
+        // Extract order
+        const orderMatch = frontMatter.match(/order:\s*(\d+)/);
+        if (orderMatch) {
+          const order = parseInt(orderMatch[1], 10);
+          if (!isNaN(order)) {
+            metadata.order = order;
+          }
+        }
+
+        return metadata;
+      }
+    } catch (error) {
+      console.warn(`Failed to extract metadata from ${filePath}:`, error);
+    }
+
+    return {};
+  }
+
   // Scan directory and build tree structure
   scanDirectory(dirPath, relativePath = "") {
     const result = {
@@ -93,11 +134,15 @@ class MarkdownsStructureGenerator {
           );
           result.children.push(subdirStructure);
         } else if (entry.isFile() && entry.name.endsWith(".md")) {
-          // Add markdown files
+          // Extract metadata from markdown file
+          const metadata = this.extractMetadata(entryPath);
+
+          // Add markdown files with metadata
           const fileInfo = {
             path: entryRelativePath,
             type: "file",
             name: entry.name,
+            ...metadata, // Include title and order if present
           };
 
           result.children.push(fileInfo);

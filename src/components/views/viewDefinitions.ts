@@ -170,6 +170,14 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     description:
       "Interactive iframe component for embedding external content with controls and customization",
   },
+  "log-viewer": {
+    id: "log-viewer",
+    title: "Log Viewer",
+    icon: "📋",
+    category: "development",
+    description:
+      "Real-time application log viewer with filtering, search, and export capabilities",
+  },
 };
 
 // Helper function to get all available view IDs

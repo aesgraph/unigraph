@@ -18,6 +18,7 @@ import AIChatPanel from "../ai/AIChatPanel";
 import LexicalEditorV2 from "../applets/Lexical/LexicalEditor";
 import WikipediaArticleViewer_FactorGraph from "../applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
 import EntityTableV2 from "../common/EntityTableV2";
+import LogViewer from "../common/LogViewer";
 import MarkdownViewer from "../common/MarkdownViewer";
 import UnigraphIframe from "../common/UnigraphIframe";
 import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
@@ -863,6 +864,29 @@ const documentationView = {
   category: VIEW_DEFINITIONS["documentation"].category,
 };
 
+const LogViewerWrapper: React.FC<any> = (props) => {
+  return (
+    <LogViewer
+      isOpen={true}
+      onClose={() => {
+        // This will be handled by the app shell when the tab is closed
+        console.log("LogViewer closed");
+      }}
+      maxHeight="100%"
+      mode="panel"
+      {...props}
+    />
+  );
+};
+
+const logViewerView = {
+  id: VIEW_DEFINITIONS["log-viewer"].id,
+  title: VIEW_DEFINITIONS["log-viewer"].title,
+  icon: VIEW_DEFINITIONS["log-viewer"].icon,
+  component: LogViewerWrapper,
+  category: VIEW_DEFINITIONS["log-viewer"].category,
+};
+
 // Define all views
 const allViews = [
   ...defaultViews,
@@ -887,6 +911,7 @@ const allViews = [
   sandpackEditorView,
   markdownViewerView,
   documentationView,
+  logViewerView,
 ];
 
 // Example: Create a custom theme for demonstration

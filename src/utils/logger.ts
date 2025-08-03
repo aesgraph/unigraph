@@ -1,277 +1,245 @@
 // Centralized logging utility for the application
 
-export type LogLevel = "debug" | "info" | "warn" | "error" | "success";
-
-export interface LogEntry {
-  id: string;
-  timestamp: Date;
-  level: LogLevel;
-  message: string;
-  source?: string;
-  data?: any;
-  category?: string;
+export enum LogLevel {
+  ERROR = 0,
+  WARN = 1,
+  INFO = 2,
+  DEBUG = 3,
+  TRACE = 4,
 }
 
-export interface LogSubscriber {
-  id: string;
-  callback: (entry: LogEntry) => void;
+export interface LogEntry {
+  level: LogLevel;
+  message: string;
+  timestamp: Date;
+  context?: string;
+  data?: any;
+  error?: Error;
+}
+
+export interface LoggerConfig {
+  level: LogLevel;
+  enableTimestamp: boolean;
+  enableContext: boolean;
+  enableColors: boolean;
+  maxEntries?: number;
+  persistLogs?: boolean;
 }
 
 class Logger {
+  private config: LoggerConfig;
   private logs: LogEntry[] = [];
-  private subscribers: LogSubscriber[] = [];
-  private maxLogs: number = 1000; // Keep last 1000 logs
+  private subscribers: ((entry: LogEntry) => void)[] = [];
 
-  private generateId(): string {
-    return `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  constructor(config: Partial<LoggerConfig> = {}) {
+    this.config = {
+      level: LogLevel.INFO,
+      enableTimestamp: true,
+      enableContext: true,
+      enableColors: true,
+      maxEntries: 1000,
+      persistLogs: false,
+      ...config,
+    };
   }
 
-  private addLog(
+  private shouldLog(level: LogLevel): boolean {
+    return level <= this.config.level;
+  }
+
+  private formatMessage(entry: LogEntry): string {
+    const parts: string[] = [];
+
+    // Add timestamp
+    if (this.config.enableTimestamp) {
+      const timeStr = entry.timestamp.toISOString();
+      parts.push(`[${timeStr}]`);
+    }
+
+    // Add level
+    const levelStr = LogLevel[entry.level];
+    const coloredLevel = this.config.enableColors
+      ? this.getColoredLevel(levelStr)
+      : levelStr;
+    parts.push(`[${coloredLevel}]`);
+
+    // Add context
+    if (this.config.enableContext && entry.context) {
+      parts.push(`[${entry.context}]`);
+    }
+
+    // Add message
+    parts.push(entry.message);
+
+    return parts.join(" ");
+  }
+
+  private getColoredLevel(level: string): string {
+    const colors = {
+      ERROR: "\x1b[31m", // Red
+      WARN: "\x1b[33m", // Yellow
+      INFO: "\x1b[36m", // Cyan
+      DEBUG: "\x1b[35m", // Magenta
+      TRACE: "\x1b[90m", // Gray
+    };
+    const reset = "\x1b[0m";
+    return `${colors[level as keyof typeof colors] || ""}${level}${reset}`;
+  }
+
+  private createEntry(
     level: LogLevel,
     message: string,
-    source?: string,
+    context?: string,
     data?: any,
-    category?: string
+    error?: Error
   ): LogEntry {
-    const entry: LogEntry = {
-      id: this.generateId(),
-      timestamp: new Date(),
+    return {
       level,
       message,
-      source,
+      timestamp: new Date(),
+      context,
       data,
-      category,
+      error,
     };
+  }
 
+  private log(
+    level: LogLevel,
+    message: string,
+    context?: string,
+    data?: any,
+    error?: Error
+  ) {
+    if (!this.shouldLog(level)) return;
+
+    const entry = this.createEntry(level, message, context, data, error);
+
+    // Add to logs array
     this.logs.push(entry);
 
-    // Keep only the last maxLogs entries
-    if (this.logs.length > this.maxLogs) {
-      this.logs = this.logs.slice(-this.maxLogs);
+    // Limit log entries
+    if (this.config.maxEntries && this.logs.length > this.config.maxEntries) {
+      this.logs = this.logs.slice(-this.config.maxEntries);
+    }
+
+    // Format and output
+    const formattedMessage = this.formatMessage(entry);
+
+    // Use appropriate console method
+    switch (level) {
+      case LogLevel.ERROR:
+        console.error(formattedMessage);
+        if (error) console.error(error);
+        if (data) console.error("Data:", data);
+        break;
+      case LogLevel.WARN:
+        console.warn(formattedMessage);
+        if (data) console.warn("Data:", data);
+        break;
+      case LogLevel.INFO:
+        console.info(formattedMessage);
+        if (data) console.info("Data:", data);
+        break;
+      case LogLevel.DEBUG:
+        console.debug(formattedMessage);
+        if (data) console.debug("Data:", data);
+        break;
+      case LogLevel.TRACE:
+        console.trace(formattedMessage);
+        if (data) console.trace("Data:", data);
+        break;
     }
 
     // Notify subscribers
-    this.subscribers.forEach((subscriber) => {
-      try {
-        subscriber.callback(entry);
-      } catch (error) {
-        console.error("Error in log subscriber:", error);
-      }
-    });
-
-    // Also log to console for development
-    if (process.env.NODE_ENV === "development") {
-      const consoleMethod =
-        level === "error"
-          ? "error"
-          : level === "warn"
-            ? "warn"
-            : level === "success"
-              ? "log"
-              : "info";
-      console[consoleMethod](
-        `[${level.toUpperCase()}] ${source ? `[${source}] ` : ""}${message}`,
-        data || ""
-      );
-    }
-
-    return entry;
+    this.subscribers.forEach((subscriber) => subscriber(entry));
   }
 
   // Public logging methods
-  debug(
-    message: string,
-    source?: string,
-    data?: any,
-    category?: string
-  ): LogEntry {
-    return this.addLog("debug", message, source, data, category);
+  error(message: string, context?: string, data?: any, error?: Error) {
+    this.log(LogLevel.ERROR, message, context, data, error);
   }
 
-  info(
-    message: string,
-    source?: string,
-    data?: any,
-    category?: string
-  ): LogEntry {
-    return this.addLog("info", message, source, data, category);
+  warn(message: string, context?: string, data?: any) {
+    this.log(LogLevel.WARN, message, context, data);
   }
 
-  warn(
-    message: string,
-    source?: string,
-    data?: any,
-    category?: string
-  ): LogEntry {
-    return this.addLog("warn", message, source, data, category);
+  info(message: string, context?: string, data?: any) {
+    this.log(LogLevel.INFO, message, context, data);
   }
 
-  error(
-    message: string,
-    source?: string,
-    data?: any,
-    category?: string
-  ): LogEntry {
-    return this.addLog("error", message, source, data, category);
+  debug(message: string, context?: string, data?: any) {
+    this.log(LogLevel.DEBUG, message, context, data);
   }
 
-  success(
-    message: string,
-    source?: string,
-    data?: any,
-    category?: string
-  ): LogEntry {
-    return this.addLog("success", message, source, data, category);
+  trace(message: string, context?: string, data?: any) {
+    this.log(LogLevel.TRACE, message, context, data);
   }
 
-  // Tool-specific logging methods
-  toolCall(toolName: string, description: string, data?: any): LogEntry {
-    return this.info(
-      `Tool called: ${toolName}`,
-      "ToolProcessor",
-      data,
-      "tools"
-    );
+  // Configuration methods
+  setLevel(level: LogLevel) {
+    this.config.level = level;
   }
 
-  toolSuccess(toolName: string, description: string, data?: any): LogEntry {
-    return this.success(
-      `Tool executed successfully: ${toolName}`,
-      "ToolProcessor",
-      data,
-      "tools"
-    );
+  setConfig(config: Partial<LoggerConfig>) {
+    this.config = { ...this.config, ...config };
   }
 
-  toolError(toolName: string, error: string, data?: any): LogEntry {
-    return this.error(
-      `Tool execution failed: ${toolName}`,
-      "ToolProcessor",
-      { error, ...data },
-      "tools"
-    );
-  }
-
-  // Query-specific logging methods
-  queryGenerated(query: string, endpoint?: string, data?: any): LogEntry {
-    return this.info(
-      `SPARQL query generated`,
-      "SemanticQuery",
-      { query, endpoint, ...data },
-      "queries"
-    );
-  }
-
-  queryExecuted(
-    query: string,
-    endpoint: string,
-    resultCount?: number,
-    data?: any
-  ): LogEntry {
-    return this.success(
-      `SPARQL query executed`,
-      "SemanticQuery",
-      { query, endpoint, resultCount, ...data },
-      "queries"
-    );
-  }
-
-  queryError(
-    query: string,
-    endpoint: string,
-    error: string,
-    data?: any
-  ): LogEntry {
-    return this.error(
-      `SPARQL query failed`,
-      "SemanticQuery",
-      { query, endpoint, error, ...data },
-      "queries"
-    );
-  }
-
-  // Subscription methods
-  subscribe(callback: (entry: LogEntry) => void): string {
-    const id = this.generateId();
-    this.subscribers.push({ id, callback });
-    return id;
-  }
-
-  unsubscribe(id: string): boolean {
-    const index = this.subscribers.findIndex((sub) => sub.id === id);
-    if (index !== -1) {
-      this.subscribers.splice(index, 1);
-      return true;
+  // Log retrieval
+  getLogs(level?: LogLevel): LogEntry[] {
+    if (level !== undefined) {
+      return this.logs.filter((log) => log.level === level);
     }
-    return false;
-  }
-
-  // Getter methods
-  getLogs(): LogEntry[] {
     return [...this.logs];
   }
 
-  getLogsByLevel(level: LogLevel): LogEntry[] {
-    return this.logs.filter((log) => log.level === level);
-  }
-
-  getLogsByCategory(category: string): LogEntry[] {
-    return this.logs.filter((log) => log.category === category);
-  }
-
-  getLogsBySource(source: string): LogEntry[] {
-    return this.logs.filter((log) => log.source === source);
-  }
-
-  getRecentLogs(count: number = 50): LogEntry[] {
-    return this.logs.slice(-count);
-  }
-
-  // Clear logs
-  clearLogs(): void {
+  clearLogs() {
     this.logs = [];
   }
 
-  // Set max logs
-  setMaxLogs(max: number): void {
-    this.maxLogs = max;
-    if (this.logs.length > this.maxLogs) {
-      this.logs = this.logs.slice(-this.maxLogs);
+  // Subscription methods
+  subscribe(callback: (entry: LogEntry) => void) {
+    this.subscribers.push(callback);
+    return () => {
+      const index = this.subscribers.indexOf(callback);
+      if (index > -1) {
+        this.subscribers.splice(index, 1);
+      }
+    };
+  }
+
+  // Export logs
+  exportLogs(): string {
+    return this.logs.map((entry) => this.formatMessage(entry)).join("\n");
+  }
+
+  // Performance logging
+  time(label: string, context?: string) {
+    if (this.shouldLog(LogLevel.DEBUG)) {
+      console.time(`${context ? `[${context}] ` : ""}${label}`);
+    }
+  }
+
+  timeEnd(label: string, context?: string) {
+    if (this.shouldLog(LogLevel.DEBUG)) {
+      console.timeEnd(`${context ? `[${context}] ` : ""}${label}`);
     }
   }
 }
 
-// Create singleton instance
-export const logger = new Logger();
+// Create default logger instance
+export const logger = new Logger({
+  level:
+    process.env.NODE_ENV === "development" ? LogLevel.DEBUG : LogLevel.INFO,
+});
 
-// Export convenience functions
-export const log = {
-  debug: (message: string, source?: string, data?: any, category?: string) =>
-    logger.debug(message, source, data, category),
-  info: (message: string, source?: string, data?: any, category?: string) =>
-    logger.info(message, source, data, category),
-  warn: (message: string, source?: string, data?: any, category?: string) =>
-    logger.warn(message, source, data, category),
-  error: (message: string, source?: string, data?: any, category?: string) =>
-    logger.error(message, source, data, category),
-  success: (message: string, source?: string, data?: any, category?: string) =>
-    logger.success(message, source, data, category),
-  toolCall: (toolName: string, description: string, data?: any) =>
-    logger.toolCall(toolName, description, data),
-  toolSuccess: (toolName: string, description: string, data?: any) =>
-    logger.toolSuccess(toolName, description, data),
-  toolError: (toolName: string, error: string, data?: any) =>
-    logger.toolError(toolName, error, data),
-  queryGenerated: (query: string, endpoint?: string, data?: any) =>
-    logger.queryGenerated(query, endpoint, data),
-  queryExecuted: (
-    query: string,
-    endpoint: string,
-    resultCount?: number,
-    data?: any
-  ) => logger.queryExecuted(query, endpoint, resultCount, data),
-  queryError: (query: string, endpoint: string, error: string, data?: any) =>
-    logger.queryError(query, endpoint, error, data),
-};
-
-export default logger;
+// Create context-specific loggers
+export const createLogger = (context: string) => ({
+  error: (message: string, data?: any, error?: Error) =>
+    logger.error(message, context, data, error),
+  warn: (message: string, data?: any) => logger.warn(message, context, data),
+  info: (message: string, data?: any) => logger.info(message, context, data),
+  debug: (message: string, data?: any) => logger.debug(message, context, data),
+  trace: (message: string, data?: any) => logger.trace(message, context, data),
+  time: (label: string) => logger.time(label, context),
+  timeEnd: (label: string) => logger.timeEnd(label, context),
+});

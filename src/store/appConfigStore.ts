@@ -238,6 +238,11 @@ export const setAppConfig = (appConfig: AppConfig) => {
       appConfig.workspaceConfig.rightSidebarConfig.panelWidth
     );
   }
+  // Handle appShellLayout if provided
+  if (appConfig.appShellLayout) {
+    // This will be handled by the App component when the config is applied
+    console.log("AppShell layout set to:", appConfig.appShellLayout);
+  }
 };
 
 export const getAppConfig = (): AppConfig => {
@@ -251,6 +256,7 @@ export const getAppConfig = (): AppConfig => {
     legendMode: state.legendMode,
     activeFilter: state.activeFilter,
     interactivityFlags: state.interactivityFlags,
+    appShellLayout: state.appShellLayout,
     workspaceConfig: {
       leftSidebarConfig: getLeftSidebarConfig(),
       rightSidebarConfig: getRightSidebarConfig(),

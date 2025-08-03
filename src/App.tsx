@@ -183,6 +183,7 @@ import useWorkspaceConfigStore, {
   setShowToolbar,
 } from "./store/workspaceConfigStore";
 import { initializeMainForceGraph } from "./utils/forceGraphInitializer";
+import { workspaceStateManager } from "./utils/workspaceStateManager";
 // import { ThemeWorkspaceProvider } from "./components/providers/ThemeWorkspaceProvider";
 // import { Workspace as AppShellWorkspace } from "@aesgraph/app-shell";
 
@@ -859,6 +860,8 @@ const AppContentInner = ({
         graph.getData().defaultAppConfig?.forceGraph3dOptions?.layout
       ).then(() => {
         setCurrentSceneGraph(graph);
+        // Update workspace state manager with current scenegraph
+        workspaceStateManager.setCurrentSceneGraph(graph);
 
         console.log("loaded layout", layoutToLoad);
 
@@ -917,6 +920,25 @@ const AppContentInner = ({
               ...rightToSet,
               isVisible: false,
             });
+          }
+        }
+
+        // Apply appShellLayout if specified in the scenegraph config
+        const appShellLayout =
+          graph.getData()?.defaultAppConfig?.appShellLayout;
+        if (appShellLayout && applyWorkspaceLayout) {
+          console.log(`Applying workspace layout: ${appShellLayout}`);
+          applyWorkspaceLayout(appShellLayout).catch((error) => {
+            console.warn(
+              `Failed to apply workspace layout ${appShellLayout}:`,
+              error
+            );
+          });
+        } else {
+          // Try to restore workspace state from scenegraph if no appShellLayout specified
+          const restored = workspaceStateManager.restoreWorkspaceState();
+          if (restored) {
+            console.log("Restored workspace state from scenegraph");
           }
         }
 
@@ -1171,10 +1193,59 @@ const AppContentInner = ({
   const { saveCurrentLayout, applyWorkspaceLayout, getAllWorkspaces } =
     useAppShell();
 
+  // Auto-save workspace state to scenegraph when it changes
+  useEffect(() => {
+    const autoSaveWorkspaceState = async () => {
+      if (
+        currentSceneGraph &&
+        currentSceneGraph.getMetadata().name !== "Empty"
+      ) {
+        try {
+          await workspaceStateManager.captureAndSaveCurrentState();
+        } catch (error) {
+          console.warn("Failed to auto-save workspace state:", error);
+        }
+      }
+    };
+
+    // Set up auto-save interval (every 30 seconds)
+    const interval = setInterval(autoSaveWorkspaceState, 30000);
+
+    return () => clearInterval(interval);
+  }, [currentSceneGraph]);
+
   // Add state to track the last saved workspace layout
   const [lastWorkspaceLayout, setLastWorkspaceLayout] = useState<string | null>(
     null
   );
+
+  // Manual save workspace state to scenegraph
+  const saveWorkspaceStateToSceneGraph = useCallback(async () => {
+    if (currentSceneGraph && currentSceneGraph.getMetadata().name !== "Empty") {
+      try {
+        const savedState =
+          await workspaceStateManager.captureAndSaveCurrentState();
+        if (savedState) {
+          console.log(
+            "Manually saved workspace state to scenegraph:",
+            savedState.id
+          );
+          addNotification({
+            message: "Workspace state saved to scenegraph",
+            type: "success",
+            groupId: "workspace-save",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to save workspace state to scenegraph:", error);
+        addNotification({
+          message: "Failed to save workspace state",
+          type: "error",
+          groupId: "workspace-save",
+        });
+      }
+    }
+  }, [currentSceneGraph, addNotification]);
 
   // Initialize lastWorkspaceLayout from localStorage on mount
   useEffect(() => {

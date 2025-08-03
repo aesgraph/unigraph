@@ -1,6 +1,8 @@
 import { useAppShell } from "@aesgraph/app-shell";
 import React, { useEffect } from "react";
 import initialWorkspaces from "../config/initialWorkspaces";
+import useAppConfigStore from "../store/appConfigStore";
+import { workspaceStateManager } from "../utils/workspaceStateManager";
 
 interface InitialWorkspaceLoaderProps {
   children: React.ReactNode;
@@ -11,6 +13,7 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
 }) => {
   const { getAllWorkspaces, saveWorkspace, applyWorkspaceLayout } =
     useAppShell();
+  const { currentSceneGraph } = useAppConfigStore();
 
   useEffect(() => {
     // Check if any workspaces exist
@@ -57,17 +60,41 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
       }
     });
 
-    // Always load the documentation workspace on startup, regardless of saved layouts
-    const documentationWorkspace = getAllWorkspaces().find(
-      (ws) => ws.id === "documentation"
-    );
-    if (documentationWorkspace) {
-      console.log("Loading default Documentation workspace on startup");
-      // Clear any saved layout to ensure our default loads
-      localStorage.removeItem("unigraph-last-workspace-layout");
-      applyWorkspaceLayout("documentation");
+    // Only apply the default documentation workspace on initial load
+    // Scenegraph-specific layouts are handled in handleLoadSceneGraph
+    const scenegraphName = currentSceneGraph.getMetadata().name;
+    const isDefaultEmptyGraph =
+      scenegraphName === "Empty" || scenegraphName === "Unnamed";
+
+    console.log("InitialWorkspaceLoader - Current scenegraph:", {
+      name: scenegraphName,
+      isDefaultEmptyGraph,
+      hasAppConfig: !!currentSceneGraph.getData()?.defaultAppConfig,
+      appShellLayout:
+        currentSceneGraph.getData()?.defaultAppConfig?.appShellLayout,
+    });
+
+    if (isDefaultEmptyGraph) {
+      console.log("Initial load - applying default documentation workspace");
+      const documentationWorkspace = getAllWorkspaces().find(
+        (ws) => ws.id === "documentation"
+      );
+      if (documentationWorkspace) {
+        // Clear any saved layout to ensure our default loads
+        workspaceStateManager.clearWorkspaceState();
+        applyWorkspaceLayout("documentation");
+      }
+    } else {
+      console.log(
+        "Skipping default workspace - scenegraph has specific configuration"
+      );
     }
-  }, [getAllWorkspaces, saveWorkspace, applyWorkspaceLayout]);
+  }, [
+    getAllWorkspaces,
+    saveWorkspace,
+    applyWorkspaceLayout,
+    currentSceneGraph,
+  ]);
 
   return <>{children}</>;
 };

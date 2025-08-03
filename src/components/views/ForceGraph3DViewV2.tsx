@@ -261,7 +261,7 @@ const ForceGraph3DViewV2: React.FC = () => {
           position: "absolute",
           top: 20,
           right: 20,
-          zIndex: 999999999,
+          zIndex: 1000,
         }}
       >
         {!showDisplayConfig ? (
