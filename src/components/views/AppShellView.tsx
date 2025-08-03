@@ -962,63 +962,9 @@ Object.assign(themes, { "unigraph-custom": customUnigraphTheme });
 registerViews(allViews);
 
 const AppShellView: React.FC = () => {
-  // Create default layout configuration for Graph Visualization workspace
-  const createDefaultLayoutConfig = () => ({
-    layout: [0, 50, 50] as [number, number, number], // 0% left, 50% center, 50% right
-    bottomHeight: 25,
-    panes: {
-      left: {
-        tabs: [
-          {
-            id: "system-monitor",
-            title: "System Monitor",
-            content: "system-monitor",
-          },
-          {
-            id: "monaco-editor",
-            title: "Monaco Editor",
-            content: "monaco-editor",
-          },
-        ],
-        activeTabId: "system-monitor",
-      },
-      center: {
-        tabs: [
-          {
-            id: "force-graph-3d-v2",
-            title: "ForceGraph 3D",
-            content: "force-graph-3d-v2",
-          },
-        ],
-        activeTabId: "force-graph-3d-v2",
-      },
-      right: {
-        tabs: [
-          {
-            id: "react-flow-panel-v2",
-            title: "React Flow",
-            content: "react-flow-panel-v2",
-          },
-        ],
-        activeTabId: "react-flow-panel-v2",
-      },
-      bottom: {
-        tabs: [
-          {
-            id: "entity-table-v2",
-            title: "Entity Table",
-            content: "entity-table-v2",
-          },
-        ],
-        activeTabId: "entity-table-v2",
-      },
-    },
-    maximizedPane: null,
-  });
-
   return (
     // <div className={styles.appContainer}>
-    <LayoutManager initialConfig={createDefaultLayoutConfig()} />
+    <LayoutManager />
     // </div>
   );
 };
