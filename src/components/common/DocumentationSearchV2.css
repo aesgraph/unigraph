@@ -1,0 +1,48 @@
+.documentation-search-v2 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+.search-header {
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.file-tree-search {
+  margin-bottom: 8px;
+}
+
+.file-tree-search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.file-tree-search-input {
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.file-tree-search-input:focus {
+  border-color: #0969da;
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+}
+
+.search-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+  min-height: 0;
+}
+
+/* Highlight styling */
+mark {
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+  padding: 1px 2px;
+  border-radius: 2px;
+}

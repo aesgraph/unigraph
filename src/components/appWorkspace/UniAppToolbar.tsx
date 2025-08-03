@@ -1,5 +1,5 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import React, { useCallback, useEffect, useState } from "react";
-import { useTheme, getColor } from "@aesgraph/app-shell";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import GraphSearch from "../common/GraphSearch";
 import GraphViewTabs from "./GraphViewTabs";
@@ -177,6 +177,9 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
             key={key}
             className="menu-item"
             onMouseEnter={() => handleMenuMouseEnter(key)}
+            style={{
+              color: getColor(theme.colors, "text"),
+            }}
           >
             {item.checked !== undefined ? (
               <label className="menu-item-label">
@@ -189,7 +192,12 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
                   }}
                   onClick={(e) => e.stopPropagation()}
                 />
-                <span className="menu-item-text">
+                <span
+                  className="menu-item-text"
+                  style={{
+                    color: getColor(theme.colors, "text"),
+                  }}
+                >
                   {key}
                   {item.tooltip && (
                     <KeyboardShortcut
@@ -200,8 +208,18 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
                 </span>
               </label>
             ) : item.action ? (
-              <button onClick={(e) => handleMenuItemClick(e, item)}>
-                <span className="menu-item-text">
+              <button
+                onClick={(e) => handleMenuItemClick(e, item)}
+                style={{
+                  color: getColor(theme.colors, "text"),
+                }}
+              >
+                <span
+                  className="menu-item-text"
+                  style={{
+                    color: getColor(theme.colors, "text"),
+                  }}
+                >
                   {key}
                   {item.tooltip && (
                     <KeyboardShortcut
@@ -212,8 +230,18 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
                 </span>
               </button>
             ) : (
-              <span onClick={(e) => handleMenuItemClick(e, item)}>
-                <span className="menu-item-text">
+              <span
+                onClick={(e) => handleMenuItemClick(e, item)}
+                style={{
+                  color: getColor(theme.colors, "text"),
+                }}
+              >
+                <span
+                  className="menu-item-text"
+                  style={{
+                    color: getColor(theme.colors, "text"),
+                  }}
+                >
                   {key}
                   {item.tooltip && (
                     <KeyboardShortcut
@@ -254,13 +282,25 @@ const UniAppToolbar: React.FC<UniAppToolbarProps> = ({
     );
   };
 
+  // Debug theme colors
+  console.log("Theme colors:", {
+    workspacePanel: getColor(theme.colors, "workspacePanel"),
+    border: getColor(theme.colors, "border"),
+    text: getColor(theme.colors, "text"),
+    textSecondary: getColor(theme.colors, "textSecondary"),
+  });
+
   return (
     <nav
       className="uni-app-toolbar"
       style={{
         backgroundColor: getColor(theme.colors, "workspaceTitleBackground"),
-        color: getColor(theme.colors, "workspaceTitleText"),
+        color: getColor(theme.colors, "text"),
         borderBottom: `1px solid ${getColor(theme.colors, "border")}`,
+        ["--submenu-bg" as any]: getColor(theme.colors, "workspaceBackground"),
+        ["--submenu-border" as any]: getColor(theme.colors, "border"),
+        ["--toolbar-text" as any]: getColor(theme.colors, "text"),
+        ["--shortcut-text" as any]: getColor(theme.colors, "textSecondary"),
         ...style,
       }}
     >

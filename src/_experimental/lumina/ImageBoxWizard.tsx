@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ImageBoxData } from "../../core/types/ImageBoxData";
 import { Annotation } from "./AnnotationsList";
+import ImageBoxInspector from "./ImageBoxInspector";
 import "./ImageBoxWizard.css";
 
 interface ImageBoxWizardProps {
@@ -76,7 +77,9 @@ const ImageBoxWizard: React.FC<ImageBoxWizardProps> = ({
         <h2 className="image-box-wizard-title">
           {imageBoxData ? "Edit ImageBox" : "Create ImageBox"}
         </h2>
-
+        {imageBoxData && (
+          <ImageBoxInspector imageBox={imageBoxData} onClose={onCancel} />
+        )}
         {imageUrl && (
           <div className="image-preview">
             <img

@@ -5,10 +5,12 @@ import styles from "./WorkspaceSettings.module.css";
 
 interface WorkspaceSettingsProps {
   isDarkMode?: boolean;
+  style?: React.CSSProperties;
 }
 
 const WorkspaceSettings: React.FC<WorkspaceSettingsProps> = ({
   isDarkMode = false,
+  style = {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -78,8 +80,9 @@ const WorkspaceSettings: React.FC<WorkspaceSettingsProps> = ({
         className={`${styles.settingsButton} ${isDarkMode ? styles.dark : ""}`}
         onClick={toggleSettings}
         title="Workspace Settings"
+        style={style}
       >
-        <Settings size={20} />
+        <Settings size={20} style={style} />
       </button>
 
       {isOpen && (

@@ -68,11 +68,6 @@
       ]
     },
     {
-      "path": "backgroundAndMotivation.md",
-      "type": "file",
-      "name": "backgroundAndMotivation.md"
-    },
-    {
       "path": "capabilities",
       "type": "directory",
       "children": [
@@ -101,6 +96,17 @@
           "path": "coreConcepts/coreConcepts.md",
           "type": "file",
           "name": "coreConcepts.md"
+        }
+      ]
+    },
+    {
+      "path": "developer",
+      "type": "directory",
+      "children": [
+        {
+          "path": "developer/LIVE_CHAT_SETUP.md",
+          "type": "file",
+          "name": "LIVE_CHAT_SETUP.md"
         }
       ]
     },
@@ -398,6 +404,11 @@
           "path": "userGuide/layouts.md",
           "type": "file",
           "name": "layouts.md"
+        },
+        {
+          "path": "userGuide/monacoEditorCodeGeneration.md",
+          "type": "file",
+          "name": "monacoEditorCodeGeneration.md"
         },
         {
           "path": "userGuide/navigation.md",

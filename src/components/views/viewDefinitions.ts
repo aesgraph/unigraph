@@ -140,6 +140,36 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     category: "editing",
     description: "Rich text editor built with Lexical framework",
   },
+  "sandpack-editor": {
+    id: "sandpack-editor",
+    title: "Sandpack Editor",
+    icon: "🖥️",
+    category: "development",
+    description:
+      "Live code editor with file tree and instant preview powered by CodeSandbox",
+  },
+  "markdown-viewer": {
+    id: "markdown-viewer",
+    title: "Markdown Viewer",
+    icon: "📄",
+    category: "content",
+    description: "Clean, modern markdown viewer with GitHub-inspired styling",
+  },
+  documentation: {
+    id: "documentation",
+    title: "Documentation",
+    icon: "📚",
+    category: "content",
+    description: "Browse and view documentation with file tree navigation",
+  },
+  "unigraph-iframe": {
+    id: "unigraph-iframe",
+    title: "Unigraph Iframe",
+    icon: "🖼️",
+    category: "development",
+    description:
+      "Interactive iframe component for embedding external content with controls and customization",
+  },
 };
 
 // Helper function to get all available view IDs

@@ -1,3 +1,4 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import React, { useEffect } from "react";
 import "./TextBasedContextMenu.module.css";
 
@@ -26,6 +27,7 @@ const TextBasedContextMenu: React.FC<TextBasedContextMenuProps> = ({
   items,
   onClose,
 }) => {
+  const { theme } = useTheme();
   // Function to prevent text deselection
   const preventTextDeselection = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -68,8 +70,8 @@ const TextBasedContextMenu: React.FC<TextBasedContextMenuProps> = ({
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const menuWidth = 180; // Reduced width for more compact menu
-    const menuHeight = items.length * 28; // Estimated height based on items only (removed text preview)
+    const menuWidth = 160; // Slightly bigger width
+    const menuHeight = items.length * 28; // Slightly bigger height per item
 
     let left = position.x;
     let top = position.y;
@@ -97,14 +99,15 @@ const TextBasedContextMenu: React.FC<TextBasedContextMenuProps> = ({
         left,
         top,
         zIndex: 10000,
-        background: "white",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        borderRadius: "4px",
-        fontSize: "13px",
-        padding: "4px 0",
+        background: getColor(theme.colors, "surface"),
+        boxShadow: `0 4px 12px ${getColor(theme.colors, "border")}`,
+        borderRadius: theme.sizes.borderRadius.sm,
+        fontSize: theme.sizes.fontSize.sm,
+        padding: "3px 0",
         minWidth: "140px",
-        maxWidth: "180px",
+        maxWidth: "160px",
         userSelect: "none", // Prevent selection in the menu itself
+        border: `1px solid ${getColor(theme.colors, "border")}`,
       }}
       // Prevent deselection when interacting with menu
       onMouseDown={preventTextDeselection}
@@ -146,16 +149,22 @@ const TextBasedContextMenu: React.FC<TextBasedContextMenuProps> = ({
             }
           }}
           style={{
-            padding: "6px 12px",
+            padding: "6px 10px",
             cursor: item.disabled ? "default" : "pointer",
             opacity: item.disabled ? 0.5 : 1,
             backgroundColor: "transparent",
-            color: "#333",
+            color: getColor(theme.colors, "text"),
             whiteSpace: "nowrap",
+            fontSize: theme.sizes.fontSize.md,
+            borderRadius: theme.sizes.borderRadius.xs,
+            margin: "1px 4px",
           }}
           onMouseOver={(e) => {
             if (!item.disabled) {
-              e.currentTarget.style.backgroundColor = "#f5f5f5";
+              e.currentTarget.style.backgroundColor = getColor(
+                theme.colors,
+                "surfaceHover"
+              );
             }
           }}
           onMouseOut={(e) => {

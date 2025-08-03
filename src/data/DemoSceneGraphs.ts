@@ -25,6 +25,7 @@ import demo_SceneGraph_FactorGraph from "./graphs/Gallery_Demos/demo_SceneGraph_
 import demo_SceneGraph_FactorGraph_ComplexExpansion from "./graphs/Gallery_Demos/demo_SceneGraph_FactorGraph_ComplexExpansion";
 import { demo_SceneGraph_ImageGallery } from "./graphs/Gallery_Demos/demo_SceneGraph_ImageGallery";
 import { demo_SceneGraph_Numbers_Story } from "./graphs/Gallery_Demos/demo_scenegraph_numbers_story";
+import { demo_SceneGraph_Particulation } from "./graphs/Gallery_Demos/demo_SceneGraph_Particulation";
 import { demo_SceneGraph_PhylogeneticTree } from "./graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree";
 import {
   demo_scenegraph_service_mesh_1,
@@ -171,6 +172,7 @@ export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
         demo_SceneGraph_StackedGalleryTransparent(),
       Thinking: demo_SceneGraph_Thinking,
       Art: demo_SceneGraph_ArtCollection,
+      "Particulation Experiment": demo_SceneGraph_Particulation,
     },
   },
 };

@@ -1,3 +1,4 @@
+import { getColor } from "@aesgraph/app-shell";
 import {
   FileText,
   FilterX, // Add this import for the clear filter icon
@@ -44,12 +45,21 @@ export interface MenuItem {
 export const createDefaultRightMenus = (
   renderLegends: () => React.ReactNode,
   isForceGraph3dActive: boolean,
-  isDarkMode: boolean
+  isDarkMode: boolean,
+  theme?: any
 ): MenuItem[] => {
   const baseMenuItems = [
     {
       id: "scene-info",
-      icon: <Info size={20} className="menu-icon" />,
+      icon: (
+        <Info
+          size={20}
+          className="menu-icon"
+          style={{
+            color: theme ? getColor(theme.colors, "text") : undefined,
+          }}
+        />
+      ),
       label: "Scene Info",
       content: (
         <div className="sidebar-section">
@@ -63,7 +73,15 @@ export const createDefaultRightMenus = (
     },
     {
       id: "legends",
-      icon: <List size={20} className={styles.menuIcon} />,
+      icon: (
+        <List
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: theme ? getColor(theme.colors, "text") : undefined,
+          }}
+        />
+      ),
       label: "Legends",
       content: (
         <div className={styles.optionsPanelContainer}>{renderLegends()}</div>
@@ -71,7 +89,15 @@ export const createDefaultRightMenus = (
     },
     {
       id: "settings",
-      icon: <Settings2 size={20} className={styles.menuIcon} />,
+      icon: (
+        <Settings2
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: theme ? getColor(theme.colors, "text") : undefined,
+          }}
+        />
+      ),
       label: "Settings",
       content: (
         <div className={styles.optionsPanelContainer}>
@@ -87,7 +113,15 @@ export const createDefaultRightMenus = (
     },
     {
       id: "sceneGraphInfo",
-      icon: <FileText size={20} className={styles.menuIcon} />,
+      icon: (
+        <FileText
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: theme ? getColor(theme.colors, "text") : undefined,
+          }}
+        />
+      ),
       label: "SceneGraph Info",
       content: (
         <SceneGraphInfoEditor
@@ -99,14 +133,30 @@ export const createDefaultRightMenus = (
     // Add ChatGPT import section
     {
       id: "chatgpt-import",
-      icon: <MessageSquare size={20} className={styles.menuIcon} />,
+      icon: (
+        <MessageSquare
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: theme ? getColor(theme.colors, "text") : undefined,
+          }}
+        />
+      ),
       label: "ChatGPT",
       content: <ChatGptPanel isDarkMode={isDarkMode} />,
     },
     {
       id: "ai-chat",
       label: "AI Chat",
-      icon: <MessageCircle size={20} className={styles.menuIcon} />,
+      icon: (
+        <MessageCircle
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: theme ? getColor(theme.colors, "text") : undefined,
+          }}
+        />
+      ),
       content: <AIChatPanel />,
     },
   ];
@@ -117,7 +167,12 @@ export const createDefaultRightMenus = (
       id: "node-details",
       icon: (
         <div className={styles.menuIcon}>
-          <Info size={20} />
+          <Info
+            size={20}
+            style={{
+              color: theme ? getColor(theme.colors, "text") : undefined,
+            }}
+          />
           {getSelectedNodeIds().size > 0 && (
             <span className={styles.notificationBadge}>
               {getSelectedNodeIds().size}
@@ -181,7 +236,8 @@ export const rightFooterContent = (
       activeView?: string | null;
       mouseControls?: string | null;
     };
-  }
+  },
+  theme?: any
 ) => {
   if (!actions) return null;
 
@@ -198,8 +254,23 @@ export const rightFooterContent = (
             onClick={actions.onClearFilters}
             title="Clear Filters"
           >
-            <FilterX size={20} className={styles.menuIcon} />
-            {isOpen && <span className={styles.menuText}>Clear Filters</span>}
+            <FilterX
+              size={20}
+              className={styles.menuIcon}
+              style={{
+                color: theme ? getColor(theme.colors, "text") : undefined,
+              }}
+            />
+            {isOpen && (
+              <span
+                className={styles.menuText}
+                style={{
+                  color: theme ? getColor(theme.colors, "text") : undefined,
+                }}
+              >
+                Clear Filters
+              </span>
+            )}
           </button>
         </div>
       )}
@@ -209,8 +280,23 @@ export const rightFooterContent = (
           onClick={actions.onViewEntities}
           title="View Entities"
         >
-          <Table2 size={20} className={styles.menuIcon} />
-          {isOpen && <span className={styles.menuText}>View Entities</span>}
+          <Table2
+            size={20}
+            className={styles.menuIcon}
+            style={{
+              color: theme ? getColor(theme.colors, "text") : undefined,
+            }}
+          />
+          {isOpen && (
+            <span
+              className={styles.menuText}
+              style={{
+                color: theme ? getColor(theme.colors, "text") : undefined,
+              }}
+            >
+              View Entities
+            </span>
+          )}
         </button>
       </div>
       <div className={styles.menuItem}>
@@ -219,8 +305,23 @@ export const rightFooterContent = (
           onClick={actions.onFitToView}
           title="Fit to View"
         >
-          <Scan size={20} className={styles.menuIcon} />
-          {isOpen && <span className={styles.menuText}>Fit to View</span>}
+          <Scan
+            size={20}
+            className={styles.menuIcon}
+            style={{
+              color: theme ? getColor(theme.colors, "text") : undefined,
+            }}
+          />
+          {isOpen && (
+            <span
+              className={styles.menuText}
+              style={{
+                color: theme ? getColor(theme.colors, "text") : undefined,
+              }}
+            >
+              Fit to View
+            </span>
+          )}
         </button>
       </div>
     </nav>

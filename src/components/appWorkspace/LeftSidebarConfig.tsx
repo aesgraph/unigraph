@@ -1,4 +1,5 @@
 /* eslint-disable unused-imports/no-unused-vars */
+import { getColor } from "@aesgraph/app-shell";
 import {
   Activity,
   BookOpen,
@@ -33,10 +34,10 @@ import FilterManagerV2 from "../filters/FilterManagerV2";
 import LayoutManagerV2 from "../layouts/LayoutManagerV2";
 import ProjectManager from "../projects/ProjectManager"; // Import the new component
 
+import ProfileIcon from "../user/ProfileIcon";
 import ForceGraphRenderConfigEditor from "../views/ForceGraph3d/ForceGraphRenderConfigEditor";
 import ReactFlowConfigEditor from "../views/ReactFlow/ReactFlowConfigEditor";
 import styles from "./Sidebar.module.css";
-import ProfileIcon from "../user/ProfileIcon";
 
 const allLayoutLabels = [
   ...Object.values(GraphvizLayoutType),
@@ -83,6 +84,7 @@ export const createDefaultLeftMenus = ({
   handleSetActiveFilter,
   currentPositions, // Make sure to pass this from the parent
   includeBottomElements = true, // Flag to control if bottom elements are included
+  theme, // Add theme as a parameter
 }: any): SidebarConfig => {
   // Ensure case consistency by converting to lowercase for comparison
   const normalizedActiveView = activeView ? activeView.toLowerCase() : "";
@@ -93,7 +95,15 @@ export const createDefaultLeftMenus = ({
     // Add the Projects section at the top with its custom width
     {
       id: "projects",
-      icon: <FolderOpen size={20} className={styles.menuIcon} />,
+      icon: (
+        <FolderOpen
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: getColor(theme.colors, "text"),
+          }}
+        />
+      ),
       label: "Projects",
       width: getSectionWidth("projects"), // Use width from store
       content: (
@@ -108,7 +118,15 @@ export const createDefaultLeftMenus = ({
     },
     {
       id: "layouts",
-      icon: <Share2 size={20} className={styles.menuIcon} />,
+      icon: (
+        <Share2
+          size={20}
+          className={styles.menuIcon}
+          style={{
+            color: getColor(theme.colors, "text"),
+          }}
+        />
+      ),
       label: "Layouts",
       content: (
         <LayoutManagerV2
@@ -149,7 +167,12 @@ export const createDefaultLeftMenus = ({
       id: "filters",
       icon: (
         <div className={styles.menuIcon}>
-          <Filter size={20} />
+          <Filter
+            size={20}
+            style={{
+              color: getColor(theme.colors, "text"),
+            }}
+          />
           {activeFilter && (
             <span className={styles.notificationBadge}>{"!"}</span>
           )}
@@ -203,7 +226,14 @@ export const createDefaultLeftMenus = ({
     },
     {
       id: "analysis",
-      icon: <Activity size={20} />,
+      icon: (
+        <Activity
+          size={20}
+          style={{
+            color: getColor(theme.colors, "text"),
+          }}
+        />
+      ),
       label: "Analysis",
       content: (
         <div
@@ -222,7 +252,14 @@ export const createDefaultLeftMenus = ({
     },
     {
       id: "displaySettings",
-      icon: <Settings2 size={20} />,
+      icon: (
+        <Settings2
+          size={20}
+          style={{
+            color: getColor(theme.colors, "text"),
+          }}
+        />
+      ),
       label: "Display",
       content: (() => {
         if (isForceGraph3D) {
@@ -298,7 +335,12 @@ export const createDefaultLeftMenus = ({
             height: 30,
           }}
         >
-          <WorkspaceSettings isDarkMode={isDarkMode} />
+          <WorkspaceSettings
+            isDarkMode={isDarkMode}
+            style={{
+              color: getColor(theme.colors, "text"),
+            }}
+          />
         </div>
       </div>
     </div>
@@ -310,7 +352,7 @@ export const createDefaultLeftMenus = ({
   };
 };
 
-export const leftFooterContent = (isOpen: boolean) => {
+export const leftFooterContent = (isOpen: boolean, theme: any) => {
   return (
     <div className={styles.menuItem}>
       <a
@@ -318,9 +360,27 @@ export const leftFooterContent = (isOpen: boolean) => {
         target="_blank"
         rel="noopener noreferrer"
         className={styles.footerLink}
+        style={{
+          color: getColor(theme.colors, "text"),
+        }}
       >
-        <BookOpen size={20} className={styles.footerIcon} />
-        {isOpen && <span className={styles.footerText}>Documentation</span>}
+        <BookOpen
+          size={20}
+          className={styles.footerIcon}
+          style={{
+            color: getColor(theme.colors, "text"),
+          }}
+        />
+        {isOpen && (
+          <span
+            className={styles.footerText}
+            style={{
+              color: getColor(theme.colors, "text"),
+            }}
+          >
+            Documentation
+          </span>
+        )}
       </a>
     </div>
   );

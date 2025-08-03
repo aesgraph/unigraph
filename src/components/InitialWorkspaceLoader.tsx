@@ -57,15 +57,15 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
       }
     });
 
-    // Always load the code-editor-workspace on startup, regardless of saved layouts
-    const codeEditorWorkspace = getAllWorkspaces().find(
-      (ws) => ws.id === "code-editor-workspace"
+    // Always load the documentation workspace on startup, regardless of saved layouts
+    const documentationWorkspace = getAllWorkspaces().find(
+      (ws) => ws.id === "documentation"
     );
-    if (codeEditorWorkspace) {
-      console.log("Loading default Code Editor workspace on startup");
+    if (documentationWorkspace) {
+      console.log("Loading default Documentation workspace on startup");
       // Clear any saved layout to ensure our default loads
       localStorage.removeItem("unigraph-last-workspace-layout");
-      applyWorkspaceLayout("code-editor-workspace");
+      applyWorkspaceLayout("documentation");
     }
   }, [getAllWorkspaces, saveWorkspace, applyWorkspaceLayout]);
 

@@ -823,12 +823,23 @@ const AppContentInner = ({
       clearSelections();
 
       // Apply scene graph's default app config immediately BEFORE layout computation
+      // but preserve URL parameters if they were set
       if (graph.getData().defaultAppConfig) {
         console.log(
           "Applying scene graph app config:",
           graph.getData().defaultAppConfig
         );
-        setAppConfig(graph.getData().defaultAppConfig!);
+
+        // Create a merged config that preserves URL parameters
+        const defaultConfig = graph.getData().defaultAppConfig!;
+        const mergedConfig = {
+          ...defaultConfig,
+          // Preserve URL parameters if they were set
+          activeView: defaultActiveView ?? defaultConfig.activeView,
+          activeLayout: defaultActiveLayout ?? defaultConfig.activeLayout,
+        };
+
+        setAppConfig(mergedConfig);
       }
 
       const layoutToLoad =

@@ -522,7 +522,7 @@ export const demo_Unigraph_Applications = () => {
     defaultAppConfig: {
       ...DEFAULT_APP_CONFIG(),
       activeLayout: "dot",
-      activeView: "storyCard",
+      activeView: "ReactFlow",
     },
   });
 };

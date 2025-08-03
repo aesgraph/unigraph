@@ -2,7 +2,7 @@ import { Node } from "../../core/model/Node";
 import { SceneGraph } from "../../core/model/SceneGraph";
 
 export interface ResourceSpecifier {
-  type: "wikipedia";
+  type: "wikipedia" | "markdown";
   resource_id: string;
 }
 

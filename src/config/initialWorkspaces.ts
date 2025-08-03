@@ -378,7 +378,7 @@ export const initialWorkspaces: WorkspaceState[] = [
       description: "Workspace for writing code with monaco and ai chat",
     },
     layout: {
-      horizontal: [40, 0, 60], // 40% left, 0% center, 60% right
+      horizontal: [20, 0, 80], // 40% left, 0% center, 60% right
       vertical: [100, 0], // 100% top, 0% bottom
     },
     tabContainers: [
@@ -408,8 +408,58 @@ export const initialWorkspaces: WorkspaceState[] = [
             content: "monaco-editor",
             closable: false,
           },
+          {
+            id: "sandpack-editor",
+            title: "Sandpack Editor",
+            content: "sandpack-editor",
+            closable: false,
+          },
         ],
-        activeTabId: "monaco-editor",
+        activeTabId: "sandpack-editor",
+      },
+    ],
+    theme: "dark",
+  },
+  {
+    id: "documentation",
+    name: "Documentation",
+    timestamp: Date.now(),
+    config: {
+      description: "A workspace for learning about unigraph",
+    },
+    layout: {
+      horizontal: [0, 20, 80], // 40% left, 0% center, 60% right
+      vertical: [100, 0], // 100% top, 0% bottom
+    },
+    tabContainers: [
+      {
+        id: "center",
+        tabs: [
+          {
+            id: "ai-chat",
+            title: "AI Chat",
+            content: "ai-chat",
+            closable: false,
+          },
+        ],
+        activeTabId: "ai-chat",
+      },
+      {
+        id: "left",
+        tabs: [],
+        activeTabId: undefined,
+      },
+      {
+        id: "right",
+        tabs: [
+          {
+            id: "documentation",
+            title: "Documentation",
+            content: "documentation",
+            closable: false,
+          },
+        ],
+        activeTabId: "documentation",
       },
     ],
     theme: "dark",

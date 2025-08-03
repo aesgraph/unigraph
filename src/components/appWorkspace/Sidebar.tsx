@@ -1,4 +1,5 @@
 /* eslint-disable unused-imports/no-unused-vars */
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import {
   ChevronLeft,
   ChevronRight,
@@ -60,6 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(mode === "full");
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   // Get the config based on sidebar position
   const {
@@ -303,15 +305,34 @@ const Sidebar: React.FC<SidebarProps> = ({
         className={styles.sidebar}
         style={{
           width: isOpen ? "150px" : minimal ? "0px" : "60px",
+          backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+          color: getColor(theme.colors, "text"),
           ...style,
         }}
       >
         {!hideHeader && (
-          <div className={styles.sidebarHeader}>
-            {isOpen && <h1 className={styles.sidebarTitle}>{title}</h1>}
+          <div
+            className={styles.sidebarHeader}
+            style={{
+              borderBottom: `1px solid ${getColor(theme.colors, "border")}`,
+            }}
+          >
+            {isOpen && (
+              <h1
+                className={styles.sidebarTitle}
+                style={{
+                  color: getColor(theme.colors, "text"),
+                }}
+              >
+                {title}
+              </h1>
+            )}
             <button
               onClick={toggleSidebar}
               className={styles.toggleButton}
+              style={{
+                color: getColor(theme.colors, "text"),
+              }}
               aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
             >
               {isOpen ? closeButton : <Menu size={20} />}
@@ -341,18 +362,36 @@ const Sidebar: React.FC<SidebarProps> = ({
                       onClick={() => handleSectionClick(item.id)}
                       title={item.label} // Add tooltip that shows on hover
                       aria-label={item.label} // For accessibility
+                      style={{
+                        color: getColor(theme.colors, "text"),
+                      }}
                     >
                       {item.icon}
                       {isOpen && (
                         <>
-                          <span className={styles.menuText}>{item.label}</span>
+                          <span
+                            className={styles.menuText}
+                            style={{
+                              color: getColor(theme.colors, "text"),
+                            }}
+                          >
+                            {item.label}
+                          </span>
                           {activeSection === item.id ? (
                             <ChevronRight
                               size={16}
                               className={styles.activeIcon}
+                              style={{
+                                color: getColor(theme.colors, "text"),
+                              }}
                             />
                           ) : (
-                            <ChevronLeft size={16} />
+                            <ChevronLeft
+                              size={16}
+                              style={{
+                                color: getColor(theme.colors, "textSecondary"),
+                              }}
+                            />
                           )}
                         </>
                       )}
@@ -386,15 +425,29 @@ const Sidebar: React.FC<SidebarProps> = ({
               width: `${getInitialWidth(activeSectionId)}px`,
               willChange: isResizing ? "width" : "auto",
               transitionProperty: isResizing ? "none" : "width",
+              backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+              color: getColor(theme.colors, "text"),
             }}
           >
-            <div className={styles.sidePanelHeader}>
-              <h3>
+            <div
+              className={styles.sidePanelHeader}
+              style={{
+                borderBottom: `1px solid ${getColor(theme.colors, "border")}`,
+              }}
+            >
+              <h3
+                style={{
+                  color: getColor(theme.colors, "text"),
+                }}
+              >
                 {menuItems.find((item) => item.id === activeSection)?.label}
               </h3>
               <button
                 onClick={handleCloseSection}
                 className={styles.closeButton}
+                style={{
+                  color: getColor(theme.colors, "text"),
+                }}
               >
                 {position === "left" ? (
                   <ChevronLeft size={16} />

@@ -157,6 +157,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
       activeFilter: activeFilter,
       handleLoadSceneGraph: handleLoadSceneGraph,
       handleSetActiveFilter: applyActiveFilterToAppInstance,
+      theme,
     });
 
     return (
@@ -170,7 +171,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
         menuItems={config.mainMenus}
         bottomElements={config.bottomElements}
         isDarkMode={isDarkMode}
-        footer={leftFooterContent}
+        footer={(isOpen: boolean) => leftFooterContent(isOpen, theme)}
         minimal={leftSidebarConfig.minimal}
         mode={leftSidebarConfig.mode}
       />
@@ -217,7 +218,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
         </>
       ),
       activeView === "ForceGraph3d",
-      isDarkMode
+      isDarkMode,
+      theme
     );
 
     // Dynamically add Node Details section when a node is selected
@@ -231,7 +233,15 @@ const Workspace: React.FC<WorkspaceProps> = ({
         // Use push instead of unshift to add the node details at the end of the menu
         menuItems.push({
           id: "node-details",
-          icon: <Info size={20} className={styles.menuIcon} />,
+          icon: (
+            <Info
+              size={20}
+              className={styles.menuIcon}
+              style={{
+                color: getColor(theme.colors, "text"),
+              }}
+            />
+          ),
           label: "Node Details",
           content: (
             <NodeInfo
@@ -285,18 +295,22 @@ const Workspace: React.FC<WorkspaceProps> = ({
         mode={rightSidebarConfig.mode}
         minimal={rightSidebarConfig.minimal}
         footer={(isOpen) =>
-          rightFooterContent(isOpen, {
-            onFitToView: () => handleFitToView(activeView),
-            onViewEntities: () => handleShowEntityTables(),
-            onClearFilters: () => clearFiltersOnAppInstance(),
-            details: {
-              sceneGraphName: currentSceneGraph.name,
-              activeLayout: activeLayout,
-              activeFilter: activeFilter?.name,
-              activeView: activeView,
-              mouseControls: controlMode,
+          rightFooterContent(
+            isOpen,
+            {
+              onFitToView: () => handleFitToView(activeView),
+              onViewEntities: () => handleShowEntityTables(),
+              onClearFilters: () => clearFiltersOnAppInstance(),
+              details: {
+                sceneGraphName: currentSceneGraph.name,
+                activeLayout: activeLayout,
+                activeFilter: activeFilter?.name,
+                activeView: activeView,
+                mouseControls: controlMode,
+              },
             },
-          })
+            theme
+          )
         }
       />
     );

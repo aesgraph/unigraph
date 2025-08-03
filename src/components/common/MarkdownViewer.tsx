@@ -1,11 +1,29 @@
+import Editor from "@monaco-editor/react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import { marked } from "marked";
+import Prism from "prismjs";
+import "prismjs/components/prism-bash";
+import "prismjs/components/prism-css";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-markdown";
+import "prismjs/components/prism-scss";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-typescript";
+import "prismjs/themes/prism.css";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { SceneGraph } from "../../core/model/SceneGraph";
 import { replaceUnigraphUrlsWithLocalhost } from "../../utils/urlUtils";
+import "../applets/StoryCards/StoryCardApp.css";
 import { DefinitionPopup, DefinitionPopupData } from "./DefinitionPopup";
 import "./MarkdownViewer.css";
+import { saveAnnotationToSceneGraph } from "./saveAnnotationToSceneGraph";
+import TextBasedContextMenu, {
+  TextContextMenuItem,
+} from "./TextBasedContextMenu";
 
 interface MarkdownViewerProps {
   filename: string;
@@ -13,6 +31,9 @@ interface MarkdownViewerProps {
   excerptLength?: number;
   overrideMarkdown?: string; // Add this prop
   imageStyle?: React.CSSProperties; // Add imageStyle prop
+  sceneGraph?: SceneGraph; // Add sceneGraph prop for annotations
+  onAnnotate?: (selectedText: string) => void; // Add annotation callback
+  showRawToggle?: boolean; // Add prop to control raw markdown toggle visibility
 }
 
 function MarkdownViewer({
@@ -21,6 +42,9 @@ function MarkdownViewer({
   excerptLength = 150,
   overrideMarkdown,
   imageStyle,
+  sceneGraph,
+  onAnnotate = (text) => console.log("Annotate text:", text), // Default implementation
+  showRawToggle = false, // Default to false - disabled by default
 }: MarkdownViewerProps) {
   const [html, setHtml] = useState("");
   const [loading, setLoading] = useState(true);
@@ -34,6 +58,276 @@ function MarkdownViewer({
     null
   );
   const eventHandlersSetupRef = useRef(false);
+
+  // Add state for context menu
+  const [contextMenuPosition, setContextMenuPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
+  const [selectedText, setSelectedText] = useState<string>("");
+  const [showRawMarkdown, setShowRawMarkdown] = useState(false);
+  const [rawMarkdown, setRawMarkdown] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
+  const [searchHighlight, setSearchHighlight] = useState<string | null>(null);
+
+  // Detect dark mode preference
+  const [isDarkMode, setIsDarkMode] = useState(
+    window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  // Listen for theme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  // Handle highlighting
+  useEffect(() => {
+    const lineMatch = filename.match(/#L(\d+)$/);
+    const searchMatch = filename.match(/#search=([^#]+)$/);
+    const lineNumber = lineMatch ? parseInt(lineMatch[1], 10) : null;
+    const searchText = searchMatch ? decodeURIComponent(searchMatch[1]) : null;
+
+    setHighlightedLine(lineNumber);
+    setSearchHighlight(searchText);
+  }, [filename]);
+
+  // Apply highlighting after content is rendered
+  useEffect(() => {
+    console.log("Highlighting effect triggered:", {
+      highlightedLine,
+      searchHighlight,
+      loading,
+      hasContent: !!contentRef.current,
+    });
+
+    if (contentRef.current && !loading) {
+      // Clear previous highlighting
+      contentRef.current
+        .querySelectorAll(".markdown-highlighted-line")
+        .forEach((el) => {
+          el.classList.remove("markdown-highlighted-line");
+        });
+
+      if (searchHighlight) {
+        console.log("Searching for text:", searchHighlight);
+
+        // Find and highlight text by searching for the search term
+        const walker = document.createTreeWalker(
+          contentRef.current,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
+
+        const textNodes: Text[] = [];
+        let node;
+        while ((node = walker.nextNode())) {
+          textNodes.push(node as Text);
+        }
+
+        console.log("Found text nodes:", textNodes.length);
+
+        let foundMatch = false;
+        textNodes.forEach((textNode) => {
+          const text = textNode.textContent || "";
+          const searchLower = searchHighlight.toLowerCase();
+          const textLower = text.toLowerCase();
+
+          console.log(
+            "Checking text node:",
+            text.substring(0, 100),
+            "against:",
+            searchLower
+          );
+
+          // Find all instances of the search term in this text node
+          if (textLower.includes(searchLower)) {
+            console.log("Found exact match in text:", text.substring(0, 100));
+
+            // Create a new text node with highlighted search terms
+            const highlightedText = text.replace(
+              new RegExp(
+                `(${searchHighlight.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+                "gi"
+              ),
+              '<mark class="markdown-highlighted-term">$1</mark>'
+            );
+
+            // Replace the text node content with highlighted version
+            if (highlightedText !== text) {
+              const span = document.createElement("span");
+              span.innerHTML = highlightedText;
+              textNode.parentNode?.replaceChild(span, textNode);
+              foundMatch = true;
+            }
+          }
+        });
+
+        // Scroll to the first highlighted term
+        if (foundMatch) {
+          const firstHighlight = contentRef.current?.querySelector(
+            ".markdown-highlighted-term"
+          );
+          if (firstHighlight) {
+            setTimeout(() => {
+              firstHighlight.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            }, 100);
+          }
+        }
+
+        if (!foundMatch) {
+          console.log("No matching text found for:", searchHighlight);
+        }
+      } else if (highlightedLine) {
+        // Fallback to line-based highlighting
+        const elements = contentRef.current.querySelectorAll(
+          "p, h1, h2, h3, h4, h5, h6, pre, li"
+        );
+        console.log("Found elements to highlight:", elements.length);
+
+        elements.forEach((element, index) => {
+          const lineNumber = index + 1;
+          element.setAttribute("data-line", lineNumber.toString());
+
+          if (lineNumber === highlightedLine) {
+            console.log(
+              "Highlighting element:",
+              element,
+              "for line:",
+              lineNumber
+            );
+            element.classList.add("markdown-highlighted-line");
+
+            setTimeout(() => {
+              element.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 100);
+          }
+        });
+      }
+    }
+  }, [html, highlightedLine, searchHighlight, loading]);
+
+  // Context menu handlers
+  const handleContextMenu = (e: React.MouseEvent) => {
+    const selection = window.getSelection();
+    const text = selection?.toString().trim();
+    console.log("Context menu triggered, selected text:", text); // Debug log
+    if (text && text.length > 0) {
+      e.preventDefault(); // Prevent default browser context menu
+      e.stopPropagation(); // Stop propagation to avoid triggering other handlers
+      setSelectedText(text);
+      setContextMenuPosition({ x: e.clientX, y: e.clientY });
+      console.log("Context menu position set:", { x: e.clientX, y: e.clientY }); // Debug log
+    }
+  };
+
+  // Enhanced annotation handler that saves to scene graph
+  const handleAnnotate = (text: string) => {
+    console.log("handleAnnotate called with text:", text); // Debug log
+    if (!text.trim()) return;
+
+    // Get the surrounding HTML context if possible
+    let surroundingHtml = "";
+    const selection = window.getSelection();
+
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+
+      // Get the surrounding context - either the parent element or a few words before/after
+      const container = range.commonAncestorContainer;
+      if (container.nodeType === Node.ELEMENT_NODE) {
+        // If the container is an element, use its HTML
+        surroundingHtml = (container as Element).outerHTML;
+      } else if (container.parentElement) {
+        // If it's a text node, use the parent element's HTML
+        surroundingHtml = container.parentElement.outerHTML;
+      }
+    }
+
+    console.log("SceneGraph available:", !!sceneGraph); // Debug log
+
+    // Save to scene graph if available, otherwise use the default onAnnotate
+    if (sceneGraph) {
+      try {
+        const node = saveAnnotationToSceneGraph(
+          text,
+          surroundingHtml,
+          { type: "markdown", resource_id: filename },
+          sceneGraph
+        );
+        console.log("Created annotation node:", node);
+      } catch (error) {
+        console.error("Failed to save annotation to scene graph:", error);
+        // Fall back to the default onAnnotate
+        onAnnotate(text);
+      }
+    } else {
+      // Use the provided onAnnotate callback
+      onAnnotate(text);
+    }
+  };
+
+  // Define context menu items
+  const getContextMenuItems = (): TextContextMenuItem[] => [
+    {
+      id: "annotate",
+      label: "Annotate",
+      onClick: () => {
+        // Keep the selection intact until the action is completed
+        const currentSelection = selectedText;
+        handleAnnotate(currentSelection);
+        // Don't clear selection here - let user manage that
+      },
+    },
+    {
+      id: "copy",
+      label: "Copy",
+      onClick: () => {
+        navigator.clipboard.writeText(selectedText);
+      },
+    },
+    {
+      id: "search",
+      label: "Search",
+      onClick: () => {
+        window.open(
+          `https://www.google.com/search?q=${encodeURIComponent(selectedText)}`,
+          "_blank"
+        );
+      },
+    },
+  ];
+
+  // Close context menu when clicking outside
+  useEffect(() => {
+    if (!contextMenuPosition) return;
+
+    const handleClickOutside = () => {
+      setContextMenuPosition(null);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    // Also close on Escape key
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setContextMenuPosition(null);
+      }
+    };
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [contextMenuPosition]);
 
   // Add post-processing function to apply styles to images
   const applyImageStyles = React.useCallback(
@@ -62,7 +356,7 @@ function MarkdownViewer({
     setLoading(true);
     setError(null);
 
-    // Configure marked with proper LaTeX support
+    // Configure marked with proper LaTeX support and syntax highlighting
     const renderer = {
       code(this: any, codeObj: { text: string; lang?: string }) {
         const { text, lang } = codeObj;
@@ -78,16 +372,55 @@ function MarkdownViewer({
             return `<div class="latex-error">LaTeX rendering error: ${error instanceof Error ? error.message : String(error)}</div>`;
           }
         }
-        return `<pre><code class="language-${lang}">${text}</code></pre>`;
-      },
 
-      // Add custom text renderer to handle term linking
-      text(this: any, token: any) {
-        // token: Text | Escape
-        // This will be populated once we have the terms
-        return token.text;
+        // Handle syntax highlighting for various languages
+        if (lang) {
+          try {
+            // Map language aliases to Prism languages
+            const languageMap: Record<string, string> = {
+              ts: "typescript",
+              tsx: "tsx",
+              js: "javascript",
+              jsx: "jsx",
+              json: "json",
+              css: "css",
+              scss: "scss",
+              md: "markdown",
+              bash: "bash",
+              shell: "bash", // Use bash for shell scripts
+              sh: "bash",
+            };
+
+            const prismLang = languageMap[lang] || lang;
+
+            // Ensure newlines are preserved and let Prism handle syntax highlighting
+            const processedText = text;
+
+            const highlighted = Prism.highlight(
+              processedText,
+              Prism.languages[prismLang] || Prism.languages.plaintext,
+              prismLang
+            );
+
+            // Ensure the code is treated as text, not as React components
+            return `<pre><code class="language-${lang}" data-code="true">${highlighted}</code></pre>`;
+          } catch (error) {
+            console.error("Syntax highlighting error:", error);
+            // Fallback to plain text if highlighting fails
+            return `<pre><code class="language-${lang}">${text}</code></pre>`;
+          }
+        }
+
+        // Default case for no language specified
+        return `<pre><code>${text}</code></pre>`;
       },
     };
+
+    // Use default marked configuration for basic markdown parsing
+    marked.setOptions({
+      gfm: true,
+      breaks: true,
+    });
 
     marked.use({ renderer });
 
@@ -204,16 +537,28 @@ function MarkdownViewer({
       return processed;
     };
 
-    // Fix the path construction to handle both docs/ and storyCardFiles/ paths
-    const normalizedFilename = filename.startsWith("/")
-      ? filename.substring(1)
-      : filename;
+    // Parse filename for highlighting (e.g., "file.md#L123" or "file.md#search=text")
+    const lineMatch = filename.match(/#L(\d+)$/);
+    const searchMatch = filename.match(/#search=([^#]+)$/);
+    const lineNumber = lineMatch ? parseInt(lineMatch[1], 10) : null;
+    const searchText = searchMatch ? decodeURIComponent(searchMatch[1]) : null;
+    const cleanFilename = filename.replace(/#(L\d+|search=[^#]+)$/, "");
+
+    // Fix the path construction to handle docs/, markdowns/, and storyCardFiles/ paths
+    const normalizedFilename = cleanFilename.startsWith("/")
+      ? cleanFilename.substring(1)
+      : cleanFilename;
 
     let filePath;
 
     // Check if the path explicitly starts with docs/
     if (normalizedFilename.startsWith("docs/")) {
       // Use the path as is for docs folder
+      filePath = `/${normalizedFilename}`;
+    }
+    // Check if the path explicitly starts with markdowns/
+    else if (normalizedFilename.startsWith("markdowns/")) {
+      // Use the path as is for markdowns folder
       filePath = `/${normalizedFilename}`;
     }
     // Check if the path explicitly starts with public/
@@ -302,6 +647,12 @@ function MarkdownViewer({
         // Parse frontmatter to extract metadata including terms
         const { content, metadata } = parseFrontmatter(markdown);
 
+        // Store the raw markdown content
+        setRawMarkdown(content);
+
+        // Extract title from metadata
+        setTitle(metadata.title || "");
+
         // Extract terms from metadata
         const definedTerms: Record<string, string> = metadata.terms || {};
         setTerms(definedTerms);
@@ -317,7 +668,17 @@ function MarkdownViewer({
         // Parse markdown to HTML using marked
         let parsed: string | Promise<string>;
         try {
+          console.log(
+            "Parsing markdown content:",
+            finalContent.substring(0, 200) + "..."
+          );
           parsed = marked.parse(finalContent);
+          console.log(
+            "Parsed HTML:",
+            typeof parsed === "string"
+              ? parsed.substring(0, 200) + "..."
+              : "Promise"
+          );
           if (parsed instanceof Promise) {
             parsed.then((htmlStr) => {
               // Apply image styles and replace Unigraph URLs
@@ -325,14 +686,38 @@ function MarkdownViewer({
                 ? applyImageStyles(htmlStr)
                 : htmlStr;
               const finalHtml = replaceUnigraphUrlsWithLocalhost(styledHtml);
-              setHtml(finalHtml);
+              // Fix relative image paths for docs
+              const fixedHtml = finalHtml.replace(
+                /src=["']\.\.\/assets\/images\/([^"']*)["']/gi,
+                'src="/docs/assets/images/$1"'
+              );
+              setHtml(fixedHtml);
               setLoading(false);
             });
           } else {
             // Apply image styles and replace Unigraph URLs
             const styledHtml = imageStyle ? applyImageStyles(parsed) : parsed;
             const finalHtml = replaceUnigraphUrlsWithLocalhost(styledHtml);
-            setHtml(finalHtml);
+            // Fix relative image paths for docs
+            const fixedHtml = finalHtml.replace(
+              /src=["']\.\.\/assets\/images\/([^"']*)["']/gi,
+              'src="/docs/assets/images/$1"'
+            );
+
+            // Post-process to ensure JSX in code blocks is not interpreted as React components
+            const processedHtml = fixedHtml.replace(
+              /<pre><code[^>]*class="[^"]*language-(tsx|jsx)[^"]*"[^>]*>/g,
+              (match) => {
+                // This ensures that JSX code blocks are treated as text, not as React components
+                return match;
+              }
+            );
+
+            // For now, let's keep it simple and just show the JSX as code
+            // The complex JSX parsing approach is too error-prone
+            // We can revisit this with a proper JSX parser library later
+
+            setHtml(processedHtml);
             setLoading(false);
           }
         } catch (parseError) {
@@ -522,40 +907,91 @@ function MarkdownViewer({
   }
 
   return (
-    <div className="markdown-container" style={{ position: "relative" }}>
-      <div
-        ref={contentRef}
-        className={`markdown-content ${excerpt ? "markdown-excerpt-no-fade" : ""}`}
-        style={excerpt ? { maxHeight: "400px", overflow: "hidden" } : {}}
-        dangerouslySetInnerHTML={{ __html: html }}
-        onClick={(e) => {
-          const target = e.target as HTMLElement;
-          if (target.classList.contains("defined-term")) {
-            const termText = target.getAttribute("data-term");
-            if (termText && terms[termText]) {
-              const rect = target.getBoundingClientRect();
-              const positionX = rect.left + rect.width / 2 + window.scrollX;
-              // Raise the popup 24px above the top of the term
-              const positionY = rect.top + window.scrollY - 24;
+    <div
+      className="markdown-container"
+      style={{
+        position: "relative",
+        height: "100%",
+      }}
+    >
+      {/* Title display */}
+      {title && !showRawMarkdown && (
+        <div className="markdown-title">
+          <h1>{title}</h1>
+        </div>
+      )}
 
-              // If the popup is already open for this term, close it
-              if (activeDefinition && activeDefinition.term === termText) {
-                setActiveDefinition(null);
-              } else {
-                setActiveDefinition({
-                  term: termText,
-                  definition: terms[termText],
-                  position: {
-                    x: positionX,
-                    y: positionY,
-                  },
-                  isDragging: false,
-                });
+      {/* Toggle button for raw markdown - only show when enabled */}
+      {showRawToggle && (
+        <button
+          onClick={() => setShowRawMarkdown(!showRawMarkdown)}
+          className={`markdown-toggle-button ${showRawMarkdown ? "active" : ""}`}
+          title={showRawMarkdown ? "Show rendered view" : "Show raw markdown"}
+          disabled={loading}
+        >
+          {showRawMarkdown ? "View markdown" : "View md text"}
+        </button>
+      )}
+      {showRawMarkdown ? (
+        <div ref={contentRef} className="markdown-content markdown-raw-view">
+          <Editor
+            language="markdown"
+            theme={isDarkMode ? "vs-dark" : "vs-light"}
+            value={rawMarkdown || "Loading raw markdown..."}
+            onChange={() => {}} // Read-only
+            loading="Loading editor..."
+            options={{
+              selectOnLineNumbers: true,
+              automaticLayout: true,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+              wordWrap: "on",
+              readOnly: true,
+              fontSize: 14,
+              fontFamily: "Monaco, 'Courier New', monospace",
+              lineNumbers: "on",
+              folding: true,
+              renderWhitespace: "selection",
+              tabSize: 2,
+            }}
+          />
+        </div>
+      ) : (
+        <div
+          ref={contentRef}
+          className={`markdown-content ${excerpt ? "markdown-excerpt-no-fade" : ""}`}
+          style={excerpt ? { maxHeight: "400px", overflow: "hidden" } : {}}
+          dangerouslySetInnerHTML={{ __html: html }}
+          onContextMenu={handleContextMenu}
+          onClick={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.classList.contains("defined-term")) {
+              const termText = target.getAttribute("data-term");
+              if (termText && terms[termText]) {
+                const rect = target.getBoundingClientRect();
+                const positionX = rect.left + rect.width / 2 + window.scrollX;
+                // Raise the popup 24px above the top of the term
+                const positionY = rect.top + window.scrollY - 24;
+
+                // If the popup is already open for this term, close it
+                if (activeDefinition && activeDefinition.term === termText) {
+                  setActiveDefinition(null);
+                } else {
+                  setActiveDefinition({
+                    term: termText,
+                    definition: terms[termText],
+                    position: {
+                      x: positionX,
+                      y: positionY,
+                    },
+                    isDragging: false,
+                  });
+                }
               }
             }
-          }
-        }}
-      />
+          }}
+        />
+      )}
 
       {activeDefinition &&
         createPortal(
@@ -564,6 +1000,18 @@ function MarkdownViewer({
             onClose={() => setActiveDefinition(null)}
             onMouseDown={handleMouseDown}
             popupRef={popupRef as React.RefObject<HTMLDivElement>}
+          />,
+          document.body
+        )}
+
+      {/* Render the context menu when position is available */}
+      {contextMenuPosition &&
+        createPortal(
+          <TextBasedContextMenu
+            position={contextMenuPosition}
+            selectedText={selectedText}
+            items={getContextMenuItems()}
+            onClose={() => setContextMenuPosition(null)}
           />,
           document.body
         )}

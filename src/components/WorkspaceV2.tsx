@@ -4,7 +4,7 @@ import useGraphInteractionStore, {
   getSelectedNodeId,
 } from "@/store/graphInteractionStore";
 import useWorkspaceConfigStore from "@/store/workspaceConfigStore";
-import { useWorkspace } from "@aesgraph/app-shell";
+import { getColor, useTheme, useWorkspace } from "@aesgraph/app-shell";
 import "@aesgraph/app-shell/app-shell.css";
 import React, { useState } from "react";
 import useDialogStore from "../store/dialogStore";
@@ -79,6 +79,7 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
   );
   const { setRightActiveSection } = useWorkspaceConfigStore();
   const { selectedNodeIds } = useGraphInteractionStore();
+  const { theme } = useTheme();
 
   const currentGraphName =
     currentSceneGraph?.getMetadata()?.name || "No Project Loaded";
@@ -249,7 +250,14 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
       </div>
 
       {/* Status Bar */}
-      <div className={styles.statusBar}>
+      <div
+        className={styles.statusBar}
+        style={{
+          backgroundColor: getColor(theme.colors, "workspaceTitleBackground"),
+          color: getColor(theme.colors, "workspaceTitleText"),
+          borderTop: `1px solid ${getColor(theme.colors, "border")}`,
+        }}
+      >
         <div className={styles.statusBarLeft}>
           <div
             className={styles.activeGraphButton}
@@ -257,9 +265,27 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             title="Click to load a different project"
+            style={{
+              backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+              color: getColor(theme.colors, "text"),
+            }}
           >
-            <span className={styles.activeGraphLabel}>Current Project:</span>
-            <span className={styles.activeGraphName}>{currentGraphName}</span>
+            <span
+              className={styles.activeGraphLabel}
+              style={{
+                color: getColor(theme.colors, "textSecondary"),
+              }}
+            >
+              Current Project:
+            </span>
+            <span
+              className={styles.activeGraphName}
+              style={{
+                color: getColor(theme.colors, "text"),
+              }}
+            >
+              {currentGraphName}
+            </span>
           </div>
 
           <div
@@ -267,17 +293,51 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
             onMouseEnter={handleWorkspaceMouseEnter}
             onMouseLeave={handleWorkspaceMouseLeave}
             title="Select workspace"
+            style={{
+              backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+              color: getColor(theme.colors, "text"),
+            }}
           >
-            <span className={styles.workspaceLabel}>Workspace:</span>
-            <span className={styles.workspaceName}>
+            <span
+              className={styles.workspaceLabel}
+              style={{
+                color: getColor(theme.colors, "textSecondary"),
+              }}
+            >
+              Workspace:
+            </span>
+            <span
+              className={styles.workspaceName}
+              style={{
+                color: getColor(theme.colors, "text"),
+              }}
+            >
               {currentWorkspace?.name || "Default"}
             </span>
           </div>
 
           {/* Selection Status */}
-          <div className={styles.selectionButton}>
-            <span className={styles.selectionLabel}>Selection:</span>
-            <span className={styles.selectionName}>
+          <div
+            className={styles.selectionButton}
+            style={{
+              backgroundColor: getColor(theme.colors, "backgroundSecondary"),
+              color: getColor(theme.colors, "text"),
+            }}
+          >
+            <span
+              className={styles.selectionLabel}
+              style={{
+                color: getColor(theme.colors, "textSecondary"),
+              }}
+            >
+              Selection:
+            </span>
+            <span
+              className={styles.selectionName}
+              style={{
+                color: getColor(theme.colors, "text"),
+              }}
+            >
               {(() => {
                 const selectedNodeId = getSelectedNodeId();
 
@@ -396,7 +456,12 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
             </div>
           )}
         </div>
-        <div className={styles.statusBarRight}>
+        <div
+          className={styles.statusBarRight}
+          style={{
+            color: getColor(theme.colors, "text"),
+          }}
+        >
           Ready • Unigraph • Scene Graph Loaded •{" "}
           {getCurrentSceneGraph().getMetadata().name
             ? "Graph Active"

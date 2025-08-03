@@ -38,6 +38,10 @@ export default defineConfig({
           dest: "",
         },
         {
+          src: "public/markdowns-structure.json",
+          dest: "",
+        },
+        {
           src: "docs/*",
           dest: "docs",
         },
