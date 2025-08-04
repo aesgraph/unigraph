@@ -11,7 +11,7 @@
           "type": "file",
           "name": "UnigraphChromeExtension.md",
           "title": "Unigraph Chrome Extension",
-          "order": 4
+          "order": 1
         },
         {
           "path": "unigraph/UnigraphOverview.md",
@@ -55,62 +55,93 @@
             {
               "path": "unigraph/capabilities/AnnotationTooling.md",
               "type": "file",
-              "name": "AnnotationTooling.md"
+              "name": "AnnotationTooling.md",
+              "title": "Annotation Tooling",
+              "order": 9
             },
             {
               "path": "unigraph/capabilities/AppLayoutManager.md",
               "type": "file",
-              "name": "AppLayoutManager.md"
+              "name": "AppLayoutManager.md",
+              "title": "App Layout Manager",
+              "order": 6
             },
             {
               "path": "unigraph/capabilities/ApplicationExtension.md",
               "type": "file",
-              "name": "ApplicationExtension.md"
+              "name": "ApplicationExtension.md",
+              "title": "Application Extension",
+              "order": 5
             },
             {
               "path": "unigraph/capabilities/CopilotIntegration.md",
               "type": "file",
-              "name": "CopilotIntegration.md"
+              "name": "CopilotIntegration.md",
+              "title": "Copilot Integration",
+              "order": 12
             },
             {
               "path": "unigraph/capabilities/DocumentEditing.md",
               "type": "file",
-              "name": "DocumentEditing.md"
+              "name": "DocumentEditing.md",
+              "title": "Document Editing",
+              "order": 7
             },
             {
               "path": "unigraph/capabilities/GraphConstruction.md",
               "type": "file",
-              "name": "GraphConstruction.md"
+              "name": "GraphConstruction.md",
+              "title": "Graph Construction",
+              "order": 1
             },
             {
               "path": "unigraph/capabilities/GraphFilters.md",
               "type": "file",
-              "name": "GraphFilters.md"
+              "name": "GraphFilters.md",
+              "title": "Graph Filters",
+              "order": 3
             },
             {
               "path": "unigraph/capabilities/GraphInterspection.md",
               "type": "file",
-              "name": "GraphInterspection.md"
+              "name": "GraphInterspection.md",
+              "title": "Graph Interspection",
+              "order": 4
             },
             {
               "path": "unigraph/capabilities/GraphLayouts.md",
               "type": "file",
-              "name": "GraphLayouts.md"
+              "name": "GraphLayouts.md",
+              "title": "Graph Layouts",
+              "order": 2
             },
             {
               "path": "unigraph/capabilities/ProjectManagement.md",
               "type": "file",
-              "name": "ProjectManagement.md"
+              "name": "ProjectManagement.md",
+              "title": "Project Management",
+              "order": 8
             },
             {
               "path": "unigraph/capabilities/SemanticWebQueryTool.md",
               "type": "file",
-              "name": "SemanticWebQueryTool.md"
+              "name": "SemanticWebQueryTool.md",
+              "title": "Semantic Web Query Tool",
+              "order": 11
             },
             {
               "path": "unigraph/capabilities/TypeTheoreticTooling.md",
               "type": "file",
-              "name": "TypeTheoreticTooling.md"
+              "name": "TypeTheoreticTooling.md",
+              "title": "Type Theoretic Tooling",
+              "order": 10
+            },
+            {
+              "path": "unigraph/capabilities/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Capabilities",
+              "order": 3
             }
           ]
         },
@@ -137,7 +168,7 @@
               "type": "file",
               "name": "index.md",
               "title": "Examples",
-              "order": 1
+              "order": 2
             },
             {
               "path": "unigraph/examples/knowledgeGraphOfAcademics.md",

@@ -1,7 +1,7 @@
 ---
 title: Unigraph Chrome Extension
 tags: ["documentation", "overview", "unigraph", "chrome", "extension"]
-order: 4
+order: 1
 ---
 
 The Unigraph Chrome Extension enables users to save, annotate, and connect information across the internet into personal knowledge graphs. Web content saved to Unigraph are first-class entities and immediately functional in Unigraph's powerful application ecosystem.

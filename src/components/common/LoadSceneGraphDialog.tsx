@@ -618,12 +618,23 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
                     className={styles.searchBar}
                     value={serverSearchTerm}
                     onChange={(e) => setServerSearchTerm(e.target.value)}
+                    style={{
+                      backgroundColor: getColor(
+                        theme.colors,
+                        "backgroundSecondary"
+                      ),
+                      color: getColor(theme.colors, "text"),
+                      border: `1px solid ${getColor(theme.colors, "border")}`,
+                    }}
                   />
                   <button
                     className={styles.toolbarIconButton}
                     onClick={loadServerProjects}
                     disabled={serverLoading}
                     title="Refresh projects"
+                    style={{
+                      color: getColor(theme.colors, "primary"),
+                    }}
                   >
                     <RefreshCw
                       size={20}

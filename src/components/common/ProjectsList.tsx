@@ -1,9 +1,6 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import type { ColDef } from "ag-grid-community";
-import {
-  AllCommunityModule,
-  ModuleRegistry,
-  themeBalham,
-} from "ag-grid-community";
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -43,6 +40,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   onRefresh,
   style = {},
 }) => {
+  const { theme } = useTheme();
   // Copy dialog state
   const [copyDialog, setCopyDialog] = useState<{
     projectId: string;
@@ -182,7 +180,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       <div
         style={{
           display: "flex",
-          gap: 12,
+          gap: 8,
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
@@ -195,11 +193,13 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: "#1976d2",
-            padding: 2,
+            color: getColor(theme.colors, "primary"),
+            padding: 4,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            borderRadius: "4px",
+            transition: "background-color 0.2s",
           }}
           onClick={(e) => {
             console.log("Export button clicked for project:", data?.id);
@@ -210,7 +210,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none">
             <path
               d="M12 16V4M12 16l-4-4m4 4l4-4M4 20h16"
-              stroke="#1976d2"
+              stroke={getColor(theme.colors, "primary")}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -223,8 +223,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: "#1976d2",
-            padding: 2,
+            color: getColor(theme.colors, "primary"),
+            padding: 4,
+            borderRadius: "4px",
+            transition: "background-color 0.2s",
           }}
           onClick={(e) => {
             console.log("Copy button clicked for project:", data?.id);
@@ -239,7 +241,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               width="13"
               height="13"
               rx="2"
-              stroke="#1976d2"
+              stroke={getColor(theme.colors, "primary")}
               strokeWidth="2"
             />
             <rect
@@ -248,7 +250,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               width="13"
               height="13"
               rx="2"
-              stroke="#1976d2"
+              stroke={getColor(theme.colors, "primary")}
               strokeWidth="2"
             />
           </svg>
@@ -259,8 +261,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: "#1976d2",
-            padding: 2,
+            color: getColor(theme.colors, "primary"),
+            padding: 4,
+            borderRadius: "4px",
+            transition: "background-color 0.2s",
           }}
           onClick={(e) => {
             console.log("Edit button clicked for project:", data?.id);
@@ -271,14 +275,14 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           <svg width={16} height={16} viewBox="0 0 24 24" fill="none">
             <path
               d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"
-              stroke="#1976d2"
+              stroke={getColor(theme.colors, "primary")}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"
-              stroke="#1976d2"
+              stroke={getColor(theme.colors, "primary")}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -291,8 +295,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: "#e11d48",
-            padding: 2,
+            color: getColor(theme.colors, "error"),
+            padding: 4,
+            borderRadius: "4px",
+            transition: "background-color 0.2s",
           }}
           onClick={(e) => {
             console.log("Delete button clicked for project:", data?.id);
@@ -307,12 +313,12 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
               width="14"
               height="14"
               rx="2"
-              stroke="#e11d48"
+              stroke={getColor(theme.colors, "error")}
               strokeWidth="2"
             />
             <path
               d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"
-              stroke="#e11d48"
+              stroke={getColor(theme.colors, "error")}
               strokeWidth="2"
             />
           </svg>
@@ -322,13 +328,29 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
   };
 
   const [colDefs] = useState<ColDef<ProjectRow>[]>([
-    { headerName: "Name", field: "name", flex: 1, filter: false },
-    { headerName: "Description", field: "description", flex: 2, filter: false },
+    {
+      headerName: "Name",
+      field: "name",
+      flex: 2,
+      minWidth: 150,
+      filter: false,
+      cellStyle: { padding: "8px 12px" },
+    },
+    {
+      headerName: "Description",
+      field: "description",
+      flex: 3,
+      minWidth: 200,
+      filter: false,
+      cellStyle: { padding: "8px 12px" },
+    },
     {
       headerName: "Last Updated",
       field: "last_updated_at",
-      flex: 1,
+      flex: 1.5,
+      minWidth: 140,
       filter: false,
+      cellStyle: { padding: "8px 12px" },
       valueFormatter: (params) =>
         params.value
           ? new Date(params.value as string).toLocaleString(undefined, {
@@ -349,8 +371,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
     {
       headerName: "Created",
       field: "created_at",
-      flex: 1,
+      flex: 1.5,
+      minWidth: 140,
       filter: false,
+      cellStyle: { padding: "8px 12px" },
       valueFormatter: (params) =>
         params.value
           ? new Date(params.value as string).toLocaleString(undefined, {
@@ -369,9 +393,9 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       },
     },
     {
-      headerName: "",
+      headerName: "Actions",
       flex: 1,
-      minWidth: 120,
+      minWidth: 140,
       maxWidth: 160,
       cellRenderer: ActionCellRenderer,
       sortable: false,
@@ -382,6 +406,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        padding: "8px 4px",
       },
     },
   ]);
@@ -420,23 +445,68 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         {`
         .projects-list-scrollbar {
           scrollbar-width: thin;
-          scrollbar-color: #d1d5db #f5f6fa;
+          scrollbar-color: ${getColor(theme.colors, "border")} ${getColor(theme.colors, "backgroundSecondary")};
         }
         .projects-list-scrollbar::-webkit-scrollbar {
           width: 10px;
-          background: #f5f6fa;
+          background: ${getColor(theme.colors, "backgroundSecondary")};
         }
         .projects-list-scrollbar::-webkit-scrollbar-thumb {
-          background: #d1d5db;
+          background: ${getColor(theme.colors, "border")};
           border-radius: 6px;
         }
         .projects-list-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #bfc7d1;
+          background: ${getColor(theme.colors, "textSecondary")};
+        }
+        
+        /* AG Grid theme overrides */
+        .ag-root-wrapper {
+          background-color: ${getColor(theme.colors, "background")} !important;
+          color: ${getColor(theme.colors, "text")} !important;
+        }
+        
+        .ag-header {
+          background-color: ${getColor(theme.colors, "surface")} !important;
+          color: ${getColor(theme.colors, "text")} !important;
+          border-bottom: 1px solid ${getColor(theme.colors, "border")} !important;
+        }
+        
+        .ag-header-cell {
+          background-color: ${getColor(theme.colors, "surface")} !important;
+          color: ${getColor(theme.colors, "text")} !important;
+          border-right: 1px solid ${getColor(theme.colors, "border")} !important;
+          padding: 8px 12px !important;
+        }
+        
+        .ag-header-cell:last-child {
+          border-right: none !important;
+        }
+        
+        .ag-row {
+          background-color: ${getColor(theme.colors, "background")} !important;
+          color: ${getColor(theme.colors, "text")} !important;
+          border-bottom: 1px solid ${getColor(theme.colors, "border")} !important;
+        }
+        
+        .ag-row:hover {
+          background-color: ${getColor(theme.colors, "backgroundSecondary")} !important;
+        }
+        
+        .ag-cell {
+          border-right: 1px solid ${getColor(theme.colors, "border")} !important;
+          padding: 8px 12px !important;
+        }
+        
+        .ag-cell:last-child {
+          border-right: none !important;
+        }
+        
+        .ag-cell-wrapper {
+          align-items: center !important;
         }
         `}
       </style>
       <AgGridReact
-        theme={themeBalham}
         rowData={projects}
         loadingOverlayComponentParams={{
           loadingMessage: "Loading projects...",
@@ -455,6 +525,8 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         getRowStyle={() => ({
           display: "flex",
           alignItems: "center",
+          backgroundColor: getColor(theme.colors, "background"),
+          color: getColor(theme.colors, "text"),
         })}
         onGridReady={(params) => {
           console.log("AG Grid ready with params:", params);
@@ -478,8 +550,8 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         }}
         overlayNoRowsTemplate={
           error
-            ? `<span style="color:red;">${error}</span>`
-            : `<span style="color:#888;">No projects found</span>`
+            ? `<span style="color:${getColor(theme.colors, "error")};">${error}</span>`
+            : `<span style="color:${getColor(theme.colors, "textSecondary")};">No projects found</span>`
         }
       />
 
@@ -502,7 +574,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           >
             <div
               style={{
-                background: "white",
+                background: getColor(theme.colors, "background"),
                 borderRadius: "8px",
                 padding: "32px",
                 display: "flex",
@@ -510,6 +582,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                 alignItems: "center",
                 gap: "16px",
                 minWidth: 120,
+                border: `1px solid ${getColor(theme.colors, "border")}`,
               }}
             >
               <svg
@@ -523,13 +596,19 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                   cy="25"
                   r="20"
                   fill="none"
-                  stroke="#1976d2"
+                  stroke={getColor(theme.colors, "primary")}
                   strokeWidth="5"
                   strokeDasharray="31.4 31.4"
                   strokeLinecap="round"
                 />
               </svg>
-              <div style={{ color: "#1976d2", fontWeight: 600, fontSize: 16 }}>
+              <div
+                style={{
+                  color: getColor(theme.colors, "primary"),
+                  fontWeight: 600,
+                  fontSize: 16,
+                }}
+              >
                 Copying project...
               </div>
             </div>
@@ -555,7 +634,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           >
             <div
               style={{
-                background: "white",
+                background: getColor(theme.colors, "background"),
                 borderRadius: "8px",
                 padding: "24px",
                 width: "400px",
@@ -563,6 +642,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 gap: "16px",
+                border: `1px solid ${getColor(theme.colors, "border")}`,
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -574,7 +654,15 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                   marginBottom: "8px",
                 }}
               >
-                <h3 style={{ margin: 0, fontSize: "18px" }}>Copy Project</h3>
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: "18px",
+                    color: getColor(theme.colors, "text"),
+                  }}
+                >
+                  Copy Project
+                </h3>
                 <button
                   onClick={handleCancelCopy}
                   style={{
@@ -618,7 +706,11 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                 >
                   <label
                     htmlFor="copy-name"
-                    style={{ fontWeight: 500, fontSize: "14px" }}
+                    style={{
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      color: getColor(theme.colors, "text"),
+                    }}
                   >
                     New Project Name:
                   </label>
@@ -634,9 +726,14 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                     placeholder="Enter new project name"
                     style={{
                       padding: "8px 12px",
-                      border: "1px solid #ddd",
+                      border: `1px solid ${getColor(theme.colors, "border")}`,
                       borderRadius: "4px",
                       fontSize: "14px",
+                      backgroundColor: getColor(
+                        theme.colors,
+                        "backgroundSecondary"
+                      ),
+                      color: getColor(theme.colors, "text"),
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -662,9 +759,9 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                   style={{
                     padding: "8px 16px",
                     fontSize: "14px",
-                    background: "#6c757d",
-                    color: "white",
-                    border: "none",
+                    background: getColor(theme.colors, "surface"),
+                    color: getColor(theme.colors, "text"),
+                    border: `1px solid ${getColor(theme.colors, "border")}`,
                     borderRadius: "4px",
                     cursor: "pointer",
                   }}
@@ -677,8 +774,8 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
                   style={{
                     padding: "8px 16px",
                     fontSize: "14px",
-                    background: "#007bff",
-                    color: "white",
+                    background: getColor(theme.colors, "primary"),
+                    color: getColor(theme.colors, "background"),
                     border: "none",
                     borderRadius: "4px",
                     cursor: copying ? "not-allowed" : "pointer",

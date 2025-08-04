@@ -64,7 +64,7 @@ It adheres to a Model-View-Controller (MVC) design pattern to maintain strict se
 Entities, fundamental units of information, are structured into graphs using nodes, edges, tags, and types that reference each other by id. This makes Unigraph graph objects composable to arbitrary complexity, where their parts are divisible and reusable across organizational scopes.
 
 **Display**
-Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph model, allowing for flexible customizations and multiple perspectives of the same underlying data that can be tailored to different needs and audiences.
+Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph model, allowing flexible customizations and multiple perspectives of the same underlying data that can be tailored to different needs and audiences.
 
 **Application Development**
 Unigraph implements an Entity Component System (ECS) that unifies data modeling, UI behavior, and state management under a single abstraction. New entity types, data, and application behaviors can be easily integrated into Unigraph using its Entity Component System.
