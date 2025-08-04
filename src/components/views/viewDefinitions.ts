@@ -180,11 +180,11 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
   },
   "markdown-editor": {
     id: "markdown-editor",
-    title: "Markdown Editor",
+    title: "Document Editor",
     icon: "📝",
     category: "editing",
     description:
-      "Live markdown editor with real-time preview, syntax highlighting, and file operations",
+      "Document editor supporting .md files (with Monaco) and .txt files (with Lexical), featuring real-time preview and syntax highlighting",
   },
 };
 

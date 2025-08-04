@@ -55,7 +55,11 @@ export interface FileTreeInstance {
   rootPath?: string;
   hideEmptyFolders?: boolean;
   onFileSelect?: (filePath: string, metadata?: Record<string, any>) => void;
-  onCreateDocument?: (title: string, parentId?: string) => Promise<void>;
+  onCreateDocument?: (
+    title: string,
+    parentId?: string,
+    extension?: string
+  ) => Promise<void>;
   onCreateFolder?: (title: string, parentId?: string) => Promise<void>;
   onRenameNode?: (
     filePath: string,
@@ -231,12 +235,34 @@ export default React.memo(
     const handleCreateDocument = async () => {
       if (!instance.onCreateDocument) return;
 
-      const title = prompt("Enter document title:");
-      if (!title) return;
+      const filename = prompt(
+        "Enter filename (with extension, e.g., 'document.md' or 'notes.txt'):"
+      );
+      if (!filename) return;
+
+      // Extract title and extension from filename
+      const lastDotIndex = filename.lastIndexOf(".");
+      let title = filename;
+      let extension = "txt"; // default to text
+
+      if (lastDotIndex > 0) {
+        title = filename.substring(0, lastDotIndex);
+        extension = filename.substring(lastDotIndex + 1).toLowerCase();
+
+        // Validate extension
+        if (!["md", "txt"].includes(extension)) {
+          alert("Please use either .md (markdown) or .txt (text) extension");
+          return;
+        }
+      } else {
+        // No extension provided, default to .txt
+        extension = "txt";
+        title = filename; // use the whole input as title
+      }
 
       setIsCreating(true);
       try {
-        await instance.onCreateDocument(title);
+        await instance.onCreateDocument(title, undefined, extension);
 
         // Fallback refresh after create operation
         console.log("Refreshing tree after document creation (header button)");
@@ -504,6 +530,7 @@ export default React.memo(
 
       const parentId = contextMenu.node.metadata?.documentId;
       let title: string | null = null;
+      let extension: string = "txt"; // default extension
 
       if (action === "delete") {
         const nodeName = contextMenu.node.displayName;
@@ -542,14 +569,41 @@ export default React.memo(
         // Close context menu immediately
         setContextMenu({ visible: false, x: 0, y: 0, node: null });
       } else {
-        title = prompt(`Enter ${action} name:`);
-        if (!title) return;
+        if (action === "document") {
+          const filename = prompt(
+            "Enter filename (with extension, e.g., 'document.md' or 'notes.txt'):"
+          );
+          if (!filename) return;
+
+          // Extract title and extension from filename
+          const lastDotIndex = filename.lastIndexOf(".");
+
+          if (lastDotIndex > 0) {
+            title = filename.substring(0, lastDotIndex);
+            extension = filename.substring(lastDotIndex + 1).toLowerCase();
+
+            // Validate extension
+            if (!["md", "txt"].includes(extension)) {
+              alert(
+                "Please use either .md (markdown) or .txt (text) extension"
+              );
+              return;
+            }
+          } else {
+            // No extension provided, default to .txt
+            extension = "txt";
+            title = filename; // use the whole input as title
+          }
+        } else {
+          title = prompt(`Enter ${action} name:`);
+          if (!title) return;
+        }
       }
 
       setIsCreating(true);
       try {
         if (action === "document" && instance.onCreateDocument) {
-          await instance.onCreateDocument(title!, parentId);
+          await instance.onCreateDocument(title!, parentId, extension);
 
           // Fallback refresh after create operation
           console.log("Refreshing tree after document creation");
@@ -692,11 +746,24 @@ export default React.memo(
             );
           }
 
+          // Helper function to generate displayName without duplicate extensions
+          const getDisplayName = (title: string, extension: string): string => {
+            if (isFolder) return title;
+
+            // Check if title already ends with the extension
+            const expectedExtension = `.${extension}`;
+            if (title.toLowerCase().endsWith(expectedExtension.toLowerCase())) {
+              return title; // Already has extension, don't add it again
+            }
+
+            return `${title}${expectedExtension}`;
+          };
+
           return {
             name: doc.title,
             path: `/documents/${doc.id}`,
             type: isFolder ? "directory" : "file",
-            displayName: doc.title,
+            displayName: getDisplayName(doc.title, doc.extension || ""),
             isExpanded: isFolder, // Folders start expanded
             metadata: {
               documentId: doc.id,
@@ -968,10 +1035,12 @@ export default React.memo(
               // Use metadata from structure file if available
               if (child.title) {
                 title = child.title;
-                displayName = title;
+                // Add extension to display name for clarity
+                const extension = name.split(".").pop() || "txt";
+                displayName = `${title}.${extension}`;
               } else {
-                // Fallback to filename
-                displayName = name.replace(".md", "");
+                // Fallback to filename (keep extension)
+                displayName = name;
               }
 
               // Use order from structure file if available
@@ -1115,24 +1184,13 @@ export default React.memo(
               const hasFiles = filteredChildren.some(
                 (child) => child.type === "file" || child.type === "directory"
               );
-              const shouldShow = hideEmptyFolders ? hasFiles : true;
 
-              console.log(
-                `Filtering directory ${node.name}: hasFiles=${hasFiles}, shouldShow=${shouldShow}, filteredChildren=${filteredChildren.length}`
-              );
-
-              if (matchesSearch && shouldShow && filteredChildren.length > 0) {
+              // Show directory if it matches search OR if it has matching children
+              if (matchesSearch || filteredChildren.length > 0) {
                 return {
                   ...node,
                   children: filteredChildren,
                   isExpanded: true, // Expand directories that match search
-                };
-              } else if (matchesSearch && !hideEmptyFolders) {
-                // Show directories even if empty when hideEmptyFolders is false
-                return {
-                  ...node,
-                  children: filteredChildren,
-                  isExpanded: true,
                 };
               }
               return null;

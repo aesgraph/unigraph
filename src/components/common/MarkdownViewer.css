@@ -382,15 +382,74 @@
 }
 
 /* Dark mode support for code blocks */
-@media (prefers-color-scheme: dark) {
-  .markdown-content pre {
-    background-color: #2d3748;
-    border-color: #4a5568;
-  }
+/* Force light colors for better contrast in dark themes */
+.markdown-content pre {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
 
-  .markdown-content pre code {
-    color: #e2e8f0;
-  }
+.markdown-content pre code {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* Override all syntax highlighting tokens to use light colors */
+.markdown-content pre code .token {
+  color: #ffffff !important;
+}
+
+.markdown-content pre code .token.comment {
+  color: #a8a8a8 !important;
+}
+
+.markdown-content pre code .token.punctuation {
+  color: #d4d4d4 !important;
+}
+
+.markdown-content pre code .token.property,
+.markdown-content pre code .token.tag,
+.markdown-content pre code .token.boolean,
+.markdown-content pre code .token.number,
+.markdown-content pre code .token.constant,
+.markdown-content pre code .token.symbol {
+  color: #b5cea8 !important;
+}
+
+.markdown-content pre code .token.selector,
+.markdown-content pre code .token.attr-name,
+.markdown-content pre code .token.string,
+.markdown-content pre code .token.char,
+.markdown-content pre code .token.builtin {
+  color: #ce9178 !important;
+}
+
+.markdown-content pre code .token.operator,
+.markdown-content pre code .token.entity,
+.markdown-content pre code .token.url {
+  color: #d4d4d4 !important;
+}
+
+.markdown-content pre code .token.atrule,
+.markdown-content pre code .token.attr-value {
+  color: #ce9178 !important;
+}
+
+.markdown-content pre code .token.keyword {
+  color: #569cd6 !important;
+}
+
+.markdown-content pre code .token.function {
+  color: #dcdcaa !important;
+}
+
+.markdown-content pre code .token.class-name {
+  color: #4ec9b0 !important;
+}
+
+.markdown-content pre code .token.regex,
+.markdown-content pre code .token.important,
+.markdown-content pre code .token.variable {
+  color: #d16969 !important;
 }
 
 /* Prevent React component rendering in code blocks */

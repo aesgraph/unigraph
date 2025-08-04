@@ -34,6 +34,7 @@ import {
 import { debounce, throttle } from "lodash";
 import React, { JSX, useEffect, useState } from "react";
 // Add this import
+import { getDocument } from "../../../api/documentsApi";
 import { NodeId } from "../../../core/model/Node";
 import useAppConfigStore, {
   getCurrentSceneGraph,
@@ -56,21 +57,34 @@ const PlaceholderPlugin = ({
   return <div className="editor-placeholder">{placeholder}</div>;
 };
 
-// Fix the EditorStateInitializer to run only once on mount
+// Fix the EditorStateInitializer to run only once on mount, unless forceUpdate is true
 const EditorStateInitializer: React.FC<{
   savedState: string | null;
   content: string;
-}> = ({ savedState, content }) => {
+  forceUpdate?: boolean;
+}> = ({ savedState, content, forceUpdate = false }) => {
   const [editor] = useLexicalComposerContext();
   const hasInitialized = React.useRef(false);
+  const lastContent = React.useRef<string>("");
 
   useEffect(() => {
-    // Only initialize once when component mounts
-    if (hasInitialized.current) {
+    // Only initialize once when component mounts, unless forceUpdate is true
+    // or the content has changed when forceUpdate is enabled
+    if (
+      hasInitialized.current &&
+      (!forceUpdate || lastContent.current === content)
+    ) {
       return;
     }
 
     hasInitialized.current = true;
+    lastContent.current = content;
+    console.log(
+      "EditorStateInitializer: Initializing with content length:",
+      content.length,
+      "forceUpdate:",
+      forceUpdate
+    );
 
     if (savedState) {
       try {
@@ -112,7 +126,7 @@ const EditorStateInitializer: React.FC<{
         }
       });
     }
-  }, [content, editor, savedState]); // Only depend on editor, not savedState or content
+  }, [content, editor, savedState, forceUpdate]); // Include forceUpdate in dependencies
 
   return null;
 };
@@ -270,11 +284,13 @@ function ContextMenuPlugin(): JSX.Element | null {
 
 interface LexicalEditorProps {
   id?: string; // Add an ID prop to identify this editor instance
+  documentId?: string | null; // Document ID to load content from server
   initialContent?: string;
   onChange?: (markdown: string, html?: string) => void;
   showPreview?: boolean;
   onSave?: (content: string, tags?: string[]) => void;
   autoSaveInterval?: number; // Add this new prop
+  ignoreCache?: boolean; // When true, ignore localStorage and use server content
 }
 
 // Create a debounced save function that we'll use later
@@ -302,23 +318,93 @@ const createSaveState = (storageKey: string, stateStorageKey: string) => {
 
 const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
   id = "default-editor", // Default ID if none provided
+  documentId = null, // Document ID to load content from server
   initialContent = "",
   onChange,
   onSave,
   autoSaveInterval = 5000, // Default autosave interval of 5 seconds
+  ignoreCache = false, // Default to false to maintain existing behavior
 }) => {
+  console.log("LexicalEditorV2: Component initialized with props:", {
+    id,
+    documentId,
+    ignoreCache,
+    initialContentLength: initialContent.length,
+  });
   // Use a stable storage key based on the provided ID
   const storageKey = `lexical-editor-content-${id}`;
   const stateStorageKey = `lexical-editor-state-${id}`;
 
   const { updateDocument, getDocumentByNodeId } = useDocumentStore();
 
+  // Simple hash function for content
+  const hashContent = (content: string): string => {
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString();
+  };
+
   // Load content with proper precedence:
-  // 1. First try localStorage (for persistence between sessions)
-  // 2. Then try documentStore (for application state)
-  // 3. Fall back to initialContent prop
+  // If documentId is provided: Load from server
+  // If ignoreCache is true: Use initialContent directly (for server-managed content)
+  // Otherwise: 1. First try localStorage (for persistence between sessions)
+  //            2. Then try documentStore (for application state)
+  //            3. Fall back to initialContent prop
+  const [serverContent, setServerContent] = useState<string | null>(null);
+  const [isLoadingServer, setIsLoadingServer] = useState(false);
+
+  // Load content from server when documentId is provided
+  useEffect(() => {
+    if (documentId && ignoreCache) {
+      setIsLoadingServer(true);
+      getDocument(documentId)
+        .then((document) => {
+          console.log("LexicalEditor: Loaded content from server:", {
+            documentId,
+            contentLength: (document.content || "").length,
+          });
+          setServerContent(document.content || "");
+        })
+        .catch((error) => {
+          console.error("LexicalEditor: Error loading document:", error);
+          setServerContent("");
+        })
+        .finally(() => {
+          setIsLoadingServer(false);
+        });
+    } else {
+      setServerContent(null);
+    }
+  }, [documentId, ignoreCache]);
+
   const initialData = React.useMemo(() => {
     try {
+      // If we have server content, use it
+      if (serverContent !== null) {
+        console.log(
+          "Using server content for:",
+          id,
+          "content length:",
+          serverContent.length
+        );
+        return { content: serverContent, state: null };
+      }
+
+      // If ignoreCache is true, prioritize initialContent
+      if (ignoreCache) {
+        console.log(
+          "Ignoring cache, using initialContent for:",
+          id,
+          "content length:",
+          initialContent.length
+        );
+        return { content: initialContent, state: null };
+      }
+
       // First try localStorage
       const savedContent = localStorage.getItem(storageKey);
       const savedState = localStorage.getItem(stateStorageKey);
@@ -358,7 +444,15 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
       console.warn("Error loading content:", e);
       return { content: initialContent, state: null };
     }
-  }, [id, initialContent, storageKey, stateStorageKey, getDocumentByNodeId]);
+  }, [
+    id,
+    initialContent,
+    storageKey,
+    stateStorageKey,
+    getDocumentByNodeId,
+    ignoreCache,
+    serverContent,
+  ]);
 
   // Capture the initial state value in a ref so it doesn't change
   const initialStateRef = React.useRef(initialData.state);
@@ -372,20 +466,26 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
   // Move these outside of the render function to prevent recreation
   const saveContent = React.useRef(
     throttle((content: string) => {
-      try {
-        localStorage.setItem(storageKey, content);
-      } catch (e) {
-        console.warn("Failed to save content to localStorage:", e);
+      // Only save to localStorage if not ignoring cache
+      if (!ignoreCache) {
+        try {
+          localStorage.setItem(storageKey, content);
+        } catch (e) {
+          console.warn("Failed to save content to localStorage:", e);
+        }
       }
     }, 2000)
   ).current;
 
   const saveState = React.useRef(
     debounce((state: string) => {
-      try {
-        localStorage.setItem(stateStorageKey, state);
-      } catch (e) {
-        console.warn("Failed to save state to localStorage:", e);
+      // Only save to localStorage if not ignoring cache
+      if (!ignoreCache) {
+        try {
+          localStorage.setItem(stateStorageKey, state);
+        } catch (e) {
+          console.warn("Failed to save state to localStorage:", e);
+        }
       }
     }, 3000)
   ).current;
@@ -397,27 +497,68 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
     initialData.state
   );
 
+  // Server saving function for documents
+  const saveToServer = React.useMemo(
+    () =>
+      debounce(async (content: string) => {
+        if (documentId && ignoreCache) {
+          try {
+            console.log("LexicalEditor: Saving to server:", {
+              documentId,
+              contentLength: content.length,
+            });
+            await updateDocument({
+              id: documentId,
+              content: content,
+            });
+            console.log("LexicalEditor: Successfully saved to server");
+          } catch (error) {
+            console.error("LexicalEditor: Error saving to server:", error);
+          }
+        }
+      }, 2000), // 2 second debounce for server saves
+    [documentId, ignoreCache, updateDocument]
+  );
+
   // These are still needed for UI updates
   const [markdown, setMarkdown] = useState(initialData.content);
   const [editorState, setEditorState] = useState<EditorState | null>(null);
   const [tags, setTags] = useState<string[]>([]);
 
-  // Unified save function that saves to all storage locations
+  // Unified save function that saves to appropriate storage locations
   const saveToAllStorages = React.useCallback(
     (content: string, serializedEditorState: string, currentTags: string[]) => {
-      // 1. Save to localStorage
-      localStorage.setItem(storageKey, content);
-      localStorage.setItem(stateStorageKey, serializedEditorState);
+      console.log("LexicalEditor: saveToAllStorages called:", {
+        ignoreCache,
+        documentId,
+        contentLength: content.length,
+      });
 
-      // 2. Save to documentStore
-      updateDocument(id as NodeId, content, serializedEditorState, currentTags);
+      if (ignoreCache && documentId) {
+        // When ignoreCache=true, save to server instead of localStorage
+        console.log("LexicalEditor: Triggering server save");
+        saveToServer(content);
+      } else {
+        // Legacy behavior: save to localStorage and document store
+        localStorage.setItem(storageKey, content);
+        localStorage.setItem(stateStorageKey, serializedEditorState);
 
-      // 3. Save to SceneGraph
-      const currentSceneGraph = getCurrentSceneGraph();
-      if (currentSceneGraph) {
-        const document = getDocumentByNodeId(id as NodeId);
-        if (document) {
-          currentSceneGraph.setDocument(id as NodeId, document);
+        // Save to documentStore (for app's internal state)
+        const { updateDocument: updateDocStore } = useDocumentStore.getState();
+        updateDocStore(
+          id as NodeId,
+          content,
+          serializedEditorState,
+          currentTags
+        );
+
+        // Save to SceneGraph
+        const currentSceneGraph = getCurrentSceneGraph();
+        if (currentSceneGraph) {
+          const document = getDocumentByNodeId(id as NodeId);
+          if (document) {
+            currentSceneGraph.setDocument(id as NodeId, document);
+          }
         }
       }
 
@@ -425,7 +566,15 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
       const timestamp = new Date().toLocaleTimeString();
       setAutosaveStatus(`Last saved at ${timestamp}`);
     },
-    [id, storageKey, stateStorageKey, updateDocument, getDocumentByNodeId]
+    [
+      id,
+      storageKey,
+      stateStorageKey,
+      getDocumentByNodeId,
+      ignoreCache,
+      documentId,
+      saveToServer,
+    ]
   );
 
   // Optimize change handler
@@ -443,12 +592,21 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
         markdownRef.current = textContent;
         serializedEditorStateRef.current = serializedState;
 
+        // Debug logging
+        console.log("LexicalEditor: Content changed:", {
+          textLength: textContent.length,
+          ignoreCache,
+          documentId,
+          preview: textContent.substring(0, 50) + "...",
+        });
+
         // Throttled storage updates
         // saveContent(textContent);
         // saveState(serializedState);
 
         // Update document store and SceneGraph with debouncing
         const debouncedSave = debounce(() => {
+          console.log("LexicalEditor: Calling saveToAllStorages");
           saveToAllStorages(textContent, serializedState, tagsRef.current);
         }, 1000);
         debouncedSave();
@@ -689,7 +847,14 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
       )}
 
       <div className="lexical-content">
-        <LexicalComposer initialConfig={initialConfig}>
+        <LexicalComposer
+          key={
+            ignoreCache
+              ? `${id}-${hashContent(serverContent || initialContent)}`
+              : id
+          }
+          initialConfig={initialConfig}
+        >
           <div className="editor-wrapper">
             <div className="toolbar-container">
               <ToolbarPlugin onSave={handleSave} onExport={handleExport} />
@@ -714,8 +879,13 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
 
               {/* Add our EditorStateInitializer to properly set initial content */}
               <EditorStateInitializer
-                savedState={initialStateRef.current}
-                content={initialContentRef.current}
+                savedState={ignoreCache ? null : initialStateRef.current}
+                content={
+                  ignoreCache
+                    ? serverContent || initialContent
+                    : initialContentRef.current
+                }
+                forceUpdate={ignoreCache}
               />
               <HistoryPlugin />
               <AutoFocusPlugin />
@@ -731,12 +901,14 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
               {/* Replace OnChangePlugin with our optimized version */}
               <CustomOnChangePlugin onChange={handleEditorChange} />
 
-              {/* Add the AutoSavePlugin */}
-              <AutoSavePlugin
-                saveContent={saveDocumentToLocalStorageNow}
-                saveState={saveStateNow}
-                interval={autoSaveInterval}
-              />
+              {/* Add the AutoSavePlugin - only when not ignoring cache */}
+              {!ignoreCache && (
+                <AutoSavePlugin
+                  saveContent={saveDocumentToLocalStorageNow}
+                  saveState={saveStateNow}
+                  interval={autoSaveInterval}
+                />
+              )}
 
               <MentionsPlugin />
 

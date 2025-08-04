@@ -222,16 +222,39 @@
 }
 
 /* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-  .documentation-content .markdown-content code {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+/* Dark theme styles for documentation content */
+.documentation-content .markdown-content code {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: 0.9em;
+  font-weight: 500;
+}
 
-  .documentation-content .markdown-content pre {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+.documentation-content .markdown-content pre {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
 
-  .documentation-content .markdown-content blockquote {
-    border-left-color: rgba(255, 255, 255, 0.2);
-  }
+.documentation-content .markdown-content pre code {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.documentation-content .markdown-content blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: var(--text-secondary);
+  font-style: italic;
 }

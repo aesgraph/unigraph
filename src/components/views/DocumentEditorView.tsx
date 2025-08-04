@@ -1,14 +1,15 @@
 import { getColor, useTheme } from "@aesgraph/app-shell";
 import Editor from "@monaco-editor/react";
-import { Box, Divider, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { debounce } from "lodash";
 import {
+  Download,
   Eye,
   EyeOff,
   FileText,
   FolderOpen,
   Save,
   Search,
-  Upload,
 } from "lucide-react";
 import React, {
   useCallback,
@@ -25,7 +26,7 @@ import {
   updateDocument,
 } from "../../api/documentsApi";
 import { addNotification } from "../../store/notificationStore";
-import LexicalEditorV2 from "../applets/Lexical/LexicalEditor";
+import LexicalEditorV3 from "../applets/Lexical/LexicalEditorV3";
 import DocumentContentSearch, {
   DocumentSearchResult,
 } from "../common/DocumentContentSearch";
@@ -76,16 +77,17 @@ interface DocumentEditorViewProps {
   projectId?: string;
 }
 
-const defaultMarkdownContent = `# Welcome to Markdown Editor
+const defaultMarkdownContent = `# Welcome to Document Editor
 
-This is a live markdown editor with preview capabilities.
+This is a document editor that supports both markdown (.md) and text (.txt) files.
 
 ## Features
 
-- **Live Preview**: See your markdown rendered in real-time
-- **Syntax Highlighting**: Full markdown syntax support
-- **File Operations**: Save and load markdown files
-- **Split View**: Edit and preview side by side
+- **Multi-format Support**: Edit .md files (with Monaco) and .txt files (with Lexical)
+- **Live Preview**: See your markdown rendered in real-time (for .md files)
+- **Syntax Highlighting**: Full markdown syntax support (for .md files)
+- **Rich Text Editing**: Advanced text editing features (for .txt files)
+- **File Operations**: Save and load documents with proper extensions
 
 ## Getting Started
 
@@ -126,63 +128,398 @@ const getFileType = (filename: string): "markdown" | "text" => {
   return extension === "txt" ? "text" : "markdown";
 };
 
+// Monaco Document Editor component with smooth content switching
+const MonacoDocumentEditor: React.FC<{
+  filename: string;
+  documentId: string | null;
+  theme: string;
+  onLastSavedChange: (date: Date | null) => void;
+  showPreview?: boolean;
+  onTogglePreview?: () => void;
+}> = ({
+  filename: _filename,
+  documentId,
+  theme,
+  onLastSavedChange,
+  showPreview = false,
+  onTogglePreview,
+}) => {
+  const [content, setContent] = useState("");
+  const [_isLoading, setIsLoading] = useState(false);
+  const [splitterWidth, setSplitterWidth] = useState(400);
+
+  // Use refs to avoid stale closures in debounced functions
+  const contentRef = React.useRef<string>("");
+
+  // Load content from server with smooth transitions
+  useEffect(() => {
+    if (!documentId) return;
+
+    // Load from server but keep current content visible
+    setIsLoading(true);
+    getDocument(documentId)
+      .then((document) => {
+        const documentContent = document.content || "";
+        console.log("MonacoEditor: Loaded content from server:", {
+          documentId,
+          contentLength: documentContent.length,
+        });
+
+        // Only update content once it's loaded (no flash)
+        setContent(documentContent);
+        contentRef.current = documentContent;
+      })
+      .catch((error) => {
+        console.error("MonacoEditor: Error loading document:", error);
+        // Don't clear content on error - keep current content visible
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [documentId]);
+
+  // Debounced save function
+  const saveToServer = React.useMemo(
+    () =>
+      debounce(async (contentToSave: string) => {
+        if (!documentId) return;
+
+        try {
+          console.log("MonacoEditor: Saving to server:", {
+            documentId,
+            contentLength: contentToSave.length,
+          });
+
+          await updateDocument({
+            id: documentId,
+            content: contentToSave,
+          });
+
+          const now = new Date();
+          onLastSavedChange(now); // Update parent component
+          console.log(
+            "MonacoEditor: Successfully saved to server at",
+            now.toLocaleTimeString()
+          );
+        } catch (error) {
+          console.error("MonacoEditor: Error saving to server:", error);
+        }
+      }, 500), // 0.5 second debounce
+    [documentId, onLastSavedChange]
+  );
+
+  // Handle content changes
+  const handleContentChange = React.useCallback(
+    (value: string | undefined) => {
+      const newContent = value || "";
+      const previousContent = contentRef.current;
+
+      setContent(newContent);
+      contentRef.current = newContent;
+
+      // Only save if content actually changed
+      if (newContent !== previousContent) {
+        console.log("MonacoEditor: Content changed:", {
+          contentLength: newContent.length,
+          preview: newContent.substring(0, 50) + "...",
+        });
+
+        // Trigger autosave
+        saveToServer(newContent);
+      }
+    },
+    [saveToServer]
+  );
+
+  // Save on unmount
+  useEffect(() => {
+    return () => {
+      console.log("MonacoEditor: Component unmounting, forcing save");
+      saveToServer.flush();
+    };
+  }, [saveToServer]);
+
+  // Don't show loading state - keep previous content visible while loading new content
+
+  // Handle save button click
+  const handleSave = React.useCallback(() => {
+    if (content) {
+      saveToServer(content);
+    }
+  }, [content, saveToServer]);
+
+  // Handle download button click
+  const handleDownload = React.useCallback(() => {
+    if (content) {
+      const blob = new Blob([content], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+
+      // Use the filename as-is, don't add .md if it already has an extension
+      const downloadName =
+        _filename && _filename.includes(".")
+          ? _filename
+          : `${_filename || "document"}.md`;
+
+      a.download = downloadName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  }, [content, _filename]);
+
+  return (
+    <div style={{ position: "relative", height: "100%" }}>
+      {showPreview ? (
+        // Side-by-side layout with splitter
+        <ResizableSplitter
+          leftPanel={
+            <div style={{ position: "relative", height: "100%" }}>
+              {/* Toolbar */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  zIndex: 10,
+                  display: "flex",
+                  gap: "8px",
+                  padding: "8px",
+                  backgroundColor: "transparent",
+                  margin: "8px",
+                }}
+              >
+                <button
+                  onClick={handleSave}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "8px",
+                    border: "none",
+                    outline: "none",
+                    borderRadius: "4px",
+                    backgroundColor: "transparent",
+                    color: "var(--color-text)",
+                    cursor: "pointer",
+                  }}
+                  title="Save document"
+                >
+                  <Save size={16} />
+                </button>
+                <button
+                  onClick={handleDownload}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "8px",
+                    border: "none",
+                    outline: "none",
+                    borderRadius: "4px",
+                    backgroundColor: "transparent",
+                    color: "var(--color-text)",
+                    cursor: "pointer",
+                  }}
+                  title="Download as Markdown"
+                >
+                  <Download size={16} />
+                </button>
+                {onTogglePreview && (
+                  <button
+                    onClick={onTogglePreview}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "8px",
+                      border: "none",
+                      outline: "none",
+                      borderRadius: "4px",
+                      backgroundColor: "transparent",
+                      color: "var(--color-text)",
+                      cursor: "pointer",
+                    }}
+                    title={showPreview ? "Hide preview" : "Show preview"}
+                  >
+                    {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                )}
+              </div>
+              <Editor
+                height="100%"
+                language="markdown"
+                value={content}
+                onChange={handleContentChange}
+                theme={theme}
+                options={{
+                  minimap: { enabled: false },
+                  lineNumbers: "on",
+                  wordWrap: "on",
+                  fontSize: 14,
+                  fontFamily:
+                    "Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+                  padding: { top: 16, bottom: 16 },
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  tabSize: 2,
+                  insertSpaces: true,
+                  renderWhitespace: "selection",
+                  bracketPairColorization: { enabled: true },
+                  suggest: {
+                    showKeywords: false,
+                    showSnippets: false,
+                  },
+                }}
+              />
+            </div>
+          }
+          rightPanel={
+            <div
+              style={{
+                height: "100%",
+                overflow: "auto",
+                padding: "16px",
+              }}
+              className="documentation-content"
+            >
+              <MarkdownViewer
+                filename="preview.md"
+                overrideMarkdown={content}
+              />
+            </div>
+          }
+          leftPanelWidth={splitterWidth}
+          onWidthChange={setSplitterWidth}
+          minLeftWidth={200}
+          maxLeftWidth={800}
+          splitterWidth={6}
+        />
+      ) : (
+        // Single editor layout
+        <div style={{ position: "relative", height: "100%" }}>
+          {/* Toolbar */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              zIndex: 10,
+              display: "flex",
+              gap: "8px",
+              padding: "8px",
+              backgroundColor: "transparent",
+              margin: "8px",
+            }}
+          >
+            <button
+              onClick={handleSave}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "8px",
+                border: "none",
+                outline: "none",
+                borderRadius: "4px",
+                backgroundColor: "transparent",
+                color: "var(--color-text)",
+                cursor: "pointer",
+              }}
+              title="Save document"
+            >
+              <Save size={16} />
+            </button>
+            <button
+              onClick={handleDownload}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "8px",
+                border: "none",
+                outline: "none",
+                borderRadius: "4px",
+                backgroundColor: "transparent",
+                color: "var(--color-text)",
+                cursor: "pointer",
+              }}
+              title="Download as Markdown"
+            >
+              <Download size={16} />
+            </button>
+            {onTogglePreview && (
+              <button
+                onClick={onTogglePreview}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "8px",
+                  border: "none",
+                  outline: "none",
+                  borderRadius: "4px",
+                  backgroundColor: "transparent",
+                  color: "var(--color-text)",
+                  cursor: "pointer",
+                }}
+                title={showPreview ? "Hide preview" : "Show preview"}
+              >
+                {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            )}
+          </div>
+          <Editor
+            height="100%"
+            language="markdown"
+            value={content}
+            onChange={handleContentChange}
+            theme={theme}
+            options={{
+              minimap: { enabled: false },
+              lineNumbers: "on",
+              wordWrap: "on",
+              fontSize: 14,
+              fontFamily:
+                "Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+              padding: { top: 16, bottom: 16 },
+              scrollBeyondLastLine: false,
+              automaticLayout: true,
+              tabSize: 2,
+              insertSpaces: true,
+              renderWhitespace: "selection",
+              bracketPairColorization: { enabled: true },
+              suggest: {
+                showKeywords: false,
+                showSnippets: false,
+              },
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const DocumentEditorContent: React.FC<{
   selectedFile: string;
-  content: string;
-  onContentUpdate: (content: string) => void;
+  selectedFilename: string;
+  documentId: string | null;
   showPreview: boolean;
   onTogglePreview: () => void;
-  onSave: () => void;
-  onLoad: () => void;
   theme: any;
-  hasUnsavedChanges: boolean;
-  isSaving: boolean;
-  lastSaved: Date | null;
+  onLastSavedChange: (date: Date | null) => void;
 }> = ({
   selectedFile,
-  content,
-  onContentUpdate,
+  selectedFilename,
+  documentId,
   showPreview,
-  onTogglePreview,
-  onSave,
-  onLoad,
+  onTogglePreview: _onTogglePreview,
   theme,
-  hasUnsavedChanges,
-  isSaving,
-  lastSaved: _lastSaved,
+  onLastSavedChange,
 }) => {
-  const [localContent, setLocalContent] = useState(content);
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isUpdatingFromUserRef = useRef(false);
-
-  // Update local content immediately for responsive typing
-  const handleChange = (value: string | undefined) => {
-    const newValue = value || "";
-    setLocalContent(newValue);
-    isUpdatingFromUserRef.current = true;
-
-    // Debounce the parent update to reduce expensive operations
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      onContentUpdate(newValue);
-      // Reset the flag after the parent update
-      setTimeout(() => {
-        isUpdatingFromUserRef.current = false;
-      }, 50);
-    }, 300); // 300ms debounce
-  };
-
-  // Sync with parent content when it changes externally (e.g., file switching)
-  // But avoid syncing when the change is from our own typing
-  useEffect(() => {
-    if (!isUpdatingFromUserRef.current && content !== localContent) {
-      setLocalContent(content);
-    }
-  }, [content, localContent]);
-
   // Determine Monaco theme based on app shell background color luminance
   const getMonacoTheme = () => {
     const backgroundColor = getColor(theme.colors, "background");
@@ -236,95 +573,22 @@ const DocumentEditorContent: React.FC<{
     return luminance < 0.1 ? "vs-dark" : "vs";
   };
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-    };
-  }, []);
-
   // Determine file type and editor to use
-  const fileType = getFileType(selectedFile);
+  const filename = selectedFilename || "";
+  const fileType = getFileType(filename);
   const isTextFile = fileType === "text";
+
+  // Debug logging
+  console.log("DocumentEditorContent: File type detection:", {
+    selectedFile,
+    selectedFilename,
+    filename,
+    fileType,
+    isTextFile,
+  });
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", height: "100%" }}>
-      {/* Toolbar - Hidden */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          zIndex: 10,
-          display: "none", // Hide the toolbar
-          gap: 1,
-          backgroundColor: getColor(theme.colors, "surface"),
-          border: `1px solid ${getColor(theme.colors, "border")}`,
-          borderRadius: 1,
-          padding: 0.5,
-        }}
-      >
-        <Tooltip title="Toggle Preview">
-          <IconButton
-            size="small"
-            onClick={onTogglePreview}
-            sx={{
-              color: getColor(theme.colors, "text"),
-              "&:hover": {
-                backgroundColor: getColor(theme.colors, "surfaceHover"),
-              },
-            }}
-          >
-            {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          title={
-            hasUnsavedChanges ? "Save Changes (Ctrl+S)" : "No Changes to Save"
-          }
-        >
-          <IconButton
-            size="small"
-            onClick={onSave}
-            disabled={!hasUnsavedChanges || isSaving}
-            sx={{
-              color: hasUnsavedChanges
-                ? getColor(theme.colors, "primary")
-                : getColor(theme.colors, "textSecondary"),
-              "&:hover": {
-                backgroundColor: getColor(theme.colors, "surfaceHover"),
-              },
-              "&:disabled": {
-                color: getColor(theme.colors, "textSecondary"),
-                opacity: 0.5,
-              },
-            }}
-          >
-            {isSaving ? (
-              <Upload size={16} className="animate-spin" />
-            ) : (
-              <Save size={16} />
-            )}
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Load File">
-          <IconButton
-            size="small"
-            onClick={onLoad}
-            sx={{
-              color: getColor(theme.colors, "text"),
-              "&:hover": {
-                backgroundColor: getColor(theme.colors, "surfaceHover"),
-              },
-            }}
-          >
-            <Upload size={16} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-
       {/* Editor */}
       <Box
         sx={{
@@ -335,99 +599,60 @@ const DocumentEditorContent: React.FC<{
         }}
       >
         {isTextFile ? (
-          // Lexical Editor for .txt files
-          <LexicalEditorV2
-            id={selectedFile}
-            initialContent={localContent}
-            onChange={(content) => {
-              setLocalContent(content);
-              isUpdatingFromUserRef.current = true;
-
-              if (debounceTimeoutRef.current) {
-                clearTimeout(debounceTimeoutRef.current);
-              }
-
-              debounceTimeoutRef.current = setTimeout(() => {
-                onContentUpdate(content);
-                setTimeout(() => {
-                  isUpdatingFromUserRef.current = false;
-                }, 50);
-              }, 300);
-            }}
-          />
+          documentId ? (
+            // Lexical Editor for .txt files - loads its own content
+            (() => {
+              console.log(
+                "DocumentEditorView: Rendering LexicalEditorV3 with props:",
+                {
+                  documentId,
+                }
+              );
+              return (
+                <LexicalEditorV3
+                  documentId={documentId}
+                  onLastSavedChange={onLastSavedChange}
+                />
+              );
+            })()
+          ) : (
+            <div>No document selected</div>
+          )
         ) : (
-          // Monaco Editor for .md files
-          <Editor
-            height="100%"
-            language="markdown"
-            value={localContent}
-            onChange={handleChange}
+          // Monaco Editor for .md files - loads its own content
+          <MonacoDocumentEditor
+            filename={selectedFile}
+            documentId={documentId}
             theme={getMonacoTheme()}
-            options={{
-              minimap: { enabled: false },
-              lineNumbers: "on",
-              wordWrap: "on",
-              fontSize: 14,
-              fontFamily:
-                "Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-              padding: { top: 16, bottom: 16 },
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              tabSize: 2,
-              insertSpaces: true,
-              renderWhitespace: "selection",
-              bracketPairColorization: { enabled: true },
-              suggest: {
-                showKeywords: false,
-                showSnippets: false,
-              },
-            }}
+            onLastSavedChange={onLastSavedChange}
+            showPreview={showPreview}
+            onTogglePreview={_onTogglePreview}
           />
         )}
       </Box>
-
-      {/* Preview - Only for markdown files */}
-      {showPreview && !isTextFile && (
-        <>
-          <Divider orientation="vertical" flexItem />
-          <div
-            className="documentation-content"
-            style={{
-              flex: 1,
-              overflow: "auto",
-              height: "100%",
-            }}
-          >
-            <MarkdownViewer
-              filename={`${selectedFile || "document"}.md`}
-              overrideMarkdown={content}
-              showRawToggle={false}
-            />
-          </div>
-        </>
-      )}
     </Box>
   );
 };
 
 export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
   initialContent = defaultMarkdownContent,
-  filename = "document.md",
+  filename = "document.txt",
   theme: _theme = "dark",
   height: _height = "100%",
   showPreview: _showPreview = true,
   onSave,
-  onLoad,
+  onLoad: _onLoad,
   userId,
   projectId,
 }) => {
   const { theme } = useTheme();
   const [content, setContent] = useState<string>(initialContent);
-  const [originalContent, setOriginalContent] =
+  const [_originalContent, setOriginalContent] =
     useState<string>(initialContent);
   const [showPreview, setShowPreview] = useState<boolean>(_showPreview);
   const [_previewToggleCount, setPreviewToggleCount] = useState<number>(0);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [selectedFilename, setSelectedFilename] = useState<string | null>(null);
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [sidebarMode, setSidebarMode] = useState<"tree" | "search">("tree");
   const [currentDocumentId, setCurrentDocumentId] = useState<string | null>(
@@ -435,16 +660,16 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [_isAutoSaving, setIsAutoSaving] = useState(false);
   const [_error, _setError] = useState<string | null>(null);
 
-  // Create markdown editor file tree instance
-  const markdownEditorInstance: FileTreeInstance = useMemo(
+  // Create document editor file tree instance
+  const documentEditorInstance: FileTreeInstance = useMemo(
     () => ({
-      id: "markdown-editor",
-      name: "Markdown Files",
+      id: "document-editor",
+      name: "Files",
       dataSource: {
         id: "supabase-documents",
         name: "Supabase Documents",
@@ -460,24 +685,35 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
         filePath: string,
         metadata?: Record<string, any>
       ) => {
-        setSelectedFile(filePath);
         console.log("Selected file:", filePath, "Metadata:", metadata);
 
         if (metadata?.documentId) {
           setIsLoading(true);
           try {
             const document = await getDocument(metadata.documentId);
+            // Set selectedFile with the full filePath for proper highlighting
+            const fullFilename = `${document.title}.${document.extension}`;
+            console.log("DocumentEditorView: File selection debug:", {
+              filePath,
+              documentTitle: document.title,
+              documentExtension: document.extension,
+              fullFilename,
+            });
+            setSelectedFile(filePath);
+            setSelectedFilename(fullFilename);
+
             // Always update content to ensure we have the latest version
             const loadedContent = document.content || "";
+            console.log("DocumentEditorView: Loading server content:", {
+              documentId: document.id,
+              filename: filename,
+              contentLength: loadedContent.length,
+              contentPreview: loadedContent.substring(0, 100) + "...",
+            });
             setContent(loadedContent);
             setOriginalContent(loadedContent);
             setCurrentDocumentId(document.id);
             setHasUnsavedChanges(false);
-            setLastSaved(
-              document.last_updated_at
-                ? new Date(document.last_updated_at)
-                : null
-            );
 
             // Clear autosave timeout and reset reference when switching files
             if (autoSaveTimeoutRef.current) {
@@ -492,7 +728,6 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
             setOriginalContent(defaultMarkdownContent);
             setCurrentDocumentId(null);
             setHasUnsavedChanges(false);
-            setLastSaved(null);
           } finally {
             setIsLoading(false);
           }
@@ -502,15 +737,24 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           setOriginalContent(defaultMarkdownContent);
           setCurrentDocumentId(null);
           setHasUnsavedChanges(false);
-          setLastSaved(null);
         }
       },
-      onCreateDocument: async (title: string, parentId?: string) => {
+      onCreateDocument: async (
+        title: string,
+        parentId?: string,
+        extension: string = "txt"
+      ) => {
         try {
+          // Set initial content based on file type
+          const initialContent =
+            extension === "txt"
+              ? `${title}\n\nStart writing your document here...`
+              : `# ${title}\n\nStart writing your document here...`;
+
           const newDocument = await createDocument({
             title,
-            content: `# ${title}\n\nStart writing your document here...`,
-            extension: "md",
+            content: initialContent,
+            extension,
             metadata: {},
             data: {},
             project_id: projectId,
@@ -583,9 +827,45 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
         }
 
         try {
-          // Update the document title in Supabase
-          await updateDocument({ id: documentId, title: newTitle });
-          console.log("Document renamed:", documentId, "to", newTitle);
+          // Parse the new title to extract extension if provided
+          const parseFileName = (fileName: string) => {
+            const lastDotIndex = fileName.lastIndexOf(".");
+            if (lastDotIndex === -1 || lastDotIndex === 0) {
+              // No extension found, or starts with dot (hidden file)
+              return { title: fileName, extension: null };
+            }
+
+            const title = fileName.substring(0, lastDotIndex);
+            const extension = fileName.substring(lastDotIndex + 1);
+
+            // Only consider valid extensions (md, txt)
+            if (["md", "txt"].includes(extension.toLowerCase())) {
+              return { title, extension: extension.toLowerCase() };
+            }
+
+            // If not a valid extension, treat the whole thing as title
+            return { title: fileName, extension: null };
+          };
+
+          const { title, extension } = parseFileName(newTitle);
+
+          // Prepare update data
+          const updateData: any = { id: documentId, title };
+
+          // If user provided a valid extension, update it too
+          if (extension) {
+            updateData.extension = extension;
+          }
+
+          // Update the document in Supabase
+          await updateDocument(updateData);
+          console.log(
+            "Document renamed:",
+            documentId,
+            "to",
+            title,
+            extension ? `with extension: ${extension}` : ""
+          );
         } catch (error) {
           console.error("Error renaming document:", error);
           throw error;
@@ -620,60 +900,6 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
   const currentDocumentIdRef = useRef(currentDocumentId);
   currentDocumentIdRef.current = currentDocumentId;
 
-  const handleContentUpdate = useCallback(
-    (newContent: string) => {
-      // Clear previous timeout
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-
-      // Debounce the state update to prevent infinite loops during fast typing
-      debounceTimeoutRef.current = setTimeout(() => {
-        setContent(newContent);
-        setHasUnsavedChanges(newContent !== originalContent);
-
-        // Set up autosave timer
-        if (autoSaveTimeoutRef.current) {
-          clearTimeout(autoSaveTimeoutRef.current);
-        }
-
-        // Only autosave if content has actually changed from last save
-        autoSaveTimeoutRef.current = setTimeout(async () => {
-          if (
-            newContent !== originalContent &&
-            newContent !== lastAutoSavedContentRef.current
-          ) {
-            // Inline autosave logic to avoid circular dependency
-            setIsAutoSaving(true);
-            try {
-              if (currentDocumentId) {
-                await updateDocument({
-                  id: currentDocumentId,
-                  content: newContent,
-                });
-                setOriginalContent(newContent);
-                setHasUnsavedChanges(false);
-                setLastSaved(new Date());
-                lastAutoSavedContentRef.current = newContent;
-                console.log("Document auto-saved to Supabase");
-              }
-            } catch (error) {
-              console.error("Error auto-saving document:", error);
-              addNotification({
-                message: "Failed to auto-save document",
-                type: "error",
-                groupId: "autosave-error",
-              });
-            } finally {
-              setIsAutoSaving(false);
-            }
-          }
-        }, 500); // 0.5 seconds
-      }, 100); // 100ms debounce
-    },
-    [originalContent, currentDocumentId]
-  );
-
   const handleTogglePreview = useCallback(() => {
     setShowPreview((prev) => {
       const newValue = !prev;
@@ -706,7 +932,6 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           // Update state after successful save
           setOriginalContent(content);
           setHasUnsavedChanges(false);
-          setLastSaved(new Date());
 
           // Update lastAutoSavedContent if this was an autosave
           if (isAutoSave) {
@@ -743,30 +968,6 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
     [content, filename, onSave, currentDocumentId, hasUnsavedChanges]
   );
 
-  const handleLoad = useCallback(() => {
-    if (onLoad) {
-      const loadedContent = onLoad();
-      setContent(loadedContent);
-    } else {
-      // Default load behavior - open file input
-      const input = document.createElement("input");
-      input.type = "file";
-      input.accept = ".md,.markdown,.txt";
-      input.onchange = (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const text = e.target?.result as string;
-            setContent(text);
-          };
-          reader.readAsText(file);
-        }
-      };
-      input.click();
-    }
-  }, [onLoad]);
-
   const handleWidthChange = useCallback((width: number) => {
     setSidebarWidth(width);
   }, []);
@@ -799,10 +1000,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           setOriginalContent(loadedContent);
           setCurrentDocumentId(document.id);
           setHasUnsavedChanges(false);
-          setLastSaved(
-            document.last_updated_at ? new Date(document.last_updated_at) : null
-          );
-          setSelectedFile(`/documents/${document.id}`);
+          setSelectedFile(`${document.title}.${document.extension}`);
 
           // Clear autosave timeout and reset reference when switching files
           if (autoSaveTimeoutRef.current) {
@@ -871,8 +1069,8 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
       <div className="sidebar-content">
         {sidebarMode === "tree" ? (
           <FileTreeView
-            instance={markdownEditorInstance}
-            onFileSelect={markdownEditorInstance.onFileSelect}
+            instance={documentEditorInstance}
+            onFileSelect={documentEditorInstance.onFileSelect}
             selectedFile={selectedFile || undefined}
             showSearch={true}
             showCreateButtons={true}
@@ -962,33 +1160,43 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           {isLoading && " (Loading...)"}
           {isSaving && " (Saving...)"}
         </Typography>
-        <Typography
-          variant="caption"
-          sx={{
-            color: getColor(theme.colors, "textSecondary"),
-          }}
-        >
-          {lastSaved
-            ? `Last saved: ${lastSaved.toLocaleTimeString()}`
-            : "Markdown Editor"}
-        </Typography>
+        {lastSaved && (
+          <Typography
+            variant="caption"
+            sx={{
+              color: getColor(theme.colors, "textSecondary"),
+            }}
+          >
+            Last saved: {lastSaved.toLocaleTimeString()}
+          </Typography>
+        )}
       </Box>
 
       {/* Editor and Preview */}
       <Box sx={{ flex: 1, height: 0 }}>
-        <DocumentEditorContent
-          selectedFile={filename}
-          content={content}
-          onContentUpdate={handleContentUpdate}
-          showPreview={showPreview}
-          onTogglePreview={handleTogglePreview}
-          onSave={handleSave}
-          onLoad={handleLoad}
-          theme={theme}
-          hasUnsavedChanges={hasUnsavedChanges}
-          isSaving={isSaving}
-          lastSaved={lastSaved}
-        />
+        {currentDocumentId ? (
+          <DocumentEditorContent
+            selectedFile={selectedFile || filename}
+            selectedFilename={selectedFilename || filename}
+            documentId={currentDocumentId}
+            showPreview={showPreview}
+            onTogglePreview={handleTogglePreview}
+            theme={theme}
+            onLastSavedChange={setLastSaved}
+          />
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              color: getColor(theme.colors, "textSecondary"),
+            }}
+          >
+            <Typography variant="h6">No document selected</Typography>
+          </Box>
+        )}
       </Box>
     </Box>
   );

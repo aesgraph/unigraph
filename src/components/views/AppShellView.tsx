@@ -25,9 +25,9 @@ import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
 import AboutView from "./AboutView";
 import DevToolsView from "./DevToolsView";
 import DocumentationView from "./DocumentationView";
+import DocumentEditorView from "./DocumentEditorView";
 import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
-import MarkdownEditorView from "./MarkdownEditorView";
 import MonacoEditorView from "./MonacoEditorView";
 import NodeLegendView from "./NodeLegendView";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
@@ -888,11 +888,11 @@ const logViewerView = {
   category: VIEW_DEFINITIONS["log-viewer"].category,
 };
 
-const markdownEditorView = {
+const documentEditorView = {
   id: VIEW_DEFINITIONS["markdown-editor"].id,
-  title: VIEW_DEFINITIONS["markdown-editor"].title,
+  title: "Document Editor", // Update title to reflect new name
   icon: VIEW_DEFINITIONS["markdown-editor"].icon,
-  component: (props: any) => <MarkdownEditorView {...props} />,
+  component: (props: any) => <DocumentEditorView {...props} />,
   category: VIEW_DEFINITIONS["markdown-editor"].category,
 };
 
@@ -919,7 +919,7 @@ const allViews = [
   monacoEditorView,
   sandpackEditorView,
   markdownViewerView,
-  markdownEditorView,
+  documentEditorView,
   documentationView,
   logViewerView,
 ];
