@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaGithub, FaGoogle } from "react-icons/fa";
 import { supabase } from "../utils/supabaseClient";
 
 // Immediate check for authentication - runs before React renders
@@ -31,6 +31,15 @@ export default function SignIn() {
   const [isPopup, setIsPopup] = useState(false);
   const [initialSession, setInitialSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Check if this is a popup window
   useEffect(() => {
@@ -113,6 +122,77 @@ export default function SignIn() {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError(""); // Clear error when user starts typing
+  };
+
+  const validateForm = () => {
+    if (!formData.email || !formData.password) {
+      setError("Please fill in all required fields");
+      return false;
+    }
+
+    if (!formData.email.includes("@")) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return false;
+    }
+
+    if (isSignUp && formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      if (isSignUp) {
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) {
+          setError(error.message);
+        } else if (data.user) {
+          // Success - auth state change will handle the rest
+          console.log("Sign up successful");
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) {
+          setError(error.message);
+        } else if (data.user) {
+          // Success - auth state change will handle the rest
+          console.log("Sign in successful");
+        }
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Listen for auth state changes to close popup only after OAuth completion
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -172,6 +252,7 @@ export default function SignIn() {
         alignItems: "center",
         justifyContent: "center",
         background: "#f9fafb",
+        padding: "20px",
       }}
     >
       <div
@@ -181,7 +262,7 @@ export default function SignIn() {
           boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
           padding: 36,
           minWidth: 320,
-          maxWidth: 360,
+          maxWidth: 400,
           width: "100%",
           textAlign: "center",
         }}
@@ -197,7 +278,11 @@ export default function SignIn() {
             color: "#444",
           }}
         >
-          {isAlreadySignedIn ? "Switch Account" : "Sign in"}
+          {isAlreadySignedIn
+            ? "Switch Account"
+            : isSignUp
+              ? "Create Account"
+              : "Sign in"}
         </h2>
 
         {isAlreadySignedIn && (
@@ -229,10 +314,188 @@ export default function SignIn() {
           </div>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {/* Email/Password Form */}
+        <form onSubmit={handleEmailAuth} style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email address"
+                value={formData.email}
+                onChange={handleInputChange}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  borderRadius: 6,
+                  border: "1px solid #e5e7eb",
+                  fontSize: 16,
+                  outline: "none",
+                  transition: "border-color 0.15s",
+                  boxSizing: "border-box",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#4285f4";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e5e7eb";
+                }}
+              />
+            </div>
+
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                style={{
+                  width: "100%",
+                  padding: "12px 16px",
+                  paddingRight: "48px",
+                  borderRadius: 6,
+                  border: "1px solid #e5e7eb",
+                  fontSize: 16,
+                  outline: "none",
+                  transition: "border-color 0.15s",
+                  boxSizing: "border-box",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#4285f4";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e5e7eb";
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "none",
+                  border: "none",
+                  color: "#666",
+                  cursor: "pointer",
+                  padding: "4px",
+                }}
+              >
+                {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+              </button>
+            </div>
+
+            {isSignUp && (
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    paddingRight: "48px",
+                    borderRadius: 6,
+                    border: "1px solid #e5e7eb",
+                    fontSize: 16,
+                    outline: "none",
+                    transition: "border-color 0.15s",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#4285f4";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#e5e7eb";
+                  }}
+                />
+              </div>
+            )}
+
+            {error && (
+              <div
+                style={{
+                  color: "#dc2626",
+                  fontSize: 14,
+                  textAlign: "left",
+                  padding: "8px 12px",
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  borderRadius: 6,
+                  wordBreak: "break-word",
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: 6,
+                border: "none",
+                background: isSubmitting ? "#9ca3af" : "#4285f4",
+                color: "#fff",
+                fontWeight: 500,
+                fontSize: 16,
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                transition: "background 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = "#3367d6";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = "#4285f4";
+                }
+              }}
+            >
+              {isSubmitting
+                ? "Please wait..."
+                : isSignUp
+                  ? "Create Account"
+                  : "Sign In"}
+            </button>
+          </div>
+        </form>
+
+        {/* Divider */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            margin: "24px 0",
+            color: "#666",
+            fontSize: 14,
+          }}
+        >
+          <div style={{ flex: 1, height: "1px", background: "#e5e7eb" }} />
+          <span style={{ padding: "0 16px" }}>or</span>
+          <div style={{ flex: 1, height: "1px", background: "#e5e7eb" }} />
+        </div>
+
+        {/* OAuth Providers */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+            marginBottom: 24,
+          }}
+        >
           {providers.map((p) => (
             <button
               key={p.id}
+              type="button"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -271,6 +534,30 @@ export default function SignIn() {
             </button>
           ))}
         </div>
+
+        {/* Toggle between sign in and sign up */}
+        <div style={{ fontSize: 14, color: "#666" }}>
+          {isSignUp ? "Already have an account? " : "Don't have an account? "}
+          <button
+            type="button"
+            onClick={() => {
+              setIsSignUp(!isSignUp);
+              setError("");
+              setFormData({ email: "", password: "", confirmPassword: "" });
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#4285f4",
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: 500,
+            }}
+          >
+            {isSignUp ? "Sign in" : "Sign up"}
+          </button>
+        </div>
+
         <div style={{ marginTop: 32, fontSize: 13, color: "#888" }}>
           By signing in, you agree to our{" "}
           <a href="/terms" style={{ color: "#4285f4" }}>

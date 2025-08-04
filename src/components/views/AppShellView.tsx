@@ -27,6 +27,7 @@ import DevToolsView from "./DevToolsView";
 import DocumentationView from "./DocumentationView";
 import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
+import MarkdownEditorView from "./MarkdownEditorView";
 import MonacoEditorView from "./MonacoEditorView";
 import NodeLegendView from "./NodeLegendView";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
@@ -887,6 +888,14 @@ const logViewerView = {
   category: VIEW_DEFINITIONS["log-viewer"].category,
 };
 
+const markdownEditorView = {
+  id: VIEW_DEFINITIONS["markdown-editor"].id,
+  title: VIEW_DEFINITIONS["markdown-editor"].title,
+  icon: VIEW_DEFINITIONS["markdown-editor"].icon,
+  component: (props: any) => <MarkdownEditorView {...props} />,
+  category: VIEW_DEFINITIONS["markdown-editor"].category,
+};
+
 // Define all views
 const allViews = [
   ...defaultViews,
@@ -910,6 +919,7 @@ const allViews = [
   monacoEditorView,
   sandpackEditorView,
   markdownViewerView,
+  markdownEditorView,
   documentationView,
   logViewerView,
 ];

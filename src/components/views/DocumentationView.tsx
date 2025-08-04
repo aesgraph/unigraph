@@ -4,7 +4,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import useAppConfigStore from "../../store/appConfigStore";
 import { getContrastingTextColors } from "../../utils/colorUtils";
 import DocumentationSearchV2 from "../common/DocumentationSearchV2";
-import FileTreeView from "../common/FileTreeView";
+import FileTreeView, { FileTreeInstance } from "../common/FileTreeView";
 import MarkdownViewer from "../common/MarkdownViewer";
 import ResizableSplitter from "../common/ResizableSplitter";
 import "./DocumentationView.css";
@@ -18,9 +18,17 @@ const DocumentationView: React.FC = () => {
     (state) => state.currentSceneGraph
   );
 
-  const handleFileSelect = useCallback((filePath: string) => {
-    setSelectedFile(filePath);
-  }, []);
+  const handleFileSelect = useCallback(
+    (filePath: string, metadata?: Record<string, any>) => {
+      console.log(
+        "DocumentationView handleFileSelect called with:",
+        filePath,
+        metadata
+      );
+      setSelectedFile(filePath);
+    },
+    []
+  );
 
   const handleWidthChange = useCallback((width: number) => {
     setSidebarWidth(width);
@@ -29,6 +37,26 @@ const DocumentationView: React.FC = () => {
   // Get dynamic text colors based on background
   const backgroundColor = getColor(theme.colors, "background");
   const textColors = getContrastingTextColors(backgroundColor);
+
+  // Create documentation file tree instance
+  const documentationInstance: FileTreeInstance = useMemo(
+    () => ({
+      id: "documentation",
+      name: "Documentation",
+      dataSource: {
+        id: "markdowns-json",
+        name: "Markdowns JSON",
+        type: "json",
+        config: {
+          url: "/markdowns-structure.json",
+        },
+      },
+      rootPath: "/markdowns",
+      hideEmptyFolders: true,
+      onFileSelect: handleFileSelect,
+    }),
+    [handleFileSelect]
+  );
 
   const leftPanel = useMemo(
     () => (
@@ -82,19 +110,38 @@ const DocumentationView: React.FC = () => {
         <div className="sidebar-content">
           {sidebarMode === "tree" ? (
             <FileTreeView
-              onFileSelect={handleFileSelect}
+              key="documentation-file-tree"
+              instance={documentationInstance}
+              onFileSelect={(
+                filePath: string,
+                metadata?: Record<string, any>
+              ) => {
+                console.log("FileTreeView onFileSelect called directly");
+                handleFileSelect(filePath, metadata);
+              }}
               selectedFile={selectedFile || undefined}
+              showHeader={true}
+              readOnly={true}
             />
           ) : (
             <DocumentationSearchV2
-              onFileSelect={handleFileSelect}
+              onFileSelect={(
+                filePath: string,
+                metadata?: Record<string, any>
+              ) => handleFileSelect(filePath, metadata)}
               selectedFile={selectedFile || undefined}
             />
           )}
         </div>
       </div>
     ),
-    [theme.colors, handleFileSelect, selectedFile, sidebarMode]
+    [
+      theme.colors,
+      handleFileSelect,
+      selectedFile,
+      sidebarMode,
+      documentationInstance,
+    ]
   );
 
   const rightPanel = useMemo(

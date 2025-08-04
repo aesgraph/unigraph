@@ -3,6 +3,12 @@ title: "Type Theoretic Tooling"
 order: 10
 ---
 
+# Tags and Types
+
+Tags and types are separate attributes that can both be set on Entities.
+Tags are flat sets of labels, and types are single-valued enumerations.
+Developers can set as many custom attributes on Entities as they like, but Tags and Types are built-in to Unigraph's ecosystem to offer something flexible and functional out of the box.
+
 # Type Theoretic Tooling
 
 Type-safe graph operations and queries.

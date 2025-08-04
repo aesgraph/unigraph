@@ -13,11 +13,20 @@ export interface HotkeyAction {
 export const useHotkeys = (hotkeys: HotkeyAction[]) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Don't trigger hotkeys when typing in input fields
+      // Don't trigger hotkeys when typing in input fields or editors
+      const target = event.target as Element;
+
       if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        event.target instanceof HTMLSelectElement
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        // Check for contentEditable elements (Monaco Editor uses these)
+        target.isContentEditable ||
+        // Check if we're inside Monaco Editor specifically
+        target.closest(".monaco-editor") ||
+        target.closest('[class*="monaco"]') ||
+        // Check for any contentEditable ancestors
+        target.closest('[contenteditable="true"]')
       ) {
         return;
       }
@@ -26,15 +35,6 @@ export const useHotkeys = (hotkeys: HotkeyAction[]) => {
 
       for (const hotkey of hotkeys) {
         const keyMatches = hotkey.key.toLowerCase() === pressedKey;
-        console.log("Hotkey debug:", {
-          pressedKey,
-          hotkeyKey: hotkey.key.toLowerCase(),
-          keyMatches,
-          ctrlKey: { expected: hotkey.ctrlKey, actual: event.ctrlKey },
-          metaKey: { expected: hotkey.metaKey, actual: event.metaKey },
-          shiftKey: { expected: hotkey.shiftKey, actual: event.shiftKey },
-          altKey: { expected: hotkey.altKey, actual: event.altKey },
-        });
         const ctrlMatches =
           hotkey.ctrlKey === undefined
             ? !event.ctrlKey

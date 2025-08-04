@@ -50,11 +50,91 @@
 .file-tree-node {
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  position: relative;
 }
 
 .file-tree-node:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.file-tree-node.selected {
+  background-color: var(--primary-selection-bg, rgba(9, 105, 218, 0.15));
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  font-weight: 500;
+}
+
+.file-tree-node.selected .file-tree-name {
+  color: var(--primary-selection-text, rgba(9, 105, 218, 0.9)) !important;
+}
+
+.file-tree-node.selected .file-tree-icon {
+  color: var(--primary-selection-text, rgba(9, 105, 218, 0.8)) !important;
+}
+
+.file-tree-node.context-menu-target {
+  background-color: var(--primary-selection-bg-strong, rgba(9, 105, 218, 0.25));
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.file-tree-node.context-menu-target .file-tree-name {
+  color: var(--primary-selection-text, rgba(9, 105, 218, 0.9)) !important;
+}
+
+.file-tree-node.context-menu-target .file-tree-icon {
+  color: var(--primary-selection-text, rgba(9, 105, 218, 0.8)) !important;
+}
+
+/* Dark mode adjustments */
+.file-tree-container.dark .file-tree-node:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.file-tree-container.dark .file-tree-node.selected {
+  background-color: var(--primary-selection-bg-dark, rgba(9, 105, 218, 0.2));
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  font-weight: 500;
+}
+
+.file-tree-container.dark .file-tree-node.selected .file-tree-name {
+  color: var(--primary-selection-text-dark, rgba(9, 105, 218, 0.9)) !important;
+}
+
+.file-tree-container.dark .file-tree-node.selected .file-tree-icon {
+  color: var(--primary-selection-text-dark, rgba(9, 105, 218, 0.8)) !important;
+}
+
+.file-tree-container.dark .file-tree-node.context-menu-target {
+  background-color: var(
+    --primary-selection-bg-strong-dark,
+    rgba(9, 105, 218, 0.35)
+  );
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.file-tree-container.dark .file-tree-node.context-menu-target .file-tree-name {
+  color: var(--primary-selection-text-dark, rgba(9, 105, 218, 0.9)) !important;
+}
+
+.file-tree-container.dark .file-tree-node.context-menu-target .file-tree-icon {
+  color: var(--primary-selection-text-dark, rgba(9, 105, 218, 0.8)) !important;
 }
 
 .file-tree-node-content {
@@ -151,4 +231,69 @@
 
 .file-tree-content::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Drag and Drop Styles */
+.file-tree-node.dragging {
+  opacity: 0.5;
+  background-color: var(--primary-selection-bg, rgba(9, 105, 218, 0.1));
+}
+
+.file-tree-node.drop-target {
+  background-color: var(--primary-selection-bg-strong, rgba(9, 105, 218, 0.2));
+}
+
+.file-tree-node.drop-target.drop-before {
+  border-top: 2px solid var(--primary-selection-text, rgba(9, 105, 218, 0.8));
+  background-color: transparent;
+}
+
+.file-tree-node.drop-target.drop-after {
+  border-bottom: 2px solid var(--primary-selection-text, rgba(9, 105, 218, 0.8));
+  background-color: transparent;
+}
+
+.file-tree-node.drop-target.drop-inside {
+  background-color: var(--primary-selection-bg-strong, rgba(9, 105, 218, 0.25));
+  border: 2px dashed var(--primary-selection-text, rgba(9, 105, 218, 0.6));
+}
+
+.file-tree-node[draggable="true"] {
+  cursor: grab;
+}
+
+.file-tree-node[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Dark mode drag and drop adjustments */
+.file-tree-container.dark .file-tree-node.dragging {
+  background-color: var(--primary-selection-bg-dark, rgba(9, 105, 218, 0.15));
+}
+
+.file-tree-container.dark .file-tree-node.drop-target {
+  background-color: var(
+    --primary-selection-bg-strong-dark,
+    rgba(9, 105, 218, 0.25)
+  );
+}
+
+.file-tree-container.dark .file-tree-node.drop-target.drop-before {
+  border-top: 2px solid
+    var(--primary-selection-text-dark, rgba(9, 105, 218, 0.9));
+  background-color: transparent;
+}
+
+.file-tree-container.dark .file-tree-node.drop-target.drop-after {
+  border-bottom: 2px solid
+    var(--primary-selection-text-dark, rgba(9, 105, 218, 0.9));
+  background-color: transparent;
+}
+
+.file-tree-container.dark .file-tree-node.drop-target.drop-inside {
+  background-color: var(
+    --primary-selection-bg-strong-dark,
+    rgba(9, 105, 218, 0.3)
+  );
+  border: 2px dashed var(--primary-selection-text-dark, rgba(9, 105, 218, 0.7));
 }
