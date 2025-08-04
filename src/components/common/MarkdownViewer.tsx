@@ -970,13 +970,15 @@ function MarkdownViewer({
         <div
           ref={contentRef}
           className={`markdown-content ${excerpt ? "markdown-excerpt-no-fade" : ""}`}
-          style={{
-            ...(excerpt ? { maxHeight: "400px", overflow: "hidden" } : {}),
-            "--border-color": getColor(theme.colors, "border"),
-            "--surface-color": getColor(theme.colors, "surface"),
-            "--background-color": getColor(theme.colors, "background"),
-            "--text-color": getColor(theme.colors, "text"),
-          } as React.CSSProperties}
+          style={
+            {
+              ...(excerpt ? { maxHeight: "400px", overflow: "hidden" } : {}),
+              "--border-color": getColor(theme.colors, "border"),
+              "--surface-color": getColor(theme.colors, "surface"),
+              "--background-color": getColor(theme.colors, "background"),
+              "--text-color": getColor(theme.colors, "text"),
+            } as React.CSSProperties
+          }
           dangerouslySetInnerHTML={{ __html: html }}
           onContextMenu={handleContextMenu}
           onClick={(e) => {

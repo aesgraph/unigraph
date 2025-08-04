@@ -4,7 +4,7 @@ const path = require("path");
 // Set up the plugin with force rebuild option
 const docsPlugin = new DocsDirectoryPlugin({
   docsPath: path.resolve(__dirname, "../docs"),
-  outputPath: path.resolve(__dirname, "../docs/docs-structure.json"), // Changed to docs folder
+  outputPath: path.resolve(__dirname, "../public/docs-structure.json"), // Output to public directory
   forceRebuild: true, // Always rebuild when called directly
 });
 

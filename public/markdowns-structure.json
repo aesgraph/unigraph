@@ -21,6 +21,100 @@
           "order": 0
         },
         {
+          "path": "unigraph/applications",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/applications/DataAndFunctionMarketplace.md",
+              "type": "file",
+              "name": "DataAndFunctionMarketplace.md"
+            },
+            {
+              "path": "unigraph/applications/IntermediateRepresentationLanguage.md",
+              "type": "file",
+              "name": "IntermediateRepresentationLanguage.md"
+            },
+            {
+              "path": "unigraph/applications/SemanticWebConnector.md",
+              "type": "file",
+              "name": "SemanticWebConnector.md"
+            },
+            {
+              "path": "unigraph/applications/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "General Applications",
+              "order": 5
+            }
+          ]
+        },
+        {
+          "path": "unigraph/capabilities",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/capabilities/AnnotationTooling.md",
+              "type": "file",
+              "name": "AnnotationTooling.md"
+            },
+            {
+              "path": "unigraph/capabilities/AppLayoutManager.md",
+              "type": "file",
+              "name": "AppLayoutManager.md"
+            },
+            {
+              "path": "unigraph/capabilities/ApplicationExtension.md",
+              "type": "file",
+              "name": "ApplicationExtension.md"
+            },
+            {
+              "path": "unigraph/capabilities/CopilotIntegration.md",
+              "type": "file",
+              "name": "CopilotIntegration.md"
+            },
+            {
+              "path": "unigraph/capabilities/DocumentEditing.md",
+              "type": "file",
+              "name": "DocumentEditing.md"
+            },
+            {
+              "path": "unigraph/capabilities/GraphConstruction.md",
+              "type": "file",
+              "name": "GraphConstruction.md"
+            },
+            {
+              "path": "unigraph/capabilities/GraphFilters.md",
+              "type": "file",
+              "name": "GraphFilters.md"
+            },
+            {
+              "path": "unigraph/capabilities/GraphInterspection.md",
+              "type": "file",
+              "name": "GraphInterspection.md"
+            },
+            {
+              "path": "unigraph/capabilities/GraphLayouts.md",
+              "type": "file",
+              "name": "GraphLayouts.md"
+            },
+            {
+              "path": "unigraph/capabilities/ProjectManagement.md",
+              "type": "file",
+              "name": "ProjectManagement.md"
+            },
+            {
+              "path": "unigraph/capabilities/SemanticWebQueryTool.md",
+              "type": "file",
+              "name": "SemanticWebQueryTool.md"
+            },
+            {
+              "path": "unigraph/capabilities/TypeTheoreticTooling.md",
+              "type": "file",
+              "name": "TypeTheoreticTooling.md"
+            }
+          ]
+        },
+        {
           "path": "unigraph/examples",
           "type": "directory",
           "children": [
@@ -67,6 +161,39 @@
           "name": "index.md",
           "title": "Unigraph",
           "order": 0
+        },
+        {
+          "path": "unigraph/papers",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/papers/AnalyticsEngines.md",
+              "type": "file",
+              "name": "AnalyticsEngines.md"
+            },
+            {
+              "path": "unigraph/papers/InterpretableAI.md",
+              "type": "file",
+              "name": "InterpretableAI.md"
+            },
+            {
+              "path": "unigraph/papers/OrganizationalComplexityInBigScience.md",
+              "type": "file",
+              "name": "OrganizationalComplexityInBigScience.md"
+            },
+            {
+              "path": "unigraph/papers/OrganizationalComplexityInSoftwareEngineering.md",
+              "type": "file",
+              "name": "OrganizationalComplexityInSoftwareEngineering.md"
+            },
+            {
+              "path": "unigraph/papers/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Papers",
+              "order": 6
+            }
+          ]
         }
       ]
     }
