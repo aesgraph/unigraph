@@ -25,6 +25,8 @@ import {
   $createParagraphNode,
   $createTextNode,
   $getRoot,
+  $getSelection,
+  $isRangeSelection,
   EditorState,
   LexicalEditor,
 } from "lexical";
@@ -32,6 +34,8 @@ import { debounce } from "lodash";
 import React, { JSX, useEffect, useState } from "react";
 // Import Supabase API functions
 import { getDocument, updateDocument } from "../../../api/documentsApi";
+import useAppConfigStore from "../../../store/appConfigStore";
+import { addNotification } from "../../../store/notificationStore";
 import "./LexicalEditor.css";
 import { MentionNode } from "./nodes/MentionNode";
 import { EntityReferenceNode } from "./plugins/EntityReferencePlugin";

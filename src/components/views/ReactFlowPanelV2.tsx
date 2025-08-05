@@ -397,7 +397,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     return () => {
       resizeObserver.disconnect();
     };
-  }, [reactFlowInstance.current]);
+  }, []);
 
   // Critical effect: Update ReactFlow nodes when global selection state changes
   // This ensures selections from other views (like ForceGraph3D) are reflected here
