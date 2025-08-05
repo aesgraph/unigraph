@@ -30,7 +30,7 @@ export async function saveMarkdownFile({
     console.log(`Content length: ${content.length} characters`);
 
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // TODO: Replace with actual API call to backend service
     // const response = await fetch('/api/files/save', {
@@ -40,11 +40,11 @@ export async function saveMarkdownFile({
     //   },
     //   body: JSON.stringify({ filePath, content }),
     // });
-    // 
+    //
     // if (!response.ok) {
     //   throw new Error(`HTTP error! status: ${response.status}`);
     // }
-    // 
+    //
     // const result = await response.json();
     // return result;
 
@@ -55,10 +55,10 @@ export async function saveMarkdownFile({
       filePath,
     };
   } catch (error) {
-    console.error('Error saving file:', error);
+    console.error("Error saving file:", error);
     return {
       success: false,
-      message: `Failed to save file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      message: `Failed to save file: ${error instanceof Error ? error.message : "Unknown error"}`,
     };
   }
 }
@@ -70,11 +70,11 @@ export async function checkFileWritable(filePath: string): Promise<boolean> {
   try {
     // TODO: Implement actual file check via backend API
     console.log(`Checking if file is writable: ${filePath}`);
-    
+
     // For now, assume all markdown files in /markdowns/ are writable
-    return filePath.startsWith('/markdowns/') && filePath.endsWith('.md');
+    return filePath.startsWith("/markdowns/") && filePath.endsWith(".md");
   } catch (error) {
-    console.error('Error checking file:', error);
+    console.error("Error checking file:", error);
     return false;
   }
 }
@@ -90,16 +90,16 @@ export async function getFileMetadata(filePath: string): Promise<{
   try {
     // TODO: Implement actual metadata retrieval via backend API
     console.log(`Getting metadata for file: ${filePath}`);
-    
+
     const writable = await checkFileWritable(filePath);
-    
+
     return {
       lastModified: new Date(), // Placeholder
       size: 0, // Placeholder
       writable,
     };
   } catch (error) {
-    console.error('Error getting file metadata:', error);
+    console.error("Error getting file metadata:", error);
     return null;
   }
 }

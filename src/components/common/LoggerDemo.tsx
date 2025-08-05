@@ -6,7 +6,6 @@ const LoggerDemo: React.FC = () => {
   const log = useComponentLogger("LoggerDemo");
   const [showLogViewer, setShowLogViewer] = useState(false);
 
-
   const handleTestLogs = () => {
     log.info("This is an info message");
     log.debug("This is a debug message", { someData: "example" });
@@ -26,8 +25,6 @@ const LoggerDemo: React.FC = () => {
     }, 1000);
   };
 
-
-
   return (
     <div style={{ padding: "20px" }}>
       <h3>Logger Demo</h3>
@@ -38,9 +35,7 @@ const LoggerDemo: React.FC = () => {
         <button onClick={handlePerformanceTest}>
           Test Performance Logging
         </button>
-        <button onClick={() => setShowLogViewer(true)}>
-          Open Log Viewer
-        </button>
+        <button onClick={() => setShowLogViewer(true)}>Open Log Viewer</button>
       </div>
 
       <div style={{ marginTop: "20px" }}>
