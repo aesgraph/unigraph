@@ -469,6 +469,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
           background-color: ${getColor(theme.colors, "surface")} !important;
           color: ${getColor(theme.colors, "text")} !important;
           border-bottom: 1px solid ${getColor(theme.colors, "border")} !important;
+          ${projects.length === 0 ? 'display: none !important;' : ''}
         }
         
         .ag-header-cell {
@@ -522,6 +523,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         suppressContextMenu={false}
         allowContextMenuWithControlKey={false}
         suppressMenuHide={false}
+
         getRowStyle={() => ({
           display: "flex",
           alignItems: "center",
