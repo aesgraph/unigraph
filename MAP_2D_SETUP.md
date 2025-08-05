@@ -11,16 +11,19 @@ The 2D Map view has been added to your Unigraph application! This map component 
 - Sample San Francisco locations for demonstration
 - **Completely free** - no API keys required!
 - **AI Integration** - Control the map with natural language commands
+- **Path/Routing Support** - Create visual paths between multiple locations
 
 ## AI Map Control
 
-The 2D Map now supports AI-powered control through the chat interface! You can use natural language commands like:
+The 2D Map supports AI-powered control through the chat interface! You can use natural language commands like:
 
 - "Go to Tokyo on the map"
 - "Add a marker for the Eiffel Tower"
 - "Switch to satellite view"
 - "Zoom in to level 15"
 - "Clear all markers"
+- "Create a path from Tokyo to Kyoto to Osaka"
+- "Show me a route through Paris, London, and Berlin"
 
 ### How to Use AI Map Control
 
@@ -31,6 +34,7 @@ The 2D Map now supports AI-powered control through the chat interface! You can u
    - `"Switch to terrain view"`
    - `"Zoom to level 10"`
    - `"Clear all markers"`
+   - `"Create a path from Tokyo to Kyoto to Osaka called 'Japan Trip'"`
 
 The AI will automatically:
 
@@ -38,6 +42,7 @@ The AI will automatically:
 - Update the map center and zoom level
 - Add markers with descriptions
 - Change map types and settings
+- Create visual paths between multiple locations
 
 ### Supported AI Commands
 
@@ -46,6 +51,7 @@ The AI will automatically:
 - **Zoom**: "Zoom to level [number]" - Sets the zoom level (1-18)
 - **Map Type**: "Switch to [roadmap/satellite/terrain/dark] view" - Changes map type
 - **Clear**: "Clear all markers" - Removes all custom markers
+- **Paths**: "Create a path from [location1] to [location2] to [location3]" - Creates visual paths between locations
 
 ## Features
 
@@ -53,7 +59,7 @@ The AI will automatically:
 
 - **Map Type Toggle**: Switch between roadmap, satellite, terrain, and dark views
 - **Location Counter**: Shows the total number of locations on the map
-- **Legend**: Color-coded legend showing different location types
+- **Legend**: Color-coded legend showing different location types and paths
 
 ### Location Types
 
@@ -67,6 +73,13 @@ The AI will automatically:
 - **Satellite**: High-resolution satellite imagery from Esri
 - **Terrain**: Topographic map with elevation data
 - **Dark**: Dark-themed map for low-light environments
+
+### Path Features
+
+- **Visual Paths**: Colored polylines connecting multiple locations
+- **Interactive Popups**: Click on paths to see details
+- **Smart Zooming**: Automatically adjusts to show entire path
+- **Random Colors**: Each path gets a unique color for identification
 
 ### Customization
 
@@ -85,10 +98,11 @@ The map component is fully customizable:
 4. Click on markers to see location details in popups
 5. Use the map type buttons to switch between different map views
 6. Use AI chat to control the map with natural language commands
+7. Create paths by asking the AI to connect multiple locations
 
 ## No Setup Required!
 
-Unlike Google Maps, this implementation uses free OpenStreetMap data and requires no API keys or setup. The map will work immediately after installation.
+This implementation uses free OpenStreetMap data and requires no API keys or setup. The map will work immediately after installation.
 
 ## Troubleshooting
 
@@ -153,3 +167,4 @@ Unlike Google Maps, this implementation uses free OpenStreetMap data and require
 - **Fast**: Lightweight and performant
 - **Privacy**: No data sent to third-party services
 - **AI-Ready**: Built-in support for natural language control
+- **Path Support**: Visual routing between multiple locations
