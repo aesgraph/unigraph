@@ -22,6 +22,7 @@ import {
   MOUSE_HOVERED_NODE_COLOR,
   SELECTED_NODE_COLOR,
 } from "../../../core/force-graph/createForceGraph";
+import { LayoutEngineOption } from "../../../core/layouts/layoutEngineTypes";
 import { NodeId } from "../../../core/model/Node";
 import { EntityIds } from "../../../core/model/entity/entityIds";
 import useAppConfigStore from "../../../store/appConfigStore";
@@ -37,7 +38,9 @@ import {
   getReactFlowConfig,
   subscribeToReactFlowConfigChanges,
 } from "../../../store/reactFlowConfigStore";
+import { computeLayoutAndTriggerUpdateForCurrentSceneGraph } from "../../../store/sceneGraphHooks";
 import { setRightActiveSection } from "../../../store/workspaceConfigStore";
+import GraphLayoutToolbar from "../../common/GraphLayoutToolbar";
 import CustomNode from "./nodes/CustomNode";
 import WebpageNode from "./nodes/WebpageNode";
 
@@ -176,7 +179,17 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
 
   const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
   const { setActiveDocument } = useDocumentStore();
-  const { setActiveView, activeView } = useAppConfigStore();
+  const { setActiveView, activeView, activeLayout, forceGraph3dOptions } =
+    useAppConfigStore();
+
+  // Handle layout change
+  const handleLayoutChange = useCallback(async (layout: LayoutEngineOption) => {
+    try {
+      await computeLayoutAndTriggerUpdateForCurrentSceneGraph(layout);
+    } catch (error) {
+      console.error("Failed to compute layout:", error);
+    }
+  }, []);
 
   // Get configuration from the store
   const reactFlowConfig = getReactFlowConfig();
@@ -435,7 +448,7 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
           margin: 0,
           padding: 0,
           overflow: "hidden",
-          position: "absolute",
+          position: "relative",
           top: 0,
           left: 0,
         }}
@@ -526,6 +539,14 @@ const ReactFlowPanel: React.FC<ReactFlowPanelProps> = ({
             />
           </ReactFlow>
         </ReactFlowProvider>
+
+        {/* Layout Toolbar */}
+        <GraphLayoutToolbar
+          activeLayout={activeLayout as LayoutEngineOption}
+          onLayoutChange={handleLayoutChange}
+          physicsMode={forceGraph3dOptions.layout === "Physics"}
+          isDarkMode={false} // ReactFlow doesn't have dark mode detection, using false for now
+        />
       </div>
     </>
   );

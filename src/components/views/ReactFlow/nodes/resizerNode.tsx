@@ -8,6 +8,19 @@ import {
 import React, { memo, useEffect, useState } from "react";
 import { NodeData } from "../../../../core/model/Node";
 
+// Helper function to safely render values that might be objects
+const renderValue = (value: any): string => {
+  if (typeof value === "string") {
+    return value;
+  } else if (value && typeof value === "object" && "value" in value) {
+    return String(value.value);
+  } else if (value && typeof value === "object") {
+    return JSON.stringify(value);
+  } else {
+    return String(value || "");
+  }
+};
+
 export type ResizerNodeDataArgs = NodeData & {
   onResizeEnd?: (x: number, y: number, width: number, height: number) => void;
 };
@@ -40,7 +53,7 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
       <NodeResizer
         minWidth={50}
         minHeight={50}
-        onResizeEnd={(event: ResizeDragEvent, params: ResizeParams) => {
+        onResizeEnd={(_event: ResizeDragEvent, params: ResizeParams) => {
           const newDimensions = {
             width: params.width as number,
             height: params.height as number,
@@ -55,9 +68,9 @@ function ResizerNode({ data }: { data: ResizerNodeDataArgs }) {
         }}
       />
       <Handle type="target" position={Position.Left} />
-      <div style={{ fontWeight: "bold" }}>{data.label}</div>
+      <div style={{ fontWeight: "bold" }}>{renderValue(data.label)}</div>
       <div style={{ fontSize: "0.9em", color: "#555" }}>
-        {data?.description}
+        {renderValue(data?.description)}
       </div>
       <Handle type="source" position={Position.Right} />
     </div>

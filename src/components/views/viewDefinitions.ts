@@ -119,26 +119,12 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     description:
       "Interactive ReactFlow diagram editor for workflow and process visualization",
   },
-  about: {
-    id: "about",
-    title: "About",
-    icon: "ℹ️",
-    category: "help",
-    description: "Information about the application and its features",
-  },
   "dev-tools": {
     id: "dev-tools",
     title: "Dev Tools",
     icon: "🔧",
     category: "development",
     description: "Development tools and utilities for debugging and testing",
-  },
-  "lexical-editor": {
-    id: "lexical-editor",
-    title: "Lexical Editor",
-    icon: "📝",
-    category: "editing",
-    description: "Rich text editor built with Lexical framework",
   },
   "sandpack-editor": {
     id: "sandpack-editor",
