@@ -69,13 +69,13 @@ export const SandpackEditor: React.FC<SandpackEditorProps> = ({
   files = defaultFiles,
   // eslint-disable-next-line unused-imports/no-unused-vars
   theme = "dark",
-  showFileExplorer = true,
-  showCodeEditor = true,
-  showPreview = true,
-  height = "600px",
-  title = "Sandpack Editor",
+  showFileExplorer: _showFileExplorer = true,
+  showCodeEditor: _showCodeEditor = true,
+  showPreview: _showPreview = true,
+  height: _height = "600px",
+  title: _title = "Sandpack Editor",
 }) => {
-  const [isRunning, setIsRunning] = useState(true);
+  const [isRunning, _] = useState(true);
 
   return (
     <Box
@@ -120,8 +120,8 @@ export const SandpackEditorFull: React.FC<SandpackEditorProps> = ({
   files = defaultFiles,
   // eslint-disable-next-line unused-imports/no-unused-vars
   theme = "dark",
-  height = "600px",
-  title = "Sandpack Editor",
+  height: _height = "600px",
+  title: _title = "Sandpack Editor",
 }) => {
   return (
     <Box

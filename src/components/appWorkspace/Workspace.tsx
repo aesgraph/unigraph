@@ -193,8 +193,8 @@ const Workspace: React.FC<WorkspaceProps> = ({
     showSaveSceneGraphDialog,
     activeFilter,
     handleLoadSceneGraph,
+    theme,
     showLayoutManager,
-    theme.colors,
   ]);
 
   // Monitor for selected node to show dynamic section
@@ -320,6 +320,7 @@ const Workspace: React.FC<WorkspaceProps> = ({
     rightSidebarConfig.minimal,
     activeView,
     isDarkMode,
+    theme,
     selectedNodeId,
     renderLayoutModeRadio,
     renderNodeLegend,
@@ -332,7 +333,6 @@ const Workspace: React.FC<WorkspaceProps> = ({
     controlMode,
     handleFitToView,
     handleShowEntityTables,
-    theme.colors,
   ]);
 
   const _renderSidebarPanel = (menu: MenuItem, isActive: boolean) => {

@@ -623,7 +623,7 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
         }
       });
     },
-    [onChange, saveToAllStorages]
+    [documentId, ignoreCache, onChange, saveToAllStorages]
   );
 
   // Handle tags change
