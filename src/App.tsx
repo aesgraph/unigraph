@@ -2160,6 +2160,7 @@ const AppContentInner = ({
   }, [
     activeView,
     // Skip currentLayoutResult dependency for Physics mode to prevent reinitialization
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     ...(forceGraph3dOptions.layout !== "Physics" ? [currentLayoutResult] : []),
     currentSceneGraph, // Add dependency on currentSceneGraph to trigger initialization when scene graph changes
     initializeForceGraph,
@@ -2197,9 +2198,11 @@ const AppContentInner = ({
     // const url = new URL(window.location.href);
     // url.searchParams.set("layout", layoutResult?.layoutType as string);
     // window.history.pushState({}, "", url.toString());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     forceGraphInstance,
     // Skip currentLayoutResult dependency for Physics mode to prevent applying fixed positions
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     ...(forceGraph3dOptions.layout !== "Physics" ? [currentLayoutResult] : []),
     forceGraph3dOptions.layout,
     graphvizFitToView,
