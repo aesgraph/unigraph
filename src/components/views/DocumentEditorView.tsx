@@ -879,12 +879,14 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
 
   // Cleanup autosave timeout on unmount
   useEffect(() => {
+    const autoSaveTimeout = autoSaveTimeoutRef.current;
+    const debounceTimeout = debounceTimeoutRef.current;
     return () => {
-      if (autoSaveTimeoutRef.current) {
-        clearTimeout(autoSaveTimeoutRef.current);
+      if (autoSaveTimeout) {
+        clearTimeout(autoSaveTimeout);
       }
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
       }
     };
   }, []);

@@ -61,6 +61,114 @@ const PlaceholderPlugin = ({
   );
 };
 
+// Add new ContextMenuPlugin component
+function ContextMenuPlugin(): JSX.Element | null {
+  const [editor] = useLexicalComposerContext();
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    text: string;
+  } | null>(null);
+  const { currentSceneGraph } = useAppConfigStore();
+
+  useEffect(() => {
+    // Register for native DOM right-click event on the editor
+    const editorElement = document.querySelector(".editor-input");
+    if (!editorElement) return;
+
+    const handleContextMenu = (e: Event) => {
+      const mouseEvent = e as MouseEvent;
+      mouseEvent.preventDefault(); // Prevent browser context menu
+
+      // Get current selection
+      editor.update(() => {
+        const selection = $getSelection();
+        if (
+          !selection ||
+          !$isRangeSelection(selection) ||
+          selection.isCollapsed()
+        ) {
+          return;
+        }
+
+        const selectedText = selection.getTextContent().trim();
+        if (!selectedText) return;
+
+        // Show our custom context menu
+        setContextMenu({
+          x: (e as MouseEvent).clientX,
+          y: (e as MouseEvent).clientY,
+          text: selectedText,
+        });
+      });
+    };
+
+    editorElement.addEventListener("contextmenu", handleContextMenu);
+
+    // Click outside listener
+    const handleClickOutside = (e: MouseEvent) => {
+      if (contextMenu) {
+        setContextMenu(null);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        setContextMenu(null);
+      }
+    });
+
+    return () => {
+      editorElement.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [editor, contextMenu]);
+
+  const handleCreateNode = () => {
+    if (contextMenu && currentSceneGraph) {
+      const newNode = currentSceneGraph.getGraph().createNode({
+        label: contextMenu.text,
+        type: "Note",
+      });
+
+      // If you need to create an edge, you must provide a valid parent node id here
+      // currentSceneGraph.getGraph().createEdge(parentNodeId, newNode.getId(), { ... });
+
+      currentSceneGraph.refreshDisplayConfig();
+      currentSceneGraph.notifyGraphChanged();
+
+      // Show notification
+      addNotification({
+        message: `Created node "${contextMenu.text}"`,
+        type: "success",
+        duration: 3000,
+      });
+
+      setContextMenu(null);
+    }
+  };
+
+  if (!contextMenu) return null;
+
+  return (
+    <div
+      className="editor-context-menu"
+      style={{
+        position: "fixed",
+        left: `${contextMenu.x}px`,
+        top: `${contextMenu.y}px`,
+        zIndex: 10000,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="context-menu-item" onClick={handleCreateNode}>
+        Create Node
+      </div>
+    </div>
+  );
+}
+
 // EditorStateInitializer for smooth content loading
 const EditorStateInitializer: React.FC<{
   content: string;
@@ -496,6 +604,9 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
               <CustomOnChangePlugin onChange={handleEditorChange} />
 
               <MentionsPlugin />
+
+              {/* Add the ContextMenuPlugin here */}
+              <ContextMenuPlugin />
             </div>
           </div>
         </LexicalComposer>
