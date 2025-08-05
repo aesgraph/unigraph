@@ -1,0 +1,356 @@
+/* Simple app layout styles */
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.topBar {
+  height: 60px;
+  background-color: #2d3748;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.topBarTitle {
+  margin: 0;
+  font-size: 18px;
+}
+
+.topBarNav {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+}
+
+.topBarButton {
+  background: transparent;
+  border: 1px solid #4a5568;
+  color: white;
+  /* padding: 8px 16px; */
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.topBarButton:hover {
+  background-color: #4a5568;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.statusBar {
+  height: 30px;
+  background-color: #4a5568;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 12px;
+  border-top: 1px solid #2d3748;
+}
+
+.statusBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusBarRight {
+  display: flex;
+  align-items: center;
+}
+
+.activeGraphButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.activeGraphButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #a0aec0;
+}
+
+.activeGraphLabel {
+  color: #a0aec0;
+  font-weight: normal;
+}
+
+.activeGraphName {
+  color: white;
+  font-weight: normal;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.activeGraphButton:hover .activeGraphName {
+  text-decoration-color: #a0aec0;
+}
+
+.hoverPanel {
+  position: absolute;
+  bottom: 35px;
+  left: 0;
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 280px;
+  max-width: 400px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.hoverPanelHeader {
+  padding: 12px 16px 8px 16px;
+  border-bottom: 1px solid #4a5568;
+}
+
+.hoverPanelHeader h4 {
+  margin: 0;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hoverPanelContent {
+  padding: 12px 16px;
+}
+
+.hoverPanelItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.hoverPanelItem:last-child {
+  margin-bottom: 0;
+}
+
+.hoverPanelLabel {
+  color: #a0aec0;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.hoverPanelValue {
+  color: white;
+  font-size: 12px;
+  text-align: right;
+  word-break: break-word;
+  flex: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hoverPanelActions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #4a5568;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.hoverPanelButton {
+  flex: 1;
+  background: #4a5568;
+  border: 1px solid #718096;
+  border-radius: 4px;
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hoverPanelButton:hover {
+  background: #718096;
+  border-color: #a0aec0;
+  transform: translateY(-1px);
+}
+
+.hoverPanelButton:active {
+  transform: translateY(0);
+}
+
+.workspaceButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.workspaceButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #a0aec0;
+}
+
+.workspaceLabel {
+  color: #a0aec0;
+  font-weight: normal;
+}
+
+.workspaceName {
+  color: white;
+  font-weight: normal;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.workspaceButton:hover .workspaceName {
+  text-decoration-color: #a0aec0;
+}
+
+.selectionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  color: white;
+  cursor: default;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.selectionButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.selectionLabel {
+  color: #a0aec0;
+  font-weight: normal;
+}
+
+.selectionName {
+  color: white;
+  font-weight: normal;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspacePanel {
+  position: absolute;
+  bottom: 35px;
+  left: 200px; /* Position to the right of the project button */
+  background: #4a5568;
+  border: 1px solid #718096;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
+  min-width: 220px;
+  max-width: calc(100vw - 220px);
+  padding: 16px 0 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.workspacePanelHeader {
+  padding: 0 18px 8px 18px;
+  border-bottom: 1px solid #718096;
+}
+
+.workspacePanelHeader h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 600;
+  user-select: none;
+}
+
+.workspacePanelContent {
+  padding: 0 14px;
+}
+
+.workspaceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.workspaceOption {
+  padding: 4px 8px;
+  background: #2d3748;
+  color: #e2e8f0;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid #4a5568;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+.workspaceOption:hover {
+  background: #4a5568;
+  border-color: #718096;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { ForceGraphManager } from "../core/force-graph/ForceGraphManager";
+import { getForceGraphInstance } from "./appConfigStore";
 
 export type MouseControlMode = "orbital" | "multiselection";
 
@@ -82,6 +84,33 @@ export const getMouseControlMode = (): MouseControlMode => {
 
 export const setMouseControlMode = (mode: MouseControlMode): void => {
   useMouseControlsStore.getState().setControlMode(mode);
+
+  // Also update the ForceGraph3D instance if it exists
+  const forceGraphInstance = getForceGraphInstance();
+  if (forceGraphInstance) {
+    ForceGraphManager.updateMouseControlMode(forceGraphInstance, mode);
+  }
+};
+
+/**
+ * Maps mouseClickMode from interactivityFlags to MouseControlMode
+ * and applies it to both the store and ForceGraph3D instance
+ */
+export const applyMouseClickModeFromInteractivityFlags = (
+  mouseClickMode?: "multiselection" | "orbital"
+): void => {
+  let controlMode: MouseControlMode = "multiselection"; // default
+
+  if (mouseClickMode === "multiselection") {
+    controlMode = "multiselection";
+  } else if (mouseClickMode === "orbital") {
+    controlMode = "orbital";
+  }
+
+  // console.log(
+  //   `Applying mouse click mode: ${mouseClickMode} -> control mode: ${controlMode}`
+  // );
+  setMouseControlMode(controlMode);
 };
 
 export const toggleMouseControlMode = (): void => {

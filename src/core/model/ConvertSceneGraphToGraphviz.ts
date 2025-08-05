@@ -4,14 +4,15 @@ import {
   RenderingManager,
 } from "../../controllers/RenderingManager";
 import { getNodeIsVisible } from "../../store/activeLegendConfigStore";
-import { GraphvizLayoutType } from "../layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../layouts/GraphvizLayoutType";
 import { LayoutEngineOption } from "../layouts/layoutEngineTypes";
 import { Graph } from "./Graph";
 
 export const ConvertSceneGraphToGraphviz = (
   graph: Graph,
   renderConfig: RenderingConfig,
-  layoutMode: LayoutEngineOption
+  layoutMode: LayoutEngineOption,
+  getUuid: (id: string) => string = (id: string) => id
 ): RootGraphModel => {
   const isGraphvizLayoutType = Object.values(GraphvizLayoutType).includes(
     layoutMode as GraphvizLayoutType
@@ -35,7 +36,9 @@ export const ConvertSceneGraphToGraphviz = (
       if (!getNodeIsVisible(node)) {
         continue;
       }
-      const n = g.node(node.getId().replace(/:/g, "_"), {
+      // Use the provided getUuid function to remap node ids
+      const nodeId = getUuid(node.getId());
+      const n = g.node(nodeId, {
         label: node.getId(),
         shape: "box",
         color: renderingManager.getNodeColor(node),
@@ -55,17 +58,14 @@ export const ConvertSceneGraphToGraphviz = (
       if (!renderingManager.getEdgeIsVisible(edge, graph)) {
         continue;
       }
-      g.edge(
-        [
-          edge.getSource().replace(/:/g, "_"),
-          edge.getTarget().replace(/:/g, "_"),
-        ],
-        {
-          label: edge.getType(),
-          color: renderingManager.getEdgeColor(edge),
-          fontcolor: renderingManager.getEdgeColor(edge) as Color,
-        }
-      );
+
+      const fromNodeId = getUuid(edge.getSource());
+      const toNodeId = getUuid(edge.getTarget());
+      g.edge([fromNodeId.replace(/:/g, "_"), toNodeId.replace(/:/g, "_")], {
+        label: edge.getType(),
+        color: renderingManager.getEdgeColor(edge),
+        fontcolor: renderingManager.getEdgeColor(edge) as Color,
+      });
     }
   });
   return g;

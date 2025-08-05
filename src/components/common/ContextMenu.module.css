@@ -102,7 +102,99 @@
   color: #777 !important;
 }
 
-.dark .informationItem:hover {
-  background: transparent !important;
-  color: #aaa !important;
+/* Separator styles */
+.informationItem:has(span:contains("---")) {
+  padding: 0.25rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  margin: 0.25rem 0;
+  color: transparent !important;
+  font-size: 0;
+  line-height: 0;
+}
+
+.contextMenu.dark .informationItem:has(span:contains("---")) {
+  border-bottom-color: #555;
+}
+
+/* Alternative separator approach for better browser support */
+.informationItem[data-separator="true"] {
+  padding: 0.25rem 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  margin: 0.25rem 0;
+  color: transparent !important;
+  font-size: 0;
+  line-height: 0;
+  height: 1px;
+  min-height: 1px;
+}
+
+.contextMenu.dark .informationItem[data-separator="true"] {
+  border-bottom-color: #555;
+}
+
+/* Styling options */
+.primary {
+  color: #1e40af !important;
+  font-weight: 500;
+}
+
+.contextMenu.dark .primary {
+  color: #60a5fa !important;
+}
+
+.primary:hover {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+}
+
+.contextMenu.dark .primary:hover {
+  background: #1e3a8a !important;
+  color: #60a5fa !important;
+}
+
+.warning {
+  color: #d97706 !important;
+  font-weight: 500;
+}
+
+.contextMenu.dark .warning {
+  color: #fbbf24 !important;
+}
+
+.warning:hover {
+  background: #fef3c7 !important;
+  color: #d97706 !important;
+}
+
+.contextMenu.dark .warning:hover {
+  background: #92400e !important;
+  color: #fbbf24 !important;
+}
+
+.caution {
+  color: #dc2626 !important;
+  font-weight: 500;
+}
+
+.contextMenu.dark .caution {
+  color: #f87171 !important;
+}
+
+.caution:hover {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+.contextMenu.dark .caution:hover {
+  background: #991b1b !important;
+  color: #f87171 !important;
+}
+
+/* Icon styling */
+.icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
 }

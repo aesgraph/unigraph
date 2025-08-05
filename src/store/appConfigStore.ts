@@ -30,6 +30,8 @@ export type AppConfigActions = {
   setShowEntityDataCard: (showEntityDataCard: boolean) => void;
   setLegendMode: (legendMode: RenderingManager__DisplayMode) => void;
   getLegendMode: () => RenderingManager__DisplayMode;
+  setAutoFitView: (enabled: boolean) => void;
+  getAutoFitView: () => boolean;
 };
 
 export type AppState = AppConfig &
@@ -37,6 +39,7 @@ export type AppState = AppConfig &
     isDarkMode: boolean;
     selectedSimulation: string;
     previousView: string | null;
+    autoFitView: boolean;
 
     activeProjectId: string | null;
     getActiveProjectId: () => string | null;
@@ -106,6 +109,8 @@ const useAppConfigStore = create<AppState>((set) => ({
   isDarkMode: false,
   selectedSimulation: "Lumina",
   legendMode: DEFAULTS.legendMode,
+  autoFitView: true,
+  interactivityFlags: DEFAULTS.interactivityFlags,
 
   setActiveView: (activeView: ActiveView) =>
     set({ previousView: useAppConfigStore.getState().activeView, activeView }),
@@ -123,8 +128,14 @@ const useAppConfigStore = create<AppState>((set) => ({
   }) => set({ forceGraph3dOptions }),
   setForceGraph3dLayoutMode: (layout: "Physics" | "Layout") =>
     set({ forceGraph3dOptions: { layout } }),
-  setActiveLayout: (activeLayout: LayoutEngineOption) =>
-    set({ activeLayout, forceGraph3dOptions: { layout: "Layout" } }),
+  setActiveLayout: (
+    activeLayout: LayoutEngineOption,
+    forceGraph3dOptionsLayoutMode: "Physics" | "Layout" = "Layout"
+  ) =>
+    set({
+      activeLayout,
+      forceGraph3dOptions: { layout: forceGraph3dOptionsLayoutMode },
+    }),
   setAppConfig: (appConfig: AppConfig) => set(appConfig),
 
   setIsDarkMode: (isDarkMode: boolean) => set({ isDarkMode }),
@@ -135,6 +146,8 @@ const useAppConfigStore = create<AppState>((set) => ({
     set({ legendMode }),
   getLegendMode: (): RenderingManager__DisplayMode =>
     useAppConfigStore.getState().legendMode,
+  setAutoFitView: (autoFitView: boolean) => set({ autoFitView }),
+  getAutoFitView: (): boolean => useAppConfigStore.getState().autoFitView,
 }));
 
 export const setActiveView = (activeView: ActiveView) => {
@@ -197,10 +210,13 @@ export const getForceGraph3dInstance = () => {
   return useAppConfigStore.getState().forceGraphInstance;
 };
 
-export const setActiveLayout = (activeLayout: LayoutEngineOption | string) => {
+export const setActiveLayout = (
+  activeLayout: LayoutEngineOption | string,
+  forceGraph3dOptionsLayoutMode: "Physics" | "Layout" = "Layout"
+) => {
   useAppConfigStore.setState(() => ({
     activeLayout,
-    forceGraph3dOptions: { layout: "Layout" },
+    forceGraph3dOptions: { layout: forceGraph3dOptionsLayoutMode },
   }));
 };
 
@@ -210,17 +226,22 @@ export const getActiveLayout = () => {
 
 export const setAppConfig = (appConfig: AppConfig) => {
   useAppConfigStore.setState(() => appConfig);
-  if (appConfig.workspaceConfig?.leftSidebarConfig.activeSectionId) {
+  if (appConfig.workspaceConfig?.leftSidebarConfig?.activeSectionId) {
     updateSectionWidth(
       appConfig.workspaceConfig.leftSidebarConfig.activeSectionId,
       appConfig.workspaceConfig.leftSidebarConfig.panelWidth
     );
   }
-  if (appConfig.workspaceConfig?.rightSidebarConfig.activeSectionId) {
+  if (appConfig.workspaceConfig?.rightSidebarConfig?.activeSectionId) {
     updateSectionWidth(
       appConfig.workspaceConfig.rightSidebarConfig.activeSectionId,
       appConfig.workspaceConfig.rightSidebarConfig.panelWidth
     );
+  }
+  // Handle appShellLayout if provided
+  if (appConfig.appShellLayout) {
+    // This will be handled by the App component when the config is applied
+    console.log("AppShell layout set to:", appConfig.appShellLayout);
   }
 };
 
@@ -234,6 +255,8 @@ export const getAppConfig = (): AppConfig => {
     activeLayout: state.activeLayout,
     legendMode: state.legendMode,
     activeFilter: state.activeFilter,
+    interactivityFlags: state.interactivityFlags,
+    appShellLayout: state.appShellLayout,
     workspaceConfig: {
       leftSidebarConfig: getLeftSidebarConfig(),
       rightSidebarConfig: getRightSidebarConfig(),
@@ -317,6 +340,20 @@ export const setPreviousView = (previousView: string | null) => {
 };
 export const getPreviousView = () => {
   return useAppConfigStore.getState().previousView;
+};
+
+export const setAutoFitView = (autoFitView: boolean) => {
+  useAppConfigStore.setState(() => ({
+    autoFitView,
+  }));
+};
+
+export const getAutoFitView = () => {
+  return useAppConfigStore.getState().autoFitView;
+};
+
+export const getInteractivityFlags = () => {
+  return useAppConfigStore.getState().interactivityFlags;
 };
 
 export default useAppConfigStore;

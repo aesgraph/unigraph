@@ -4,7 +4,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_1 = [
     label: "Aesgraph",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/1.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/1.png",
     topLeft: {
       x: 319,
       y: 386.71875,
@@ -19,7 +19,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_1 = [
     label: "Graphviz",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/1.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/1.png",
     topLeft: {
       x: 179,
       y: 213.71875,
@@ -34,7 +34,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_1 = [
     label: "React Flow",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/1.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/1.png",
     topLeft: {
       x: 291,
       y: 214.71875,
@@ -49,7 +49,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_1 = [
     label: "ForceGraph3d",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/1.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/1.png",
     topLeft: {
       x: 403,
       y: 213.71875,
@@ -64,7 +64,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_1 = [
     label: "Gephi",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/1.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/1.png",
     topLeft: {
       x: 508,
       y: 215.71875,
@@ -82,7 +82,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_2 = [
     label: "graph interaction, app bootstrapper",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/2.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/2.png",
     topLeft: {
       x: 280,
       y: 103.71875,
@@ -97,7 +97,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_2 = [
     label: "graph analytics desktop app",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/2.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/2.png",
     topLeft: {
       x: 525,
       y: 105.71875,
@@ -112,7 +112,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_2 = [
     label: "graph model language and layout engine",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/2.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/2.png",
     topLeft: {
       x: 127,
       y: 316.71875,
@@ -127,7 +127,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_2 = [
     label: "3d force directed graph interaction library",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/2.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/2.png",
     topLeft: {
       x: 381,
       y: 315.71875,
@@ -145,7 +145,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3 = [
     label: "web-based graph/spatial analytics app",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/3.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/3.png",
     topLeft: {
       x: 89,
       y: 446.71875,
@@ -160,7 +160,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3 = [
     label: "a unified information composition and exchange platform",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/3.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/3.png",
     topLeft: {
       x: 87,
       y: 513.71875,
@@ -175,7 +175,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3 = [
     label: "an application bootstrapper",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/3.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/3.png",
     topLeft: {
       x: 435,
       y: 447.71875,
@@ -190,7 +190,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3 = [
     label: "ai output validity check machine",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/3.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/3.png",
     topLeft: {
       x: 425,
       y: 485.71875,
@@ -205,7 +205,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3 = [
     label: "and more",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/3.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/3.png",
     topLeft: {
       x: 427,
       y: 519.71875,
@@ -220,7 +220,7 @@ export const demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes_3 = [
     label: "Aesgraph",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/demo/StackedGalleryTransparent/3.png",
+    imageUrl: "/images/demo/StackedGalleryTransparent/3.png",
     topLeft: {
       x: 13,
       y: 26.71875,

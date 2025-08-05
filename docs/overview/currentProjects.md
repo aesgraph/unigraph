@@ -13,6 +13,6 @@ Unigraph will provide seamless, first-class support for loading and interactivel
 As a user I want the ability to prompt a copilot to create and modify graphs on my behalf. This work entails adding a Copilot applet to Unigraph, and connecting it to the Unigraph state management system.
 This work has not been started.
 
-## 3. Unigraph YASGUI Integration
+## 3. Unigraph Semantic Web Integration
 
 Provide a first-class experience for SPARQL querying and seamless entity importing into Unigraph from the Semantic Web. This integration will enable users to interact with SPARQL endpoints, retrieve structured data, and incorporate it into Unigraph’s knowledge graph, enhancing interoperability with Wikidata, DBpedia, and other linked data sources. By bridging graph-based personal knowledge management with external structured knowledge, this project will significantly expand Unigraph’s capabilities as a human-centric information engine.

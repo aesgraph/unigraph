@@ -1,0 +1,232 @@
+{
+  "path": "/",
+  "type": "directory",
+  "children": [
+    {
+      "path": "unigraph",
+      "type": "directory",
+      "children": [
+        {
+          "path": "unigraph/UnigraphChromeExtension.md",
+          "type": "file",
+          "name": "UnigraphChromeExtension.md",
+          "title": "Unigraph Chrome Extension",
+          "order": 1
+        },
+        {
+          "path": "unigraph/UnigraphOverview.md",
+          "type": "file",
+          "name": "UnigraphOverview.md",
+          "title": "Unigraph Overview",
+          "order": 0
+        },
+        {
+          "path": "unigraph/applications",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/applications/DataAndFunctionMarketplace.md",
+              "type": "file",
+              "name": "DataAndFunctionMarketplace.md"
+            },
+            {
+              "path": "unigraph/applications/IntermediateRepresentationLanguage.md",
+              "type": "file",
+              "name": "IntermediateRepresentationLanguage.md"
+            },
+            {
+              "path": "unigraph/applications/SemanticWebConnector.md",
+              "type": "file",
+              "name": "SemanticWebConnector.md"
+            },
+            {
+              "path": "unigraph/applications/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "General Applications",
+              "order": 5
+            }
+          ]
+        },
+        {
+          "path": "unigraph/capabilities",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/capabilities/AnnotationTooling.md",
+              "type": "file",
+              "name": "AnnotationTooling.md",
+              "title": "Annotation Tooling",
+              "order": 9
+            },
+            {
+              "path": "unigraph/capabilities/AppLayoutManager.md",
+              "type": "file",
+              "name": "AppLayoutManager.md",
+              "title": "App Layout Manager",
+              "order": 6
+            },
+            {
+              "path": "unigraph/capabilities/ApplicationExtension.md",
+              "type": "file",
+              "name": "ApplicationExtension.md",
+              "title": "Application Extension",
+              "order": 5
+            },
+            {
+              "path": "unigraph/capabilities/CopilotIntegration.md",
+              "type": "file",
+              "name": "CopilotIntegration.md",
+              "title": "Copilot Integration",
+              "order": 12
+            },
+            {
+              "path": "unigraph/capabilities/DocumentEditing.md",
+              "type": "file",
+              "name": "DocumentEditing.md",
+              "title": "Document Editing",
+              "order": 7
+            },
+            {
+              "path": "unigraph/capabilities/GraphConstruction.md",
+              "type": "file",
+              "name": "GraphConstruction.md",
+              "title": "Graph Construction",
+              "order": 1
+            },
+            {
+              "path": "unigraph/capabilities/GraphFilters.md",
+              "type": "file",
+              "name": "GraphFilters.md",
+              "title": "Graph Filters",
+              "order": 3
+            },
+            {
+              "path": "unigraph/capabilities/GraphInterspection.md",
+              "type": "file",
+              "name": "GraphInterspection.md",
+              "title": "Graph Interspection",
+              "order": 4
+            },
+            {
+              "path": "unigraph/capabilities/GraphLayouts.md",
+              "type": "file",
+              "name": "GraphLayouts.md",
+              "title": "Graph Layouts",
+              "order": 2
+            },
+            {
+              "path": "unigraph/capabilities/ProjectManagement.md",
+              "type": "file",
+              "name": "ProjectManagement.md",
+              "title": "Project Management",
+              "order": 8
+            },
+            {
+              "path": "unigraph/capabilities/SemanticWebQueryTool.md",
+              "type": "file",
+              "name": "SemanticWebQueryTool.md",
+              "title": "Semantic Web Query Tool",
+              "order": 11
+            },
+            {
+              "path": "unigraph/capabilities/TypeTheoreticTooling.md",
+              "type": "file",
+              "name": "TypeTheoreticTooling.md",
+              "title": "Type Theoretic Tooling",
+              "order": 10
+            },
+            {
+              "path": "unigraph/capabilities/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Capabilities",
+              "order": 3
+            }
+          ]
+        },
+        {
+          "path": "unigraph/examples",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/examples/creatingGraphsProgrammatically.md",
+              "type": "file",
+              "name": "creatingGraphsProgrammatically.md",
+              "title": "Creating graphs programatically",
+              "order": 6
+            },
+            {
+              "path": "unigraph/examples/dataUrlGraph.md",
+              "type": "file",
+              "name": "dataUrlGraph.md",
+              "title": "Graph by data url",
+              "order": 4
+            },
+            {
+              "path": "unigraph/examples/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Examples",
+              "order": 2
+            },
+            {
+              "path": "unigraph/examples/knowledgeGraphOfAcademics.md",
+              "type": "file",
+              "name": "knowledgeGraphOfAcademics.md",
+              "title": "A Knowledge Graph of Academics",
+              "order": 2
+            },
+            {
+              "path": "unigraph/examples/unigraphApplicationsAndStoryCards.md",
+              "type": "file",
+              "name": "unigraphApplicationsAndStoryCards.md",
+              "title": "Describing Unigraph with Story Cards",
+              "order": 3
+            }
+          ]
+        },
+        {
+          "path": "unigraph/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Unigraph",
+          "order": 0
+        },
+        {
+          "path": "unigraph/papers",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/papers/AnalyticsEngines.md",
+              "type": "file",
+              "name": "AnalyticsEngines.md"
+            },
+            {
+              "path": "unigraph/papers/InterpretableAI.md",
+              "type": "file",
+              "name": "InterpretableAI.md"
+            },
+            {
+              "path": "unigraph/papers/OrganizationalComplexityInBigScience.md",
+              "type": "file",
+              "name": "OrganizationalComplexityInBigScience.md"
+            },
+            {
+              "path": "unigraph/papers/OrganizationalComplexityInSoftwareEngineering.md",
+              "type": "file",
+              "name": "OrganizationalComplexityInSoftwareEngineering.md"
+            },
+            {
+              "path": "unigraph/papers/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Papers",
+              "order": 6
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

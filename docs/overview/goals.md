@@ -13,10 +13,10 @@ Unigraph is a single technology to build higher level applications that are inte
 
 Some examples of higher level applications are in the domains of:
 
-* System Design and Diagramming
-* Semantic Technologies: Knowledge Graphs and Ontologies
-* Data and Tool Discovery, Composition, and Chaining
-* Research and Collaboration
+- System Design and Diagramming
+- Semantic Technologies: Knowledge Graphs and Ontologies
+- Data and Tool Discovery, Composition, and Chaining
+- Research and Collaboration
 
 Unigraph is a general solution for web-based client-side interaction with Graphs.
 Unigraph aims to provide a field-theoretical framework for interoperable graph-based applications.
@@ -24,40 +24,45 @@ Unigraph aims to provide a field-theoretical framework for interoperable graph-b
 ![UnigraphMesh](../assets/images/unigraph-mesh.png)
 
 <!-- ![UnigraphV0Diagram](../assets/images/unigraphDesign/unigraphV0.png) -->
+
 ### What the demo should support (in progress)
+
 - Graph-Definition Languages
-    - Dot
-    - MermaidJS
-    - GraphML
-    - JSON (Unigraph format)
+  - Dot
+  - MermaidJS
+  - GraphML
+  - JSON (Unigraph format)
 - Interaction Layer Libraries
-    - ReactFlow
-    - WebGL + ForceGraph
+  - ReactFlow
+  - WebGL + ForceGraph
 
 ### Unigraph Demo Application Features (in progress)
+
 - Import -> Edit -> Export Workflows
 - Graph Model Editing
-- Display Model Editing 
-    - Rendering Configuration, e.g. Positions, Colors, Sizing
-    - Layouts
-    - Filtering
-    - Presets
+- Display Model Editing
+  - Rendering Configuration, e.g. Positions, Colors, Sizing
+  - Layouts
+  - Filtering
+  - Presets
 - Support for Multimedia and Annotations
 - Sub-applications 🚧
-    - ImageBox Annotation Tool
+  - ImageBox Annotation Tool
 
 ### Integrations for the Unigraph Demo
-- Semantic Web Navigator (dbpedia + yasgui)
+
+- Semantic Web Navigator (dbpedia + semantic query panel)
 - Graph Editing IDE (monaco + vercel ai)
 - SignIn and online File Management (supabase)
 
 ## The long-term vision
+
 1. An IDE for graph-based visualization and analytics
 2. Full Semantic Web Integration
 3. Git-level version control for graph management
 4. Data Access Controls for distributed collaboration
 
-Unigraph aims to combine the best of Obsidian, VSCode, and Copilot into a single product for graph-based ideation, modeling, visualization, and analytics. 
+Unigraph aims to combine the best of Obsidian, VSCode, and Copilot into a single product for graph-based ideation, modeling, visualization, and analytics.
 
 Unigraph sees itself as becoming an indespensible tool for data scientists, educators, and students, and many others. Unigraph aims to become an "IDE for analytics" by unifying graph-based technologies through a standard language and framework.
 
@@ -66,7 +71,6 @@ Unigraph offers a new paradigm for how humans represent and interpret informatio
 Unigraph aims to become the central means through which humans interact with software.
 
 ### Projects related to the Big Picture
-[Wolfram Hypergraphs](<https://writings.stephenwolfram.com/2020/04/finally-we-may-have-a-path-to-the-fundamental-theory-of-physics-and-its-beautiful/>)<br>
-[Obsidian](<https://obsidian.md/>)
 
-
+[Wolfram Hypergraphs](https://writings.stephenwolfram.com/2020/04/finally-we-may-have-a-path-to-the-fundamental-theory-of-physics-and-its-beautiful/)<br>
+[Obsidian](https://obsidian.md/)

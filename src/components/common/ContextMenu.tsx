@@ -1,3 +1,4 @@
+import { LucideIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./ContextMenu.module.css";
 
@@ -10,6 +11,9 @@ export interface ContextMenuItem {
   displayMode?: ContextMenuDisplayMode; // Controls how submenu is displayed
   gridColumns?: number; // Number of columns for grid layout
   information?: boolean; // New prop to mark item as informational (non-clickable)
+  separator?: boolean; // New prop to mark item as a visual separator
+  style?: "default" | "primary" | "warning" | "caution"; // Styling options
+  icon?: LucideIcon; // Lucide React icon component
 }
 
 export interface ContextMenuProps {
@@ -107,17 +111,29 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       // Determine class name based on item type and display mode
       const baseClass =
         displayMode === "grid" ? styles.gridMenuItem : styles.contextMenuItem;
-      const itemClass = item.information
-        ? `${baseClass} ${styles.informationItem}`
-        : baseClass;
+      let itemClass = baseClass;
+
+      if (item.separator) {
+        itemClass = `${baseClass} ${styles.informationItem}`;
+      } else if (item.information) {
+        itemClass = `${baseClass} ${styles.informationItem}`;
+      } else if (item.style) {
+        itemClass = `${baseClass} ${styles[item.style]}`;
+      }
 
       return (
         <div
           key={index}
           className={itemClass}
+          data-separator={item.separator ? "true" : undefined}
           onMouseEnter={(e) => handleItemMouseEnter(item, e)}
           onClick={() => handleItemClick(item)}
         >
+          {item.icon && (
+            <span className={styles.icon}>
+              <item.icon size={16} />
+            </span>
+          )}
           {item.label}
           {item.submenu && displayMode !== "grid" && !item.information && (
             <span className={styles.submenuIndicator}>▶</span>

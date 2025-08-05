@@ -280,3 +280,117 @@ export const getRandomColor = () => {
   const colors = [0xffff00, 0x00ffff, 0xff00ff, 0xff8800, 0x00ff88, 0x8800ff];
   return colors[Math.floor(Math.random() * colors.length)];
 };
+
+/**
+ * Calculates the relative luminance of a color
+ * @param r Red component (0-255)
+ * @param g Green component (0-255)
+ * @param b Blue component (0-255)
+ * @returns Relative luminance value
+ */
+function getRelativeLuminance(r: number, g: number, b: number): number {
+  const [rs, gs, bs] = [r, g, b].map((c) => {
+    c = c / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+/**
+ * Parses a color string and returns RGB components
+ * @param color CSS color string (hex, rgb, rgba, named colors)
+ * @returns RGB components [r, g, b] or null if parsing fails
+ */
+function parseColor(color: string): [number, number, number] | null {
+  // Handle named colors
+  const namedColors: Record<string, string> = {
+    black: "#000000",
+    white: "#ffffff",
+    red: "#ff0000",
+    green: "#00ff00",
+    blue: "#0000ff",
+    yellow: "#ffff00",
+    cyan: "#00ffff",
+    magenta: "#ff00ff",
+    gray: "#808080",
+    grey: "#808080",
+    darkgray: "#404040",
+    darkgrey: "#404040",
+    lightgray: "#c0c0c0",
+    lightgrey: "#c0c0c0",
+  };
+
+  let colorStr = color.toLowerCase().trim();
+
+  // Handle named colors
+  if (namedColors[colorStr]) {
+    colorStr = namedColors[colorStr];
+  }
+
+  // Handle hex colors
+  if (colorStr.startsWith("#")) {
+    const hex = colorStr.slice(1);
+    if (hex.length === 3) {
+      const r = parseInt(hex[0] + hex[0], 16);
+      const g = parseInt(hex[1] + hex[1], 16);
+      const b = parseInt(hex[2] + hex[2], 16);
+      return [r, g, b];
+    } else if (hex.length === 6) {
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      return [r, g, b];
+    }
+  }
+
+  // Handle rgb/rgba colors
+  const rgbMatch = colorStr.match(/rgba?\(([^)]+)\)/);
+  if (rgbMatch) {
+    const values = rgbMatch[1].split(",").map((v) => parseFloat(v.trim()));
+    if (values.length >= 3) {
+      return [values[0], values[1], values[2]];
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Determines if a background color is dark
+ * @param backgroundColor CSS color string
+ * @returns true if the background is dark, false if light
+ */
+export function isDarkBackground(backgroundColor: string): boolean {
+  const rgb = parseColor(backgroundColor);
+  if (!rgb) {
+    // Default to assuming light background if we can't parse the color
+    return false;
+  }
+
+  const luminance = getRelativeLuminance(rgb[0], rgb[1], rgb[2]);
+  return luminance < 0.5;
+}
+
+/**
+ * Gets appropriate text colors for a given background color
+ * @param backgroundColor CSS color string
+ * @returns Object with primary and secondary text colors
+ */
+export function getContrastingTextColors(backgroundColor: string): {
+  primary: string;
+  secondary: string;
+} {
+  const isDark = isDarkBackground(backgroundColor);
+
+  if (isDark) {
+    return {
+      primary: "#ffffff", // White text for dark backgrounds
+      secondary: "#e1e5e9", // Light gray for secondary text
+    };
+  } else {
+    return {
+      primary: "#24292f", // Dark text for light backgrounds
+      secondary: "#656d76", // Medium gray for secondary text
+    };
+  }
+}

@@ -4,7 +4,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Auguste Piccard",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 114,
       y: 200.71875,
@@ -19,7 +19,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Emile Henriot",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 172,
       y: 217.71875,
@@ -34,7 +34,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Paul Ehrenfest",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 219,
       y: 235.71875,
@@ -49,7 +49,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Edouard Herzen",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 280,
       y: 231.71875,
@@ -64,7 +64,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Theophile de Donder",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 350,
       y: 235.71875,
@@ -79,7 +79,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Erwin Shrodinger",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 411,
       y: 221.71875,
@@ -94,7 +94,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Jules Emile Vershaffelt",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 482,
       y: 226.71875,
@@ -109,7 +109,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Wolfgang Pauli",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 547,
       y: 224.71875,
@@ -124,7 +124,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Werner Heisenberg",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 601,
       y: 220.71875,
@@ -139,7 +139,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Ralph Howard Fowler",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 644,
       y: 204.71875,
@@ -154,7 +154,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Leon Brillouin",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 688,
       y: 221.71875,
@@ -169,7 +169,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Peter Debye",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 24,
       y: 278.71875,
@@ -184,7 +184,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Martin Knudsen",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 96,
       y: 287.71875,
@@ -199,7 +199,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "William Lawrence Bragg",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 178,
       y: 272.71875,
@@ -214,7 +214,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Hendrik Anthony Kramers",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 261,
       y: 275.71875,
@@ -229,7 +229,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Paul Dirac",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 361,
       y: 273.71875,
@@ -244,7 +244,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Arthur Compton",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 431,
       y: 269.71875,
@@ -259,7 +259,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Louis de Broglie",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 511,
       y: 282.71875,
@@ -274,7 +274,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Max Born",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 589,
       y: 278.71875,
@@ -289,7 +289,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Niels Bohr",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 672,
       y: 281.71875,
@@ -304,7 +304,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Irving Langmuir",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 47,
       y: 301.71875,
@@ -319,7 +319,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Max Planck",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 135,
       y: 306.71875,
@@ -334,7 +334,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Marie Sklodowska Curie",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 216,
       y: 299.71875,
@@ -349,7 +349,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Hendrik Lorentz",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 305,
       y: 309.71875,
@@ -364,7 +364,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Albert Einstein",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 402,
       y: 299.71875,
@@ -379,7 +379,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Paul Langevin",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 482,
       y: 302.71875,
@@ -394,7 +394,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Charles Eugene Guye",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 548,
       y: 304.71875,
@@ -409,7 +409,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Charles Thomson Rees Wilson",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 643,
       y: 308.71875,
@@ -424,7 +424,7 @@ export const demo_SceneGraph_SolvayConference_ImageBoxes = [
     label: "Owen Wilans Richardson",
     type: "ImageBox",
     description: "",
-    imageUrl: "/public/images/wikipedia/Solvay_conference_1927.jpg",
+    imageUrl: "/images/wikipedia/Solvay_conference_1927.jpg",
     topLeft: {
       x: 704,
       y: 310.71875,

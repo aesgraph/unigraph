@@ -1,8 +1,8 @@
 import {
   createImageBoxesFromSegments,
   findColorIslands,
-} from "../../components/lumina/imageSegmentation";
-import { demo_SceneGraph_ArtCollection_Images } from "../../components/lumina/images";
+} from "../../_experimental/lumina/imageSegmentation";
+import { demo_SceneGraph_ArtCollection_Images } from "../../_experimental/lumina/images";
 import { Node } from "../model/Node";
 import { SceneGraph } from "../model/SceneGraph";
 

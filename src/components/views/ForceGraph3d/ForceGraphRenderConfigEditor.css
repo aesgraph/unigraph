@@ -1,0 +1,480 @@
+.force-graph-render-config-editor {
+  padding: 0.75rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  min-width: 10rem;
+  z-index: 10;
+  color: #ffffff;
+}
+
+.form-field {
+  margin-bottom: 0.4rem;
+}
+
+.form-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2rem 0;
+}
+
+/* Grid layout for related fields */
+.form-field-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.form-field-group-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.form-field-group-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.form-field-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.form-field-compact .form-label {
+  font-size: 0.7rem;
+  margin-right: 0;
+  margin-bottom: 0.1rem;
+  text-align: center;
+}
+
+.form-field-compact .number-input-container {
+  width: 100%;
+}
+
+.form-field-compact .form-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+  color: #e2e8f0;
+}
+
+.form-input {
+  width: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #374151;
+  border-radius: 4px;
+  text-align: right;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+  color: #ffffff;
+  background-color: #1f2937;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+.form-input.dark-mode {
+  background-color: #1f2937;
+  color: #ffffff;
+  border-color: #374151;
+}
+
+.form-input-error {
+  border-color: #ff0000;
+}
+
+.form-error {
+  color: #f87171;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+  text-align: right;
+  display: block; /* Ensure error appears on new line */
+  width: 100%; /* Take full width */
+  margin-left: 0; /* Reset any margin */
+}
+
+.apply-button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.apply-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.apply-button.dark-mode {
+  background-color: #0056b3;
+}
+
+.apply-button:disabled {
+  background-color: #ccc;
+  opacity: 0.7;
+}
+
+.number-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.number-input-buttons {
+  display: flex;
+  flex-direction: column;
+  margin-left: -1px;
+}
+
+.spinner-button {
+  padding: 0;
+  width: 16px;
+  height: 12px;
+  line-height: 8px;
+  font-size: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: background-color 0.2s;
+  color: #94a3b8;
+}
+
+.spinner-button:hover {
+  background-color: #e9ecef;
+  color: #ffffff;
+}
+
+.spinner-button.up {
+  border-top-right-radius: 4px;
+}
+
+.spinner-button.down {
+  border-bottom-right-radius: 4px;
+  margin-top: -1px;
+}
+
+.dark-mode .spinner-button {
+  background-color: #555;
+  border-color: #666;
+  color: #fff;
+}
+
+.dark-mode .spinner-button:hover {
+  background-color: #666;
+}
+
+.form-input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Remove browser's default number input spinners */
+.form-input[type="number"]::-webkit-outer-spin-button,
+.form-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Style checkboxes */
+.form-input[type="checkbox"] {
+  background-color: #1f2937;
+  border-color: #4b5563;
+}
+
+.form-input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* Dark mode overrides */
+.dark-mode .form-input {
+  color: #ffffff;
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.dark-mode .form-label {
+  color: #e2e8f0;
+}
+
+.section-header {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #9ca3af;
+  margin: 0.5rem 0 0.3rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 0.2rem;
+}
+
+.dark-mode .section-header {
+  color: #6b7280;
+  border-bottom-color: #4b5563;
+}
+
+/* Table Layout */
+.config-table {
+  border: 1px solid #374151;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  background-color: #374151;
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  border-bottom: 1px solid #374151;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.header-cell {
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+}
+
+.label-cell {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  background-color: #1f2937;
+  border-right: 1px solid #374151;
+}
+
+.dark-mode .label-cell {
+  color: #6b7280;
+  background-color: #111827;
+  border-right-color: #4b5563;
+}
+
+.empty-cell {
+  width: 100%;
+  height: 100%;
+}
+
+/* Camera Controls */
+.camera-group {
+  margin-bottom: 1rem;
+}
+
+.camera-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dark-mode .camera-label {
+  color: #6b7280;
+}
+
+.camera-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.camera-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.camera-input label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+}
+
+.dark-mode .camera-input label {
+  color: #9ca3af;
+}
+
+/* Zoom Group */
+.zoom-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.zoom-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 80px;
+}
+
+.dark-mode .zoom-label {
+  color: #6b7280;
+}
+
+.zoom-input {
+  flex: 1;
+}
+
+/* Form Actions */
+.form-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #374151;
+}
+
+.apply-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.apply-button:hover {
+  background-color: #2563eb;
+}
+
+.dark-mode .apply-button {
+  background-color: #1d4ed8;
+}
+
+.dark-mode .apply-button:hover {
+  background-color: #1e40af;
+}
+
+/* Camera Table Layout */
+.camera-table {
+  display: grid;
+  grid-auto-rows: minmax(32px, auto);
+  row-gap: 2px;
+  margin-bottom: 1rem;
+}
+.camera-header-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  background-color: #374151;
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.camera-table .table-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.camera-table .table-cell {
+  padding: 0.2rem 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.camera-table .label-cell {
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  background-color: #1f2937;
+  border-right: 1px solid #374151;
+  text-align: left;
+}
+.dark-mode .camera-table .label-cell {
+  color: #6b7280;
+  background-color: #111827;
+  border-right-color: #4b5563;
+}
+.camera-table .table-cell {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.camera-header-row .header-cell {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  text-align: center;
+}
+
+.config-table .label-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  background-color: #1f2937;
+  border-right: 1px solid #374151;
+  text-align: left;
+}
+.config-table .table-cell {
+  display: block;
+  padding: 0.5rem;
+}
+.config-table .table-cell input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: left;
+}
+.form-field-compact {
+  width: 100%;
+}
+.config-table .header-cell {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  text-align: center;
+}

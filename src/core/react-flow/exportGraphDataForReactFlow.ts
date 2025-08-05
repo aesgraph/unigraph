@@ -9,6 +9,19 @@ import { NodePositionData } from "../layouts/layoutHelpers";
 import { SceneGraph } from "../model/SceneGraph";
 import { EntityIds } from "../model/entity/entityIds";
 
+// Helper function to safely convert any value to a string
+const safeToString = (value: any): string => {
+  if (typeof value === "string") {
+    return value;
+  } else if (value && typeof value === "object" && "value" in value) {
+    return String(value.value);
+  } else if (value && typeof value === "object") {
+    return JSON.stringify(value);
+  } else {
+    return String(value || "");
+  }
+};
+
 export const exportGraphDataForReactFlow = (
   sceneGraph: SceneGraph,
   positionsOverride: NodePositionData | undefined = undefined,
@@ -39,10 +52,11 @@ export const exportGraphDataForReactFlow = (
         label: node.getId(),
         color: getNodeColor(node),
         dimensions: node.getDimensions(),
+        userData: node.getAllUserData(),
       },
       style: { border: `2px solid ${getNodeColor(node)}` },
-      label: node.getLabel(),
-      type: "resizerNode",
+      label: safeToString(node.getLabel()),
+      type: node.getType(),
     }));
 
   const initialVisibleEdges = sceneGraph

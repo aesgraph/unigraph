@@ -57,7 +57,7 @@ Here is a collection of various diagrams (partially AI-generated) regarding Unig
 
 **Connect to the semantic web and load ontology and knowledge graphs into Unigraph [coming soon]**
 
-Unigraph will support loading in graphs from the semantic web using yasgui, from sources like dbpedia.
+Unigraph will support loading in graphs from the semantic web using the semantic query panel, from sources like dbpedia.
 It can be used as an interactive client for navigating the semantic web.
 
 **Copilot functionality: IDE-based Copilot editing of Graphs [coming soon]**

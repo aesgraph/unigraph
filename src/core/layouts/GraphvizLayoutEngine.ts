@@ -1,51 +1,43 @@
 import { Graphviz } from "@hpcc-js/wasm";
 import { toDot } from "ts-graphviz";
-import { parseGraphvizPositions } from "../../controllers/graphvisJsonParser";
+import { v4 as uuidv4 } from "uuid";
 import { GraphvizOutput } from "../../controllers/graphvizHelpers";
+import { parseGraphvizPositions } from "../../controllers/graphvizJsonParser";
 import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphviz";
 import { SceneGraph } from "../model/SceneGraph";
+import { GraphvizLayoutType } from "./GraphvizLayoutType";
 import {
   NodePositionData,
   scalePositionsByFactor,
   translateToPositiveCoordinates,
 } from "./layoutHelpers";
 
-export enum GraphvizLayoutType {
-  Graphviz_circo = "circo",
-  Graphviz_dot = "dot",
-  Graphviz_fdp = "fdp",
-  Graphviz_sfdp = "sfdp",
-  Graphviz_neato = "neato",
-  Graphviz_osage = "osage",
-  Graphviz_patchwork = "patchwork",
-  Graphviz_twopi = "twopi",
-  Graphviz_nop = "nop",
-  Graphviz_nop2 = "nop2",
-}
-
-// export const graphvizLayoutLabels: Record<GraphvizLayoutType, string> = {
-//   [GraphvizLayoutType.Graphviz_circo]: "Circo",
-//   [GraphvizLayoutType.Graphviz_dot]: "Dot",
-//   [GraphvizLayoutType.Graphviz_fdp]: "Fdp",
-//   [GraphvizLayoutType.Graphviz_sfdp]: "Sfdp",
-//   [GraphvizLayoutType.Graphviz_neato]: "Neato",
-//   [GraphvizLayoutType.Graphviz_osage]: "Osage",
-//   [GraphvizLayoutType.Graphviz_patchwork]: "Patchwork",
-//   [GraphvizLayoutType.Graphviz_twopi]: "Twopi",
-//   [GraphvizLayoutType.Graphviz_nop]: "nop",
-//   [GraphvizLayoutType.Graphviz_nop2]: "nop2",
-// };
-
 export class GraphvizLayoutEngine {
   public static async computeLayout(
     sceneGraph: SceneGraph,
     layoutType: GraphvizLayoutType
   ): Promise<GraphvizOutput> {
+    // --- UUID remapping logic start ---
+    // Map original node ids to UUIDs
+    const graph = sceneGraph.getGraph();
+    const nodeIdMap: Record<string, string> = {};
+    graph
+      .getNodes()
+      .getIds()
+      .forEach((nodeId: string) => {
+        nodeIdMap[nodeId] = uuidv4();
+      });
+
+    // Helper to get UUID for a node id
+    const getUuid = (id: string) => nodeIdMap[id] || id;
+
+    // Convert scene graph to Graphviz DOT using UUIDs as node ids
     const dot = toDot(
       ConvertSceneGraphToGraphviz(
-        sceneGraph.getGraph(),
+        graph,
         { ...sceneGraph.getDisplayConfig(), nodePositions: undefined },
-        layoutType
+        layoutType,
+        getUuid // Pass a function to remap node ids to UUIDs
       )
     );
 
@@ -55,38 +47,41 @@ export class GraphvizLayoutEngine {
       await graphviz.layout(dot, "json", layoutType)
     );
     const out = parseGraphvizPositions(jsonPositions);
+
+    // Remap positions from UUIDs back to original node ids
     let positions: NodePositionData = {};
     if (out) {
+      // Reverse the nodeIdMap for lookup
+      const uuidToNodeId: Record<string, string> = {};
+      for (const [orig, uuid] of Object.entries(nodeIdMap)) {
+        uuidToNodeId[uuid] = orig;
+      }
+      console.log("out is ", out);
       for (const o of out) {
-        positions[o.id] = { x: o.x, y: -o.y };
+        const origId = uuidToNodeId[o.id] || o.id;
+        // Ensure x and y are valid numbers
+        const x = typeof o.x === "number" && isFinite(o.x) ? o.x : 0;
+        const y = typeof o.y === "number" && isFinite(o.y) ? -o.y : 0;
+        positions[origId] = { x, y };
       }
     }
     positions = translateToPositiveCoordinates(positions);
     positions = scalePositionsByFactor(positions, 1.4);
+
+    // Sanitize all positions before returning
+    for (const key in positions) {
+      if (typeof positions[key].x !== "number" || !isFinite(positions[key].x)) {
+        positions[key].x = 0;
+      }
+      if (typeof positions[key].y !== "number" || !isFinite(positions[key].y)) {
+        positions[key].y = 0;
+      }
+    }
+
     if (svg == "") {
       throw new Error("No SVG generated from Graphviz");
     }
-    console.log("success");
-    // return normalize
     return { svg, positions };
-
-    // Write DOT file to temporary directory
-    // const dotFilePath = join(tmpdir(), "graph.dot");
-    // writeFileSync(dotFilePath, dot);
-
-    // Run Graphviz layout engine
-    // const outputFilePath = join(tmpdir(), "graph-pos.dot");
-    // execSync(
-    //   `dot -K${layoutType.toLowerCase()} -Tdot -o ${outputFilePath} ${dotFilePath}`
-    // );
-
-    // Read the output DOT file
-    // const outputDot = readFileSync(outputFilePath, "utf-8");
-
-    // Extract positions from the output DOT file
-    // const positions = this.extractPositionsFromDot(outputDot);
-
-    // return normalizePositions(positions);
   }
 
   private convertToDot(graph: any): string {

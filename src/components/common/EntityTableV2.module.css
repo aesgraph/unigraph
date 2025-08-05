@@ -1,0 +1,115 @@
+/* EntityTableV2.module.css - Minimal styling for EntityTableV2 component */
+
+.container {
+  /* Basic container styling */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden; /* Prevent container scrollbars */
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure AG Grid container takes full space */
+.agGridContainer {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0; /* Important for flex containers */
+  overflow: hidden; /* Let AG Grid handle its own scrollbars */
+  margin: 0;
+  padding: 0;
+}
+
+/* Override any AG Grid default padding/margins */
+.agGridContainer :global(.ag-root-wrapper) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.agGridContainer :global(.ag-root) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.agGridContainer :global(.ag-header) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.agGridContainer :global(.ag-body-viewport) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Custom scrollbar styling that won't interfere with AG Grid */
+.customScrollbar {
+  scrollbar-width: thin;
+  /* Use CSS custom properties for theming */
+  scrollbar-color: var(--ag-border-color) var(--ag-background-color);
+}
+
+.customScrollbar::-webkit-scrollbar {
+  width: 10px;
+  background: var(--ag-background-color);
+}
+
+.customScrollbar::-webkit-scrollbar-thumb {
+  background: var(--ag-border-color);
+  border-radius: 6px;
+}
+
+.customScrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--ag-active-color);
+}
+
+/* Context menu styling */
+.contextMenu {
+  position: fixed;
+  /* Theme colors will be applied via inline styles */
+  border-radius: 4px;
+  z-index: 1000;
+  min-width: 150px;
+}
+
+.contextMenuItem {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid var(--ag-border-color);
+  transition: background-color 0.2s ease;
+}
+
+.contextMenuItem:hover {
+  background-color: var(--ag-row-hover-color);
+}
+
+.contextMenuItem:last-child {
+  border-bottom: none;
+}
+
+/* Overlay for closing context menu */
+.contextMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+/* Specific styling for TypeCellRendererComponent to allow vertical overflow */
+.typeCellRenderer {
+  overflow: visible !important; /* Allow dropdown to overflow outside cell */
+  position: relative;
+  z-index: 1; /* Ensure proper stacking context */
+}
+
+.typeCellRendererDropdown {
+  overflow: visible !important; /* Allow dropdown to overflow outside cell */
+  position: relative;
+  min-height: 0; /* Allow content to expand beyond cell height */
+  z-index: 2147483647; /* Ensure dropdown appears above AG Grid rows */
+}
