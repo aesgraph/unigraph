@@ -147,11 +147,71 @@ export const WRITE_CODE_TOOL: OpenAITool = {
 };
 
 // Export all tools
+export const MAP_CONTROL_TOOL: OpenAITool = {
+  type: "function",
+  function: {
+    name: "map_control",
+    description:
+      "Control the 2D map view. Use this to navigate to locations, add markers, change map settings, or interact with the map. You can go to cities, landmarks, addresses, or any location that can be geocoded.",
+    parameters: {
+      type: "object",
+      properties: {
+        action: {
+          type: "string",
+          enum: [
+            "go_to",
+            "add_marker",
+            "set_zoom",
+            "set_map_type",
+            "clear_markers",
+            "create_path",
+          ],
+          description: "The action to perform on the map",
+        },
+        location: {
+          type: "string",
+          description:
+            "The location to navigate to or add as a marker (e.g., 'Tokyo', 'Eiffel Tower', 'New York City')",
+        },
+        zoom: {
+          type: "number",
+          description: "Zoom level (1-18) for the map",
+        },
+        mapType: {
+          type: "string",
+          enum: ["roadmap", "satellite", "terrain", "dark"],
+          description: "The type of map to display",
+        },
+        description: {
+          type: "string",
+          description:
+            "Optional description for the marker when adding a location",
+        },
+        locations: {
+          type: "array",
+          items: {
+            type: "string",
+          },
+          description:
+            "Array of locations for creating a path (e.g., ['Tokyo', 'Kyoto', 'Osaka'])",
+        },
+        pathName: {
+          type: "string",
+          description:
+            "Name for the path (e.g., 'Japan Trip', 'European Tour')",
+        },
+      },
+      required: ["action"],
+    },
+  },
+};
+
 export const ALL_AI_TOOLS = [
   SEMANTIC_QUERY_TOOL,
   WORKSPACE_LAYOUT_TOOL,
   CODE_EDITOR_TOOL,
   WRITE_CODE_TOOL,
+  MAP_CONTROL_TOOL,
 ];
 
 // Knowledge Graph Search Tool
@@ -256,7 +316,8 @@ export const SEMANTIC_TOOLS = combineTools(
   SEMANTIC_QUERY_TOOL,
   KNOWLEDGE_GRAPH_SEARCH_TOOL,
   WORKSPACE_LAYOUT_TOOL,
-  CODE_EDITOR_TOOL
+  CODE_EDITOR_TOOL,
+  MAP_CONTROL_TOOL
 );
 
 export const GRAPH_ANALYSIS_TOOLS = combineTools(
@@ -267,7 +328,8 @@ export const GRAPH_ANALYSIS_TOOLS = combineTools(
 export const ALL_TOOLS = combineTools(
   SEMANTIC_QUERY_TOOL,
   KNOWLEDGE_GRAPH_SEARCH_TOOL,
-  GRAPH_ANALYSIS_TOOL
+  GRAPH_ANALYSIS_TOOL,
+  MAP_CONTROL_TOOL
 );
 
 // Type for tool call responses

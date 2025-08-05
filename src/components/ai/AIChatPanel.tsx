@@ -15,6 +15,7 @@ import useChatHistoryStore, {
   ChatImage,
   ChatMessage,
 } from "../../store/chatHistoryStore";
+import { useMapControlStore } from "../../store/mapControlStore";
 import { addNotification } from "../../store/notificationStore";
 import { useUserStore } from "../../store/userStore";
 import { useCommandProcessor } from "../commandPalette/CommandProcessor";
@@ -56,6 +57,16 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
     isVercelEndpoint,
     getEndpointType,
   } = useApiProvider();
+
+  // Get map control functions
+  const {
+    goToLocation,
+    addLocationMarker,
+    setZoom,
+    setMapType,
+    clearMarkers,
+    createPath,
+  } = useMapControlStore();
 
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -200,6 +211,84 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           });
         } catch (error) {
           log.error("Failed to process code generation tool call", {
+            error,
+            sessionId,
+            toolCallId: toolCall.id,
+          });
+        }
+      } else if (toolCall.function.name === "map_control") {
+        try {
+          const args = parseToolCallArguments(toolCall);
+
+          switch (args.action) {
+            case "go_to":
+              if (args.location) {
+                goToLocation(args.location);
+                log.info(`Navigated to location: ${args.location}`, {
+                  sessionId,
+                  location: args.location,
+                  toolCallId: toolCall.id,
+                });
+              }
+              break;
+            case "add_marker":
+              if (args.location) {
+                addLocationMarker(args.location, args.description);
+                log.info(`Added marker for location: ${args.location}`, {
+                  sessionId,
+                  location: args.location,
+                  description: args.description,
+                  toolCallId: toolCall.id,
+                });
+              }
+              break;
+            case "set_zoom":
+              if (args.zoom) {
+                setZoom(args.zoom);
+                log.info(`Set map zoom to: ${args.zoom}`, {
+                  sessionId,
+                  zoom: args.zoom,
+                  toolCallId: toolCall.id,
+                });
+              }
+              break;
+            case "set_map_type":
+              if (args.mapType) {
+                setMapType(args.mapType);
+                log.info(`Set map type to: ${args.mapType}`, {
+                  sessionId,
+                  mapType: args.mapType,
+                  toolCallId: toolCall.id,
+                });
+              }
+              break;
+            case "clear_markers":
+              clearMarkers();
+              log.info("Cleared all map markers", {
+                sessionId,
+                toolCallId: toolCall.id,
+              });
+              break;
+            case "create_path":
+              if (args.locations && Array.isArray(args.locations)) {
+                createPath(args.locations, args.pathName);
+                log.info(`Created path: ${args.pathName || "Unnamed path"}`, {
+                  sessionId,
+                  locations: args.locations,
+                  pathName: args.pathName,
+                  toolCallId: toolCall.id,
+                });
+              }
+              break;
+            default:
+              log.warn("Unknown map action", {
+                sessionId,
+                action: args.action,
+                toolCallId: toolCall.id,
+              });
+          }
+        } catch (error) {
+          log.error("Failed to process map control tool call", {
             error,
             sessionId,
             toolCallId: toolCall.id,

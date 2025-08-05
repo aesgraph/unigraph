@@ -172,6 +172,14 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     description:
       "Document editor supporting .md files (with Monaco) and .txt files (with Lexical), featuring real-time preview and syntax highlighting",
   },
+  "map-2d": {
+    id: "map-2d",
+    title: "2D Map",
+    icon: "🗺️",
+    category: "visualization",
+    description:
+      "Interactive 2D map view with custom markers, popups, and multiple map types using OpenStreetMap data",
+  },
 };
 
 // Helper function to get all available view IDs

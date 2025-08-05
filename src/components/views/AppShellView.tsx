@@ -27,6 +27,7 @@ import DocumentationView from "./DocumentationView";
 import DocumentEditorView from "./DocumentEditorView";
 import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
+import Map2DView from "./Map2DView";
 import MonacoEditorView from "./MonacoEditorView";
 import NodeLegendView from "./NodeLegendView";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
@@ -879,6 +880,14 @@ const documentEditorView = {
   category: VIEW_DEFINITIONS["markdown-editor"].category,
 };
 
+const map2DView = {
+  id: VIEW_DEFINITIONS["map-2d"].id,
+  title: VIEW_DEFINITIONS["map-2d"].title,
+  icon: VIEW_DEFINITIONS["map-2d"].icon,
+  component: (props: any) => <Map2DView {...props} />,
+  category: VIEW_DEFINITIONS["map-2d"].category,
+};
+
 // Filter out unwanted default views
 const viewsToExclude = [
   "terminal",
@@ -915,6 +924,7 @@ const allViews = [
   documentEditorView,
   documentationView,
   logViewerView,
+  map2DView,
 ];
 
 // Example: Create a custom theme for demonstration
