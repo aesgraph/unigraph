@@ -21,7 +21,7 @@ export const useHotkeys = (hotkeys: HotkeyAction[]) => {
         target instanceof HTMLTextAreaElement ||
         target instanceof HTMLSelectElement ||
         // Check for contentEditable elements (Monaco Editor uses these)
-        target.isContentEditable ||
+        (target as HTMLElement).isContentEditable ||
         // Check if we're inside Monaco Editor specifically
         target.closest(".monaco-editor") ||
         target.closest('[class*="monaco"]') ||

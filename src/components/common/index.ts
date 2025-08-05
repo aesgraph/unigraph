@@ -9,5 +9,5 @@ export type {
 export { default as UnigraphIframe } from "./UnigraphIframe";
 
 // Re-export other common components
-export { default as Badge } from "./Badge";
+export { Badge } from "./Badge";
 export { default as StaticHtmlComponent } from "./StaticHtmlComponent";

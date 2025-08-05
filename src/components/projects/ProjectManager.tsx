@@ -842,7 +842,6 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
             handleLoadDemoGraph(key);
             setShowLoadDialog(false);
           }}
-          isDarkMode={isDarkMode}
           handleLoadSceneGraph={(sceneGraph) => {
             onProjectSelected(sceneGraph);
             setShowLoadDialog(false);

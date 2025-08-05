@@ -29,25 +29,29 @@ const GenericProfileIcon = ({
 // Default profile icon for signed-in users without avatar
 const SignedInProfileIcon = ({
   style = {},
+  initials = "U",
 }: {
   style?: React.CSSProperties;
+  initials?: string;
 }) => (
-  <svg
-    width="32"
-    height="32"
-    viewBox="0 0 32 32"
-    fill="none"
+  <div
     style={{
-      display: "block",
+      width: "100%",
+      height: "100%",
       borderRadius: "50%",
-      boxShadow: "0 0 0 2px #4CAF50, 0 0 4px 0 rgba(76,175,80,0.18)",
+      backgroundColor: "#e0e0e0",
+      color: "#666666",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: "14px",
+      fontWeight: "bold",
+      boxShadow: "0 0 0 2px #1976d2, 0 0 4px 0 rgba(25,118,210,0.18)",
       ...style,
     }}
   >
-    <circle cx="16" cy="16" r="16" fill="#4CAF50" />
-    <circle cx="16" cy="13" r="6" fill="#ffffff" />
-    <ellipse cx="16" cy="24" rx="8" ry="5" fill="#ffffff" />
-  </svg>
+    {initials}
+  </div>
 );
 
 interface ProfileIconProps {
@@ -78,6 +82,27 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
 
   // Get avatar URL with fallbacks
   const avatarUrl = getAvatarUrl();
+
+  // Get user initials for the default profile icon
+  const getUserInitials = () => {
+    if (!user) return "U";
+
+    // Try to get initials from user metadata name
+    if (user.user_metadata?.name) {
+      const nameParts = user.user_metadata.name.split(" ");
+      if (nameParts.length >= 2) {
+        return (nameParts[0][0] + nameParts[1][0]).toUpperCase();
+      }
+      return nameParts[0][0].toUpperCase();
+    }
+
+    // Fallback to first letter of email
+    if (user.email) {
+      return user.email[0].toUpperCase();
+    }
+
+    return "U";
+  };
 
   // Reset avatar loaded state when URL changes
   useEffect(() => {
@@ -284,6 +309,7 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
               {isSignedIn ? (
                 <SignedInProfileIcon
                   style={{ width: "100%", height: "100%" }}
+                  initials={getUserInitials()}
                 />
               ) : (
                 <GenericProfileIcon style={{ width: "100%", height: "100%" }} />

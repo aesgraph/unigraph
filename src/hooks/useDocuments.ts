@@ -1,20 +1,21 @@
-import { useState, useCallback, useEffect } from "react";
-import { useDocumentStore } from "../store/documentStore";
+import { NodeId } from "@/core/model/Node";
+import { useCallback, useEffect, useState } from "react";
 import {
-  Document,
   CreateDocumentParams,
+  Document,
   UpdateDocumentParams,
   createDocument,
-  getDocument,
-  updateDocument,
   deleteDocument,
-  listDocuments,
-  searchDocuments,
-  getDocumentTree,
   duplicateDocument,
-  moveDocumentToProject,
+  getDocument,
   getDocumentStats,
+  getDocumentTree,
+  listDocuments,
+  moveDocumentToProject,
+  searchDocuments,
+  updateDocument,
 } from "../api/documentsApi";
+import { useDocumentStore } from "../store/documentStore";
 import { useAuth } from "./useAuth";
 
 export interface UseDocumentsOptions {
@@ -69,9 +70,9 @@ export function useDocuments(options: UseDocumentsOptions = {}) {
         setDocuments((prev) => [...prev, newDoc]);
 
         // Also update the document store for compatibility
-        documentStore.createDocument(newDoc.id);
+        documentStore.createDocument(newDoc.id as NodeId);
         documentStore.updateDocument(
-          newDoc.id,
+          newDoc.id as NodeId,
           newDoc.content || "",
           JSON.stringify(newDoc.data),
           newDoc.metadata?.tags || []
@@ -107,7 +108,7 @@ export function useDocuments(options: UseDocumentsOptions = {}) {
         // Also update the document store for compatibility
         if (params.content !== undefined || params.data !== undefined) {
           documentStore.updateDocument(
-            updatedDoc.id,
+            updatedDoc.id as NodeId,
             params.content || updatedDoc.content || "",
             JSON.stringify(params.data || updatedDoc.data),
             updatedDoc.metadata?.tags || []
@@ -140,7 +141,7 @@ export function useDocuments(options: UseDocumentsOptions = {}) {
         setDocuments((prev) => prev.filter((doc) => doc.id !== id));
 
         // Also update the document store for compatibility
-        documentStore.deleteDocument(id);
+        documentStore.deleteDocument(id as NodeId);
 
         // If this was the active document, clear it
         if (documentStore.activeDocument === id) {
@@ -314,9 +315,9 @@ export function useDocuments(options: UseDocumentsOptions = {}) {
 
       // Update document store with Supabase data
       docs.forEach((doc) => {
-        documentStore.createDocument(doc.id);
+        documentStore.createDocument(doc.id as NodeId);
         documentStore.updateDocument(
-          doc.id,
+          doc.id as NodeId,
           doc.content || "",
           JSON.stringify(doc.data),
           doc.metadata?.tags || []
