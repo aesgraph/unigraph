@@ -423,8 +423,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
     () => ({
       filter: false, // Disable built-in filtering to prevent interference
       sortable: true,
-      resizable: true,
+      resizable: false, // Disable resizing to prevent layout issues
       minWidth: 120,
+      maxWidth: 300, // Prevent columns from becoming too wide
+      flex: 1, // Allow columns to flex to fit container
     }),
     []
   );
@@ -434,8 +436,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
       style={{
         width: "100%",
         height: "100%",
-        overflow: "auto",
+        overflow: "hidden", // Prevent horizontal scrollbars
         borderRadius: 10,
+        maxWidth: "100%",
+        boxSizing: "border-box",
         ...style,
       }}
       // Add a class for custom scrollbar styling
@@ -463,13 +467,30 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         .ag-root-wrapper {
           background-color: ${getColor(theme.colors, "background")} !important;
           color: ${getColor(theme.colors, "text")} !important;
+          overflow: hidden !important;
+          max-width: 100% !important;
+          width: 100% !important;
+        }
+        
+        .ag-root {
+          overflow: hidden !important;
+          max-width: 100% !important;
+          width: 100% !important;
+        }
+        
+        .ag-body-viewport {
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+        }
+        
+        .ag-body-horizontal-scroll {
+          display: none !important;
         }
         
         .ag-header {
           background-color: ${getColor(theme.colors, "surface")} !important;
           color: ${getColor(theme.colors, "text")} !important;
           border-bottom: 1px solid ${getColor(theme.colors, "border")} !important;
-          ${projects.length === 0 ? "display: none !important;" : ""}
         }
         
         .ag-header-cell {
@@ -505,56 +526,107 @@ const ProjectsList: React.FC<ProjectsListProps> = ({
         .ag-cell-wrapper {
           align-items: center !important;
         }
+        
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
         `}
       </style>
-      <AgGridReact
-        rowData={projects}
-        loadingOverlayComponentParams={{
-          loadingMessage: "Loading projects...",
-        }}
-        loading={loading}
-        columnDefs={colDefs}
-        defaultColDef={defaultColDef}
-        domLayout="normal"
-        rowSelection="single"
-        animateRows={true}
-        suppressCellFocus={true}
-        enableRangeSelection={true}
-        suppressContextMenu={false}
-        allowContextMenuWithControlKey={false}
-        suppressMenuHide={false}
-        getRowStyle={() => ({
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: getColor(theme.colors, "background"),
-          color: getColor(theme.colors, "text"),
-        })}
-        onGridReady={(params) => {
-          console.log("AG Grid ready with params:", params);
-          console.log("Grid API:", params.api);
-          console.log("Row data at grid ready:", projects);
-          console.log("Column definitions at grid ready:", colDefs);
-        }}
-        onRowDataUpdated={(event) => {
-          console.log("Row data updated event:", event);
-          console.log("Current row data:", event.api.getRenderedNodes());
-        }}
-        onModelUpdated={(event) => {
-          console.log("Model updated event:", event);
-          console.log("Row count:", event.api.getDisplayedRowCount());
-        }}
-        onRowDoubleClicked={(event) => {
-          console.log("Row double clicked:", event);
-          if (event.data && event.data.id && onProjectDoubleClick) {
-            onProjectDoubleClick(event.data.id);
-          }
-        }}
-        overlayNoRowsTemplate={
-          error
-            ? `<span style="color:${getColor(theme.colors, "error")};">${error}</span>`
-            : `<span style="color:${getColor(theme.colors, "textSecondary")};">No projects found</span>`
-        }
-      />
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            color: getColor(theme.colors, "textSecondary"),
+            gap: "12px",
+          }}
+        >
+          <svg style={{ animation: "spin 1s linear infinite", width: "24px", height: "24px" }} viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke={getColor(theme.colors, "primary")} strokeWidth="2" strokeDasharray="31.4 31.4" strokeLinecap="round"/>
+          </svg>
+          <div style={{ fontSize: "14px" }}>Loading projects...</div>
+        </div>
+      ) : error ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            color: getColor(theme.colors, "error"),
+            gap: "12px",
+          }}
+        >
+          <div style={{ fontSize: "14px" }}>{error}</div>
+        </div>
+      ) : projects.length === 0 ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            color: getColor(theme.colors, "textSecondary"),
+            gap: "12px",
+          }}
+        >
+          <div style={{ fontSize: "14px" }}>No projects found</div>
+        </div>
+      ) : (
+        <AgGridReact
+          rowData={projects}
+          columnDefs={colDefs}
+          defaultColDef={defaultColDef}
+          domLayout="normal"
+          rowSelection="single"
+          animateRows={false} // Disable animations to prevent flashing
+          suppressCellFocus={true}
+          enableRangeSelection={true}
+          suppressContextMenu={false}
+          allowContextMenuWithControlKey={false}
+          suppressMenuHide={false}
+          suppressColumnVirtualisation={true} // Prevent column virtualization issues
+          suppressRowVirtualisation={true} // Prevent row virtualization issues
+          suppressHorizontalScroll={true} // Prevent horizontal scrolling
+          suppressScrollOnNewData={true} // Prevent scroll on data changes
+          getRowStyle={() => ({
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: getColor(theme.colors, "background"),
+            color: getColor(theme.colors, "text"),
+          })}
+          onGridReady={(params) => {
+            console.log("AG Grid ready with params:", params);
+            console.log("Grid API:", params.api);
+            console.log("Row data at grid ready:", projects);
+            console.log("Column definitions at grid ready:", colDefs);
+          }}
+          onRowDataUpdated={(event) => {
+            console.log("Row data updated event:", event);
+            console.log("Current row data:", event.api.getRenderedNodes());
+          }}
+          onModelUpdated={(event) => {
+            console.log("Model updated event:", event);
+            console.log("Row count:", event.api.getDisplayedRowCount());
+          }}
+          onRowDoubleClicked={(event) => {
+            console.log("Row double clicked:", event);
+            if (event.data && event.data.id && onProjectDoubleClick) {
+              onProjectDoubleClick(event.data.id);
+            }
+          }}
+        />
+      )}
 
       {/* Copy Dialog or Spinner */}
       {copyDialog &&

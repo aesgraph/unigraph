@@ -15,19 +15,19 @@ import "@aesgraph/app-shell/app-shell.css";
 import React from "react";
 import useAppConfigStore from "../../store/appConfigStore";
 import AIChatPanel from "../ai/AIChatPanel";
-import LexicalEditorV2 from "../applets/Lexical/LexicalEditor";
+
 import WikipediaArticleViewer_FactorGraph from "../applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
 import EntityTableV2 from "../common/EntityTableV2";
 import LogViewer from "../common/LogViewer";
 import MarkdownViewer from "../common/MarkdownViewer";
 import UnigraphIframe from "../common/UnigraphIframe";
 import SemanticWebQueryPanel from "../semantic/SemanticWebQueryPanel";
-import AboutView from "./AboutView";
 import DevToolsView from "./DevToolsView";
 import DocumentationView from "./DocumentationView";
 import DocumentEditorView from "./DocumentEditorView";
 import EdgeLegendView from "./EdgeLegendView";
 import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
+import Map2DView from "./Map2DView";
 import MonacoEditorView from "./MonacoEditorView";
 import NodeLegendView from "./NodeLegendView";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
@@ -755,14 +755,6 @@ const reactFlowPanelV2View = {
   category: VIEW_DEFINITIONS["react-flow-panel-v2"].category,
 };
 
-const aboutView = {
-  id: VIEW_DEFINITIONS["about"].id,
-  title: VIEW_DEFINITIONS["about"].title,
-  icon: VIEW_DEFINITIONS["about"].icon,
-  component: (props: any) => <AboutView {...props} />,
-  category: VIEW_DEFINITIONS["about"].category,
-};
-
 const unigraphIframeView = {
   id: VIEW_DEFINITIONS["unigraph-iframe"].id,
   title: VIEW_DEFINITIONS["unigraph-iframe"].title,
@@ -806,14 +798,6 @@ const gravitySimulationView = {
   // eslint-disable-next-line unused-imports/no-unused-vars
   component: (props: any) => <GravitySimulation3 />,
   category: VIEW_DEFINITIONS["gravity-simulation"].category,
-};
-
-const lexicalEditorView = {
-  id: VIEW_DEFINITIONS["lexical-editor"].id,
-  title: VIEW_DEFINITIONS["lexical-editor"].title,
-  icon: VIEW_DEFINITIONS["lexical-editor"].icon,
-  component: (props: any) => <LexicalEditorV2 {...props} />,
-  category: VIEW_DEFINITIONS["lexical-editor"].category,
 };
 
 const monacoEditorView = {
@@ -896,9 +880,29 @@ const documentEditorView = {
   category: VIEW_DEFINITIONS["markdown-editor"].category,
 };
 
+const map2DView = {
+  id: VIEW_DEFINITIONS["map-2d"].id,
+  title: VIEW_DEFINITIONS["map-2d"].title,
+  icon: VIEW_DEFINITIONS["map-2d"].icon,
+  component: (props: any) => <Map2DView {...props} />,
+  category: VIEW_DEFINITIONS["map-2d"].category,
+};
+
+// Filter out unwanted default views
+const viewsToExclude = [
+  "terminal",
+  "about",
+  "properties",
+  "file-explorer",
+  "output",
+];
+const filteredDefaultViews = defaultViews.filter(
+  (view) => !viewsToExclude.includes(view.id)
+);
+
 // Define all views
 const allViews = [
-  ...defaultViews,
+  ...filteredDefaultViews,
   gravitySimulationView,
   aiChatView,
   semanticWebQueryView,
@@ -912,16 +916,15 @@ const allViews = [
   edgeLegendView,
   wikipediaFactorGraphView,
   reactFlowPanelV2View,
-  aboutView,
   unigraphIframeView,
   devToolsView,
-  lexicalEditorView,
   monacoEditorView,
   sandpackEditorView,
   markdownViewerView,
   documentEditorView,
   documentationView,
   logViewerView,
+  map2DView,
 ];
 
 // Example: Create a custom theme for demonstration

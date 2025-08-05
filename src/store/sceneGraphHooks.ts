@@ -79,7 +79,6 @@ export async function computeLayoutAndTriggerAppUpdate(
     nodeSelection
   );
   if (output && Object.keys(output.positions).length > 0) {
-    // sceneGraph.setNodePositions(output.positions); //@todo: see if i can remove this
     if (nodeSelection && nodeSelection.size > 0) {
       const currentNodePositions =
         getCurrentLayoutResult()?.positions ||
@@ -109,7 +108,6 @@ export async function computeLayoutAndTriggerAppUpdate(
       }
       output.positions = currentNodePositions;
     }
-
     setCurrentLayoutResult(output, "Layout");
   }
   return output;

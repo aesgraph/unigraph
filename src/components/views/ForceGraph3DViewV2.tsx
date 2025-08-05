@@ -2,11 +2,16 @@ import { Settings2, Square } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import { ForceGraphManager } from "../../core/force-graph/ForceGraphManager";
-import { getCurrentSceneGraph } from "../../store/appConfigStore";
+import { LayoutEngineOption } from "../../core/layouts/layoutEngineTypes";
+import useAppConfigStore, {
+  getCurrentSceneGraph,
+} from "../../store/appConfigStore";
 import { IForceGraphRenderConfig } from "../../store/forceGraphConfigStore";
 import useGraphInteractionStore from "../../store/graphInteractionStore";
 import { useMouseControlsStore } from "../../store/mouseControlsStore";
+import { computeLayoutAndTriggerUpdateForCurrentSceneGraph } from "../../store/sceneGraphHooks";
 import { initializeForceGraphInstance } from "../../utils/forceGraphInitializer";
+import GraphLayoutToolbar from "../common/GraphLayoutToolbar";
 import SelectionBox from "../common/SelectionBox";
 import ForceGraphRenderConfigEditor from "./ForceGraph3d/ForceGraphRenderConfigEditor";
 
@@ -22,6 +27,18 @@ const ForceGraph3DViewV2: React.FC = () => {
   const [showDisplayConfig, setShowDisplayConfig] = useState(false);
   const displayConfigEditorRef = useRef<HTMLDivElement>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Get current layout and physics mode from store
+  const { activeLayout, forceGraph3dOptions } = useAppConfigStore();
+
+  // Handle layout change
+  const handleLayoutChange = useCallback(async (layout: LayoutEngineOption) => {
+    try {
+      await computeLayoutAndTriggerUpdateForCurrentSceneGraph(layout);
+    } catch (error) {
+      console.error("Failed to compute layout:", error);
+    }
+  }, []);
 
   // Get reactive selection state from the store
   const { selectedNodeIds, hoveredNodeIds, hoveredEdgeIds } =
@@ -412,6 +429,14 @@ const ForceGraph3DViewV2: React.FC = () => {
 
       {/* Selection Box */}
       {controlMode === "multiselection" && <SelectionBox />}
+
+      {/* Layout Toolbar */}
+      <GraphLayoutToolbar
+        activeLayout={activeLayout as LayoutEngineOption}
+        onLayoutChange={handleLayoutChange}
+        physicsMode={forceGraph3dOptions.layout === "Physics"}
+        isDarkMode={isDarkMode}
+      />
     </div>
   );
 };

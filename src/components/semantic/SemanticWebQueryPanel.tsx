@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Parser as SparqlParser } from "sparqljs";
 import { useApiProvider } from "../../context/ApiProviderContext";
 import { useComponentLogger } from "../../hooks/useLogger";
+import useAppConfigStore from "../../store/appConfigStore";
 import { createThemedAgGridContainer } from "../../utils/aggridThemeUtils";
 import { sendAIMessage } from "../ai/aiQueryLogic";
 import { SEMANTIC_QUERY_TOOL, parseToolCallArguments } from "../ai/aiTools";
@@ -157,7 +158,115 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
   const [autoRunAIQueries, setAutoRunAIQueries] = useState(false);
   const [editorHeight, setEditorHeight] = useState(200); // Default height
   const [isResizing, setIsResizing] = useState(false);
+  const [showExportWizard, setShowExportWizard] = useState(false);
+
+  // Export wizard form state
+  const [entityTypeName, setEntityTypeName] = useState("");
+  const [entityTags, setEntityTags] = useState("");
+  const [entityDescription, setEntityDescription] = useState("");
+  const [selectedProperties, setSelectedProperties] = useState<Set<string>>(
+    new Set()
+  );
+
+  // Access app config store for scene graph
+  const { currentSceneGraph } = useAppConfigStore();
   const resizeRef = useRef<HTMLDivElement>(null);
+
+  // Handle entity export
+  const handleExportEntities = () => {
+    if (!currentSceneGraph || !agGridRowData || agGridRowData.length === 0) {
+      console.error("No scene graph or data available for export");
+      return;
+    }
+
+    // Parse tags
+    const tags = entityTags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+
+    // Create query node first
+    const queryNode = currentSceneGraph.getGraph().createNode({
+      label: `SPARQL Query: ${entityTypeName || "Entities"}`,
+      type: "SPARQLQuery",
+      tags: [...tags, "query", "sparql"],
+      userData: {
+        query: query,
+        endpoint: effectiveEndpoint,
+        aiPrompt: aiQuery,
+        resultCount: agGridRowData.length,
+        entityType: entityTypeName || "Entity",
+        description: entityDescription,
+        timestamp: new Date().toISOString(),
+      },
+      position: {
+        x: Math.random() * 1000,
+        y: Math.random() * 1000,
+        z: 0,
+      },
+    });
+
+    console.log(`Created query node: ${queryNode.getId()}`);
+
+    // Create nodes for each entity and link to query node
+    const resultNodeIds: string[] = [];
+    agGridRowData.forEach((entityData, index) => {
+      // Create userData object with selected properties
+      const userData: any = {};
+      selectedProperties.forEach((property) => {
+        if (entityData[property] !== undefined) {
+          userData[property] = entityData[property];
+        }
+      });
+
+      // Create the result node
+      const resultNode = currentSceneGraph.getGraph().createNode({
+        label:
+          entityData[agGridColumnDefs[0]?.field || "id"] ||
+          `Entity ${index + 1}`,
+        type: entityTypeName || "Entity",
+        tags: tags,
+        userData: userData,
+        position: {
+          x: Math.random() * 1000,
+          y: Math.random() * 1000,
+          z: 0,
+        },
+      });
+
+      resultNodeIds.push(resultNode.getId());
+
+      // Create edge from query to result
+      currentSceneGraph
+        .getGraph()
+        .createEdge(queryNode.getId(), resultNode.getId(), {
+          label: "generates",
+          type: "query_result",
+          userData: {
+            queryNodeId: queryNode.getId(),
+            resultIndex: index,
+          },
+        });
+
+      console.log(
+        `Created result node: ${resultNode.getId()} with userData:`,
+        userData
+      );
+    });
+
+    // Notify the scene graph that it has changed
+    currentSceneGraph.refreshDisplayConfig();
+    currentSceneGraph.notifyGraphChanged();
+
+    // Close the wizard
+    setShowExportWizard(false);
+
+    // Reset form state
+    setEntityTypeName("");
+    setEntityTags("");
+    setEntityDescription("");
+    setSelectedProperties(new Set());
+  };
   const startYRef = useRef<number>(0);
   const startHeightRef = useRef<number>(200);
   const currentQueryRef = useRef(query);
@@ -560,6 +669,13 @@ SELECT ?subject ?predicate ?object WHERE {
       })),
     [columns]
   );
+
+  // Initialize selected properties when column definitions change
+  useEffect(() => {
+    if (agGridColumnDefs && agGridColumnDefs.length > 0) {
+      setSelectedProperties(new Set([agGridColumnDefs[0].field]));
+    }
+  }, [agGridColumnDefs]);
 
   // Build AgGrid rowData from results
   const agGridRowData = useMemo(
@@ -1041,12 +1157,173 @@ SELECT ?subject ?predicate ?object WHERE {
         {results && results.length > 0 && (
           <div
             className={`ag-theme-alpine ${styles.gridContainer}`}
-            style={agGridContainerStyle}
+            style={{
+              ...agGridContainerStyle,
+              position: "relative", // Make this container relative for absolute positioning
+            }}
           >
+            {/* Export button - positioned absolutely on the AG Grid container */}
+            <div
+              style={{
+                position: "absolute",
+                top: "8px",
+                right: "8px",
+                zIndex: 10,
+              }}
+            >
+              <button
+                onClick={() => setShowExportWizard(true)}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "12px",
+                  backgroundColor: hasAppShellTheme
+                    ? getColor(appShellTheme.theme.colors, "primary")
+                    : "#1976d2",
+                  color: hasAppShellTheme
+                    ? getColor(appShellTheme.theme.colors, "textInverse")
+                    : "#ffffff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  fontWeight: 500,
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.9";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7,10 12,15 17,10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Export as Entities
+              </button>
+            </div>
+            <style>
+              {`
+                /* AG Grid theme overrides */
+                .ag-root-wrapper {
+                  background-color: transparent !important;
+                  color: inherit !important;
+                  overflow: hidden !important;
+                  max-width: 100% !important;
+                  width: 100% !important;
+                }
+                
+                .ag-root {
+                  overflow: hidden !important;
+                  max-width: 100% !important;
+                  width: 100% !important;
+                }
+                
+                .ag-body-viewport {
+                  overflow-x: hidden !important;
+                  overflow-y: auto !important;
+                }
+                
+                .ag-body-horizontal-scroll {
+                  display: none !important;
+                }
+                
+                .ag-header {
+                  background-color: transparent !important;
+                  color: inherit !important;
+                  border-bottom: 1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#dee2e6"} !important;
+                }
+                
+                .ag-header-cell {
+                  background-color: transparent !important;
+                  color: inherit !important;
+                  border-right: 1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#dee2e6"} !important;
+                  padding: 8px 12px !important;
+                }
+                
+                .ag-header-cell:last-child {
+                  border-right: none !important;
+                }
+                
+                .ag-row {
+                  background-color: transparent !important;
+                  color: inherit !important;
+                  border-bottom: 1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#dee2e6"} !important;
+                  min-height: 40px !important;
+                }
+                
+                .ag-row:hover {
+                  background-color: ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "surfaceHover") : "#e9ecef"} !important;
+                }
+                
+                /* Override AG Grid's default selection and focus states */
+                .ag-row.ag-row-selected {
+                  background-color: ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "background") : "#ffffff"} !important;
+                }
+                
+
+                
+                .ag-row.ag-row-selected:hover {
+                  background-color: ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "surfaceHover") : "#e9ecef"} !important;
+                }
+                
+                .ag-row.ag-row-focused {
+                  background-color: ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "background") : "#ffffff"} !important;
+                }
+                
+
+                
+                /* Override any other AG Grid default styling */
+                .ag-row[class*="ag-row"] {
+                  background-color: transparent !important;
+                }
+                
+
+                
+                /* Override AG Grid's internal styling */
+                .ag-theme-alpine .ag-body-viewport {
+                  background-color: transparent !important;
+                }
+                
+                .ag-theme-alpine .ag-body-rows {
+                  background-color: transparent !important;
+                }
+                
+                .ag-theme-alpine .ag-body-rows .ag-row {
+                  background-color: transparent !important;
+                }
+                
+                .ag-cell {
+                  border-right: 1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#dee2e6"} !important;
+                  padding: 8px 12px !important;
+                }
+                
+                .ag-cell:last-child {
+                  border-right: none !important;
+                }
+                
+                .ag-cell-wrapper {
+                  align-items: center !important;
+                }
+              `}
+            </style>
             <AgGridReact
               rowData={agGridRowData}
               columnDefs={agGridColumnDefs}
-              rowHeight={24}
+              rowHeight={40}
               defaultColDef={{
                 sortable: true,
                 resizable: true,
@@ -1058,7 +1335,7 @@ SELECT ?subject ?predicate ?object WHERE {
               }}
               domLayout="normal"
               suppressMenuHide={false}
-              animateRows={true}
+              animateRows={false}
               overlayNoRowsTemplate={overlayNoRowsTemplate}
               overlayLoadingTemplate={overlayLoadingTemplate}
               // Pagination configuration
@@ -1066,6 +1343,12 @@ SELECT ?subject ?predicate ?object WHERE {
               paginationPageSize={500}
               paginationPageSizeSelector={[50, 100, 200, 500]}
               suppressPaginationPanel={false}
+              getRowStyle={(_params) => {
+                return {
+                  backgroundColor: "transparent",
+                  color: "inherit",
+                };
+              }}
             />
           </div>
         )}
@@ -1103,6 +1386,355 @@ SELECT ?subject ?predicate ?object WHERE {
           </div>
         )}
       </div>
+
+      {/* Export Wizard Dialog */}
+      {showExportWizard && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 2000,
+          }}
+          onClick={() => setShowExportWizard(false)}
+        >
+          <div
+            style={{
+              background: hasAppShellTheme
+                ? getColor(appShellTheme.theme.colors, "background")
+                : "#ffffff",
+              color: hasAppShellTheme
+                ? getColor(appShellTheme.theme.colors, "text")
+                : "#000000",
+              borderRadius: "8px",
+              padding: "24px",
+              width: "900px",
+              maxWidth: "95vw",
+              maxHeight: "90vh",
+              overflow: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+              boxSizing: "border-box",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <h3 style={{ margin: 0, fontSize: "18px" }}>
+                Export SPARQL Results as Entities
+              </h3>
+              <button
+                onClick={() => setShowExportWizard(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  color: hasAppShellTheme
+                    ? getColor(appShellTheme.theme.colors, "textSecondary")
+                    : "#666",
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
+              <div>
+                <label
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    display: "block",
+                  }}
+                >
+                  Entity Type Name:
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., Character, Book, Movie"
+                  value={entityTypeName}
+                  onChange={(e) => setEntityTypeName(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    fontSize: "14px",
+                    border: `1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#ddd"}`,
+                    borderRadius: "4px",
+                    backgroundColor: hasAppShellTheme
+                      ? getColor(
+                          appShellTheme.theme.colors,
+                          "backgroundSecondary"
+                        )
+                      : "#f8f9fa",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "text")
+                      : "#000000",
+                    boxSizing: "border-box",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    display: "block",
+                  }}
+                >
+                  Entity Tags:
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g., harry-potter, characters, dbpedia"
+                  value={entityTags}
+                  onChange={(e) => setEntityTags(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    fontSize: "14px",
+                    border: `1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#ddd"}`,
+                    borderRadius: "4px",
+                    backgroundColor: hasAppShellTheme
+                      ? getColor(
+                          appShellTheme.theme.colors,
+                          "backgroundSecondary"
+                        )
+                      : "#f8f9fa",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "text")
+                      : "#000000",
+                    boxSizing: "border-box",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                />
+              </div>
+
+              <div>
+                <label
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    display: "block",
+                  }}
+                >
+                  Entity Properties:
+                </label>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "textSecondary")
+                      : "#666",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Select which columns should become entity properties:
+                </div>
+                {agGridColumnDefs?.map((colDef, _index) => (
+                  <label
+                    key={colDef.field}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "4px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedProperties.has(colDef.field)}
+                      onChange={(e) => {
+                        const newSelected = new Set(selectedProperties);
+                        if (e.target.checked) {
+                          newSelected.add(colDef.field);
+                        } else {
+                          newSelected.delete(colDef.field);
+                        }
+                        setSelectedProperties(newSelected);
+                      }}
+                      style={{ margin: 0 }}
+                    />
+                    {colDef.headerName || colDef.field}
+                  </label>
+                ))}
+              </div>
+
+              <div>
+                <label
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    display: "block",
+                  }}
+                >
+                  Entity Description:
+                </label>
+                <textarea
+                  placeholder="Describe what these entities represent..."
+                  rows={3}
+                  value={entityDescription}
+                  onChange={(e) => setEntityDescription(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    fontSize: "14px",
+                    border: `1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#ddd"}`,
+                    borderRadius: "4px",
+                    backgroundColor: hasAppShellTheme
+                      ? getColor(
+                          appShellTheme.theme.colors,
+                          "backgroundSecondary"
+                        )
+                      : "#f8f9fa",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "text")
+                      : "#000000",
+                    resize: "vertical",
+                    boxSizing: "border-box",
+                    overflow: "hidden",
+                    wordWrap: "break-word",
+                  }}
+                />
+              </div>
+
+              {/* Entity Preview Section */}
+              <div>
+                <label
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    display: "block",
+                  }}
+                >
+                  Entity Preview:
+                </label>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "textSecondary")
+                      : "#666",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Preview how these entities will appear in Unigraph:
+                </div>
+                <div
+                  style={{
+                    height: "300px",
+                    border: `1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#ddd"}`,
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    className="ag-theme-alpine"
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      ...createThemedAgGridContainer(
+                        hasAppShellTheme
+                          ? appShellTheme.theme
+                          : ({ colors: {}, sizes: {} } as any)
+                      ),
+                    }}
+                  >
+                    <AgGridReact
+                      rowData={agGridRowData?.slice(0, 10) || []} // Show first 10 entities as preview
+                      columnDefs={agGridColumnDefs}
+                      rowHeight={32}
+                      defaultColDef={{
+                        sortable: true,
+                        resizable: true,
+                        filter: true,
+                        minWidth: 100,
+                        maxWidth: 200,
+                        floatingFilter: true,
+                        flex: 1,
+                      }}
+                      domLayout="normal"
+                      suppressMenuHide={false}
+                      animateRows={false}
+                      overlayNoRowsTemplate="<span style='color: #666;'>No preview data available</span>"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  justifyContent: "flex-end",
+                  marginTop: "16px",
+                }}
+              >
+                <button
+                  onClick={() => setShowExportWizard(false)}
+                  style={{
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    background: "none",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "textSecondary")
+                      : "#666",
+                    border: `1px solid ${hasAppShellTheme ? getColor(appShellTheme.theme.colors, "border") : "#ddd"}`,
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleExportEntities}
+                  style={{
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    background: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "primary")
+                      : "#1976d2",
+                    color: hasAppShellTheme
+                      ? getColor(appShellTheme.theme.colors, "textInverse")
+                      : "#ffffff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontWeight: 500,
+                  }}
+                >
+                  Export Entities
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

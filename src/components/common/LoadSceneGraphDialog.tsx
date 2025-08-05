@@ -75,6 +75,7 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
   const loadServerProjects = useCallback(async () => {
     setServerLoading(true);
     setServerError(null);
+
     try {
       const projects = await listProjects();
       setServerProjects(projects);
@@ -459,16 +460,81 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
           </button>
         </div>
         {activeTab === "File" && (
-          <div className={styles.fileTab}>
-            <input
-              type="file"
-              accept=".json,.graphml,.svg,.dot"
-              onChange={handleImportFileToSceneGraph}
-              className={styles.fileInput}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+              padding: "20px",
+            }}
+          >
+            <div
               style={{
-                color: getColor(theme.colors, "text"),
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "16px",
+                maxWidth: "400px",
+                width: "100%",
               }}
-            />
+            >
+              <div
+                style={{
+                  color: getColor(theme.colors, "textSecondary"),
+                  fontSize: "14px",
+                  textAlign: "center",
+                  marginBottom: "8px",
+                }}
+              >
+                Select a file to import (.json, .graphml, .svg, .dot)
+              </div>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                }}
+              >
+                <input
+                  type="file"
+                  accept=".json,.graphml,.svg,.dot"
+                  onChange={handleImportFileToSceneGraph}
+                  style={{
+                    position: "absolute",
+                    opacity: 0,
+                    width: "100%",
+                    height: "100%",
+                    cursor: "pointer",
+                    zIndex: 1,
+                  }}
+                />
+                <div
+                  style={{
+                    padding: "12px",
+                    backgroundColor: getColor(
+                      theme.colors,
+                      "backgroundSecondary"
+                    ),
+                    color: getColor(theme.colors, "text"),
+                    border: `1px solid ${getColor(theme.colors, "border")}`,
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    width: "100%",
+                    textAlign: "center",
+                    transition: "opacity 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = "0.8";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = "1";
+                  }}
+                >
+                  Choose File
+                </div>
+              </div>
+            </div>
           </div>
         )}
         {activeTab === "Demos" && (
@@ -480,54 +546,165 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
           </div>
         )}
         {activeTab === "Text" && (
-          <div className={styles.textTab}>
-            <textarea
-              className={styles.textInput}
-              placeholder="Paste SceneGraph JSON here..."
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+              padding: "20px",
+            }}
+          >
+            <div
               style={{
-                backgroundColor: getColor(theme.colors, "backgroundSecondary"),
-                color: getColor(theme.colors, "text"),
-                border: `1px solid ${getColor(theme.colors, "border")}`,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "16px",
+                maxWidth: "500px",
+                width: "100%",
               }}
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-            />
-            <button
-              className={styles.submitButton}
-              style={{
-                backgroundColor: getColor(theme.colors, "primary"),
-                color: getColor(theme.colors, "background"),
-              }}
-              onClick={handleTextSubmit}
             >
-              Load
-            </button>
+              <div
+                style={{
+                  color: getColor(theme.colors, "textSecondary"),
+                  fontSize: "14px",
+                  textAlign: "center",
+                  marginBottom: "8px",
+                }}
+              >
+                Paste SceneGraph JSON here
+              </div>
+              <textarea
+                placeholder="Paste SceneGraph JSON here..."
+                style={{
+                  width: "100%",
+                  height: "200px",
+                  padding: "12px",
+                  backgroundColor: getColor(
+                    theme.colors,
+                    "backgroundSecondary"
+                  ),
+                  color: getColor(theme.colors, "text"),
+                  border: `1px solid ${getColor(theme.colors, "border")}`,
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  resize: "vertical",
+                  fontFamily: "monospace",
+                }}
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+              />
+              <button
+                style={{
+                  padding: "12px 24px",
+                  backgroundColor: getColor(theme.colors, "primary"),
+                  color: getColor(theme.colors, "background"),
+                  border: "none",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  transition: "opacity 0.2s ease",
+                }}
+                onClick={handleTextSubmit}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.8";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                }}
+              >
+                Load
+              </button>
+            </div>
           </div>
         )}
         {activeTab === "Svg Url" && (
-          <div className={styles.svgUrlTab}>
-            <input
-              type="text"
-              placeholder="Enter Svg Url..."
-              className={styles.svgUrlInput}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+              padding: "20px",
+            }}
+          >
+            <div
               style={{
-                backgroundColor: getColor(theme.colors, "backgroundSecondary"),
-                color: getColor(theme.colors, "text"),
-                border: `1px solid ${getColor(theme.colors, "border")}`,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "16px",
+                maxWidth: "400px",
+                width: "100%",
               }}
-              value={svgUrl}
-              onChange={(e) => setSvgUrl(e.target.value)}
-            />
-            <button
-              className={styles.submitButton}
-              style={{
-                backgroundColor: getColor(theme.colors, "primary"),
-                color: getColor(theme.colors, "background"),
-              }}
-              onClick={handleSvgUrlSubmit}
             >
-              Load
-            </button>
+              <div
+                style={{
+                  color: getColor(theme.colors, "textSecondary"),
+                  fontSize: "14px",
+                  textAlign: "center",
+                  marginBottom: "8px",
+                }}
+              >
+                Enter an SVG URL to import
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  width: "100%",
+                  alignItems: "center",
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Enter Svg Url..."
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    backgroundColor: getColor(
+                      theme.colors,
+                      "backgroundSecondary"
+                    ),
+                    color: getColor(theme.colors, "text"),
+                    border: `1px solid ${getColor(theme.colors, "border")}`,
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                  }}
+                  value={svgUrl}
+                  onChange={(e) => setSvgUrl(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSvgUrlSubmit();
+                    }
+                  }}
+                />
+                <button
+                  style={{
+                    padding: "12px 24px",
+                    backgroundColor: getColor(theme.colors, "primary"),
+                    color: getColor(theme.colors, "background"),
+                    border: "none",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    transition: "opacity 0.2s ease",
+                  }}
+                  onClick={handleSvgUrlSubmit}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = "0.8";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = "1";
+                  }}
+                >
+                  Load
+                </button>
+              </div>
+            </div>
           </div>
         )}
         {activeTab === "Server" && (
@@ -642,14 +819,24 @@ const LoadSceneGraphDialog: React.FC<LoadSceneGraphDialogProps> = ({
                     />
                   </button>
                 </div>
-                <ProjectsList
-                  projects={filteredServerProjects}
-                  loading={serverLoading}
-                  error={serverError}
-                  onProjectDoubleClick={handleServerProjectSelect}
-                  onRefresh={loadServerProjects}
-                  style={{ marginTop: 0 }}
-                />
+                {serverLoading ? (
+                  // Don't render anything during loading - just show empty space
+                  <div
+                    style={{
+                      height: "200px",
+                      backgroundColor: getColor(theme.colors, "background"),
+                    }}
+                  />
+                ) : (
+                  <ProjectsList
+                    projects={filteredServerProjects}
+                    loading={false}
+                    error={serverError}
+                    onProjectDoubleClick={handleServerProjectSelect}
+                    onRefresh={loadServerProjects}
+                    style={{ marginTop: 0 }}
+                  />
+                )}
               </>
             )}
           </div>

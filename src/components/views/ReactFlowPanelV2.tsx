@@ -23,17 +23,16 @@ import {
   MOUSE_HOVERED_NODE_COLOR,
   SELECTED_NODE_COLOR,
 } from "../../core/force-graph/createForceGraph";
+import { LayoutEngineOption } from "../../core/layouts/layoutEngineTypes";
 import { NodeId, createNodeId } from "../../core/model/Node";
 import { EntityIds } from "../../core/model/entity/entityIds";
 import { exportGraphDataForReactFlow } from "../../core/react-flow/exportGraphDataForReactFlow";
+import useActiveLayoutStore from "../../store/activeLayoutStore";
 import {
   getEdgeLegendConfig,
   getNodeLegendConfig,
 } from "../../store/activeLegendConfigStore";
-import useAppConfigStore, {
-  getCurrentSceneGraph,
-  getLegendMode,
-} from "../../store/appConfigStore";
+import useAppConfigStore, { getLegendMode } from "../../store/appConfigStore";
 import { useDocumentStore } from "../../store/documentStore";
 import useGraphInteractionStore, {
   setHoveredNodeId,
@@ -44,9 +43,11 @@ import {
   getReactFlowConfig,
   subscribeToReactFlowConfigChanges,
 } from "../../store/reactFlowConfigStore";
+import { computeLayoutAndTriggerUpdateForCurrentSceneGraph } from "../../store/sceneGraphHooks";
 import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
+import GraphLayoutToolbar from "../common/GraphLayoutToolbar";
 import CustomNode from "./ReactFlow/nodes/CustomNode";
 import WebpageNode from "./ReactFlow/nodes/WebpageNode";
 import ResizerNode from "./ReactFlow/nodes/resizerNode";
@@ -197,23 +198,49 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
   const selectionChangeRef = useRef(false);
 
-  const sceneGraph = getCurrentSceneGraph();
+  const { currentSceneGraph } = useAppConfigStore();
+  const sceneGraph = currentSceneGraph;
   const reactFlowConfig = getReactFlowConfig();
   const { setActiveDocument } = useDocumentStore();
   const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
   const { getActiveSection } = useWorkspaceConfigStore();
-  const { setActiveView: setAppActiveView, activeView } = useAppConfigStore();
+  const {
+    setActiveView: setAppActiveView,
+    activeView,
+    activeLayout,
+    forceGraph3dOptions,
+  } = useAppConfigStore();
+
+  // Handle layout change
+  const handleLayoutChange = useCallback(async (layout: LayoutEngineOption) => {
+    try {
+      await computeLayoutAndTriggerUpdateForCurrentSceneGraph(layout);
+    } catch (error) {
+      console.error("Failed to compute layout:", error);
+    }
+  }, []);
 
   // Get legend configurations for reactivity
   const nodeLegendConfig = getNodeLegendConfig();
   const edgeLegendConfig = getEdgeLegendConfig();
   const legendMode = getLegendMode();
 
+  // Get current layout result for reactivity
+  const { currentLayoutResult } = useActiveLayoutStore();
+
   // Export graph data for ReactFlow - using same approach as ReactFlow v1
   const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
+    console.log("ReactFlowPanelV2: Recomputing nodes and edges", {
+      sceneGraph,
+      currentLayoutResult,
+    });
     if (!sceneGraph) {
       return { nodes: [], edges: [] };
     }
+
+    // Check if scene graph positions are being updated
+    const sceneGraphPositions = sceneGraph.getDisplayConfig().nodePositions;
+    console.log("ReactFlowPanelV2: Scene graph positions", sceneGraphPositions);
 
     const data = exportGraphDataForReactFlow(sceneGraph);
 
@@ -257,7 +284,13 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
       nodes: nodesWithPositions,
       edges: edgesWithStyling,
     };
-  }, [sceneGraph, nodeLegendConfig, edgeLegendConfig, legendMode]);
+  }, [
+    sceneGraph,
+    nodeLegendConfig,
+    edgeLegendConfig,
+    legendMode,
+    currentLayoutResult,
+  ]);
 
   // PRE-PROCESS nodes without selection state - let ReactFlow handle selection internally
   const processedNodes = useMemo(() => {
@@ -307,6 +340,19 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   useEffect(() => {
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);
+
+  // Update nodes and edges when layout result changes
+  useEffect(() => {
+    console.log("ReactFlowPanelV2: Layout result changed", currentLayoutResult);
+    if (currentLayoutResult && currentLayoutResult.positions) {
+      console.log("ReactFlowPanelV2: Updating nodes and edges with new layout");
+      console.log("ReactFlowPanelV2: Current processedNodes", processedNodes);
+      console.log("ReactFlowPanelV2: Current initialEdges", initialEdges);
+      // Force a refresh of the React Flow state when layout changes
+      setNodes(processedNodes);
+      setEdges(initialEdges);
+    }
+  }, [currentLayoutResult, processedNodes, initialEdges, setNodes, setEdges]);
 
   // Fix the onInit handler to use the correct type and avoid camera flickering
   const handleInit: OnInit = useCallback(
@@ -650,6 +696,14 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             )}
           </ReactFlow>
         </ReactFlowProvider>
+
+        {/* Layout Toolbar */}
+        <GraphLayoutToolbar
+          activeLayout={activeLayout as LayoutEngineOption}
+          onLayoutChange={handleLayoutChange}
+          physicsMode={forceGraph3dOptions.layout === "Physics"}
+          isDarkMode={false} // ReactFlow doesn't have dark mode detection, using false for now
+        />
       </div>
     </div>
   );

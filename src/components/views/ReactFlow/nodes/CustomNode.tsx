@@ -47,6 +47,45 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
   }, [handleMouseMove, isResizing]);
 
   console.log("RENDERING CUSTOM NODE");
+
+  // Helper function to safely render userData values
+  const renderUserDataValue = (value: any): string => {
+    if (typeof value === "string") {
+      return value;
+    } else if (value && typeof value === "object" && "value" in value) {
+      return String(value.value);
+    } else if (value && typeof value === "object") {
+      return JSON.stringify(value);
+    } else {
+      return String(value || "");
+    }
+  };
+
+  // Get the main label from userData or fallback to node id
+  const getMainLabel = (): string => {
+    if (nodeData.userData?.name) {
+      return renderUserDataValue(nodeData.userData.name);
+    }
+    // Try to find the first property that might be a label
+    for (const [key, value] of Object.entries(nodeData.userData || {})) {
+      if (
+        key.toLowerCase().includes("name") ||
+        key.toLowerCase().includes("label")
+      ) {
+        return renderUserDataValue(value);
+      }
+    }
+    return nodeData.id;
+  };
+
+  // Get description from userData
+  const getDescription = (): string => {
+    if (nodeData.userData?.description) {
+      return renderUserDataValue(nodeData.userData.description);
+    }
+    return "";
+  };
+
   return (
     <div
       style={{
@@ -59,12 +98,8 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
       }}
     >
       <Handle type="target" position={Position.Left} />
-      <div style={{ fontWeight: "bold" }}>
-        {nodeData.userData?.name ?? nodeData.id}
-      </div>
-      <div style={{ fontSize: "0.9em", color: "#555" }}>
-        {nodeData.userData?.description}
-      </div>
+      <div style={{ fontWeight: "bold" }}>{getMainLabel()}</div>
+      <div style={{ fontSize: "0.9em", color: "#555" }}>{getDescription()}</div>
       <Handle type="source" position={Position.Right} />
       <div
         style={{
