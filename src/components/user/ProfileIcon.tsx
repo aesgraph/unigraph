@@ -26,6 +26,30 @@ const GenericProfileIcon = ({
   </svg>
 );
 
+// Default profile icon for signed-in users without avatar
+const SignedInProfileIcon = ({
+  style = {},
+}: {
+  style?: React.CSSProperties;
+}) => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 32 32"
+    fill="none"
+    style={{
+      display: "block",
+      borderRadius: "50%",
+      boxShadow: "0 0 0 2px #4CAF50, 0 0 4px 0 rgba(76,175,80,0.18)",
+      ...style,
+    }}
+  >
+    <circle cx="16" cy="16" r="16" fill="#4CAF50" />
+    <circle cx="16" cy="13" r="6" fill="#ffffff" />
+    <ellipse cx="16" cy="24" rx="8" ry="5" fill="#ffffff" />
+  </svg>
+);
+
 interface ProfileIconProps {
   className?: string;
   style?: React.CSSProperties;
@@ -257,7 +281,13 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
                 height: "100%",
               }}
             >
-              <GenericProfileIcon style={{ width: "100%", height: "100%" }} />
+              {isSignedIn ? (
+                <SignedInProfileIcon
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <GenericProfileIcon style={{ width: "100%", height: "100%" }} />
+              )}
             </div>
           )}
 
@@ -294,6 +324,7 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
         onSwitchAccount={handleSwitchAccount}
         onSignIn={handleSignIn}
         isSignedIn={isSignedIn}
+        user={user}
         panelId="profile-dropdown-panel"
       />
     </div>

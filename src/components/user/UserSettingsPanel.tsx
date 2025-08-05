@@ -1,5 +1,5 @@
+import { getColor, useTheme } from "@aesgraph/app-shell";
 import React, { useState } from "react";
-import { useTheme, getColor } from "@aesgraph/app-shell";
 import {
   customUnigraphTheme,
   unigraphWarmTheme,
@@ -14,6 +14,15 @@ interface UserSettingsPanelProps {
   panelId?: string;
   isSignedIn?: boolean;
   onSignIn?: () => void;
+  user?: {
+    id: string;
+    email?: string;
+    user_metadata?: {
+      avatar_url?: string;
+      picture?: string;
+      name?: string;
+    };
+  } | null;
 }
 
 const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
@@ -25,6 +34,7 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
   panelId,
   isSignedIn = true,
   onSignIn,
+  user,
 }) => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [hoveredTheme, setHoveredTheme] = useState<string | null>(null);
@@ -259,6 +269,25 @@ const UserSettingsPanel: React.FC<UserSettingsPanelProps> = ({
       >
         {isSignedIn ? (
           <>
+            {/* User email display */}
+            {user?.email && (
+              <div
+                style={{
+                  padding: `${theme.sizes.spacing.sm} ${theme.sizes.spacing.md}`,
+                  fontSize: theme.sizes.fontSize.sm,
+                  color: getColor(theme.colors, "text"),
+                  backgroundColor: getColor(theme.colors, "primary"),
+                  borderRadius: theme.sizes.borderRadius.md,
+                  marginBottom: theme.sizes.spacing.sm,
+                  fontWeight: 500,
+                  textAlign: "center" as const,
+                  border: `1px solid ${getColor(theme.colors, "primary")}`,
+                  boxShadow: `0 1px 3px rgba(0, 0, 0, 0.1)`,
+                }}
+              >
+                {user.email}
+              </div>
+            )}
             <button
               style={getButtonStyles(
                 "switchAccount",

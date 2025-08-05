@@ -8,6 +8,7 @@ import { getColor, useTheme, useWorkspace } from "@aesgraph/app-shell";
 import "@aesgraph/app-shell/app-shell.css";
 import React, { useState } from "react";
 import useDialogStore from "../store/dialogStore";
+import { useUserStore } from "../store/userStore";
 import Workspace from "./appWorkspace/Workspace";
 import LoadSceneGraphDialog from "./common/LoadSceneGraphDialog";
 import styles from "./MinimalWorkspace.module.css";
@@ -81,6 +82,7 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
     useWorkspaceConfigStore();
   const { selectedNodeIds } = useGraphInteractionStore();
   const { theme } = useTheme();
+  const { isSignedIn, user } = useUserStore();
 
   const currentGraphName =
     currentSceneGraph?.getMetadata()?.name || "No Project Loaded";
@@ -260,6 +262,87 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
         }}
       >
         <div className={styles.statusBarLeft}>
+          {/* Authentication status */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: "12px",
+              padding: "4px 8px",
+              backgroundColor: getColor(theme.colors, "surface"),
+              color: getColor(theme.colors, "text"),
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: 500,
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+            }}
+            onClick={() => {
+              if (isSignedIn) {
+                // Open profile popup for signed-in users
+                const profileButton = document.querySelector(
+                  '[title="Profile"]'
+                ) as HTMLButtonElement;
+                if (profileButton) {
+                  profileButton.click();
+                }
+              } else {
+                // Open sign-in popup for signed-out users
+                const width = 800;
+                const height = 600;
+                const left = (window.screen.width - width) / 2;
+                const top = (window.screen.height - height) / 2;
+
+                const popup = window.open(
+                  "/signin",
+                  "signin",
+                  `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=no,menubar=no`
+                );
+
+                if (popup) {
+                  // Listen for messages from popup
+                  const handleMessage = (event: MessageEvent) => {
+                    if (event.origin !== window.location.origin) return;
+
+                    if (event.data.type === "SIGNED_IN") {
+                      console.log("User signed in via popup:", event.data.user);
+                      window.removeEventListener("message", handleMessage);
+                    } else if (event.data.type === "SIGNIN_CANCELLED") {
+                      console.log("Sign-in was cancelled");
+                      window.removeEventListener("message", handleMessage);
+                    }
+                  };
+
+                  window.addEventListener("message", handleMessage);
+                } else {
+                  // Popup was blocked, fallback to redirect
+                  window.location.href = "/signin";
+                }
+              }
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = getColor(
+                theme.colors,
+                "accent"
+              );
+              e.currentTarget.style.transform = "scale(1.02)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = getColor(
+                theme.colors,
+                "surface"
+              );
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+            title={
+              isSignedIn ? "Click to open profile menu" : "Click to sign in"
+            }
+          >
+            {isSignedIn && user
+              ? `Logged in: ${user.user_metadata?.name || user.email || "User"}`
+              : "Sign in"}
+          </div>
+
           <div
             className={styles.activeGraphButton}
             onClick={() => setShowLoadSceneGraphWindow(true)}
