@@ -76,7 +76,7 @@ export class WorkspaceStateManager {
   }
 
   // Get current workspace state from app-shell and save it to scenegraph
-  captureAndSaveCurrentState(): WorkspaceState | null {
+  async captureAndSaveCurrentState(): Promise<WorkspaceState | null> {
     // Try to get current workspace state from app-shell
     const getCurrentWorkspaceState = (
       globalThis as {
@@ -89,21 +89,20 @@ export class WorkspaceStateManager {
 
     if (getCurrentWorkspaceState) {
       try {
-        return getCurrentWorkspaceState().then((state) => {
-          if (state && this.currentSceneGraph) {
-            // Add required fields for WorkspaceState
-            const workspaceState: WorkspaceState = {
-              id: `scenegraph-${this.currentSceneGraph.getMetadata().name || "unnamed"}`,
-              name: `Workspace for ${this.currentSceneGraph.getMetadata().name || "unnamed"}`,
-              timestamp: Date.now(),
-              ...state,
-            };
+        const state = await getCurrentWorkspaceState();
+        if (state && this.currentSceneGraph) {
+          // Add required fields for WorkspaceState
+          const workspaceState: WorkspaceState = {
+            id: `scenegraph-${this.currentSceneGraph.getMetadata().name || "unnamed"}`,
+            name: `Workspace for ${this.currentSceneGraph.getMetadata().name || "unnamed"}`,
+            timestamp: Date.now(),
+            ...state,
+          };
 
-            this.saveCurrentWorkspaceState(workspaceState);
-            return workspaceState;
-          }
-          return null;
-        });
+          this.saveCurrentWorkspaceState(workspaceState);
+          return workspaceState;
+        }
+        return null;
       } catch (error) {
         console.error("Failed to capture current workspace state:", error);
       }
