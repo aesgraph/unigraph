@@ -1,4 +1,3 @@
-import { Button, useAppShell } from "@aesgraph/app-shell";
 import React, { useState } from "react";
 import { useComponentLogger } from "../../hooks/useLogger";
 import LogViewer from "./LogViewer";
@@ -6,7 +5,7 @@ import LogViewer from "./LogViewer";
 const LoggerDemo: React.FC = () => {
   const log = useComponentLogger("LoggerDemo");
   const [showLogViewer, setShowLogViewer] = useState(false);
-  const { openView } = useAppShell();
+
 
   const handleTestLogs = () => {
     log.info("This is an info message");
@@ -27,9 +26,7 @@ const LoggerDemo: React.FC = () => {
     }, 1000);
   };
 
-  const handleOpenLogViewer = () => {
-    openView("log-viewer");
-  };
+
 
   return (
     <div style={{ padding: "20px" }}>
@@ -37,16 +34,13 @@ const LoggerDemo: React.FC = () => {
       <p>This component demonstrates the logging system.</p>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <Button onClick={handleTestLogs}>Test All Log Levels</Button>
-        <Button onClick={handlePerformanceTest}>
+        <button onClick={handleTestLogs}>Test All Log Levels</button>
+        <button onClick={handlePerformanceTest}>
           Test Performance Logging
-        </Button>
-        <Button onClick={() => setShowLogViewer(true)}>
-          Open Log Viewer (Modal)
-        </Button>
-        <Button onClick={handleOpenLogViewer}>
-          Open Log Viewer (App Shell)
-        </Button>
+        </button>
+        <button onClick={() => setShowLogViewer(true)}>
+          Open Log Viewer
+        </button>
       </div>
 
       <div style={{ marginTop: "20px" }}>
