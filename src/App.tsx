@@ -775,6 +775,9 @@ const AppContentInner = ({
     handleBackgroundRightClick,
   ]);
 
+  const { saveCurrentLayout, applyWorkspaceLayout, getAllWorkspaces } =
+    useAppShell();
+
   const [graphModelUpdateTime, setGraphModelUpdateTime] = useState<number>(0);
 
   const handleDisplayConfigChanged = useCallback(
@@ -984,9 +987,11 @@ const AppContentInner = ({
       });
     },
     [
+      applyWorkspaceLayout,
       clearGraphFromUrl,
       clearUrlOfQueryParams,
       defaultActiveLayout,
+      defaultActiveView,
       forceGraphInstance,
       handleDisplayConfigChanged,
       safeComputeLayout,
@@ -1220,9 +1225,6 @@ const AppContentInner = ({
     isDarkMode,
     currentSceneGraph,
   ]);
-
-  const { saveCurrentLayout, applyWorkspaceLayout, getAllWorkspaces } =
-    useAppShell();
 
   // Auto-save workspace state to scenegraph when it changes
   useEffect(() => {
