@@ -41,7 +41,7 @@ const SceneGraphTreeView: React.FC<SceneGraphTreeViewProps> = ({
   const { theme } = useTheme();
   const [sceneGraphTree, setSceneGraphTree] = useState<SceneGraphNode[]>([]);
   const [filteredTree, setFilteredTree] = useState<SceneGraphNode[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, _setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Convert DEMO_SCENE_GRAPHS to tree structure
@@ -63,7 +63,7 @@ const SceneGraphTreeView: React.FC<SceneGraphTreeViewProps> = ({
           // Use template descriptions based on category instead of calling functions
           const getTemplateDescription = (
             categoryKey: string,
-            graphKey: string
+            _graphKey: string
           ) => {
             switch (categoryKey) {
               case "Thinker Graphs":

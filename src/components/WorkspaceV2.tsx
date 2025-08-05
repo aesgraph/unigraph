@@ -77,7 +77,8 @@ const WorkspaceV2: React.FC<WorkspaceV2Props> = ({
   const visibleWorkspaces = savedWorkspaces.filter(
     (w) => w.name !== "Autosaved"
   );
-  const { setRightActiveSection } = useWorkspaceConfigStore();
+  const { setRightActiveSection: _setRightActiveSection } =
+    useWorkspaceConfigStore();
   const { selectedNodeIds } = useGraphInteractionStore();
   const { theme } = useTheme();
 

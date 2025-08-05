@@ -1251,7 +1251,7 @@ const AppContentInner = ({
   );
 
   // Manual save workspace state to scenegraph
-  const saveWorkspaceStateToSceneGraph = useCallback(async () => {
+  const _saveWorkspaceStateToSceneGraph = useCallback(async () => {
     if (currentSceneGraph && currentSceneGraph.getMetadata().name !== "Empty") {
       try {
         const savedState =
@@ -1276,7 +1276,7 @@ const AppContentInner = ({
         });
       }
     }
-  }, [currentSceneGraph, addNotification]);
+  }, [currentSceneGraph]);
 
   // Initialize lastWorkspaceLayout from localStorage on mount
   useEffect(() => {

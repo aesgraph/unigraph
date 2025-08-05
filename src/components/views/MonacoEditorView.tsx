@@ -12,9 +12,7 @@ interface MonacoEditorViewProps {
   theme?: any;
 }
 
-const MonacoEditorView: React.FC<MonacoEditorViewProps> = ({
-  theme: appShellTheme,
-}) => {
+const MonacoEditorView: React.FC<MonacoEditorViewProps> = (_props) => {
   const [code, setCode] = useState(monacoEditorExamples.typescript);
   const [language, setLanguage] = useState("typescript");
   const [editorTheme, setEditorTheme] = useState("vs-dark");

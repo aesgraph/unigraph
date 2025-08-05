@@ -539,11 +539,6 @@ function MarkdownViewer({
       return processed;
     };
 
-    // Parse filename for highlighting (e.g., "file.md#L123" or "file.md#search=text")
-    const lineMatch = filename.match(/#L(\d+)$/);
-    const searchMatch = filename.match(/#search=([^#]+)$/);
-    const lineNumber = lineMatch ? parseInt(lineMatch[1], 10) : null;
-    const searchText = searchMatch ? decodeURIComponent(searchMatch[1]) : null;
     const cleanFilename = filename.replace(/#(L\d+|search=[^#]+)$/, "");
 
     // Fix the path construction to handle docs/, markdowns/, and storyCardFiles/ paths

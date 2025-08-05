@@ -187,6 +187,7 @@ export default function SignIn() {
         }
       }
     } catch (err) {
+      console.log("SignIn: Error during email auth", err);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);

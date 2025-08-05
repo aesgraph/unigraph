@@ -29,7 +29,7 @@ export class MonacoEditorCodeTool implements CommandTool {
     }
 
     try {
-      const { code, language, description, replace = true } = payload;
+      const { code, language, replace = true } = payload;
 
       // Update language if specified
       if (language) {

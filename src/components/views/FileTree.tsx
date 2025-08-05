@@ -47,7 +47,7 @@ interface FileTreeProps {
   height?: string | number;
 }
 
-const getFileIcon = (fileName: string, language?: string) => {
+const getFileIcon = (fileName: string, _language?: string) => {
   const extension = fileName.split(".").pop()?.toLowerCase();
 
   switch (extension) {
@@ -273,7 +273,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
   onFileSelect,
   onFileCreate,
   onFileDelete,
-  onFileRename,
+  onFileRename: _onFileRename,
   selectedFile,
   height = "100%",
 }) => {

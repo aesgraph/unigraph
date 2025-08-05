@@ -1181,7 +1181,7 @@ export default React.memo(
                 ? filterTree(node.children)
                 : [];
 
-              const hasFiles = filteredChildren.some(
+              const _hasFiles = filteredChildren.some(
                 (child) => child.type === "file" || child.type === "directory"
               );
 

@@ -293,7 +293,7 @@ export const DocumentContentSearch: React.FC<DocumentContentSearchProps> = ({
               padding: 0,
             }}
           >
-            {searchResults.map((result, index) => (
+            {searchResults.map((result, _index) => (
               <div
                 key={result.document.id}
                 className="result-item"

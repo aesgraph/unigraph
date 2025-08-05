@@ -22,7 +22,7 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
       const existingWorkspaces = getAllWorkspaces();
 
       // Always ensure initial workspaces are available and up-to-date
-      let addedOrUpdatedWorkspaces = false;
+      let _addedOrUpdatedWorkspaces = false;
       initialWorkspaces.forEach((workspace) => {
         const existingIndex = existingWorkspaces.findIndex(
           (existing) => existing.id === workspace.id
@@ -39,7 +39,7 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
           };
 
           saveWorkspace(workspaceWithTimestamp);
-          addedOrUpdatedWorkspaces = true;
+          _addedOrUpdatedWorkspaces = true;
         } else {
           // Check if existing workspace needs updating (wrong layout format)
           const existing = existingWorkspaces[existingIndex];
@@ -57,7 +57,7 @@ const InitialWorkspaceLoader: React.FC<InitialWorkspaceLoaderProps> = ({
             };
 
             saveWorkspace(workspaceWithTimestamp);
-            addedOrUpdatedWorkspaces = true;
+            _addedOrUpdatedWorkspaces = true;
           }
         }
       });

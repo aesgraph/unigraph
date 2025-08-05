@@ -21,8 +21,8 @@ const UnigraphIframeExample: React.FC = () => {
       <section style={{ marginBottom: "40px" }}>
         <h2>Interactive Documentation Structure</h2>
         <p>
-          This example shows how to embed an interactive diagram of Unigraph's
-          documentation structure.
+          This example shows how to embed an interactive diagram of
+          Unigraph&apos;s documentation structure.
         </p>
         <UnigraphIframe
           src="/docs-structure.html"

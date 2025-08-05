@@ -767,7 +767,7 @@ const unigraphIframeView = {
   id: VIEW_DEFINITIONS["unigraph-iframe"].id,
   title: VIEW_DEFINITIONS["unigraph-iframe"].title,
   icon: VIEW_DEFINITIONS["unigraph-iframe"].icon,
-  component: (props: any) => (
+  component: (_props: any) => (
     <UnigraphIframe
       src="http://localhost:3001"
       title="Live Unigraph Application"
@@ -795,7 +795,7 @@ const devToolsView = {
   id: VIEW_DEFINITIONS["dev-tools"].id,
   title: VIEW_DEFINITIONS["dev-tools"].title,
   icon: VIEW_DEFINITIONS["dev-tools"].icon,
-  component: (props: any) => <DevToolsView {...props} />,
+  component: (_props: any) => <DevToolsView {..._props} />,
   category: VIEW_DEFINITIONS["dev-tools"].category,
 };
 

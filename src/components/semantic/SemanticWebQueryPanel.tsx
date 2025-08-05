@@ -122,12 +122,12 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
       });
       examplesInitializedRef.current = true;
     }
-  }, [history.length]);
+  }, [addToHistory, history.length]);
 
   // Debug history
   useEffect(() => {
     log.debug("History updated", { length: history.length, history });
-  }, [history]);
+  }, [history, log]);
 
   // Use API provider context
   const { apiProvider, openaiApiKey, liveChatUrl, isCustomEndpoint } =
@@ -151,7 +151,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
   const [lintError, setLintError] = useState<string | null>(null);
 
   const [copySuccess, setCopySuccess] = useState(false);
-  const [showAskAI, setShowAskAI] = useState(true);
+  const [_showAskAI, setShowAskAI] = useState(true);
   const [aiQuery, setAiQuery] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [autoRunAIQueries, setAutoRunAIQueries] = useState(false);
@@ -253,7 +253,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     }
   };
 
-  const handleEndpointChange = (opt: any) => {
+  const _handleEndpointChange = (opt: any) => {
     setEndpoint(opt);
     if (opt.value !== "custom") setCustomEndpoint("");
   };
@@ -279,7 +279,7 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
     }
   };
 
-  const handleResizeStart = (e: React.MouseEvent) => {
+  const _handleResizeStart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     startYRef.current = e.clientY;
