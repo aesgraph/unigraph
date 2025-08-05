@@ -34,12 +34,9 @@ import {
 import { debounce, throttle } from "lodash";
 import React, { JSX, useEffect, useState } from "react";
 // Add this import
-import { getDocument } from "../../../api/documentsApi";
-import { NodeId } from "../../../core/model/Node";
-import useAppConfigStore, {
-  getCurrentSceneGraph,
-} from "../../../store/appConfigStore";
-import useDocumentStore from "../../../store/documentStore";
+import { getDocument, updateDocument } from "../../../api/documentsApi";
+
+import useAppConfigStore from "../../../store/appConfigStore";
 import { addNotification } from "../../../store/notificationStore";
 import "./LexicalEditor.css";
 import { MentionNode } from "./nodes/MentionNode";
@@ -178,7 +175,7 @@ function ContextMenuPlugin(): JSX.Element | null {
     text: string;
   } | null>(null);
   const { currentSceneGraph } = useAppConfigStore();
-  const { activeDocument } = useDocumentStore();
+  // activeDocument is not used anymore
 
   useEffect(() => {
     // Register for native DOM right-click event on the editor
@@ -241,12 +238,8 @@ function ContextMenuPlugin(): JSX.Element | null {
         type: "Note",
       });
 
-      const newEdge = currentSceneGraph
-        .getGraph()
-        .createEdge(activeDocument as NodeId, newNode.getId(), {
-          type: "contains",
-          label: "contains",
-        });
+      // If you need to create an edge, you must provide a valid parent node id here
+      // currentSceneGraph.getGraph().createEdge(parentNodeId, newNode.getId(), { ... });
 
       currentSceneGraph.refreshDisplayConfig();
       currentSceneGraph.notifyGraphChanged();
@@ -335,8 +328,6 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
   const storageKey = `lexical-editor-content-${id}`;
   const stateStorageKey = `lexical-editor-state-${id}`;
 
-  const { updateDocument, getDocumentByNodeId } = useDocumentStore();
-
   // Simple hash function for content
   const hashContent = (content: string): string => {
     let hash = 0;
@@ -352,10 +343,12 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
   // If documentId is provided: Load from server
   // If ignoreCache is true: Use initialContent directly (for server-managed content)
   // Otherwise: 1. First try localStorage (for persistence between sessions)
-  //            2. Then try documentStore (for application state)
-  //            3. Fall back to initialContent prop
+  //            2. Fall back to initialContent prop
   const [serverContent, setServerContent] = useState<string | null>(null);
   const [isLoadingServer, setIsLoadingServer] = useState(false);
+  const [editorState, setEditorState] = useState<EditorState | null>(null);
+  const [markdown, setMarkdown] = useState(initialContent);
+  const [tags, setTags] = useState<string[]>([]);
 
   // Load content from server when documentId is provided
   useEffect(() => {
@@ -414,32 +407,9 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
         return { content: savedContent, state: savedState };
       }
 
-      // Then try documentStore
-      const doc = getDocumentByNodeId(id as NodeId);
-      if (doc) {
-        // If we have lexicalState, use it
-        if (doc.lexicalState && doc.lexicalState.length > 0) {
-          console.log("Loading lexicalState from documentStore:", id);
-          return {
-            content: doc.content,
-            state: doc.lexicalState,
-          };
-        }
-        // If we have content but no lexicalState (e.g., from ChatGPT import),
-        // use the content and create a fresh state from it
-        else if (doc.content && doc.content.trim().length > 0) {
-          console.log("Using content from document with no lexicalState:", id);
-          // Return just the content - we'll create state from it
-          return {
-            content: doc.content,
-            state: null,
-          };
-        }
-      }
-
       // Fall back to initialContent
       console.log("Using initialContent for:", id);
-      return { content: doc?.content ?? initialContent, state: null };
+      return { content: initialContent, state: null };
     } catch (e) {
       console.warn("Error loading content:", e);
       return { content: initialContent, state: null };
@@ -449,7 +419,6 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
     initialContent,
     storageKey,
     stateStorageKey,
-    getDocumentByNodeId,
     ignoreCache,
     serverContent,
   ]);
@@ -517,13 +486,8 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
           }
         }
       }, 2000), // 2 second debounce for server saves
-    [documentId, ignoreCache, updateDocument]
+    [documentId, ignoreCache]
   );
-
-  // These are still needed for UI updates
-  const [markdown, setMarkdown] = useState(initialData.content);
-  const [editorState, setEditorState] = useState<EditorState | null>(null);
-  const [tags, setTags] = useState<string[]>([]);
 
   // Unified save function that saves to appropriate storage locations
   const saveToAllStorages = React.useCallback(
@@ -538,43 +502,23 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
         // When ignoreCache=true, save to server instead of localStorage
         console.log("LexicalEditor: Triggering server save");
         saveToServer(content);
+      } else if (documentId) {
+        // Always update the server document if documentId is present
+        updateDocument({
+          id: documentId,
+          content: content,
+        });
       } else {
-        // Legacy behavior: save to localStorage and document store
+        // Legacy behavior: save to localStorage only
         localStorage.setItem(storageKey, content);
         localStorage.setItem(stateStorageKey, serializedEditorState);
-
-        // Save to documentStore (for app's internal state)
-        const { updateDocument: updateDocStore } = useDocumentStore.getState();
-        updateDocStore(
-          id as NodeId,
-          content,
-          serializedEditorState,
-          currentTags
-        );
-
-        // Save to SceneGraph
-        const currentSceneGraph = getCurrentSceneGraph();
-        if (currentSceneGraph) {
-          const document = getDocumentByNodeId(id as NodeId);
-          if (document) {
-            currentSceneGraph.setDocument(id as NodeId, document);
-          }
-        }
       }
 
       // Update timestamp for UI
       const timestamp = new Date().toLocaleTimeString();
       setAutosaveStatus(`Last saved at ${timestamp}`);
     },
-    [
-      id,
-      storageKey,
-      stateStorageKey,
-      getDocumentByNodeId,
-      ignoreCache,
-      documentId,
-      saveToServer,
-    ]
+    [documentId, ignoreCache, saveToServer, storageKey, stateStorageKey]
   );
 
   // Optimize change handler
@@ -790,13 +734,7 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
   }, [editorState, saveToAllStorages]);
 
   // Add autosave status indicator
-  const [autosaveStatus, setAutosaveStatus] = useState<string>(
-    getDocumentByNodeId(id as NodeId)?.lastModified
-      ? `Last saved at ${new Date(
-          getDocumentByNodeId(id as NodeId)!.lastModified
-        ).toLocaleTimeString()}`
-      : "Not saved yet"
-  );
+  const [autosaveStatus, setAutosaveStatus] = useState<string>("Not saved yet");
 
   // Save on unmount
   useEffect(() => {
