@@ -38,8 +38,11 @@ import useAppConfigStore from "../../../store/appConfigStore";
 import { addNotification } from "../../../store/notificationStore";
 import "./LexicalEditor.css";
 import { MentionNode } from "./nodes/MentionNode";
+import { TagNode } from "./nodes/TagNode";
 import { EntityReferenceNode } from "./plugins/EntityReferencePlugin";
 import MentionsPlugin from "./plugins/MentionsPlugin";
+import TagAutocompletePlugin from "./plugins/TagAutocompletePlugin";
+import { TagPlugin } from "./plugins/TagPlugin";
 import { ToolbarPlugin } from "./plugins/ToolbarPlugin";
 
 // Create a separate PlaceholderPlugin component
@@ -197,7 +200,26 @@ const EditorStateInitializer: React.FC<{
     );
 
     if (content && content.trim().length > 0) {
-      // Create a simple editor state with the content
+      // Try to parse as serialized Lexical state first
+      try {
+        const parsedState = JSON.parse(content);
+        if (
+          parsedState &&
+          typeof parsedState === "object" &&
+          parsedState.root
+        ) {
+          // This is a serialized Lexical state
+          console.log("LexicalEditorV3: Loading serialized Lexical state");
+          editor.setEditorState(editor.parseEditorState(content));
+          return;
+        }
+      } catch (error) {
+        console.log(
+          "LexicalEditorV3: Content is not serialized Lexical state, treating as plain text"
+        );
+      }
+
+      // Fallback to creating simple text nodes for plain text content
       editor.update(() => {
         const root = $getRoot();
         root.clear();
@@ -347,6 +369,9 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
   // Handle editor content changes
   const handleEditorChange = React.useCallback(
     (editorState: EditorState, editor: LexicalEditor) => {
+      // Serialize the editor state to preserve TagNode structure
+      const serializedState = JSON.stringify(editorState.toJSON());
+
       editorState.read(() => {
         const root = $getRoot();
         const textContent = root.getTextContent();
@@ -362,8 +387,8 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
             preview: textContent.substring(0, 50) + "...",
           });
 
-          // Trigger autosave
-          saveToServer(textContent);
+          // Save both text content and serialized state
+          saveToServer(serializedState);
         }
 
         // Call onChange callback if provided
@@ -485,7 +510,10 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
   const initialConfig = React.useMemo(
     () => ({
       namespace: "LexicalEditorV3",
-      theme,
+      theme: {
+        ...theme,
+        tag: "tag-node",
+      },
       nodes: [
         HeadingNode,
         ListNode,
@@ -500,6 +528,7 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
         HashtagNode,
         EntityReferenceNode,
         MentionNode,
+        TagNode,
       ],
       onError: (error: Error) => {
         console.error("LexicalEditorV3: Lexical error:", error);
@@ -595,6 +624,8 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
               <ListPlugin />
               <LinkPlugin />
               <HashtagPlugin />
+              <TagPlugin onTagsChange={() => {}} />
+              <TagAutocompletePlugin />
               <TablePlugin />
               <CheckListPlugin />
               <MarkdownShortcutPlugin transformers={TRANSFORMERS} />

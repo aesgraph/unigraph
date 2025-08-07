@@ -17,6 +17,9 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
   // Track whether to show the editor tab
   const [showEditorTab, setShowEditorTab] = useState(false);
 
+  // Track which views have been visited to avoid fitting to view on subsequent visits
+  const [visitedViews, setVisitedViews] = useState<Set<string>>(new Set());
+
   // Update showEditorTab when activeView changes
   useEffect(() => {
     setShowEditorTab(activeView === "Editor" && getSelectedNodeIds().size > 0);
@@ -25,13 +28,22 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
   // Check if current view is a simulation
   const isSimulation = simulationList.includes(activeView);
 
+  // Helper function to handle view changes with smart fit-to-view logic
+  const handleViewChange = (view: string) => {
+    const isFirstVisit = !visitedViews.has(view);
+    if (isFirstVisit) {
+      setVisitedViews((prev) => new Set([...prev, view]));
+    }
+    onViewChange(view, isFirstVisit);
+  };
+
   return (
     <div className="tab-container">
       {showEditorTab && (
         <button
           className={`tab ${activeView === "Editor" ? "active" : ""}`}
           style={{ maxWidth: "10px" }}
-          onClick={() => onViewChange("Editor", true)}
+          onClick={() => handleViewChange("Editor")}
         >
           Editor
         </button>
@@ -39,39 +51,39 @@ const GraphViewTabs: React.FC<GraphViewTabsProps> = ({
       <button
         className={`tab ${activeView === "Gallery" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("Gallery", true)}
+        onClick={() => handleViewChange("Gallery")}
       >
         Gallery
       </button>
       <button
         className={`tab ${activeView === "AppShell" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("AppShell", true)}
+        onClick={() => handleViewChange("AppShell")}
       >
         Shell
       </button>
       <button
         className={`tab ${activeView === "Graphviz" ? "active" : ""}`}
         style={{ maxWidth: "10px" }}
-        onClick={() => onViewChange("Graphviz", true)}
+        onClick={() => handleViewChange("Graphviz")}
       >
         Graphviz
       </button>
       <button
         className={`tab ${activeView === "ForceGraph3d" ? "active" : ""}`}
-        onClick={() => onViewChange("ForceGraph3d", true)}
+        onClick={() => handleViewChange("ForceGraph3d")}
       >
         3D
       </button>
       <button
         className={`tab ${activeView === "ReactFlow" ? "active" : ""}`}
-        onClick={() => onViewChange("ReactFlow", true)}
+        onClick={() => handleViewChange("ReactFlow")}
       >
         Flow
       </button>
       <button
         className={`tab ${isSimulation ? "active" : ""}`}
-        onClick={() => onViewChange(selectedSimulation, true)}
+        onClick={() => handleViewChange(selectedSimulation)}
       >
         Sim
       </button>

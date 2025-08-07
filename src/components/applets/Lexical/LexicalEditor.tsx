@@ -33,7 +33,7 @@ import {
 } from "lexical";
 import { debounce, throttle } from "lodash";
 import React, { JSX, useEffect, useState } from "react";
-// Add this import
+import { TagNode } from "./nodes/TagNode";
 import { getDocument, updateDocument } from "../../../api/documentsApi";
 
 import useAppConfigStore from "../../../store/appConfigStore";
@@ -43,6 +43,7 @@ import { MentionNode } from "./nodes/MentionNode";
 import { EntityReferenceNode } from "./plugins/EntityReferencePlugin";
 import MentionsPlugin from "./plugins/MentionsPlugin";
 import { TagPlugin } from "./plugins/TagPlugin";
+import TagAutocompletePlugin from "./plugins/TagAutocompletePlugin";
 import { ToolbarPlugin } from "./plugins/ToolbarPlugin";
 
 // Create a separate PlaceholderPlugin component
@@ -679,6 +680,7 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
         HashtagNode,
         EntityReferenceNode,
         MentionNode,
+        TagNode, // Register TagNode for tag autocompletion
       ],
       onError: (error: Error) => {
         console.error(error);
@@ -831,6 +833,7 @@ const LexicalEditorV2: React.FC<LexicalEditorProps> = ({
               <LinkPlugin />
               <HashtagPlugin />
               <TagPlugin onTagsChange={handleTagsChange} />
+              <TagAutocompletePlugin />
               <TablePlugin />
               <CheckListPlugin />
               <MarkdownShortcutPlugin transformers={TRANSFORMERS} />

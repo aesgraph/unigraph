@@ -40,24 +40,43 @@ export const exportGraphDataForReactFlow = (
       }
       return false;
     })
-    .map((node) => ({
-      id: node.getId(),
-      color: getNodeColor(node),
-      position: positions
-        ? node.getId() in positions
-          ? positions[node.getId()]
-          : { x: 0, y: 0 }
-        : { x: 0, y: 0 },
-      data: {
+    .map((node) => {
+      const nodeType = node.getType();
+      const userData = node.getAllUserData();
+
+      // Prepare data based on node type
+      const nodeData: any = {
         label: node.getId(),
         color: getNodeColor(node),
         dimensions: node.getDimensions(),
-        userData: node.getAllUserData(),
-      },
-      style: { border: `2px solid ${getNodeColor(node)}` },
-      label: safeToString(node.getLabel()),
-      type: node.getType(),
-    }));
+        userData: userData,
+      };
+
+      // Add type-specific data
+      if (nodeType === "annotation" && userData) {
+        nodeData.annotation = userData;
+      } else if (nodeType === "webpage" && userData) {
+        nodeData.webpage = userData;
+      } else if (nodeType === "definition" && userData) {
+        nodeData.definition = userData;
+      } else if (nodeType === "class" && userData) {
+        nodeData.classData = userData;
+      }
+
+      return {
+        id: node.getId(),
+        color: getNodeColor(node),
+        position: positions
+          ? node.getId() in positions
+            ? positions[node.getId()]
+            : { x: 0, y: 0 }
+          : { x: 0, y: 0 },
+        data: nodeData,
+        style: { border: `2px solid ${getNodeColor(node)}` },
+        label: safeToString(node.getLabel()),
+        type: nodeType,
+      };
+    });
 
   const initialVisibleEdges = sceneGraph
     .getGraph()

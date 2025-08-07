@@ -215,14 +215,21 @@ const SemanticWebQueryPanel: React.FC<SemanticWebQueryPanelProps> = ({
       const userData: any = {};
       selectedProperties.forEach((property) => {
         if (entityData[property] !== undefined) {
-          userData[property] = entityData[property];
+          // Handle SPARQL result objects that have {type, value} structure
+          const propertyValue = entityData[property];
+          if (propertyValue && typeof propertyValue === 'object' && 'value' in propertyValue) {
+            userData[property] = propertyValue.value;
+          } else {
+            userData[property] = propertyValue;
+          }
         }
       });
 
       // Create the result node
       const resultNode = currentSceneGraph.getGraph().createNode({
         label:
-          entityData[agGridColumnDefs[0]?.field || "id"] ||
+          (entityData[agGridColumnDefs[0]?.field || "id"]?.value || 
+           entityData[agGridColumnDefs[0]?.field || "id"]) ||
           `Entity ${index + 1}`,
         type: entityTypeName || "Entity",
         tags: tags,

@@ -57,12 +57,19 @@ export async function listAnnotations({
   userId,
   parentResourceType,
   parentResourceId,
+  includeContent = false,
 }: {
   userId?: string;
   parentResourceType?: string;
   parentResourceId?: string;
+  includeContent?: boolean;
 } = {}) {
-  let query = supabase.from("annotations").select("*");
+  // Select fields based on includeContent flag
+  const selectFields = includeContent
+    ? "*"
+    : "id, title, data, created_at, last_updated_at, user_id, parent_resource_type, parent_resource_id";
+
+  let query = supabase.from("annotations").select(selectFields);
   if (userId) query = query.eq("user_id", userId);
   if (parentResourceType)
     query = query.eq("parent_resource_type", parentResourceType);
@@ -82,6 +89,49 @@ export async function getAnnotation(id: string) {
     .single();
   if (error) throw error;
   return data;
+}
+
+// Check if annotation has heavy content available
+export async function checkAnnotationContent(id: string) {
+  const { data, error } = await supabase
+    .from("annotations")
+    .select("data")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+
+  if (!data?.data)
+    return { hasImage: false, hasHtml: false, hasScreenshot: false };
+
+  const annotationData =
+    typeof data.data === "string" ? JSON.parse(data.data) : data.data;
+
+  return {
+    hasImage: !!annotationData.image_url,
+    hasHtml: !!annotationData.html_content,
+    hasScreenshot: !!annotationData.screenshot_url,
+  };
+}
+
+// Get annotation content (image_url, html_content, screenshot_url) on demand
+export async function getAnnotationContent(id: string) {
+  const { data, error } = await supabase
+    .from("annotations")
+    .select("data")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+
+  if (!data?.data) return null;
+
+  const annotationData =
+    typeof data.data === "string" ? JSON.parse(data.data) : data.data;
+
+  return {
+    image_url: annotationData.image_url || null,
+    html_content: annotationData.html_content || null,
+    screenshot_url: annotationData.screenshot_url || null,
+  };
 }
 
 export const loadAnnotationsToSceneGraph = async (

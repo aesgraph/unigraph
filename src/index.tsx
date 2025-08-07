@@ -4,7 +4,9 @@ import App from "./App";
 import { LayoutEngineOption } from "./core/layouts/layoutEngineTypes";
 import { decompressSceneGraphJsonFromUrl } from "./core/serializers/toFromJson";
 import "./index.css";
+import Privacy from "./pages/Privacy";
 import SignIn from "./pages/SignIn";
+import Terms from "./pages/Terms";
 import {
   setActiveLayout,
   setActiveSceneGraph,
@@ -35,7 +37,21 @@ const initializeApp = async () => {
 
   // --- Add this block for /signin route ---
   if (window.location.pathname === "/signin") {
-    root.render(<SignIn />);
+    root.render(React.createElement(SignIn));
+    return;
+  }
+  // --- End block ---
+
+  // --- Add this block for /terms route ---
+  if (window.location.pathname === "/terms") {
+    root.render(React.createElement(Terms));
+    return;
+  }
+  // --- End block ---
+
+  // --- Add this block for /privacy route ---
+  if (window.location.pathname === "/privacy") {
+    root.render(React.createElement(Privacy));
     return;
   }
   // --- End block ---
@@ -44,7 +60,7 @@ const initializeApp = async () => {
   if (window.location.pathname === "/minimal-workspace") {
     const MinimalWorkspace = (await import("./components/MinimalWorkspace"))
       .default;
-    root.render(<MinimalWorkspace />);
+    root.render(React.createElement(MinimalWorkspace));
     return;
   }
   // --- End block ---
@@ -162,19 +178,19 @@ const initializeApp = async () => {
   if (testMinimalWorkspace) {
     const MinimalWorkspace = (await import("./components/MinimalWorkspace"))
       .default;
-    root.render(<MinimalWorkspace />);
+    root.render(React.createElement(MinimalWorkspace));
     return;
   }
 
   root.render(
-    <App
-      defaultGraph={graphId}
-      svgUrl={svgUrl}
-      defaultActiveView={activeView}
-      defaultActiveLayout={activeLayout}
-      shouldShowLoadDialog={!graphId && !svgUrl && !defaultSerializedSceneGraph}
-      defaultSerializedSceneGraph={defaultSerializedSceneGraph}
-    />
+    React.createElement(App, {
+      defaultGraph: graphId,
+      svgUrl: svgUrl,
+      defaultActiveView: activeView,
+      defaultActiveLayout: activeLayout,
+      shouldShowLoadDialog: !graphId && !svgUrl && !defaultSerializedSceneGraph,
+      defaultSerializedSceneGraph: defaultSerializedSceneGraph,
+    })
   );
 };
 

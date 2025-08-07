@@ -164,8 +164,8 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     description:
       "Real-time application log viewer with filtering, search, and export capabilities",
   },
-  "markdown-editor": {
-    id: "markdown-editor",
+  "document-editor": {
+    id: "document-editor",
     title: "Document Editor",
     icon: "📝",
     category: "editing",
@@ -179,6 +179,29 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     category: "visualization",
     description:
       "Interactive 2D map view with custom markers, popups, and multiple map types using OpenStreetMap data",
+  },
+  "resource-manager": {
+    id: "resource-manager",
+    title: "Resource Manager",
+    icon: "📊",
+    category: "data",
+    description:
+      "Tabbed interface for managing and viewing different types of entities: nodes, edges, web resources, and annotations",
+  },
+  "html-page-viewer": {
+    id: "html-page-viewer",
+    title: "HTML Page Viewer",
+    icon: "🌐",
+    category: "content",
+    description: "View web pages within the application",
+  },
+  "pdf-viewer": {
+    id: "pdf-viewer",
+    title: "PDF Viewer",
+    icon: "📄",
+    category: "content",
+    description:
+      "View and interact with PDF documents with zoom, navigation, and search capabilities",
   },
 };
 

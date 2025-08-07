@@ -20,7 +20,6 @@ const GraphLayoutToolbar: React.FC<GraphLayoutToolbarProps> = ({
   activeLayout,
   onLayoutChange,
   physicsMode,
-  isDarkMode = false,
 }) => {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);

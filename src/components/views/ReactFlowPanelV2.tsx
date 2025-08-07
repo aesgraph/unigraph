@@ -16,7 +16,13 @@ import {
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { SelectionMode } from "reactflow";
 import { RenderingManager } from "../../controllers/RenderingManager";
 import {
@@ -35,6 +41,8 @@ import {
 import useAppConfigStore, { getLegendMode } from "../../store/appConfigStore";
 import { useDocumentStore } from "../../store/documentStore";
 import useGraphInteractionStore, {
+  getSelectedNodeId,
+  getSelectedNodeIds,
   setHoveredNodeId,
   setSelectedNodeId,
   setSelectedNodeIds,
@@ -53,13 +61,68 @@ import WebpageNode from "./ReactFlow/nodes/WebpageNode";
 import ResizerNode from "./ReactFlow/nodes/resizerNode";
 
 import "@xyflow/react/dist/style.css";
+import { Annotation } from "../../api/annotationsApi";
 import { EdgeId } from "../../core/model/Edge";
+import ResizableAnnotationCard from "../annotations/ResizableAnnotationCard";
+import ResizableClassCard from "../annotations/ResizableClassCard";
+import ResizableDefinitionCard from "../annotations/ResizableDefinitionCard";
+
+// AnnotationNode component for annotation nodes
+const AnnotationNode = (props: any) => {
+  const annotation: Annotation | undefined = props.data?.annotation;
+  if (!annotation) return <div>Invalid annotation</div>;
+  return (
+    <ResizableAnnotationCard
+      annotation={annotation}
+      dimensions={props.data?.dimensions}
+      onResizeEnd={props.data?.onResizeEnd}
+      style={props.style}
+    />
+  );
+};
+
+// DefinitionNode component for definition nodes
+const DefinitionNode = (props: any) => {
+  const data = props.data;
+  if (!data || !data.definition) return <div>Invalid definition</div>;
+  return (
+    <ResizableDefinitionCard
+      name={data.definition.name}
+      kind={data.definition.kind}
+      fields={data.definition.fields}
+      description={data.definition.description}
+      dimensions={data.dimensions}
+      onResizeEnd={data.onResizeEnd}
+      style={props.style}
+    />
+  );
+};
+
+// ClassNode component for class nodes
+const ClassNode = (props: any) => {
+  const data = props.data;
+  if (!data || !data.classData) return <div>Invalid class</div>;
+  return (
+    <ResizableClassCard
+      name={data.classData.name}
+      description={data.classData.description}
+      fields={data.classData.fields}
+      methods={data.classData.methods}
+      dimensions={data.dimensions}
+      onResizeEnd={data.onResizeEnd}
+      style={props.style}
+    />
+  );
+};
 
 // Node types mapping - using the exact same as ReactFlowPanel
 const nodeTypes = {
   customNode: CustomNode,
   resizerNode: ResizerNode,
   webpage: WebpageNode,
+  annotation: AnnotationNode,
+  definition: DefinitionNode,
+  class: ClassNode,
 };
 
 // CSS styles for node selection and container constraints
@@ -197,13 +260,38 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const reactFlowWrapper = useRef(null);
   const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
   const selectionChangeRef = useRef(false);
+  const viewportTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitializingRef = useRef(true);
 
-  const { currentSceneGraph } = useAppConfigStore();
+  const {
+    currentSceneGraph,
+    setReactFlowViewportState,
+    getReactFlowViewportState,
+  } = useAppConfigStore();
   const sceneGraph = currentSceneGraph;
   const reactFlowConfig = getReactFlowConfig();
   const { setActiveDocument } = useDocumentStore();
-  const { selectedNodeIds, selectedEdgeIds } = useGraphInteractionStore();
+  const { selectedNodeIds, selectedEdgeIds, hoveredNodeIds } =
+    useGraphInteractionStore();
   const { getActiveSection } = useWorkspaceConfigStore();
+
+  // Memoized node types to prevent unnecessary re-renders
+  const nodeTypes = useMemo(
+    () => ({
+      customNode: CustomNode,
+      resizerNode: ResizerNode,
+      webpage: WebpageNode,
+      annotation: AnnotationNode,
+      definition: DefinitionNode,
+      class: ClassNode,
+    }),
+    []
+  );
+
+  // Simple hover state - no debouncing for now
+  const [currentHoveredNodeId, setCurrentHoveredNodeId] = useState<
+    string | null
+  >(null);
   const {
     setActiveView: setAppActiveView,
     activeView,
@@ -230,17 +318,9 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
 
   // Export graph data for ReactFlow - using same approach as ReactFlow v1
   const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
-    console.log("ReactFlowPanelV2: Recomputing nodes and edges", {
-      sceneGraph,
-      currentLayoutResult,
-    });
     if (!sceneGraph) {
       return { nodes: [], edges: [] };
     }
-
-    // Check if scene graph positions are being updated
-    const sceneGraphPositions = sceneGraph.getDisplayConfig().nodePositions;
-    console.log("ReactFlowPanelV2: Scene graph positions", sceneGraphPositions);
 
     const data = exportGraphDataForReactFlow(sceneGraph);
 
@@ -307,18 +387,14 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   // Fix the type mismatch by avoiding direct NodeChange typing - use any as an intermediary
   const handleNodesChange = useCallback(
     (changes: any) => {
-      setTimeout(() => {
-        originalOnNodesChange(changes);
-      });
+      originalOnNodesChange(changes);
     },
     [originalOnNodesChange]
   );
 
   const handleEdgesChange = useCallback(
     (changes: any) => {
-      setTimeout(() => {
-        originalOnEdgesChange(changes);
-      });
+      originalOnEdgesChange(changes);
     },
     [originalOnEdgesChange]
   );
@@ -328,6 +404,17 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     document.head.appendChild(nodeStyles);
     return () => {
       document.head.removeChild(nodeStyles);
+    };
+  }, []);
+
+  // Cleanup viewport timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (viewportTimeoutRef.current) {
+        clearTimeout(viewportTimeoutRef.current);
+      }
+      // Reset initialization flag
+      isInitializingRef.current = true;
     };
   }, []);
 
@@ -341,18 +428,92 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);
 
+  // Sync initial selection state with ReactFlow after initialization
+  useEffect(() => {
+    if (!isInitializingRef.current && reactFlowInstance.current) {
+      const currentSelectedNodeIds = getSelectedNodeIds();
+      const currentSelectedNodeId = getSelectedNodeId();
+
+      if (currentSelectedNodeIds.size > 0 || currentSelectedNodeId) {
+        console.log("ReactFlowPanelV2: Syncing initial selection state");
+        // Update ReactFlow nodes to reflect current selection state
+        reactFlowInstance.current.setNodes((currentNodes) =>
+          currentNodes.map((node) => ({
+            ...node,
+            selected:
+              currentSelectedNodeIds.has(node.id as NodeId) ||
+              node.id === currentSelectedNodeId,
+          }))
+        );
+      }
+    }
+  }, [isInitializingRef.current, getSelectedNodeIds, getSelectedNodeId]);
+
   // Update nodes and edges when layout result changes
   useEffect(() => {
-    console.log("ReactFlowPanelV2: Layout result changed", currentLayoutResult);
-    if (currentLayoutResult && currentLayoutResult.positions) {
-      console.log("ReactFlowPanelV2: Updating nodes and edges with new layout");
-      console.log("ReactFlowPanelV2: Current processedNodes", processedNodes);
-      console.log("ReactFlowPanelV2: Current initialEdges", initialEdges);
-      // Force a refresh of the React Flow state when layout changes
-      setNodes(processedNodes);
-      setEdges(initialEdges);
+    if (currentLayoutResult && currentLayoutResult.positions && sceneGraph) {
+      const data = exportGraphDataForReactFlow(
+        sceneGraph,
+        currentLayoutResult.positions
+      );
+
+      const nodesWithNewPositions = data.nodes.map((node) => {
+        const isSelected = selectedNodeIds.has(node.id as NodeId);
+
+        return {
+          ...node,
+          type: (node?.type ?? "") in nodeTypes ? node.type : "resizerNode",
+          style: {
+            background: RenderingManager.getColor(
+              sceneGraph.getGraph().getNode(node.id as NodeId),
+              nodeLegendConfig,
+              legendMode
+            ),
+            color: "#000000",
+            // Default border - hover styling will be applied by the hover effect
+            border: `2px solid ${RenderingManager.getColor(
+              sceneGraph.getGraph().getNode(node.id as NodeId),
+              nodeLegendConfig,
+              legendMode
+            )}`,
+          },
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          selected: isSelected,
+        };
+      });
+
+      const edgesWithStyling = data.edges.map((edge) => ({
+        ...edge,
+        type: "default",
+        style: {
+          stroke: RenderingManager.getColor(
+            sceneGraph.getGraph().getEdge(edge.id as EdgeId),
+            edgeLegendConfig,
+            legendMode
+          ),
+        },
+        labelStyle: {
+          fill: RenderingManager.getColor(
+            sceneGraph.getGraph().getEdge(edge.id as EdgeId),
+            edgeLegendConfig,
+            legendMode
+          ),
+          fontWeight: 700,
+        },
+      }));
+
+      setNodes(nodesWithNewPositions);
+      setEdges(edgesWithStyling);
     }
-  }, [currentLayoutResult, processedNodes, initialEdges, setNodes, setEdges]);
+  }, [
+    currentLayoutResult,
+    sceneGraph,
+    nodeLegendConfig,
+    edgeLegendConfig,
+    legendMode,
+    selectedNodeIds,
+  ]);
 
   // Fix the onInit handler to use the correct type and avoid camera flickering
   const handleInit: OnInit = useCallback(
@@ -360,26 +521,28 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
       reactFlowInstance.current = instance;
       // setReactFlowInstance(instance); // This line was removed as per the edit hint
 
-      // Custom fit view for large graphs
+      // Restore viewport state if available
+      const savedViewportState = getReactFlowViewportState();
+      if (savedViewportState) {
+        console.log(
+          "ReactFlowPanelV2: Restoring viewport state",
+          savedViewportState
+        );
+        instance.setViewport({
+          x: savedViewportState.x,
+          y: savedViewportState.y,
+          zoom: savedViewportState.zoom,
+        });
+      } else {
+        console.log("ReactFlowPanelV2: No saved viewport state, using default");
+      }
+
+      // Mark initialization as complete after a short delay
       setTimeout(() => {
-        if (nodes.length > 50) {
-          // For large graphs, use a more aggressive fit
-          instance.fitView({
-            padding: 0.3,
-            includeHiddenNodes: false,
-            minZoom: 0.01,
-            maxZoom: 2,
-          });
-        } else {
-          // For smaller graphs, use standard fit
-          instance.fitView({
-            padding: 0.2,
-            includeHiddenNodes: false,
-          });
-        }
+        isInitializingRef.current = false;
       }, 100);
     },
-    [nodes.length]
+    [getReactFlowViewportState]
   );
 
   // Subscribe to ReactFlowConfig changes
@@ -424,18 +587,8 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     if (!reactFlowWrapper.current || !reactFlowInstance.current) return;
 
     const resizeObserver = new ResizeObserver(() => {
-      // Trigger ReactFlow to recalculate its dimensions
-      if (reactFlowInstance.current) {
-        // Small delay to ensure DOM has updated
-        setTimeout(() => {
-          reactFlowInstance.current?.fitView({
-            padding: 0.2,
-            includeHiddenNodes: false,
-            minZoom: 0.01,
-            maxZoom: 2,
-          });
-        }, 50);
-      }
+      // Don't automatically fit view on resize - let the user control the camera
+      // ReactFlow will handle the resize internally without changing the view
     });
 
     resizeObserver.observe(reactFlowWrapper.current);
@@ -445,24 +598,112 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     };
   }, []);
 
-  // Critical effect: Update ReactFlow nodes when global selection state changes
-  // This ensures selections from other views (like ForceGraph3D) are reflected here
+  // Function to zoom to a specific node
+  const zoomToNode = useCallback((nodeId: string) => {
+    if (!reactFlowInstance.current) {
+      console.log("ReactFlowPanelV2: ReactFlow instance not ready for zoom");
+      return;
+    }
+
+    // Find the node in the current nodes
+    const node = reactFlowInstance.current
+      .getNodes()
+      .find((n) => n.id === nodeId);
+    if (node) {
+      console.log("ReactFlowPanelV2: Zooming to node:", nodeId);
+      // Zoom to the specific node with padding
+      reactFlowInstance.current.fitView({
+        padding: 0.3,
+        includeHiddenNodes: false,
+        minZoom: 0.1,
+        maxZoom: 2,
+        nodes: [node], // Only fit to this specific node
+      });
+    } else {
+      console.log("ReactFlowPanelV2: Node not found for zoom:", nodeId);
+    }
+  }, []);
+
+  // Optimized hover effect - only update the specific node that changed
   useEffect(() => {
+    const hoveredNodeId =
+      hoveredNodeIds.size > 0 ? Array.from(hoveredNodeIds)[0] : null;
+    setCurrentHoveredNodeId(hoveredNodeId);
+
     if (reactFlowInstance.current) {
       reactFlowInstance.current.setNodes((currentNodes) =>
-        currentNodes.map((n) => ({
-          ...n,
-          selected: selectedNodeIds.has(n.id as NodeId),
-        }))
-      );
-      reactFlowInstance.current.setEdges((currentEdges) =>
-        currentEdges.map((e) => ({
-          ...e,
-          selected: selectedEdgeIds.has(e.id as EdgeId),
-        }))
+        currentNodes.map((n) => {
+          const isHovered = n.id === hoveredNodeId;
+          const isSelected = selectedNodeIds.has(n.id as NodeId);
+
+          // Only update if hover state or selection state changed
+          const wasHovered =
+            typeof n.style?.border === "string" &&
+            n.style.border.includes("#ff6b35");
+          const wasSelected = n.selected;
+
+          if (isHovered === wasHovered && isSelected === wasSelected) {
+            return n; // No change needed
+          }
+
+          // Get the original node color for proper border reset
+          const originalNodeColor = RenderingManager.getColor(
+            sceneGraph?.getGraph().getNode(n.id as NodeId),
+            nodeLegendConfig,
+            legendMode
+          );
+
+          return {
+            ...n,
+            selected: isSelected,
+            style: {
+              ...n.style,
+              border: isHovered
+                ? `4px solid #ff6b35`
+                : `2px solid ${originalNodeColor}`,
+              background: isHovered
+                ? `${n.style?.background || "#ccc"}ee`
+                : n.style?.background,
+              boxShadow: isHovered
+                ? `0 4px 12px rgba(255, 107, 53, 0.4)`
+                : "none",
+            },
+          };
+        })
       );
     }
-  }, [selectedNodeIds, selectedEdgeIds]);
+  }, [
+    hoveredNodeIds,
+    selectedNodeIds,
+    sceneGraph,
+    nodeLegendConfig,
+    legendMode,
+  ]);
+
+  // Expose the zoom function globally so it can be called from anywhere
+  useEffect(() => {
+    // Add the zoom function to the window object for global access
+    (window as any).reactFlowZoomToNode = (nodeId: string) => {
+      zoomToNode(nodeId);
+    };
+
+    // Add fit view function for tab system
+    (window as any).reactFlowFitView = () => {
+      if (reactFlowInstance.current) {
+        setReactFlowViewportState(null); // Clear saved state
+        reactFlowInstance.current.fitView({
+          padding: 0.2,
+          includeHiddenNodes: false,
+        });
+      }
+    };
+
+    // Cleanup function to remove the global functions
+    return () => {
+      delete (window as any).reactFlowZoomToNode;
+      delete (window as any).reactFlowFitView;
+    };
+  }, [zoomToNode, setReactFlowViewportState]);
 
   // Don't sync selection state automatically - let ReactFlow and our handlers manage it
   // The sync effect was causing conflicts with ReactFlow's internal selection management
@@ -504,6 +745,39 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     [setActiveDocument, setAppActiveView]
   );
 
+  // Save viewport state when it changes - with debouncing to prevent excessive updates
+  const handleViewportChange = useCallback(
+    (viewport: { x: number; y: number; zoom: number }) => {
+      // Clear any existing timeout
+      if (viewportTimeoutRef.current) {
+        clearTimeout(viewportTimeoutRef.current);
+      }
+
+      // Set a new timeout to debounce the viewport state update
+      viewportTimeoutRef.current = setTimeout(() => {
+        // Only save if the viewport has changed significantly (avoid saving identical states)
+        const currentState = getReactFlowViewportState();
+        if (
+          !currentState ||
+          Math.abs(currentState.x - viewport.x) > 1 ||
+          Math.abs(currentState.y - viewport.y) > 1 ||
+          Math.abs(currentState.zoom - viewport.zoom) > 0.01
+        ) {
+          setReactFlowViewportState(viewport);
+        }
+      }, 300); // 300ms debounce for even smoother performance
+    },
+    [setReactFlowViewportState, getReactFlowViewportState]
+  );
+
+  // Handle fit view button click - clear saved viewport state
+  const handleFitView = useCallback(() => {
+    console.log(
+      "ReactFlowPanelV2: Fit view button clicked - clearing saved viewport state"
+    );
+    setReactFlowViewportState(null);
+  }, [setReactFlowViewportState]);
+
   const handleSelectionChange = useCallback(
     (params: OnSelectionChangeParams) => {
       console.log("handleSelectionChange called with:", params);
@@ -515,31 +789,57 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
         return;
       }
 
+      // Skip if we're still initializing to prevent conflicts during mount
+      if (isInitializingRef.current) {
+        console.log("Skipping selection change - still initializing");
+        return;
+      }
+
+      // Get current selection state to compare
+      const currentSelectedNodeIds = getSelectedNodeIds();
+      const currentSelectedNodeId = getSelectedNodeId();
+
       if (!params.nodes || params.nodes.length === 0) {
-        console.log("Clearing selection in handleSelectionChange");
-        setSelectedNodeIds(new EntityIds([]));
-        setSelectedNodeId(null);
+        // Only clear if there's actually a selection to clear
+        if (currentSelectedNodeIds.size > 0 || currentSelectedNodeId) {
+          console.log("Clearing selection in handleSelectionChange");
+          setSelectedNodeIds(new EntityIds([]));
+          setSelectedNodeId(null);
+        }
         return;
       }
 
       const newSelectedNodeIds = new EntityIds(
         params.nodes.map((node) => createNodeId(node.id))
       );
-      console.log(
-        "Setting selection from handleSelectionChange:",
-        newSelectedNodeIds
-      );
-      setSelectedNodeIds(newSelectedNodeIds);
 
-      if (params.nodes.length === 1) {
-        // Single node selection
-        console.log("Single node selection - setting selected node ID");
-        setSelectedNodeId(createNodeId(params.nodes[0].id));
+      // Only update if the selection has actually changed
+      if (
+        currentSelectedNodeIds.size !== newSelectedNodeIds.size ||
+        !Array.from(currentSelectedNodeIds).every((id) =>
+          newSelectedNodeIds.has(id)
+        )
+      ) {
+        console.log(
+          "Setting selection from handleSelectionChange:",
+          newSelectedNodeIds
+        );
+        setSelectedNodeIds(newSelectedNodeIds);
+
+        if (params.nodes.length === 1) {
+          // Single node selection
+          const newSelectedNodeId = createNodeId(params.nodes[0].id);
+          if (newSelectedNodeId !== currentSelectedNodeId) {
+            console.log("Single node selection - setting selected node ID");
+            setSelectedNodeId(newSelectedNodeId);
+          }
+        } else {
+          // Multi-node selection - clear single node ID
+          if (currentSelectedNodeId) {
+            setSelectedNodeId(null);
+          }
+        }
       }
-      // For multi-node selection, don't touch the single node ID at all
-
-      // Always open the node details panel for any selection
-      // setRightActiveSection("node-details");
     },
     []
   );
@@ -616,6 +916,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             panOnDrag={[2]}
             panOnScroll={false}
             multiSelectionKeyCode="Shift"
+            proOptions={{ hideAttribution: true }}
             nodes={nodes}
             edges={edges}
             onNodesChange={handleNodesChange}
@@ -628,9 +929,12 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             onNodeClick={handleNodeClick}
             onSelectionChange={handleSelectionChange}
             onNodeDoubleClick={handleNodeDoubleClick}
-            fitView={true}
+            onViewportChange={handleViewportChange}
             minZoom={0.01}
             maxZoom={1000}
+            nodesDraggable={false}
+            nodesConnectable={false}
+            elementsSelectable={true}
             connectionLineType={ConnectionLineType.Bezier}
             snapToGrid={reactFlowConfig.snapToGrid}
             snapGrid={reactFlowConfig.snapGrid}
@@ -671,6 +975,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
               showZoom={true}
               showFitView={true}
               showInteractive={true}
+              onFitView={handleFitView}
               fitViewOptions={{
                 padding: 0.3,
                 includeHiddenNodes: false,

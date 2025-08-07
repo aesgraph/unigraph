@@ -496,13 +496,14 @@ const AppContentInner = ({
 
   const handleReactFlowFitView = useCallback(
     (padding: number = 0.1, duration: number = 0) => {
-      if (activeView === "ReactFlow" && reactFlowInstance && getAutoFitView()) {
-        setTimeout(() => {
-          reactFlowInstance.fitView({ padding, duration });
-        }, 0);
+      if (activeView === "ReactFlow" && getAutoFitView()) {
+        // Use the global function from ReactFlowPanelV2
+        if ((window as any).reactFlowFitView) {
+          (window as any).reactFlowFitView();
+        }
       }
     },
-    [activeView, reactFlowInstance]
+    [activeView]
   );
 
   useEffect(() => {
@@ -775,8 +776,12 @@ const AppContentInner = ({
     handleBackgroundRightClick,
   ]);
 
-  const { saveCurrentLayout, applyWorkspaceLayout, getAllWorkspaces } =
-    useAppShell();
+  const {
+    saveCurrentLayout,
+    applyWorkspaceLayout,
+    getAllWorkspaces,
+    getCurrentWorkspace,
+  } = useAppShell();
 
   const [graphModelUpdateTime, setGraphModelUpdateTime] = useState<number>(0);
 
@@ -1087,17 +1092,14 @@ const AppContentInner = ({
         graphvizFitToView(graphvizRef.current);
       } else if (activeView === "ForceGraph3d" && forceGraphInstance) {
         zoomToFit(forceGraphInstance!, duration);
-      } else if (activeView === "ReactFlow" && reactFlowInstance) {
-        handleReactFlowFitView(0.1, duration);
-        // reactFlowInstance.current.fitView({ padding: 0.1, duration: 400 });
+      } else if (activeView === "ReactFlow") {
+        // Use the global function from ReactFlowPanelV2
+        if ((window as any).reactFlowFitView) {
+          (window as any).reactFlowFitView();
+        }
       }
     },
-    [
-      forceGraphInstance,
-      graphvizFitToView,
-      handleReactFlowFitView,
-      reactFlowInstance,
-    ]
+    [forceGraphInstance, graphvizFitToView, handleReactFlowFitView]
   );
 
   const handleLegendModeChange = useCallback(
@@ -1648,6 +1650,7 @@ const AppContentInner = ({
         saveCurrentLayout,
         applyWorkspaceLayout,
         getAllWorkspaces,
+        getCurrentWorkspace,
       },
     };
     return new MenuConfig(
@@ -1656,19 +1659,20 @@ const AppContentInner = ({
       forceGraphInstance
     );
   }, [
+    handleSetSceneGraph,
+    handleImportConfig,
+    handleFitToView,
     GraphMenuActions,
     SimulationMenuActions,
-    currentSceneGraph,
-    forceGraphInstance,
-    handleFitToView,
-    handleImportConfig,
-    handleSetSceneGraph,
     setShowEntityTables,
-    setShowLayoutManager,
-    setShowSceneGraphDetailView,
     saveCurrentLayout,
     applyWorkspaceLayout,
     getAllWorkspaces,
+    getCurrentWorkspace,
+    currentSceneGraph,
+    forceGraphInstance,
+    setShowLayoutManager,
+    setShowSceneGraphDetailView,
   ]);
 
   const menuConfig = useMemo(

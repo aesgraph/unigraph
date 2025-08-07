@@ -75,6 +75,7 @@ interface DocumentEditorViewProps {
   onLoad?: () => string;
   userId?: string;
   projectId?: string;
+  documentId?: string;
 }
 
 const defaultMarkdownContent = `# Welcome to Document Editor
@@ -644,6 +645,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
   onLoad: _onLoad,
   userId,
   projectId,
+  documentId: initialDocumentId,
 }) => {
   const { theme } = useTheme();
   const [content, setContent] = useState<string>(initialContent);
@@ -664,6 +666,35 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [_isAutoSaving, setIsAutoSaving] = useState(false);
   const [_error, _setError] = useState<string | null>(null);
+
+  // Auto-load document if documentId is provided
+  useEffect(() => {
+    if (initialDocumentId) {
+      setIsLoading(true);
+      getDocument(initialDocumentId)
+        .then((document) => {
+          const fullFilename = `${document.title}.${document.extension}`;
+          console.log("DocumentEditorView: Auto-loading document:", {
+            documentId: initialDocumentId,
+            title: document.title,
+            extension: document.extension,
+            fullFilename,
+          });
+          setSelectedFile(`/documents/${document.id}`);
+          setSelectedFilename(fullFilename);
+          setContent(document.content || "");
+          setOriginalContent(document.content || "");
+          setCurrentDocumentId(document.id);
+          setHasUnsavedChanges(false);
+        })
+        .catch((error) => {
+          console.error("Error auto-loading document:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [initialDocumentId]);
 
   // Create document editor file tree instance
   const documentEditorInstance: FileTreeInstance = useMemo(

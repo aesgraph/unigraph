@@ -599,6 +599,117 @@ span[data-hashtag="true"] {
   color: #60a5fa;
 }
 
+/* Tag Autocomplete Plugin Styles */
+.tag-mentions-menu {
+  position: fixed;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
+  max-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 10000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tag-mentions-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.tag-mentions-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.1s ease;
+}
+
+.tag-mentions-menu-item:hover {
+  background-color: #f5f7f9;
+}
+
+.tag-mentions-menu-item.selected {
+  background-color: #edf2f7;
+  color: #1a56db;
+}
+
+.tag-color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tag-mentions-menu-item-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark mode styles for tag autocomplete */
+.dark .tag-mentions-menu {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .tag-mentions-menu-item {
+  color: #e0e0e0;
+}
+
+.dark .tag-mentions-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .tag-mentions-menu-item.selected {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+}
+
+.dark .tag-color-indicator {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Tag Node Styles - High specificity to override theme styles */
+.lexical-editor-container .tag-node,
+.editor-input .tag-node,
+.lexical-content .tag-node {
+  display: inline-block !important;
+  padding: 2px 6px !important;
+  border-radius: 12px !important;
+  font-size: 0.9em !important;
+  font-weight: 500 !important;
+  margin: 0 2px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.tag-node:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode styles for tag nodes */
+.dark .tag-node {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .tag-node:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
 /* Autosave indicator */
 .autosave-indicator {
   position: absolute;

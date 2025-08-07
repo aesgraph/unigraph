@@ -21,18 +21,59 @@
           "order": 0
         },
         {
+          "path": "unigraph/applets",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/applets/ItineraryPlanner.md",
+              "type": "file",
+              "name": "ItineraryPlanner.md"
+            },
+            {
+              "path": "unigraph/applets/MapsEngine.md",
+              "type": "file",
+              "name": "MapsEngine.md"
+            },
+            {
+              "path": "unigraph/applets/StarSystemEngine.md",
+              "type": "file",
+              "name": "StarSystemEngine.md"
+            }
+          ]
+        },
+        {
           "path": "unigraph/applications",
           "type": "directory",
           "children": [
+            {
+              "path": "unigraph/applications/Art.md",
+              "type": "file",
+              "name": "Art.md"
+            },
+            {
+              "path": "unigraph/applications/BookmarkAndAnnotationPlatform.md",
+              "type": "file",
+              "name": "BookmarkAndAnnotationPlatform.md"
+            },
             {
               "path": "unigraph/applications/DataAndFunctionMarketplace.md",
               "type": "file",
               "name": "DataAndFunctionMarketplace.md"
             },
             {
+              "path": "unigraph/applications/DistributedCollaboration.md",
+              "type": "file",
+              "name": "DistributedCollaboration.md"
+            },
+            {
               "path": "unigraph/applications/IntermediateRepresentationLanguage.md",
               "type": "file",
               "name": "IntermediateRepresentationLanguage.md"
+            },
+            {
+              "path": "unigraph/applications/PresentationPlatform.md",
+              "type": "file",
+              "name": "PresentationPlatform.md"
             },
             {
               "path": "unigraph/applications/SemanticWebConnector.md",
@@ -53,18 +94,16 @@
           "type": "directory",
           "children": [
             {
+              "path": "unigraph/capabilities/Accessibility.md",
+              "type": "file",
+              "name": "Accessibility.md"
+            },
+            {
               "path": "unigraph/capabilities/AnnotationTooling.md",
               "type": "file",
               "name": "AnnotationTooling.md",
               "title": "Annotation Tooling",
               "order": 9
-            },
-            {
-              "path": "unigraph/capabilities/AppLayoutManager.md",
-              "type": "file",
-              "name": "AppLayoutManager.md",
-              "title": "App Layout Manager",
-              "order": 6
             },
             {
               "path": "unigraph/capabilities/ApplicationExtension.md",
@@ -84,7 +123,7 @@
               "path": "unigraph/capabilities/DocumentEditing.md",
               "type": "file",
               "name": "DocumentEditing.md",
-              "title": "Document Editing",
+              "title": "Document Editor",
               "order": 7
             },
             {
@@ -116,6 +155,13 @@
               "order": 2
             },
             {
+              "path": "unigraph/capabilities/LayoutSystem.md",
+              "type": "file",
+              "name": "LayoutSystem.md",
+              "title": "Layout System",
+              "order": 6
+            },
+            {
               "path": "unigraph/capabilities/ProjectManagement.md",
               "type": "file",
               "name": "ProjectManagement.md",
@@ -142,6 +188,85 @@
               "name": "index.md",
               "title": "Capabilities",
               "order": 3
+            }
+          ]
+        },
+        {
+          "path": "unigraph/caseStudies",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/caseStudies/AdjacentTechnologies.md",
+              "type": "file",
+              "name": "AdjacentTechnologies.md"
+            },
+            {
+              "path": "unigraph/caseStudies/DistributedCollaboration.md",
+              "type": "file",
+              "name": "DistributedCollaboration.md",
+              "title": "Distributed Collaboration"
+            },
+            {
+              "path": "unigraph/caseStudies/DocumentationAssistTool.md",
+              "type": "file",
+              "name": "DocumentationAssistTool.md"
+            },
+            {
+              "path": "unigraph/caseStudies/SoftwareSystemDiagramming.md",
+              "type": "file",
+              "name": "SoftwareSystemDiagramming.md"
+            },
+            {
+              "path": "unigraph/caseStudies/Zettelkasten.md",
+              "type": "file",
+              "name": "Zettelkasten.md"
+            }
+          ]
+        },
+        {
+          "path": "unigraph/concepts",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/concepts/DataPrimitives.md",
+              "type": "file",
+              "name": "DataPrimitives.md",
+              "title": "Data Primitives"
+            },
+            {
+              "path": "unigraph/concepts/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Concepts",
+              "order": 4
+            }
+          ]
+        },
+        {
+          "path": "unigraph/developerNotes",
+          "type": "directory",
+          "children": [
+            {
+              "path": "unigraph/developerNotes/AppShell.md",
+              "type": "file",
+              "name": "AppShell.md"
+            },
+            {
+              "path": "unigraph/developerNotes/EntityComponentSystem.md",
+              "type": "file",
+              "name": "EntityComponentSystem.md"
+            },
+            {
+              "path": "unigraph/developerNotes/UnigraphStack.md",
+              "type": "file",
+              "name": "UnigraphStack.md",
+              "title": "The Unigraph Stack"
+            },
+            {
+              "path": "unigraph/developerNotes/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Developer Modules"
             }
           ]
         },
@@ -216,6 +341,11 @@
               "path": "unigraph/papers/OrganizationalComplexityInSoftwareEngineering.md",
               "type": "file",
               "name": "OrganizationalComplexityInSoftwareEngineering.md"
+            },
+            {
+              "path": "unigraph/papers/RetrievalAugmentedGeneration.md",
+              "type": "file",
+              "name": "RetrievalAugmentedGeneration.md"
             },
             {
               "path": "unigraph/papers/index.md",

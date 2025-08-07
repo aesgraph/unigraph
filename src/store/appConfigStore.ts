@@ -58,6 +58,21 @@ export type AppState = AppConfig &
     reactFlowInstance: ReactFlowInstance | null;
     setReactFlowInstance: (reactFlowInstance: ReactFlowInstance | null) => void;
     getReactFlowInstance: () => ReactFlowInstance | null;
+
+    // ReactFlow viewport state management
+    reactFlowViewportState: {
+      x: number;
+      y: number;
+      zoom: number;
+    } | null;
+    setReactFlowViewportState: (
+      viewportState: { x: number; y: number; zoom: number } | null
+    ) => void;
+    getReactFlowViewportState: () => {
+      x: number;
+      y: number;
+      zoom: number;
+    } | null;
   };
 
 const DEFAULTS = DEFAULT_APP_CONFIG();
@@ -73,6 +88,17 @@ const useAppConfigStore = create<AppState>((set) => ({
     set({ reactFlowInstance }),
   getReactFlowInstance: (): ReactFlowInstance | null =>
     useAppConfigStore.getState().reactFlowInstance,
+
+  // ReactFlow viewport state management
+  reactFlowViewportState: null,
+  setReactFlowViewportState: (
+    viewportState: { x: number; y: number; zoom: number } | null
+  ) => set({ reactFlowViewportState: viewportState }),
+  getReactFlowViewportState: (): {
+    x: number;
+    y: number;
+    zoom: number;
+  } | null => useAppConfigStore.getState().reactFlowViewportState,
 
   activeFilter: null,
   setActiveFilter: (activeFilter: Filter | null) => set({ activeFilter }),

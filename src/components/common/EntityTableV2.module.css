@@ -113,3 +113,8 @@
   min-height: 0; /* Allow content to expand beyond cell height */
   z-index: 2147483647; /* Ensure dropdown appears above AG Grid rows */
 }
+
+/* Increase pagination panel height */
+.agGridContainer :global(.ag-paging-panel) {
+  min-height: 44px !important;
+}

@@ -212,7 +212,44 @@ const UnigraphIframe: React.FC<UnigraphIframeProps> = ({
       {/* Loading State */}
       {isLoading && (
         <div style={loadingStyles}>
-          <RefreshCw size={20} className="animate-spin" />
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 32 32"
+            className="animate-spin"
+          >
+            <rect
+              x="0"
+              y="0"
+              width="32"
+              height="32"
+              rx="8"
+              ry="8"
+              fill="#ffffff"
+            />
+            <rect
+              x="0.5"
+              y="0.5"
+              width="31"
+              height="31"
+              rx="7.5"
+              ry="7.5"
+              fill="none"
+              stroke="#e2e8f0"
+              strokeWidth="1"
+            />
+            <text
+              x="16"
+              y="24"
+              fontFamily="'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+              fontSize="20"
+              fontWeight="700"
+              textAnchor="middle"
+              fill="#2563eb"
+            >
+              A
+            </text>
+          </svg>
           <span>{loadingMessage}</span>
         </div>
       )}

@@ -11,3 +11,11 @@ The supabase db is available at
 _coming soon_
 
 Unigraph uses the vercel ai sdk for its llm copilot.
+
+Unigraph has user logins, with Google, Github, or plain email accounts supported.
+
+unigraph
+unigraph-routes
+unigraph-supabase-db
+
+unigraph chrome extension

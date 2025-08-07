@@ -18,6 +18,7 @@ import AIChatPanel from "../ai/AIChatPanel";
 
 import WikipediaArticleViewer_FactorGraph from "../applets/WikipediaViewer/WikipediaArticleViewer_FactorGraph";
 import EntityTableV2 from "../common/EntityTableV2";
+import HtmlPageViewer from "../common/HtmlPageViewer";
 import LogViewer from "../common/LogViewer";
 import MarkdownViewer from "../common/MarkdownViewer";
 import UnigraphIframe from "../common/UnigraphIframe";
@@ -30,7 +31,9 @@ import ForceGraph3DViewV2 from "./ForceGraph3DViewV2";
 import Map2DView from "./Map2DView";
 import MonacoEditorView from "./MonacoEditorView";
 import NodeLegendView from "./NodeLegendView";
+import PdfJsViewer from "./PdfJsViewer";
 import ReactFlowPanelV2 from "./ReactFlowPanelV2";
+import ResourceManagerView from "./ResourceManagerView";
 import SandpackEditorWithFileTree from "./SandpackEditorWithFileTree";
 import SystemMonitorView from "./SystemMonitorView";
 import { VIEW_DEFINITIONS } from "./viewDefinitions";
@@ -783,6 +786,59 @@ const unigraphIframeView = {
   category: VIEW_DEFINITIONS["unigraph-iframe"].category,
 };
 
+const htmlPageViewerView = {
+  id: VIEW_DEFINITIONS["html-page-viewer"].id,
+  title: VIEW_DEFINITIONS["html-page-viewer"].title,
+  icon: VIEW_DEFINITIONS["html-page-viewer"].icon,
+  component: (props: any) => {
+    // Get parameters from sessionStorage, props, or URL parameters
+    let resourceId = props.resourceId;
+    let url = props.url;
+    let title = props.title;
+
+    // Try to get data from sessionStorage first
+    try {
+      const storedData = sessionStorage.getItem("htmlPageViewerData");
+      if (storedData) {
+        const data = JSON.parse(storedData);
+        resourceId = resourceId || data.resourceId;
+        url = url || data.url;
+        title = title || data.title;
+        // Clear the stored data after reading it
+        sessionStorage.removeItem("htmlPageViewerData");
+      }
+    } catch (error) {
+      console.warn(
+        "Failed to parse htmlPageViewerData from sessionStorage:",
+        error
+      );
+    }
+
+    // Fallback to URL parameters
+    resourceId =
+      resourceId ||
+      new URLSearchParams(window.location.search).get("resourceId");
+    url =
+      url ||
+      new URLSearchParams(window.location.search).get("url") ||
+      "https://example.com";
+    title =
+      title ||
+      new URLSearchParams(window.location.search).get("title") ||
+      "Example Page";
+
+    return (
+      <HtmlPageViewer
+        resourceId={resourceId ? decodeURIComponent(resourceId) : undefined}
+        url={decodeURIComponent(url)}
+        title={decodeURIComponent(title)}
+        {...props}
+      />
+    );
+  },
+  category: VIEW_DEFINITIONS["html-page-viewer"].category,
+};
+
 const devToolsView = {
   id: VIEW_DEFINITIONS["dev-tools"].id,
   title: VIEW_DEFINITIONS["dev-tools"].title,
@@ -814,6 +870,26 @@ const sandpackEditorView = {
   icon: VIEW_DEFINITIONS["sandpack-editor"].icon,
   component: (props: any) => <SandpackEditorWithFileTree {...props} />,
   category: VIEW_DEFINITIONS["sandpack-editor"].category,
+};
+
+const ResourceManagerViewWrapper: React.FC = () => {
+  return <ResourceManagerView />;
+};
+
+const resourceManagerView = {
+  id: VIEW_DEFINITIONS["resource-manager"].id,
+  title: VIEW_DEFINITIONS["resource-manager"].title,
+  icon: VIEW_DEFINITIONS["resource-manager"].icon,
+  component: ResourceManagerViewWrapper,
+  category: VIEW_DEFINITIONS["resource-manager"].category,
+};
+
+const pdfViewerView = {
+  id: VIEW_DEFINITIONS["pdf-viewer"].id,
+  title: VIEW_DEFINITIONS["pdf-viewer"].title,
+  icon: VIEW_DEFINITIONS["pdf-viewer"].icon,
+  component: (props: any) => <PdfJsViewer {...props} />,
+  category: VIEW_DEFINITIONS["pdf-viewer"].category,
 };
 
 const MarkdownViewerWrapper: React.FC<any> = (props) => {
@@ -873,11 +949,11 @@ const logViewerView = {
 };
 
 const documentEditorView = {
-  id: VIEW_DEFINITIONS["markdown-editor"].id,
+  id: VIEW_DEFINITIONS["document-editor"].id,
   title: "Document Editor", // Update title to reflect new name
-  icon: VIEW_DEFINITIONS["markdown-editor"].icon,
+  icon: VIEW_DEFINITIONS["document-editor"].icon,
   component: (props: any) => <DocumentEditorView {...props} />,
-  category: VIEW_DEFINITIONS["markdown-editor"].category,
+  category: VIEW_DEFINITIONS["document-editor"].category,
 };
 
 const map2DView = {
@@ -917,6 +993,7 @@ const allViews = [
   wikipediaFactorGraphView,
   reactFlowPanelV2View,
   unigraphIframeView,
+  htmlPageViewerView,
   devToolsView,
   monacoEditorView,
   sandpackEditorView,
@@ -925,6 +1002,8 @@ const allViews = [
   documentationView,
   logViewerView,
   map2DView,
+  resourceManagerView,
+  pdfViewerView,
 ];
 
 // Example: Create a custom theme for demonstration
