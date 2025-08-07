@@ -4,4 +4,4 @@ repos:
     hooks:
       - id: detect-secrets
         stages: [pre-push]
-        args: [--exclude-files, "public/(pdflib|pdfjs)/"]
+        args: [--exclude-files, "public/(pdfjs)/"]

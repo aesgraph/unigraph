@@ -9,6 +9,5 @@ Gemfile.lock
 coverage/
 .docs-structure-hash
 
-# Exclude PDF.js files from detect-secrets scanning
-public/pdflib/
+# Exclude PDF.js dist files
 public/pdfjs/
