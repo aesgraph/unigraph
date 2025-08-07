@@ -235,7 +235,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
 
         // Store tag metadata in the store, but preserve user-set descriptions
         const existingMetadata = getTagMetadata(tag);
-        
+
         // Only update if this is a new tag OR if we're only updating usage count
         if (!existingMetadata) {
           // New tag - set initial metadata with empty description
@@ -251,12 +251,21 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
             color: existingMetadata.color || getTagColor(tag),
             description: existingMetadata.description, // Always keep existing description
             usageCount: totalUsage, // Update usage count
-            isDescriptionUserSet: existingMetadata.isDescriptionUserSet || false,
+            isDescriptionUserSet:
+              existingMetadata.isDescriptionUserSet || false,
           });
         }
       });
     }
-  }, [tagCache, loading, webpages, annotations, setTagMetadata, getTagColor, getTagMetadata]);
+  }, [
+    tagCache,
+    loading,
+    webpages,
+    annotations,
+    setTagMetadata,
+    getTagColor,
+    getTagMetadata,
+  ]);
 
   // Function to force refresh data
   const refreshData = useCallback(() => {
@@ -747,7 +756,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
           color: theme.colors.text,
         }}
       >
-        <p>Loading resources...</p>
+        <p>{user ? "Loading resources..." : "Sign in to load resources"}</p>
       </div>
     );
   }
