@@ -18,6 +18,7 @@ import {
   updateDocument,
 } from "../../api/documentsApi";
 import { useComponentLogger } from "../../hooks/useLogger";
+import { emitDocumentEvent } from "../../store/documentEventsStore";
 
 import "./FileTreeView.css";
 
@@ -198,6 +199,17 @@ export default React.memo(
             `Renamed node: ${editingNode.node.path} to "${editValue.trim()}"`
           );
 
+          // Notify listeners that a document was renamed
+          emitDocumentEvent({
+            type: "document:renamed",
+            id: (editingNode.node.metadata as any)?.id,
+            title: editValue.trim(),
+            extension: (editingNode.node.metadata as any)?.extension,
+            projectId: instance.dataSource.config.projectId,
+            parentId: (editingNode.node.metadata as any)?.parent_id,
+            payload: { path: editingNode.node.path },
+          });
+
           // Refresh the tree to show the updated name
           const refreshAfterRename = async () => {
             try {
@@ -219,6 +231,10 @@ export default React.memo(
         }
       } catch (error) {
         console.error("Error renaming document:", error);
+        // Show user-friendly error message
+        alert(
+          `Failed to rename document: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
       } finally {
         setEditingNode(null);
         setEditValue("");
@@ -532,6 +548,13 @@ export default React.memo(
       let title: string | null = null;
       let extension: string = "txt"; // default extension
 
+      if (action === "rename") {
+        // Start inline editing for the selected node
+        startEdit(contextMenu.node);
+        setContextMenu({ visible: false, x: 0, y: 0, node: null });
+        return;
+      }
+
       if (action === "delete") {
         const nodeName = contextMenu.node.displayName;
         const nodeType =
@@ -646,14 +669,29 @@ export default React.memo(
           };
 
           refreshAfterCreate();
-        } else if (action === "rename") {
-          // Start inline editing for the selected node
-          startEdit(contextMenu.node);
+
+          emitDocumentEvent({
+            type: "document:created",
+            title: title!,
+            extension: "folder",
+            projectId: instance.dataSource.config.projectId,
+            parentId,
+          });
         } else if (action === "delete" && instance.onDeleteNode) {
           await instance.onDeleteNode(
             contextMenu.node.path,
             contextMenu.node.metadata
           );
+
+          emitDocumentEvent({
+            type: "document:deleted",
+            id: (contextMenu.node.metadata as any)?.id,
+            title: contextMenu.node.displayName,
+            extension: (contextMenu.node.metadata as any)?.extension,
+            projectId: instance.dataSource.config.projectId,
+            parentId: (contextMenu.node.metadata as any)?.parent_id,
+            payload: { path: contextMenu.node.path },
+          });
         }
       } catch (error) {
         console.error(

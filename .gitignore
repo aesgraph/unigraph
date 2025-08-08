@@ -10,4 +10,4 @@ coverage/
 .docs-structure-hash
 
 # Exclude PDF.js dist files
-public/pdfjs/
+# public/pdfjs/

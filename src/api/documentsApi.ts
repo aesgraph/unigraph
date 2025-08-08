@@ -366,3 +366,109 @@ export async function searchDocuments({
 
   return results;
 }
+
+// Save PDF document from blob data
+export async function savePdfDocument({
+  title,
+  pdfBlob,
+  url,
+  projectId,
+}: {
+  title: string;
+  pdfBlob: Blob;
+  url?: string;
+  projectId?: string;
+}): Promise<Document> {
+  // Convert blob to base64 for storage using FileReader (more reliable for large files)
+  console.log(
+    "Converting PDF to base64 for Supabase storage, size:",
+    pdfBlob.size,
+    "bytes"
+  );
+
+  if (pdfBlob.size > 50 * 1024 * 1024) {
+    // 50MB limit
+    throw new Error("PDF file is too large (max 50MB supported)");
+  }
+
+  // Use FileReader for more reliable base64 conversion
+  const base64Data = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // Remove the data URL prefix (data:application/pdf;base64,)
+      const base64 = (reader.result as string).split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = () => reject(new Error("Failed to read PDF file"));
+    reader.readAsDataURL(pdfBlob);
+  });
+
+  console.log("Base64 conversion completed, storing to Supabase...");
+
+  const pdfData = {
+    base64: base64Data,
+    size: pdfBlob.size,
+    type: pdfBlob.type || "application/pdf",
+    originalUrl: url,
+    savedAt: new Date().toISOString(),
+  };
+
+  return createDocument({
+    title,
+    content: "", // PDFs don't have text content in the content field
+    extension: "pdf",
+    metadata: {
+      fileSize: pdfBlob.size,
+      mimeType: pdfBlob.type || "application/pdf",
+      originalUrl: url,
+    },
+    data: pdfData,
+    project_id: projectId,
+  });
+}
+
+// Get PDF document data
+export async function getPdfDocumentData(documentId: string): Promise<{
+  blob: Blob;
+  metadata: any;
+}> {
+  const document = await getDocument(documentId);
+
+  if (document.extension !== "pdf") {
+    throw new Error("Document is not a PDF");
+  }
+
+  // Handle both old format (raw base64 string) and new format (structured object)
+  let base64Data: string;
+  let blobType: string;
+
+  if (typeof document.data === "string") {
+    // Old format: raw base64 string
+    console.log("Loading PDF with old data format (raw base64 string)");
+    base64Data = document.data;
+    blobType = "application/pdf";
+  } else if (document.data?.base64) {
+    // New format: structured object with base64 property
+    console.log("Loading PDF with new data format (structured object)");
+    base64Data = document.data.base64;
+    blobType = document.data.type || "application/pdf";
+  } else {
+    throw new Error("PDF data not found");
+  }
+
+  // Convert base64 back to blob
+  const binaryString = atob(base64Data);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  const blob = new Blob([bytes], {
+    type: blobType,
+  });
+
+  return {
+    blob,
+    metadata: document.metadata || {},
+  };
+}

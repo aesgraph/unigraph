@@ -42,11 +42,19 @@ interface EntityTableV2Props {
   onEntityClick?: (entity: Entity) => void;
   maxHeight?: string | number;
   entityType?: string; // Add entity type for custom configurations
+  toolbar?: React.ReactNode; // Optional toolbar area for actions
 }
 
 const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
   (
-    { container, sceneGraph, onEntityClick, maxHeight = 600, entityType },
+    {
+      container,
+      sceneGraph,
+      onEntityClick,
+      maxHeight = 600,
+      entityType,
+      toolbar,
+    },
     ref
   ) => {
     const [contextMenu, setContextMenu] = useState<{
@@ -195,7 +203,25 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
         label: "Edit",
         action: () => {
           if (contextMenu?.entity) {
-            setEditingEntity(contextMenu.entity);
+            // For documents, use inline rename instead of node editor (no graph node exists)
+            if (entityType === "documents") {
+              const entityId = contextMenu.entity.getId();
+              window.dispatchEvent(
+                new CustomEvent("startDocumentRename", {
+                  detail: { entityId, entity: contextMenu.entity },
+                })
+              );
+            } else if (entityType === "web-resources") {
+              // Web resources also use inline rename UX
+              const entityId = contextMenu.entity.getId();
+              window.dispatchEvent(
+                new CustomEvent("startWebResourceRename", {
+                  detail: { entityId, entity: contextMenu.entity },
+                })
+              );
+            } else {
+              setEditingEntity(contextMenu.entity);
+            }
           }
           handleClose();
         },
@@ -221,6 +247,13 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
               // Trigger a custom event that the LabelCellRenderer can listen for
               window.dispatchEvent(
                 new CustomEvent("startWebResourceRename", {
+                  detail: { entityId, entity: contextMenu.entity },
+                })
+              );
+            } else if (entityType === "documents") {
+              const entityId = contextMenu.entity.getId();
+              window.dispatchEvent(
+                new CustomEvent("startDocumentRename", {
                   detail: { entityId, entity: contextMenu.entity },
                 })
               );
@@ -652,9 +685,17 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
           "startWebResourceRename",
           handleRenameEvent as EventListener
         );
+        window.addEventListener(
+          "startDocumentRename",
+          handleRenameEvent as EventListener
+        );
         return () => {
           window.removeEventListener(
             "startWebResourceRename",
+            handleRenameEvent as EventListener
+          );
+          window.removeEventListener(
+            "startDocumentRename",
             handleRenameEvent as EventListener
           );
         };
@@ -720,6 +761,107 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
                         );
                       } catch (error) {
                         console.error("Error saving webpage label:", error);
+                        props.data.setLabel(originalValue);
+                        alert("Failed to save changes. Please try again.");
+                      }
+                    })();
+                  }
+                  // Save to Supabase for documents
+                  else if (entityType === "documents") {
+                    (async () => {
+                      try {
+                        console.log("Starting document rename save process...");
+                        const entityData = props.data.getData() as any;
+                        const documentId = entityData.id || props.data.getId();
+                        if (!documentId) {
+                          console.error("Missing document id for rename");
+                          throw new Error("Missing document id for rename");
+                        }
+
+                        console.log(
+                          "Document ID:",
+                          documentId,
+                          "New value:",
+                          currentValue
+                        );
+
+                        // Parse potential extension from entered value
+                        let baseTitle = currentValue.trim();
+                        let newExtension: string | undefined;
+                        const lastDot = baseTitle.lastIndexOf(".");
+                        if (lastDot > 0) {
+                          const maybeExt = baseTitle
+                            .substring(lastDot + 1)
+                            .toLowerCase();
+                          if (["md", "txt", "pdf"].includes(maybeExt)) {
+                            newExtension = maybeExt;
+                            baseTitle = baseTitle.substring(0, lastDot);
+                          }
+                        }
+
+                        console.log(
+                          "Parsed title:",
+                          baseTitle,
+                          "Extension:",
+                          newExtension
+                        );
+
+                        const { updateDocument } = await import(
+                          "../../api/documentsApi"
+                        );
+                        await updateDocument({
+                          id: documentId,
+                          title: baseTitle,
+                          ...(newExtension ? { extension: newExtension } : {}),
+                        });
+
+                        console.log(
+                          "Document updated in Supabase successfully"
+                        );
+
+                        // Update local model
+                        entityData.label = baseTitle;
+                        entityData.title = baseTitle;
+                        if (newExtension) entityData.extension = newExtension;
+
+                        // Refresh the grid to show updated values
+                        if (gridRef.current?.api) {
+                          const rowNode = gridRef.current.api.getRowNode(
+                            props.data.getId()
+                          );
+                          if (rowNode) {
+                            gridRef.current.api.refreshCells({
+                              rowNodes: [rowNode],
+                              force: true,
+                            });
+                            console.log("Grid refreshed successfully");
+                          }
+                        } else {
+                          // Fallback: trigger a full row data refresh
+                          setRowData(container.toArray());
+                          console.log("Full row data refresh triggered");
+                        }
+
+                        // Emit event to refresh documents tab
+                        try {
+                          const { emitDocumentEvent } = await import(
+                            "../../store/documentEventsStore"
+                          );
+                          emitDocumentEvent({
+                            type: "document:renamed",
+                            id: documentId,
+                            title: baseTitle,
+                            extension: newExtension || entityData.extension,
+                          });
+                          console.log("Document event emitted successfully");
+                        } catch (eventError) {
+                          console.warn(
+                            "Failed to emit document event:",
+                            eventError
+                          );
+                        }
+                      } catch (error) {
+                        console.error("Error saving document title:", error);
                         props.data.setLabel(originalValue);
                         alert("Failed to save changes. Please try again.");
                       }
@@ -815,6 +957,69 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
               } catch (updateError) {
                 console.error("UpdateWebpageTitle error:", updateError);
                 throw updateError;
+              }
+            }
+            // For documents, save title (and optional extension) to Supabase
+            else if (entityType === "documents") {
+              const entityData = props.data.getData() as any;
+              const documentId = entityData.id || props.data.getId();
+              if (!documentId) {
+                throw new Error("Missing document id for rename");
+              }
+
+              // Parse potential extension from entered value
+              let baseTitle = editValue.trim();
+              let newExtension: string | undefined;
+              const lastDot = baseTitle.lastIndexOf(".");
+              if (lastDot > 0) {
+                const maybeExt = baseTitle.substring(lastDot + 1).toLowerCase();
+                if (["md", "txt", "pdf"].includes(maybeExt)) {
+                  newExtension = maybeExt;
+                  baseTitle = baseTitle.substring(0, lastDot);
+                }
+              }
+
+              const { updateDocument } = await import("../../api/documentsApi");
+              await updateDocument({
+                id: documentId,
+                title: baseTitle,
+                ...(newExtension ? { extension: newExtension } : {}),
+              });
+
+              // Update local model
+              entityData.label = baseTitle;
+              entityData.title = baseTitle;
+              if (newExtension) entityData.extension = newExtension;
+
+              // Refresh the grid to show updated values
+              if (gridRef.current?.api) {
+                const rowNode = gridRef.current.api.getRowNode(
+                  props.data.getId()
+                );
+                if (rowNode) {
+                  gridRef.current.api.refreshCells({
+                    rowNodes: [rowNode],
+                    force: true,
+                  });
+                }
+              } else {
+                // Fallback: trigger a full row data refresh
+                setRowData(container.toArray());
+              }
+
+              // Emit event to refresh documents tab
+              try {
+                const { emitDocumentEvent } = await import(
+                  "../../store/documentEventsStore"
+                );
+                emitDocumentEvent({
+                  type: "document:renamed",
+                  id: documentId,
+                  title: baseTitle,
+                  extension: newExtension || entityData.extension,
+                });
+              } catch (_) {
+                /* ignore */
               }
             }
           } catch (error) {
@@ -1283,7 +1488,7 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
         console.log("DescriptionCellRenderer handleDoubleClick called", {
           entityType,
           tagName,
-          propsValue: props.value
+          propsValue: props.value,
         });
         e.stopPropagation();
         if (entityType === "tags") {
@@ -1351,13 +1556,13 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
           tagName,
           editValue,
           entityData,
-          propsData: props.data.getData()
+          propsData: props.data.getData(),
         });
-        
+
         if (entityType === "tags" && tagName) {
           const currentMetadata = getTagMetadata(tagName);
           console.log("Current tag metadata before save:", currentMetadata);
-          
+
           setTagMetadata(tagName, {
             color: currentMetadata?.color || getTagColor(tagName),
             description: editValue,
@@ -1365,11 +1570,11 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
             isDescriptionUserSet: true, // Mark as user-set
           });
           console.log("Updated tag description in store:", tagName, editValue);
-          
+
           // Verify the save worked
           const updatedMetadata = getTagMetadata(tagName);
           console.log("Tag metadata after save:", updatedMetadata);
-          
+
           // Force refresh the grid to pick up the new description
           if (gridRef.current?.api) {
             const rowNode = gridRef.current.api.getRowNode(props.data.getId());
@@ -1387,7 +1592,7 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
         } else {
           console.log("Save skipped - missing entityType or tagName", {
             entityType,
-            tagName
+            tagName,
           });
         }
         setIsEditing(false);
@@ -2084,9 +2289,9 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
             console.log("ValueGetter for description column:", {
               entityType,
               tagName,
-              entityData
+              entityData,
             });
-            
+
             if (tagName) {
               const tagMetadata = getTagMetadata(tagName);
               console.log("Retrieved tag metadata:", tagMetadata);
@@ -2254,6 +2459,101 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
                 activate: true,
               });
             }
+          }
+          // For PDF documents, double-click should open in PDF viewer
+          else if (
+            entityType === "documents" &&
+            entityData &&
+            entityData.extension === "pdf"
+          ) {
+            const documentId = entityData.id;
+
+            if (documentId) {
+              // Load the document title from Supabase first
+              (async () => {
+                try {
+                  const { getDocument } = await import(
+                    "../../api/documentsApi"
+                  );
+                  const document = await getDocument(documentId);
+                  const actualTitle = document.title || "PDF Document";
+
+                  const timestamp = Date.now();
+                  const tabId = `pdf-viewer-${documentId}-${timestamp}`;
+
+                  addViewAsTab({
+                    viewId: "pdf-viewer",
+                    pane: "center",
+                    tabId: tabId,
+                    title: actualTitle,
+                    props: {
+                      documentId: documentId,
+                      title: actualTitle,
+                    },
+                    activate: true,
+                  });
+                } catch (error) {
+                  console.error("Error loading document title:", error);
+                  // Fallback to the entity data title
+                  const fallbackTitle = entityData.title || "PDF Document";
+                  const timestamp = Date.now();
+                  const tabId = `pdf-viewer-${documentId}-${timestamp}`;
+
+                  addViewAsTab({
+                    viewId: "pdf-viewer",
+                    pane: "center",
+                    tabId: tabId,
+                    title: fallbackTitle,
+                    props: {
+                      documentId: documentId,
+                      title: fallbackTitle,
+                    },
+                    activate: true,
+                  });
+                }
+              })();
+            }
+          }
+          // For Markdown documents, double-click should open in Markdown viewer
+          else if (
+            entityType === "documents" &&
+            entityData &&
+            (entityData.extension === "md" ||
+              entityData.extension === "markdown")
+          ) {
+            const documentId = entityData.id;
+
+            if (documentId) {
+              (async () => {
+                try {
+                  const { getDocument } = await import(
+                    "../../api/documentsApi"
+                  );
+                  const document = await getDocument(documentId);
+                  const actualTitle = document.title || "Markdown";
+                  const markdownContent = document.content || "";
+
+                  const timestamp = Date.now();
+                  const tabId = `markdown-viewer-${documentId}-${timestamp}`;
+
+                  addViewAsTab({
+                    viewId: "markdown-viewer",
+                    pane: "center",
+                    tabId: tabId,
+                    title: `${actualTitle}.md`,
+                    props: {
+                      filename: `${actualTitle}.md`,
+                      overrideMarkdown: markdownContent,
+                      showRawToggle: true,
+                      tabId: tabId,
+                    },
+                    activate: true,
+                  });
+                } catch (error) {
+                  console.error("Error loading markdown document:", error);
+                }
+              })();
+            }
           } else if (onEntityClick) {
             // For other entity types, use the default click handler
             onEntityClick(event.data);
@@ -2412,6 +2712,18 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
           width: "100%",
         }}
       >
+        {toolbar && (
+          <div
+            className={styles.toolbar}
+            style={{
+              backgroundColor: theme.colors.surface,
+              borderBottom: `1px solid ${theme.colors.border}`,
+              color: theme.colors.text,
+            }}
+          >
+            {toolbar}
+          </div>
+        )}
         <div
           className={`${styles.agGridContainer} ${styles.customScrollbar} ag-theme-alpine`}
           style={createThemedAgGridContainer(theme)}

@@ -34,6 +34,8 @@ See https://github.com/adobe-type-tools/cmap-resources
     <link rel="stylesheet" href="viewer.css">
 
   <script src="viewer.mjs" type="module"></script>
+  <script src="custom-annotations-export.js" type="module"></script>
+  <script src="custom-pdf-save.js" type="module"></script>
   </head>
 
   <body tabindex="0">
@@ -283,6 +285,16 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <button id="downloadButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-save-button">
                     <span data-l10n-id="pdfjs-save-button-label"></span>
                   </button>
+
+                  <!-- Custom Export Annotations Button -->
+                  <button id="exportAnnotationsButton" class="toolbarButton" type="button" tabindex="0" title="Export Annotations & Highlights to JSON">
+                    <span>📝</span>
+                  </button>
+
+                  <!-- Custom Save PDF to Supabase Button -->
+                  <button id="savePdfToSupabaseButton" class="toolbarButton" type="button" tabindex="0" title="Save PDF to Supabase">
+                    <span>💾</span>
+                  </button>
                 </div>
 
                 <div class="verticalToolbarSeparator hiddenMediumView"></div>
@@ -317,6 +329,16 @@ See https://github.com/adobe-type-tools/cmap-resources
                       <a href="#" id="viewBookmark" class="toolbarButton labeled" tabindex="0" data-l10n-id="pdfjs-bookmark-button">
                         <span data-l10n-id="pdfjs-bookmark-button-label"></span>
                       </a>
+
+                      <div class="horizontalToolbarSeparator"></div>
+
+                      <button id="secondaryExportAnnotations" class="toolbarButton labeled" type="button" tabindex="0" title="Export Annotations & Highlights to JSON">
+                        <span class="editorParamsLabel">Export Annotations</span>
+                      </button>
+
+                      <button id="secondarySavePdfToSupabase" class="toolbarButton labeled" type="button" tabindex="0" title="Save PDF to Supabase">
+                        <span class="editorParamsLabel">Save PDF to Supabase</span>
+                      </button>
 
                       <div id="viewBookmarkSeparator" class="horizontalToolbarSeparator"></div>
 

@@ -12,6 +12,16 @@
   padding: 0;
 }
 
+/* Optional toolbar area above the grid */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  min-height: 40px;
+}
+
 /* Ensure AG Grid container takes full space */
 .agGridContainer {
   flex: 1;

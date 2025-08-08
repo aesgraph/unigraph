@@ -35,6 +35,7 @@ import MarkdownViewer from "../common/MarkdownViewer";
 import "../common/MarkdownViewer.css";
 import ResizableSplitter from "../common/ResizableSplitter";
 import "./DocumentationView.css";
+import PdfJsViewer from "./PdfJsViewer";
 
 // Add CSS animation for pulsing dot
 const pulseAnimation = `
@@ -578,6 +579,7 @@ const DocumentEditorContent: React.FC<{
   const filename = selectedFilename || "";
   const fileType = getFileType(filename);
   const isTextFile = fileType === "text";
+  const isPdfFile = (selectedFilename || "").toLowerCase().endsWith(".pdf");
 
   // Debug logging
   console.log("DocumentEditorContent: File type detection:", {
@@ -599,15 +601,18 @@ const DocumentEditorContent: React.FC<{
           borderColor: getColor(theme.colors, "border"),
         }}
       >
-        {isTextFile ? (
+        {isPdfFile ? (
           documentId ? (
-            // Lexical Editor for .txt files - loads its own content
+            <PdfJsViewer documentId={documentId} />
+          ) : (
+            <div>No PDF selected</div>
+          )
+        ) : isTextFile ? (
+          documentId ? (
             (() => {
               console.log(
                 "DocumentEditorView: Rendering LexicalEditorV3 with props:",
-                {
-                  documentId,
-                }
+                { documentId }
               );
               return (
                 <LexicalEditorV3
@@ -620,7 +625,6 @@ const DocumentEditorContent: React.FC<{
             <div>No document selected</div>
           )
         ) : (
-          // Monaco Editor for .md files - loads its own content
           <MonacoDocumentEditor
             filename={selectedFile}
             documentId={documentId}
@@ -741,10 +745,17 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
               contentLength: loadedContent.length,
               contentPreview: loadedContent.substring(0, 100) + "...",
             });
-            setContent(loadedContent);
-            setOriginalContent(loadedContent);
-            setCurrentDocumentId(document.id);
-            setHasUnsavedChanges(false);
+            // If PDF, do not load into text editor; just set currentDocumentId and preview state
+            if ((document.extension || "").toLowerCase() === "pdf") {
+              setCurrentDocumentId(document.id);
+              setHasUnsavedChanges(false);
+              // Do not modify text content for PDFs
+            } else {
+              setContent(loadedContent);
+              setOriginalContent(loadedContent);
+              setCurrentDocumentId(document.id);
+              setHasUnsavedChanges(false);
+            }
 
             // Clear autosave timeout and reset reference when switching files
             if (autoSaveTimeoutRef.current) {
@@ -770,6 +781,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           setHasUnsavedChanges(false);
         }
       },
+      // onRenameNode handled below (single definition)
       onCreateDocument: async (
         title: string,
         parentId?: string,
@@ -851,10 +863,16 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
         newTitle: string,
         metadata?: Record<string, any>
       ) => {
+        console.log("DocumentEditorView onRenameNode called with:", {
+          filePath,
+          newTitle,
+          metadata,
+        });
+
         const documentId = metadata?.documentId;
         if (!documentId) {
-          console.error("No document ID found in metadata");
-          return;
+          console.error("No document ID found in metadata for rename");
+          throw new Error("No document ID found in metadata");
         }
 
         try {
@@ -869,8 +887,8 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
             const title = fileName.substring(0, lastDotIndex);
             const extension = fileName.substring(lastDotIndex + 1);
 
-            // Only consider valid extensions (md, txt)
-            if (["md", "txt"].includes(extension.toLowerCase())) {
+            // Only consider valid extensions we support editing
+            if (["md", "txt", "pdf"].includes(extension.toLowerCase())) {
               return { title, extension: extension.toLowerCase() };
             }
 
@@ -879,6 +897,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           };
 
           const { title, extension } = parseFileName(newTitle);
+          console.log("Parsed filename:", { title, extension });
 
           // Prepare update data
           const updateData: any = { id: documentId, title };
@@ -888,15 +907,41 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
             updateData.extension = extension;
           }
 
+          console.log("Updating document with data:", updateData);
+
           // Update the document in Supabase
           await updateDocument(updateData);
           console.log(
-            "Document renamed:",
+            "Document renamed successfully:",
             documentId,
             "to",
             title,
             extension ? `with extension: ${extension}` : ""
           );
+
+          // Update currently selected filename if applicable
+          if (currentDocumentIdRef.current === documentId) {
+            const finalExt = extension || (metadata?.extension as string) || "";
+            const newName = finalExt ? `${title}.${finalExt}` : title;
+            setSelectedFilename(newName);
+          }
+
+          // Emit event so Resource Manager refreshes
+          try {
+            const { emitDocumentEvent } = await import(
+              "../../store/documentEventsStore"
+            );
+            emitDocumentEvent({
+              type: "document:renamed",
+              id: documentId,
+              title,
+              extension: extension || (metadata?.extension as string),
+              projectId,
+              parentId: (metadata?.parentId as string) ?? null,
+            });
+          } catch (e) {
+            console.warn("Failed to emit document event", e);
+          }
         } catch (error) {
           console.error("Error renaming document:", error);
           throw error;
