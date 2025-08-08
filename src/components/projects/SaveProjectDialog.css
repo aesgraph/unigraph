@@ -108,6 +108,50 @@
   box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
 }
 
+/* Error state for input */
+.save-project-input.error {
+  border-color: #d73a49;
+  box-shadow: 0 0 0 3px rgba(215, 58, 73, 0.2);
+}
+
+.save-project-overlay.dark .save-project-input.error {
+  border-color: #f85149;
+  box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.2);
+}
+
+/* Validation messages */
+.validation-message {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s ease-out;
+}
+
+.validation-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.validation-message.validating {
+  color: #0969da;
+}
+
+.save-project-overlay.dark .validation-message.validating {
+  color: #4285f4;
+}
+
+.validation-message.error {
+  color: #d73a49;
+}
+
+.save-project-overlay.dark .validation-message.error {
+  color: #f85149;
+}
+
 .save-project-actions {
   display: flex;
   justify-content: flex-end;
@@ -143,10 +187,25 @@
   font-weight: 500;
 }
 
-.save-project-save-button:hover {
+.save-project-save-button:hover:not(:disabled) {
   background-color: #3367d6;
 }
 
-.save-project-overlay.dark .save-project-save-button:hover {
+.save-project-overlay.dark .save-project-save-button:hover:not(:disabled) {
   background-color: #5294ff;
+}
+
+/* Disabled state for buttons */
+.save-project-cancel-button:disabled,
+.save-project-save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-project-save-button:disabled {
+  background-color: #6e7781;
+}
+
+.save-project-overlay.dark .save-project-save-button:disabled {
+  background-color: #475569;
 }

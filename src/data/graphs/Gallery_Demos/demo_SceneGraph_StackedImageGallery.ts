@@ -1,4 +1,4 @@
-import { demo_SceneGraph_StackedImageGallery_images } from "../../../components/lumina/images";
+import { demo_SceneGraph_StackedImageGallery_images } from "../../../_experimental/lumina/images";
 import { Graph } from "../../../core/model/Graph";
 import { SceneGraph } from "../../../core/model/SceneGraph";
 import { ImageBoxData } from "../../../core/types/ImageBoxData";

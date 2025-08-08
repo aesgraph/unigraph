@@ -12,7 +12,8 @@ import NodeInfo from "./NodeInfo";
  * depending on whether one or multiple nodes are selected
  */
 const NodeDetailsPanel: React.FC = () => {
-  const { forceGraphInstance, activeView } = useAppConfigStore();
+  const { forceGraphInstance, activeView, forceGraph3dOptions } =
+    useAppConfigStore();
   const { selectedNodeIds } = useGraphInteractionStore();
 
   // Handler for focusing on a node
@@ -20,7 +21,7 @@ const NodeDetailsPanel: React.FC = () => {
     if (forceGraphInstance && activeView === "ForceGraph3d") {
       const node = findNodeInForceGraph(forceGraphInstance, nodeId);
       if (node) {
-        flyToNode(forceGraphInstance, node);
+        flyToNode(forceGraphInstance, node, forceGraph3dOptions.layout);
       }
     }
   };

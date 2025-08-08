@@ -1,7 +1,7 @@
 import {
   demo1_images,
   demo_SceneGraph_ArtCollection_Images,
-} from "../../components/lumina/images";
+} from "../../_experimental/lumina/images";
 import { ImageBoxData } from "../types/ImageBoxData";
 
 export const reconstructImageSource = async (

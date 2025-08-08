@@ -1,0 +1,72 @@
+/* Walled garden styles to prevent CSS leakage */
+.htmlPageViewerContent {
+  /* Create a new stacking context and contain styles */
+  isolation: isolate;
+  contain: layout style paint;
+
+  /* Force base styles */
+  all: initial;
+  display: block;
+
+  /* Reset all inherited styles */
+  background-color: white !important;
+  color: black !important;
+  font-family: sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+
+  /* Prevent any external CSS from affecting this content */
+  * {
+    box-sizing: border-box !important;
+  }
+
+  /* Override any global styles that might leak in */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: black !important;
+    font-family: sans-serif !important;
+  }
+
+  p {
+    color: black !important;
+    font-family: sans-serif !important;
+  }
+
+  a {
+    color: #0066cc !important;
+    text-decoration: underline !important;
+  }
+
+  /* Ensure images don't break layout */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+.htmlPageViewerInnerContent {
+  /* Additional isolation for the inner content */
+  isolation: isolate;
+  contain: layout style paint;
+
+  /* Force base styles */
+  all: initial;
+  display: block;
+
+  /* Reset all inherited styles */
+  background-color: white !important;
+  color: black !important;
+  font-family: sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+}

@@ -8,6 +8,7 @@ import {
 } from "../model/entity/abstractEntity";
 import { EntitiesContainer } from "../model/entity/entitiesContainer";
 import { ImageBoxData } from "./ImageBoxData";
+import { ResourceId } from "./ResourceId";
 
 export type ImageAnnotationId = EntityId & { readonly kind: "imageAnnotation" };
 
@@ -16,6 +17,8 @@ type ImageAnnotationData = EntityData & {
   topLeft: Position;
   bottomRight: Position;
   description: string;
+  tags?: string[];
+  resourceIds?: ResourceId[];
 };
 
 export type ImageAnnotationDataArgs = EntityDataArgs & {
@@ -87,4 +90,5 @@ export const loadFromJson = (data: ImageBoxData[]) => {
   return imageAnnotationEntities;
 };
 
-export { ImageAnnotation, ImageAnnotationData };
+export { ImageAnnotation };
+export type { ImageAnnotationData };

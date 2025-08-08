@@ -1,0 +1,164 @@
+.editable-markdown-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.editable-markdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  flex-shrink: 0;
+  min-height: 60px;
+}
+
+.editable-markdown-header.preview {
+  min-height: 50px;
+  padding: 8px 20px;
+}
+
+.editable-markdown-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editable-markdown-title h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unsaved-indicator {
+  font-size: 24px;
+  font-weight: 900;
+  animation: pulseDot 2s infinite;
+  display: inline-block;
+  transform-origin: center;
+}
+
+@keyframes pulseDot {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.last-saved {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.editable-markdown-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.save-button,
+.cancel-button,
+.edit-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.save-button:hover:not(:disabled),
+.cancel-button:hover,
+.edit-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.save-button:active:not(:disabled),
+.cancel-button:active,
+.edit-button:active {
+  transform: translateY(0);
+}
+
+.editable-markdown-error {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.editable-markdown-editor {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editable-markdown-preview {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Ensure Monaco Editor fits properly */
+.editable-markdown-editor .monaco-editor {
+  border: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .editable-markdown-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: auto;
+  }
+
+  .editable-markdown-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .save-button,
+  .cancel-button,
+  .edit-button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Focus states for accessibility */
+.save-button:focus,
+.cancel-button:focus,
+.edit-button:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

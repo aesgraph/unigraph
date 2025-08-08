@@ -1,5 +1,5 @@
+import { demo1_images } from "../../../_experimental/lumina/images";
 import { demo_SceneGraph_SolvayConference_ImageBoxes } from "../../../assets/imageBoxes/demo_SceneGraph_SolvayConference_ImageBoxes";
-import { demo1_images } from "../../../components/lumina/images";
 import { Graph } from "../../../core/model/Graph";
 import { SceneGraph } from "../../../core/model/SceneGraph";
 

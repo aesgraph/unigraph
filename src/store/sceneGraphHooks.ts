@@ -1,4 +1,3 @@
-import { ForceGraphManager } from "../core/force-graph/ForceGraphManager";
 import { Compute_Layout } from "../core/layouts/LayoutEngine";
 import {
   ILayoutEngineResult,
@@ -9,13 +8,13 @@ import {
 import {
   centerPositionsAroundPoint,
   filterNodePositionsToSelection,
+  getCenterPointOfNodePositionData,
 } from "../core/layouts/layoutHelpers";
 import { DisplayManager } from "../core/model/DisplayManager";
 import { EntityIds } from "../core/model/entity/entityIds";
 import { NodeId } from "../core/model/Node";
 import { SceneGraph } from "../core/model/SceneGraph";
 import { extractPositionsFromNodes } from "../data/graphs/blobMesh";
-import { getCenterPointOfNodePositionData } from "./../core/layouts/layoutHelpers";
 import { Filter } from "./activeFilterStore";
 import {
   getCurrentLayoutResult,
@@ -27,28 +26,29 @@ import {
   SetNodeAndEdgeLegendsForOnlyVisibleEntities,
 } from "./activeLegendConfigStore";
 import {
+  getActiveView,
   getCurrentSceneGraph,
-  getForceGraphInstance,
   getLegendMode,
+  getReactFlowInstance,
   setActiveFilter,
 } from "./appConfigStore";
-import {
-  getMouseControlMode,
-  toggleMouseControlMode,
-} from "./mouseControlsStore";
+import { getMouseControlMode, setMouseControlMode } from "./mouseControlsStore";
 
 export async function applyLayoutAndTriggerAppUpdate(layout: Layout) {
   const sceneGraph = getCurrentSceneGraph();
   if (layout != null && sceneGraph != null) {
     sceneGraph.setNodePositions(layout.positions);
-    setCurrentLayoutResult({
-      layoutType: LayoutEngineOptionLabels.includes(
-        layout.name as LayoutEngineOption
-      )
-        ? layout.name
-        : "Custom",
-      positions: layout.positions,
-    });
+    setCurrentLayoutResult(
+      {
+        layoutType: LayoutEngineOptionLabels.includes(
+          layout.name as LayoutEngineOption
+        )
+          ? layout.name
+          : "Custom",
+        positions: layout.positions,
+      },
+      "Layout"
+    );
   }
 }
 
@@ -79,7 +79,6 @@ export async function computeLayoutAndTriggerAppUpdate(
     nodeSelection
   );
   if (output && Object.keys(output.positions).length > 0) {
-    // sceneGraph.setNodePositions(output.positions); //@todo: see if i can remove this
     if (nodeSelection && nodeSelection.size > 0) {
       const currentNodePositions =
         getCurrentLayoutResult()?.positions ||
@@ -90,20 +89,26 @@ export async function computeLayoutAndTriggerAppUpdate(
         nodeSelection.toArray()
       );
 
-      const currentNodeSelectionCenterPoint =
-        getCenterPointOfNodePositionData(filteredPositions);
+      let currentNodeSelectionCenterPoint = { x: 0, y: 0, z: 0 };
+      if (Object.keys(filteredPositions).length > 0) {
+        currentNodeSelectionCenterPoint = {
+          ...currentNodeSelectionCenterPoint,
+          ...getCenterPointOfNodePositionData(filteredPositions),
+        };
+      }
       output.positions = centerPositionsAroundPoint(
         output.positions,
         currentNodeSelectionCenterPoint
       );
+
+      // console.log("Center point is ", currentNodeSelectionCenterPoint);
 
       for (const [key, position] of Object.entries(output.positions)) {
         currentNodePositions[key] = position;
       }
       output.positions = currentNodePositions;
     }
-
-    setCurrentLayoutResult(output);
+    setCurrentLayoutResult(output, "Layout");
   }
   return output;
 }
@@ -176,14 +181,13 @@ export const hideVisibleNodes = (nodeIds: EntityIds<NodeId>) => {
 };
 
 export const toggleForceGraphMouseControls = () => {
-  toggleMouseControlMode();
-  const forceGraphInstance = getForceGraphInstance();
-  if (forceGraphInstance) {
-    ForceGraphManager.updateMouseControlMode(
-      forceGraphInstance,
-      getMouseControlMode()
-    );
-  }
+  const currentMode = getMouseControlMode();
+  const newMode = currentMode === "orbital" ? "multiselection" : "orbital";
+
+  // Use the explicit setter instead of toggle
+  setMouseControlMode(newMode);
+
+  console.log(`Mouse control mode toggled from ${currentMode} to ${newMode}`);
 };
 
 export const clearFiltersOnAppInstance = () => {
@@ -191,4 +195,15 @@ export const clearFiltersOnAppInstance = () => {
   DisplayManager.setAllVisible(currentSceneGraph.getGraph());
   ResetNodeAndEdgeLegends(currentSceneGraph);
   setActiveFilter(null);
+};
+
+export const handleReactFlowFitView = (
+  padding: number = 0.1,
+  duration: number = 0
+) => {
+  if (getActiveView() === "ReactFlow" && getReactFlowInstance()) {
+    setTimeout(() => {
+      getReactFlowInstance()?.fitView({ padding, duration });
+    }, 0);
+  }
 };

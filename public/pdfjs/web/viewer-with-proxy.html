@@ -1,0 +1,581 @@
+<!doctype html>
+<!--
+Custom PDF.js viewer with CORS proxy support
+Based on the original PDF.js viewer but with external URL proxy handling
+-->
+<html dir="ltr" mozdisallowselectionprint>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta name="google" content="notranslate" />
+    <title>PDF.js viewer with proxy</title>
+
+    <!-- PDF.js core files -->
+    <link rel="resource" type="application/l10n" href="locale/locale.json" />
+    <script src="../build/pdf.mjs" type="module"></script>
+    <link rel="stylesheet" href="viewer.css" />
+
+    <!-- Custom proxy handling script -->
+    <script>
+      // CORS proxy handling
+      async function fetchPdfViaProxy(url) {
+        console.log("Attempting to fetch PDF via proxy:", url);
+
+        const proxyServices = [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+          `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        ];
+
+        for (const proxyUrl of proxyServices) {
+          try {
+            console.log("Trying proxy:", proxyUrl);
+
+            const response = await fetch(proxyUrl, {
+              method: "GET",
+              headers: {
+                Accept: "application/pdf",
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(
+                `HTTP ${response.status}: ${response.statusText}`
+              );
+            }
+
+            const blob = await response.blob();
+            const pdfBlob = new Blob([blob], { type: "application/pdf" });
+            const blobUrl = URL.createObjectURL(pdfBlob);
+
+            console.log("Successfully created blob URL:", blobUrl);
+            return blobUrl;
+          } catch (error) {
+            console.warn(`Proxy failed: ${proxyUrl}`, error);
+            continue;
+          }
+        }
+
+        // Try direct fetch as fallback
+        try {
+          console.log("Trying direct fetch as fallback...");
+          const response = await fetch(url, {
+            method: "GET",
+            mode: "cors",
+            headers: {
+              Accept: "application/pdf",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const blob = await response.blob();
+          const pdfBlob = new Blob([blob], { type: "application/pdf" });
+          return URL.createObjectURL(pdfBlob);
+        } catch (directError) {
+          console.warn("Direct fetch also failed:", directError);
+        }
+
+        throw new Error("All proxy attempts failed");
+      }
+
+      function isExternalUrl(url) {
+        try {
+          const urlObj = new URL(url);
+          const currentOrigin = window.location.origin;
+          return urlObj.origin !== currentOrigin;
+        } catch {
+          return false;
+        }
+      }
+
+      // Override PDF.js validateFileURL function before it gets defined
+      // This prevents the origin check error for external URLs
+      window.addEventListener("DOMContentLoaded", function () {
+        // Intercept and modify the URL before PDF.js processes it
+        const originalPushState = history.pushState;
+        const originalReplaceState = history.replaceState;
+
+        // Monitor for URL changes that PDF.js might make
+        history.pushState = function (...args) {
+          return originalPushState.apply(this, args);
+        };
+
+        history.replaceState = function (...args) {
+          return originalReplaceState.apply(this, args);
+        };
+
+        // Process the initial URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileUrl = urlParams.get("file");
+
+        if (fileUrl && isExternalUrl(fileUrl)) {
+          console.log(
+            "External PDF URL detected, processing via proxy:",
+            fileUrl
+          );
+
+          // Show loading message
+          document.body.style.opacity = "0.7";
+          const loadingDiv = document.createElement("div");
+          loadingDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            font-family: Arial, sans-serif;
+          `;
+          loadingDiv.textContent = "Loading external PDF via proxy...";
+          document.body.appendChild(loadingDiv);
+
+          fetchPdfViaProxy(fileUrl)
+            .then((proxiedUrl) => {
+              // Update the URL parameter to use the blob URL
+              urlParams.set("file", proxiedUrl);
+              const newUrl =
+                window.location.pathname + "?" + urlParams.toString();
+
+              // Replace the current URL without triggering a reload
+              window.history.replaceState({}, "", newUrl);
+
+              console.log("Updated URL to use blob:", newUrl);
+
+              // Remove loading message and restore opacity
+              document.body.removeChild(loadingDiv);
+              document.body.style.opacity = "1";
+
+              // Trigger a custom event that the PDF.js viewer can listen to
+              window.dispatchEvent(
+                new CustomEvent("pdfProxyReady", {
+                  detail: { url: proxiedUrl },
+                })
+              );
+            })
+            .catch((error) => {
+              console.error("Failed to proxy PDF:", error);
+              document.body.removeChild(loadingDiv);
+              document.body.style.opacity = "1";
+
+              // Show error message
+              const errorDiv = document.createElement("div");
+              errorDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(255,0,0,0.9);
+                color: white;
+                padding: 20px;
+                border-radius: 5px;
+                z-index: 10000;
+                font-family: Arial, sans-serif;
+                max-width: 500px;
+                text-align: center;
+              `;
+              errorDiv.innerHTML = `
+                <h3>Failed to load external PDF</h3>
+                <p>CORS restrictions prevent direct access to external PDFs.</p>
+                <p>Error: ${error.message}</p>
+                <button onclick="this.parentElement.remove()" style="margin-top: 10px; padding: 5px 10px; background: white; color: red; border: none; border-radius: 3px; cursor: pointer;">Close</button>
+              `;
+              document.body.appendChild(errorDiv);
+            });
+        }
+      });
+
+      // Override the validateFileURL function after PDF.js loads
+      window.addEventListener("load", function () {
+        // Wait a bit for PDF.js to initialize
+        setTimeout(() => {
+          if (typeof validateFileURL !== "undefined") {
+            const originalValidateFileURL = validateFileURL;
+            window.validateFileURL = function (file) {
+              // Allow blob URLs (these are same-origin)
+              if (file && file.startsWith("blob:")) {
+                return;
+              }
+              // Call original validation for other URLs
+              return originalValidateFileURL(file);
+            };
+            console.log("Overrode validateFileURL function to allow blob URLs");
+          }
+        }, 100);
+      });
+    </script>
+
+    <!-- Original PDF.js viewer script -->
+    <script src="viewer.mjs" type="module"></script>
+  </head>
+
+  <body tabindex="0">
+    <!-- Use the same body content as the original viewer -->
+    <div id="outerContainer">
+      <span id="viewer-alert" class="visuallyHidden" role="alert"></span>
+
+      <div id="sidebarContainer">
+        <div id="toolbarSidebar" class="toolbarHorizontalGroup">
+          <div id="toolbarSidebarLeft">
+            <div
+              id="sidebarViewButtons"
+              class="toolbarHorizontalGroup toggled"
+              role="radiogroup"
+            >
+              <button
+                id="viewThumbnail"
+                class="toolbarButton toggled"
+                type="button"
+                tabindex="0"
+                data-l10n-id="pdfjs-thumbs-button"
+                role="radio"
+                aria-checked="true"
+                aria-controls="thumbnailView"
+              >
+                <span data-l10n-id="pdfjs-thumbs-button-label"></span>
+              </button>
+              <button
+                id="viewOutline"
+                class="toolbarButton"
+                type="button"
+                tabindex="0"
+                data-l10n-id="pdfjs-document-outline-button"
+                role="radio"
+                aria-checked="false"
+                aria-controls="outlineView"
+              >
+                <span data-l10n-id="pdfjs-document-outline-button-label"></span>
+              </button>
+              <button
+                id="viewAttachments"
+                class="toolbarButton"
+                type="button"
+                tabindex="0"
+                data-l10n-id="pdfjs-attachments-button"
+                role="radio"
+                aria-checked="false"
+                aria-controls="attachmentsView"
+              >
+                <span data-l10n-id="pdfjs-attachments-button-label"></span>
+              </button>
+              <button
+                id="viewLayers"
+                class="toolbarButton"
+                type="button"
+                tabindex="0"
+                data-l10n-id="pdfjs-layers-button"
+                role="radio"
+                aria-checked="false"
+                aria-controls="layersView"
+              >
+                <span data-l10n-id="pdfjs-layers-button-label"></span>
+              </button>
+            </div>
+          </div>
+
+          <div id="toolbarSidebarRight">
+            <div id="outlineOptionsContainer" class="toolbarHorizontalGroup">
+              <div class="verticalToolbarSeparator"></div>
+
+              <button
+                id="currentOutlineItem"
+                class="toolbarButton"
+                type="button"
+                disabled="disabled"
+                tabindex="0"
+                data-l10n-id="pdfjs-current-outline-item-button"
+              >
+                <span
+                  data-l10n-id="pdfjs-current-outline-item-button-label"
+                ></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="sidebarContent">
+          <div id="thumbnailView"></div>
+          <div id="outlineView" class="hidden"></div>
+          <div id="attachmentsView" class="hidden"></div>
+          <div id="layersView" class="hidden"></div>
+        </div>
+        <div id="sidebarResizer"></div>
+      </div>
+      <!-- sidebarContainer -->
+
+      <div id="mainContainer">
+        <div class="toolbar">
+          <div id="toolbarContainer">
+            <div id="toolbarViewer" class="toolbarHorizontalGroup">
+              <div id="toolbarViewerLeft" class="toolbarHorizontalGroup">
+                <button
+                  id="sidebarToggleButton"
+                  class="toolbarButton"
+                  type="button"
+                  tabindex="0"
+                  data-l10n-id="pdfjs-toggle-sidebar-button"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  aria-controls="sidebarContainer"
+                >
+                  <span data-l10n-id="pdfjs-toggle-sidebar-button-label"></span>
+                </button>
+                <div class="toolbarButtonSpacer"></div>
+                <div class="toolbarButtonWithContainer">
+                  <button
+                    id="viewFindButton"
+                    class="toolbarButton"
+                    type="button"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-findbar-button"
+                    aria-expanded="false"
+                    aria-controls="findbar"
+                  >
+                    <span data-l10n-id="pdfjs-findbar-button-label"></span>
+                  </button>
+                  <div
+                    class="hidden doorHanger toolbarHorizontalGroup"
+                    id="findbar"
+                  >
+                    <div id="findInputContainer" class="toolbarHorizontalGroup">
+                      <span class="loadingInput end toolbarHorizontalGroup">
+                        <input
+                          id="findInput"
+                          class="toolbarField"
+                          tabindex="0"
+                          data-l10n-id="pdfjs-find-input"
+                          aria-invalid="false"
+                        />
+                      </span>
+                      <div class="toolbarHorizontalGroup">
+                        <button
+                          id="findPreviousButton"
+                          class="toolbarButton"
+                          type="button"
+                          tabindex="0"
+                          data-l10n-id="pdfjs-find-previous-button"
+                        >
+                          <span
+                            data-l10n-id="pdfjs-find-previous-button-label"
+                          ></span>
+                        </button>
+                        <div class="splitToolbarButtonSeparator"></div>
+                        <button
+                          id="findNextButton"
+                          class="toolbarButton"
+                          type="button"
+                          tabindex="0"
+                          data-l10n-id="pdfjs-find-next-button"
+                        >
+                          <span
+                            data-l10n-id="pdfjs-find-next-button-label"
+                          ></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- findbar -->
+                </div>
+                <div class="toolbarHorizontalGroup hiddenSmallView">
+                  <button
+                    class="toolbarButton"
+                    type="button"
+                    id="previous"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-previous-button"
+                  >
+                    <span data-l10n-id="pdfjs-previous-button-label"></span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button
+                    class="toolbarButton"
+                    type="button"
+                    id="next"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-next-button"
+                  >
+                    <span data-l10n-id="pdfjs-next-button-label"></span>
+                  </button>
+                </div>
+                <div class="toolbarHorizontalGroup">
+                  <span class="loadingInput start toolbarHorizontalGroup">
+                    <input
+                      type="number"
+                      id="pageNumber"
+                      class="toolbarField"
+                      value="1"
+                      min="1"
+                      tabindex="0"
+                      data-l10n-id="pdfjs-page-input"
+                      autocomplete="off"
+                    />
+                  </span>
+                  <span id="numPages" class="toolbarLabel"></span>
+                </div>
+              </div>
+              <div id="toolbarViewerMiddle" class="toolbarHorizontalGroup">
+                <div class="toolbarHorizontalGroup">
+                  <button
+                    id="zoomOutButton"
+                    class="toolbarButton"
+                    type="button"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-zoom-out-button"
+                  >
+                    <span data-l10n-id="pdfjs-zoom-out-button-label"></span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button
+                    id="zoomInButton"
+                    class="toolbarButton"
+                    type="button"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-zoom-in-button"
+                  >
+                    <span data-l10n-id="pdfjs-zoom-in-button-label"></span>
+                  </button>
+                </div>
+                <span id="scaleSelectContainer" class="dropdownToolbarButton">
+                  <select
+                    id="scaleSelect"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-zoom-select"
+                  >
+                    <option
+                      id="pageAutoOption"
+                      value="auto"
+                      selected="selected"
+                      data-l10n-id="pdfjs-page-scale-auto"
+                    ></option>
+                    <option
+                      id="pageActualOption"
+                      value="page-actual"
+                      data-l10n-id="pdfjs-page-scale-actual"
+                    ></option>
+                    <option
+                      id="pageFitOption"
+                      value="page-fit"
+                      data-l10n-id="pdfjs-page-scale-fit"
+                    ></option>
+                    <option
+                      id="pageWidthOption"
+                      value="page-width"
+                      data-l10n-id="pdfjs-page-scale-width"
+                    ></option>
+                    <option
+                      id="customScaleOption"
+                      value="custom"
+                      disabled="disabled"
+                      hidden="true"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 0 }'
+                    ></option>
+                    <option
+                      value="0.5"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 50 }'
+                    ></option>
+                    <option
+                      value="0.75"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 75 }'
+                    ></option>
+                    <option
+                      value="1"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 100 }'
+                    ></option>
+                    <option
+                      value="1.25"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 125 }'
+                    ></option>
+                    <option
+                      value="1.5"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 150 }'
+                    ></option>
+                    <option
+                      value="2"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 200 }'
+                    ></option>
+                    <option
+                      value="3"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 300 }'
+                    ></option>
+                    <option
+                      value="4"
+                      data-l10n-id="pdfjs-page-scale-percent"
+                      data-l10n-args='{ "scale": 400 }'
+                    ></option>
+                  </select>
+                </span>
+              </div>
+              <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
+                <div class="toolbarHorizontalGroup hiddenMediumView">
+                  <button
+                    id="printButton"
+                    class="toolbarButton"
+                    type="button"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-print-button"
+                  >
+                    <span data-l10n-id="pdfjs-print-button-label"></span>
+                  </button>
+                  <button
+                    id="downloadButton"
+                    class="toolbarButton"
+                    type="button"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-save-button"
+                  >
+                    <span data-l10n-id="pdfjs-save-button-label"></span>
+                  </button>
+                </div>
+                <div class="verticalToolbarSeparator hiddenMediumView"></div>
+                <div
+                  id="secondaryToolbarToggle"
+                  class="toolbarButtonWithContainer"
+                >
+                  <button
+                    id="secondaryToolbarToggleButton"
+                    class="toolbarButton"
+                    type="button"
+                    tabindex="0"
+                    data-l10n-id="pdfjs-tools-button"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-controls="secondaryToolbar"
+                  >
+                    <span data-l10n-id="pdfjs-tools-button-label"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="loadingBar">
+              <div class="progress">
+                <div class="glimmer"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="viewerContainer" tabindex="0">
+          <div id="viewer" class="pdfViewer"></div>
+        </div>
+      </div>
+      <!-- mainContainer -->
+    </div>
+    <!-- outerContainer -->
+
+    <div id="printContainer"></div>
+  </body>
+</html>

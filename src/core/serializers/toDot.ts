@@ -1,5 +1,5 @@
 import { toDot } from "ts-graphviz";
-import { GraphvizLayoutType } from "../layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../layouts/GraphvizLayoutType";
 import { ConvertSceneGraphToGraphviz } from "../model/ConvertSceneGraphToGraphviz";
 import { SceneGraph } from "../model/SceneGraph";
 

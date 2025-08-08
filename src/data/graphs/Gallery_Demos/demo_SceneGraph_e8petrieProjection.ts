@@ -1,9 +1,5 @@
-import { SceneGraph } from "../../../core/model/SceneGraph";
-
-// Import the SVG as a raw string
-import petrie421t2b6SvgUrl from "!!raw-loader!/public/svgs/e8_4_21_t2-B6.svg";
-import petriesvgUrl from "!!raw-loader!/public/svgs/e8petrie.svg";
 import { PresetLayoutType } from "../../../core/layouts/layoutEngineTypes";
+import { SceneGraph } from "../../../core/model/SceneGraph";
 import { loadSvgToSceneGraph } from "../../../utils/svgLoader";
 
 /**
@@ -11,8 +7,9 @@ import { loadSvgToSceneGraph } from "../../../utils/svgLoader";
  */
 export const createE8PetrieSceneGraph = async (): Promise<SceneGraph> => {
   try {
-    // Use the imported raw SVG content directly
-    const svgContent = petriesvgUrl;
+    // Fetch the SVG content from public directory
+    const response = await fetch("/svgs/e8petrie.svg");
+    const svgContent = await response.text();
     // console.log("svg content is ", svgContent);
     return loadSvgToSceneGraph(svgContent, {
       appConfig: {
@@ -44,8 +41,9 @@ export const demo_SceneGraph_e8petrieProjection = async () =>
 export const createE8_4_21_t2_b8_PetrieSceneGraph =
   async (): Promise<SceneGraph> => {
     try {
-      // Use the imported raw SVG content directly
-      const svgContent = petrie421t2b6SvgUrl;
+      // Fetch the SVG content from public directory
+      const response = await fetch("/svgs/e8petrie_421t2b6.svg");
+      const svgContent = await response.text();
       // console.log("svg content is ", svgContent);
       return loadSvgToSceneGraph(svgContent, {
         forceGraphDisplayConfig: {

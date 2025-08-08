@@ -1,10 +1,5 @@
-import { Edge, EdgeId } from "./Edge";
-import {
-  Entity,
-  EntityDataArgs,
-  EntityId,
-  IEntity,
-} from "./entity/abstractEntity";
+import { Edge, EdgeDataArgs, EdgeId } from "./Edge";
+import { Entity, EntityId, IEntity } from "./entity/abstractEntity";
 import { EntitiesContainer } from "./entity/entitiesContainer";
 import { EntityIds } from "./entity/entityIds";
 import { Node, NodeDataArgs, NodeId } from "./Node";
@@ -72,7 +67,7 @@ export class Graph {
   createEdge(
     fromNode: NodeId | string,
     toNode: NodeId | string,
-    args?: EntityDataArgs
+    args?: Omit<EdgeDataArgs, "source" | "target">
   ): Edge {
     if (this.strict) {
       if (
@@ -91,9 +86,9 @@ export class Graph {
       );
     }
     const edge = new Edge({
+      ...args,
       source: fromNode,
       target: toNode,
-      ...args,
     });
     this.addEdge(edge);
     return edge;
@@ -109,7 +104,7 @@ export class Graph {
   createEdgeIfMissing(
     from: NodeId | string,
     to: NodeId | string,
-    args?: EntityDataArgs
+    args?: Omit<EdgeDataArgs, "source" | "target">
   ): Edge {
     const edgeId = `${from}:::${to}`;
     if (!this.containsEdge(edgeId as EdgeId)) {
@@ -128,6 +123,7 @@ export class Graph {
 
   getNode(id: NodeId): Node {
     if (!this.nodes.has(id)) {
+      console.log("nodes are ", this.nodes);
       throw Error("Unable to find node with id: " + id);
       console.warn("DEBUG: creating node with id: " + id);
       console.log(this.nodes);
@@ -287,18 +283,19 @@ export class Graph {
     if (typeof nodeIds === "string") {
       nodeIds = new EntityIds([nodeIds]);
     }
-    console.log(
-      this.edges
-        .filter((edge) => {
-          return nodeIds.has(edge.getSource());
-        })
-        .toArray()
-    );
     return this.edges
       .filter((edge) => {
         return nodeIds.has(edge.getSource());
       })
       .toArray();
+  }
+
+  getOutgoingEdges(nodeId: NodeId): Edge[] {
+    return this.getEdgesFrom(nodeId);
+  }
+
+  getIncomingEdges(nodeId: NodeId): Edge[] {
+    return this.getEdgesTo(nodeId);
   }
 
   getGraphMap(): Map<NodeId, NodeId[]> {
@@ -357,5 +354,26 @@ export class Graph {
   validateGraph(): void {
     this.nodes.validate();
     this.edges.validate();
+  }
+
+  deleteNode(nodeId: NodeId, isStrict = false): void {
+    if (!this.containsNode(nodeId)) {
+      const errorMessage = `Node ${nodeId} does not exist in the graph.`;
+      if (isStrict) {
+        throw new Error(errorMessage);
+      }
+      console.warn(errorMessage);
+      return;
+    }
+    const edgesToRemove = this.getEdgesOf(this.getNode(nodeId));
+    edgesToRemove.forEach((edge) => this.removeEdge(edge.getId()));
+    this.removeNode(nodeId);
+  }
+
+  // todo: implement delete all with rollback on failures.
+  // entity change request manager?
+  // undo and redo
+  deleteNodes(nodeIds: NodeIds | NodeId[]): void {
+    nodeIds.forEach((nodeId) => this.deleteNode(nodeId));
   }
 }

@@ -1,34 +1,35 @@
 import { ForceGraph3DInstance } from "3d-force-graph";
+import { songAnnotation247_2_entities } from "../_experimental/force-graph-dynamics/247-2";
+import { addCluster } from "../_experimental/force-graph-dynamics/addCluster";
+import { addRandomEdges } from "../_experimental/force-graph-dynamics/addRandomEdges";
+import { addRandomNodes } from "../_experimental/force-graph-dynamics/addRandomNodes";
+import { runManagedAnimation } from "../_experimental/force-graph-dynamics/animationRunner";
+import { generateConfigsFromAnnotations } from "../_experimental/force-graph-dynamics/annotationConfigGenerator";
+import { createAnnotationNodeSpawner } from "../_experimental/force-graph-dynamics/annotationNodeSpawner";
+import { applyRandomEffects } from "../_experimental/force-graph-dynamics/applyRandomEffects";
+import { applyStaggeredEffects } from "../_experimental/force-graph-dynamics/applyStaggeredEffects";
+import { compactify } from "../_experimental/force-graph-dynamics/compactify";
+import {
+  demoConfig,
+  playConfigSequence,
+} from "../_experimental/force-graph-dynamics/configSequencePlayer";
+import { focusOnDegrees } from "../_experimental/force-graph-dynamics/focusOnDegrees";
+import { focusWithTransparency } from "../_experimental/force-graph-dynamics/focusWithTransparency";
+import { pulsateNodes } from "../_experimental/force-graph-dynamics/pulsate";
+import {
+  randomizeVisible,
+  randomizeVisibleAndPhysics,
+} from "../_experimental/force-graph-dynamics/randomizeVisible";
+import { createSongVisualizationTimeline } from "../_experimental/force-graph-dynamics/songAnnotationTransitions";
+import { transitionToConfig } from "../_experimental/force-graph-dynamics/transition";
+import { loadAnnotationsToSceneGraph } from "../api/annotationsApi";
 import {
   attachSimulation,
   updateNodePositions,
 } from "../core/force-graph/createForceGraph";
-import { songAnnotation247_2_entities } from "../core/force-graph/dynamics/247-2";
-import { addCluster } from "../core/force-graph/dynamics/addCluster";
-import { addRandomEdges } from "../core/force-graph/dynamics/addRandomEdges";
-import { addRandomNodes } from "../core/force-graph/dynamics/addRandomNodes";
-import { runManagedAnimation } from "../core/force-graph/dynamics/animationRunner";
-import { generateConfigsFromAnnotations } from "../core/force-graph/dynamics/annotationConfigGenerator";
-import { createAnnotationNodeSpawner } from "../core/force-graph/dynamics/annotationNodeSpawner";
-import { applyRandomEffects } from "../core/force-graph/dynamics/applyRandomEffects";
-import { applyStaggeredEffects } from "../core/force-graph/dynamics/applyStaggeredEffects";
-import { compactify } from "../core/force-graph/dynamics/compactify";
-import {
-  demoConfig,
-  playConfigSequence,
-} from "../core/force-graph/dynamics/configSequencePlayer";
-import { focusOnDegrees } from "../core/force-graph/dynamics/focusOnDegrees";
-import { focusWithTransparency } from "../core/force-graph/dynamics/focusWithTransparency";
-import { pulsateNodes } from "../core/force-graph/dynamics/pulsate";
-import {
-  randomizeVisible,
-  randomizeVisibleAndPhysics,
-} from "../core/force-graph/dynamics/randomizeVisible";
-import { createSongVisualizationTimeline } from "../core/force-graph/dynamics/songAnnotationTransitions";
-import { transitionToConfig } from "../core/force-graph/dynamics/transition";
 import { CustomLayoutType } from "../core/layouts/CustomLayoutEngine";
 import { GraphologyLayoutType } from "../core/layouts/GraphologyLayoutEngine";
-import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "../core/layouts/GraphvizLayoutType";
 import { Compute_Layout } from "../core/layouts/LayoutEngine";
 import { DisplayManager } from "../core/model/DisplayManager";
 import { SceneGraph } from "../core/model/SceneGraph";
@@ -42,15 +43,26 @@ import {
   extractPositionsFromNodes,
   extractPositionsFromUserData,
 } from "../data/graphs/blobMesh";
-import { demoSongAnnotations } from "../mp3/data";
-import { demoSongAnnotations2 } from "../mp3/demoSongAnnotations247";
 import {
   getActiveView,
   getCurrentSceneGraph,
+  getForceGraph3dInstance,
+  getInteractivityFlags,
   getShowEntityDataCard,
   setShowEntityDataCard,
 } from "../store/appConfigStore";
+
+import {
+  setShowCommandPalette,
+  setShowLoadSceneGraphWindow,
+  setShowSaveAsNewProjectDialog,
+  setShowWorkspaceManager,
+} from "../store/dialogStore";
 import { clearDocuments, getAllDocuments } from "../store/documentStore";
+
+import { demoSongAnnotations } from "../_experimental/mp3/data";
+import { demoSongAnnotations2 } from "../_experimental/mp3/demoSongAnnotations247";
+import { compressSceneGraphJsonForUrl } from "../core/serializers/toFromJson";
 import {
   applyLayoutAndTriggerAppUpdate,
   computeLayoutAndTriggerUpdateForCurrentSceneGraph,
@@ -62,8 +74,13 @@ import {
   setLeftSidebarConfig,
   setRightSidebarConfig,
 } from "../store/workspaceConfigStore";
-import { runConversationsAnalysis } from "../utils/runConversationsAnalysis";
-import { IMenuConfig, IMenuConfig as MenuConfigType } from "./UniAppToolbar";
+import { debugForceGraph3DCamera } from "../utils/forceGraphDebugUtils";
+import { supabase } from "../utils/supabaseClient";
+import { runConversationsAnalysis } from "./applets/ChatGptImporter/services/runConversationsAnalysis";
+import {
+  IMenuConfig,
+  IMenuConfig as MenuConfigType,
+} from "./appWorkspace/UniAppToolbar";
 
 // const handleExportConfig = (sceneGraph: SceneGraph) => {
 //   saveRenderingConfigToFile(sceneGraph.getDisplayConfig(), "renderConfig.json");
@@ -109,6 +126,11 @@ const customLayoutMenuActions = (): IMenuConfig => {
 };
 
 export interface IMenuConfigCallbacks {
+  handleSetSceneGraph: (
+    key: string,
+    clearQueryParams?: boolean,
+    onLoaded?: (sceneGraph?: SceneGraph) => void
+  ) => void;
   handleImportConfig: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleFitToView: (activeView: string) => void;
   GraphMenuActions: () => { [key: string]: { action: () => void } };
@@ -119,6 +141,17 @@ export interface IMenuConfigCallbacks {
   showFilterWindow: () => void;
   showSceneGraphDetailView: (readOnly: boolean) => void;
   showChatGptImporter: () => void;
+  // Workspace management callbacks
+  showWorkspaceManager?: () => void;
+  loadWorkspaceConfig?: () => void;
+  saveWorkspaceConfig?: () => void;
+  // AppShell workspace functions
+  appShellWorkspaceFunctions?: {
+    saveCurrentLayout: (name: string) => Promise<any>;
+    applyWorkspaceLayout: (id: string) => Promise<boolean>;
+    getAllWorkspaces: () => any[];
+    getCurrentWorkspace: () => any;
+  };
 }
 
 export class MenuConfig {
@@ -158,6 +191,159 @@ export class MenuConfig {
 
   getConfig(): MenuConfigType {
     return {
+      Project: {
+        submenu: {
+          New: {
+            action: () => {
+              this.callbacks.handleSetSceneGraph("Empty", true, () => {
+                setShowSaveAsNewProjectDialog(true);
+              });
+            },
+            tooltip: "cmd+shift+n",
+          },
+          Save: {
+            action: () => {
+              // TODO: Implement Save project
+              console.log("Save project");
+            },
+            tooltip: "cmd+s",
+          },
+          "Save as new": {
+            action: () => {
+              setShowSaveAsNewProjectDialog(true);
+            },
+            tooltip: "cmd+shift+s",
+          },
+          Load: {
+            action: () => {
+              setShowLoadSceneGraphWindow(true);
+            },
+            tooltip: "cmd+o",
+          },
+          "Open manager": {
+            action: () => {
+              // TODO: Implement Open project manager
+              console.log("Open project manager");
+            },
+          },
+        },
+      },
+      Workspace: {
+        submenu: {
+          Load: {
+            submenu: (() => {
+              // Use AppShell workspace state actions to get available workspaces
+              const { applyWorkspaceLayout, getAllWorkspaces } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+
+              if (!applyWorkspaceLayout || !getAllWorkspaces) {
+                return {
+                  "No workspaces available": {
+                    action: () => {
+                      console.log("Workspace state functions not available");
+                    },
+                  },
+                };
+              }
+
+              const workspaces = getAllWorkspaces();
+              if (workspaces.length === 0) {
+                return {
+                  "No saved workspaces": {
+                    action: () => {
+                      console.log("No saved workspaces available");
+                    },
+                  },
+                };
+              }
+
+              // Create a menu item for each available workspace
+              const workspaceMenuItems: {
+                [key: string]: { action: () => void };
+              } = {};
+
+              workspaces.forEach((workspace) => {
+                workspaceMenuItems[workspace.name] = {
+                  action: () => {
+                    applyWorkspaceLayout(workspace.id);
+                  },
+                };
+              });
+
+              return workspaceMenuItems;
+            })(),
+          },
+          "Save as": {
+            action: () => {
+              // Use AppShell workspace state actions
+              const { saveCurrentLayout } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+              if (saveCurrentLayout) {
+                const workspaceName = prompt("Enter workspace name:");
+                if (workspaceName) {
+                  saveCurrentLayout(workspaceName);
+                }
+              } else {
+                console.log("Workspace state functions not available");
+              }
+            },
+          },
+          "Open Manager": {
+            action: () => {
+              setShowWorkspaceManager(true);
+            },
+          },
+          "Reset to Empty": {
+            action: () => {
+              // Use AppShell workspace state actions to load the clean workspace
+              const { applyWorkspaceLayout } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+              if (applyWorkspaceLayout) {
+                // Load the clean workspace by its ID
+                applyWorkspaceLayout("clean-workspace");
+              } else {
+                console.log("Workspace state functions not available");
+              }
+            },
+          },
+        },
+      },
+      Window: {
+        submenu: {
+          "Project Detail View": {
+            action: () => {
+              // TODO: Implement Project Detail View window
+              console.log("Open Project Detail View");
+            },
+          },
+          "Entity Manager": {
+            action: () => {
+              // TODO: Implement Entity Manager window
+              console.log("Open Entity Manager");
+            },
+          },
+          "Display Manager": {
+            action: () => {
+              // TODO: Implement Display Manager window
+              console.log("Open Display Manager");
+            },
+          },
+          "Command Palette": {
+            action: () => {
+              // Check if command palette is disabled via interactivityFlags
+              const interactivityFlags = getInteractivityFlags();
+              if (interactivityFlags?.commandPalette === false) {
+                console.log(
+                  "Command palette is disabled via interactivityFlags"
+                );
+                return;
+              }
+              setShowCommandPalette(true);
+            },
+            tooltip: "cmd+shift+p",
+          },
+        },
+      },
       View: {
         submenu: {
           "Fit to View": {
@@ -217,6 +403,109 @@ export class MenuConfig {
       Simulations: { submenu: this.callbacks.SimulationMenuActions() },
       Dev: {
         submenu: {
+          "Debug ForceGraph3D Camera": {
+            action: () => {
+              debugForceGraph3DCamera(getForceGraph3dInstance());
+            },
+          },
+          "Print AppShell Workspace Layout": {
+            action: async () => {
+              const { getAllWorkspaces } =
+                this.callbacks.appShellWorkspaceFunctions || {};
+              if (getAllWorkspaces) {
+                const workspaces = getAllWorkspaces();
+                console.log("=== AppShell Workspace Layout Configuration ===");
+                console.log("Available workspaces:", workspaces);
+                console.log("Current workspace config:", {
+                  leftSidebar: getLeftSidebarConfig(),
+                  rightSidebar: getRightSidebarConfig(),
+                });
+
+                // Get the current workspace layout configuration
+                try {
+                  // Try to get the current workspace data from the app shell
+                  const { getAllWorkspaces, getCurrentWorkspace } =
+                    this.callbacks.appShellWorkspaceFunctions || {};
+                  if (getAllWorkspaces) {
+                    const workspaces = getAllWorkspaces();
+                    console.log("=== Available Workspaces ===");
+                    console.log("Workspaces:", workspaces);
+                    console.log("=== End Available Workspaces ===");
+
+                    // Save current workspace layout to a temporary workspace and print it
+                    console.log("=== Saving Current Workspace Layout ===");
+                    const tempWorkspaceName = `temp-workspace-${Date.now()}`;
+                    console.log("Saving current layout as:", tempWorkspaceName);
+
+                    try {
+                      const savedWorkspace = getCurrentWorkspace?.();
+                      console.log(
+                        "=== Current Workspace Layout Data Structure ==="
+                      );
+                      console.log("Current workspace:", savedWorkspace);
+                      console.log(
+                        "=== End Current Workspace Layout Data Structure ==="
+                      );
+
+                      // Clean up the temporary workspace
+                      console.log("Cleaning up temporary workspace...");
+                      // Note: We could add a deleteWorkspace function if needed
+                    } catch (saveError) {
+                      console.log(
+                        "Error saving current workspace layout:",
+                        saveError
+                      );
+                    }
+                  } else {
+                    console.log("Workspace functions not available");
+                  }
+                } catch (error) {
+                  console.log("Error accessing workspace layout data:", error);
+                }
+
+                console.log(
+                  "=== End AppShell Workspace Layout Configuration ==="
+                );
+              } else {
+                console.log("AppShell workspace functions not available");
+              }
+            },
+          },
+          "Copy SceneGraph as URL": {
+            action: () => {
+              const sceneGraph = getCurrentSceneGraph();
+              const compressed = compressSceneGraphJsonForUrl(sceneGraph);
+              const url = `${window.location.origin}${window.location.pathname}#scenegraph=${compressed}`;
+              navigator.clipboard.writeText(url);
+              console.log(
+                "Compressed SceneGraph URL copied to clipboard:",
+                url
+              );
+            },
+          },
+          "Load annotations": {
+            action: () => {
+              supabase.auth
+                .getUser()
+                .then(
+                  ({
+                    data,
+                    error,
+                  }: {
+                    data: { user?: { id: string } } | null;
+                    error: any;
+                  }) => {
+                    if (error || !data?.user) {
+                      // Handle error or not signed in
+                      return;
+                    }
+                    console.log("Loading annotations for user:", data.user.id);
+                    loadAnnotationsToSceneGraph(data.user.id, this.sceneGraph);
+                    console.log("Annotations loaded", this.sceneGraph);
+                  }
+                );
+            },
+          },
           "TEST: Conversation Analysis": {
             action: () => {
               // Get the current SceneGraph
@@ -583,23 +872,19 @@ export class MenuConfig {
                   playConfigSequence(this.forceGraphInstance, configs);
                 },
               },
-            },
-          },
-        },
-      },
-      Funcs: {
-        submenu: {
-          "Update scenegraph entities display": {
-            action: () => {
-              DisplayManager.applyRenderingConfigToGraph(
-                this.sceneGraph.getGraph(),
-                this.sceneGraph.getDisplayConfig()
-              );
-            },
-          },
-          "Load image annotations": {
-            action: () => {
-              processImageNodesInSceneGraph(this.sceneGraph);
+              "Update scenegraph entities display": {
+                action: () => {
+                  DisplayManager.applyRenderingConfigToGraph(
+                    this.sceneGraph.getGraph(),
+                    this.sceneGraph.getDisplayConfig()
+                  );
+                },
+              },
+              "Load image annotations": {
+                action: () => {
+                  processImageNodesInSceneGraph(this.sceneGraph);
+                },
+              },
             },
           },
         },

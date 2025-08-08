@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import { LayoutEngineOptionLabels } from "../../core/layouts/layoutEngineTypes";
 import { EntityIds } from "../../core/model/entity/entityIds";
 import { NodeId } from "../../core/model/Node";
@@ -19,7 +20,8 @@ export const getMultiNodeContextMenuItems = (
   nodeIds: NodeId[],
   currentSceneGraph: SceneGraph,
   applyFilter: (filter: Filter) => void,
-  onMenuClose?: () => void
+  onMenuClose?: () => void,
+  onShowDeleteDialog?: (nodeIds: NodeId[]) => void // Add callback for delete dialog
 ): ContextMenuItem[] => [
   {
     label: `Selected ${nodeIds.length} Nodes`,
@@ -127,5 +129,19 @@ export const getMultiNodeContextMenuItems = (
         onMenuClose?.();
       },
     })),
+  },
+  {
+    label: "",
+    separator: true,
+    action: () => {}, // This is just a separator
+  },
+  {
+    label: "Delete Nodes",
+    style: "caution",
+    icon: Trash2,
+    action: () => {
+      onShowDeleteDialog?.(nodeIds);
+      onMenuClose?.();
+    },
   },
 ];

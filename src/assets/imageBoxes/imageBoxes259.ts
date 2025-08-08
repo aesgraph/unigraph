@@ -4,7 +4,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 4873003 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 175,
       y: 0,
@@ -19,7 +19,7 @@ export const imageBoxes259 = [
     label: "RGB(226,169,255)",
     type: "ImageBox",
     description: "Size: 1344 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 514.2441860465117,
       y: 0,
@@ -34,7 +34,7 @@ export const imageBoxes259 = [
     label: "RGB(250,250,250)",
     type: "ImageBox",
     description: "Size: 53 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 3.7063953488372094,
@@ -49,7 +49,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,255)",
     type: "ImageBox",
     description: "Size: 48 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 572.4563953488372,
       y: 4.3604651162790695,
@@ -64,7 +64,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 41 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 566.7877906976744,
       y: 5.0145348837209305,
@@ -79,7 +79,7 @@ export const imageBoxes259 = [
     label: "RGB(247,247,247)",
     type: "ImageBox",
     description: "Size: 32 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 561.3372093023256,
       y: 5.450581395348837,
@@ -94,7 +94,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,255)",
     type: "ImageBox",
     description: "Size: 25 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 576.1627906976744,
       y: 5.6686046511627906,
@@ -109,7 +109,7 @@ export const imageBoxes259 = [
     label: "RGB(249,249,249)",
     type: "ImageBox",
     description: "Size: 37 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 569.8401162790698,
       y: 5.886627906976744,
@@ -124,7 +124,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 32 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 564.6075581395348,
       y: 6.540697674418604,
@@ -139,7 +139,7 @@ export const imageBoxes259 = [
     label: "RGB(116,132,247)",
     type: "ImageBox",
     description: "Size: 19 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 545.8575581395348,
       y: 11.337209302325581,
@@ -154,7 +154,7 @@ export const imageBoxes259 = [
     label: "RGB(249,249,249)",
     type: "ImageBox",
     description: "Size: 56 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 571.3662790697674,
       y: 11.773255813953488,
@@ -169,7 +169,7 @@ export const imageBoxes259 = [
     label: "RGB(117,133,248)",
     type: "ImageBox",
     description: "Size: 23 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.3313953488372,
       y: 11.991279069767442,
@@ -184,7 +184,7 @@ export const imageBoxes259 = [
     label: "RGB(121,138,255)",
     type: "ImageBox",
     description: "Size: 26 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 530.8139534883721,
       y: 12.42732558139535,
@@ -199,7 +199,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 40 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.953488372093,
       y: 12.645348837209303,
@@ -214,7 +214,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 47 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 568.5319767441861,
       y: 12.863372093023255,
@@ -229,7 +229,7 @@ export const imageBoxes259 = [
     label: "RGB(250,250,250)",
     type: "ImageBox",
     description: "Size: 43 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 566.7877906976744,
       y: 14.825581395348838,
@@ -244,7 +244,7 @@ export const imageBoxes259 = [
     label: "RGB(121,138,255)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 587.7180232558139,
       y: 16.13372093023256,
@@ -259,7 +259,7 @@ export const imageBoxes259 = [
     label: "RGB(124,141,255)",
     type: "ImageBox",
     description: "Size: 52 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.3546511627907,
       y: 16.787790697674417,
@@ -274,7 +274,7 @@ export const imageBoxes259 = [
     label: "RGB(250,250,250)",
     type: "ImageBox",
     description: "Size: 45 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 557.4127906976744,
       y: 16.787790697674417,
@@ -289,7 +289,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 56 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 543.4593023255813,
       y: 17.441860465116278,
@@ -304,7 +304,7 @@ export const imageBoxes259 = [
     label: "RGB(123,140,255)",
     type: "ImageBox",
     description: "Size: 39 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.7529069767442,
       y: 18.09593023255814,
@@ -319,7 +319,7 @@ export const imageBoxes259 = [
     label: "RGB(124,141,255)",
     type: "ImageBox",
     description: "Size: 43 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 535.3924418604652,
       y: 18.313953488372093,
@@ -334,7 +334,7 @@ export const imageBoxes259 = [
     label: "RGB(119,135,252)",
     type: "ImageBox",
     description: "Size: 23 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.1366279069767,
       y: 18.75,
@@ -349,7 +349,7 @@ export const imageBoxes259 = [
     label: "RGB(123,140,255)",
     type: "ImageBox",
     description: "Size: 63 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 529.5058139534883,
       y: 19.622093023255815,
@@ -364,7 +364,7 @@ export const imageBoxes259 = [
     label: "RGB(121,138,255)",
     type: "ImageBox",
     description: "Size: 21 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 570.9302325581396,
       y: 19.622093023255815,
@@ -379,7 +379,7 @@ export const imageBoxes259 = [
     label: "RGB(116,133,248)",
     type: "ImageBox",
     description: "Size: 62 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 581.1773255813953,
       y: 20.058139534883722,
@@ -394,7 +394,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 128 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 574.8546511627907,
       y: 20.276162790697676,
@@ -409,7 +409,7 @@ export const imageBoxes259 = [
     label: "RGB(123,140,255)",
     type: "ImageBox",
     description: "Size: 54 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 583.7936046511628,
       y: 20.49418604651163,
@@ -424,7 +424,7 @@ export const imageBoxes259 = [
     label: "RGB(123,140,255)",
     type: "ImageBox",
     description: "Size: 169 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 530.8139534883721,
       y: 21.802325581395348,
@@ -439,7 +439,7 @@ export const imageBoxes259 = [
     label: "RGB(119,136,254)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 579.6511627906978,
       y: 21.802325581395348,
@@ -454,7 +454,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 35 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 585.9738372093022,
       y: 21.802325581395348,
@@ -469,7 +469,7 @@ export const imageBoxes259 = [
     label: "RGB(87,231,247)",
     type: "ImageBox",
     description: "Size: 473 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 525.1453488372093,
       y: 22.674418604651162,
@@ -484,7 +484,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 173 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 574.2005813953488,
       y: 23.11046511627907,
@@ -499,7 +499,7 @@ export const imageBoxes259 = [
     label: "RGB(115,115,115)",
     type: "ImageBox",
     description: "Size: 274 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 593.6046511627907,
       y: 24.636627906976745,
@@ -514,7 +514,7 @@ export const imageBoxes259 = [
     label: "RGB(87,233,250)",
     type: "ImageBox",
     description: "Size: 404 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 24.8546511627907,
@@ -529,7 +529,7 @@ export const imageBoxes259 = [
     label: "RGB(243,247,248)",
     type: "ImageBox",
     description: "Size: 199 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 561.7732558139535,
       y: 28.561046511627907,
@@ -544,7 +544,7 @@ export const imageBoxes259 = [
     label: "RGB(240,244,245)",
     type: "ImageBox",
     description: "Size: 149 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 542.8052325581396,
       y: 28.77906976744186,
@@ -559,7 +559,7 @@ export const imageBoxes259 = [
     label: "RGB(8,8,8)",
     type: "ImageBox",
     description: "Size: 3038 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 561.9912790697674,
       y: 29.21511627906977,
@@ -574,7 +574,7 @@ export const imageBoxes259 = [
     label: "RGB(2,2,2)",
     type: "ImageBox",
     description: "Size: 3154 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.7529069767442,
       y: 29.433139534883722,
@@ -589,7 +589,7 @@ export const imageBoxes259 = [
     label: "RGB(245,250,251)",
     type: "ImageBox",
     description: "Size: 337 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 526.2354651162791,
       y: 31.177325581395348,
@@ -604,7 +604,7 @@ export const imageBoxes259 = [
     label: "RGB(3,3,3)",
     type: "ImageBox",
     description: "Size: 774 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 575.7267441860465,
       y: 31.177325581395348,
@@ -619,7 +619,7 @@ export const imageBoxes259 = [
     label: "RGB(238,242,244)",
     type: "ImageBox",
     description: "Size: 20 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 583.7936046511628,
       y: 31.3953488372093,
@@ -634,7 +634,7 @@ export const imageBoxes259 = [
     label: "RGB(112,112,112)",
     type: "ImageBox",
     description: "Size: 214 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 603.1976744186047,
       y: 32.26744186046512,
@@ -649,7 +649,7 @@ export const imageBoxes259 = [
     label: "RGB(245,249,250)",
     type: "ImageBox",
     description: "Size: 28 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.0988372093022,
       y: 32.48546511627907,
@@ -664,7 +664,7 @@ export const imageBoxes259 = [
     label: "RGB(88,237,254)",
     type: "ImageBox",
     description: "Size: 55 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 562.4273255813953,
       y: 33.13953488372093,
@@ -679,7 +679,7 @@ export const imageBoxes259 = [
     label: "RGB(110,110,110)",
     type: "ImageBox",
     description: "Size: 91 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 609.7383720930233,
       y: 33.575581395348834,
@@ -694,7 +694,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 87 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 558.9389534883721,
       y: 33.79360465116279,
@@ -709,7 +709,7 @@ export const imageBoxes259 = [
     label: "RGB(8,8,8)",
     type: "ImageBox",
     description: "Size: 205 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 581.1773255813953,
       y: 33.79360465116279,
@@ -724,7 +724,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 153 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.0813953488372,
       y: 34.229651162790695,
@@ -739,7 +739,7 @@ export const imageBoxes259 = [
     label: "RGB(241,245,246)",
     type: "ImageBox",
     description: "Size: 108 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 536.9186046511628,
       y: 34.6656976744186,
@@ -754,7 +754,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 250 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.5726744186047,
       y: 35.10174418604651,
@@ -769,7 +769,7 @@ export const imageBoxes259 = [
     label: "RGB(251,253,254)",
     type: "ImageBox",
     description: "Size: 101 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 580.0872093023256,
       y: 35.75581395348837,
@@ -784,7 +784,7 @@ export const imageBoxes259 = [
     label: "RGB(3,7,7)",
     type: "ImageBox",
     description: "Size: 205 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 552.8343023255813,
       y: 35.973837209302324,
@@ -799,7 +799,7 @@ export const imageBoxes259 = [
     label: "RGB(255,198,102)",
     type: "ImageBox",
     description: "Size: 142 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 550.6540697674418,
       y: 36.19186046511628,
@@ -814,7 +814,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 429 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 555.0145348837209,
       y: 36.19186046511628,
@@ -829,7 +829,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,0)",
     type: "ImageBox",
     description: "Size: 329 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 562.2093023255813,
       y: 37.06395348837209,
@@ -844,7 +844,7 @@ export const imageBoxes259 = [
     label: "RGB(255,200,102)",
     type: "ImageBox",
     description: "Size: 103 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.0813953488372,
       y: 37.06395348837209,
@@ -859,7 +859,7 @@ export const imageBoxes259 = [
     label: "RGB(238,242,243)",
     type: "ImageBox",
     description: "Size: 23 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 580.7412790697674,
       y: 39.026162790697676,
@@ -874,7 +874,7 @@ export const imageBoxes259 = [
     label: "RGB(249,253,254)",
     type: "ImageBox",
     description: "Size: 96 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 510.1017441860465,
       y: 39.24418604651163,
@@ -889,7 +889,7 @@ export const imageBoxes259 = [
     label: "RGB(243,247,248)",
     type: "ImageBox",
     description: "Size: 98 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 505.5232558139535,
       y: 39.68023255813954,
@@ -904,7 +904,7 @@ export const imageBoxes259 = [
     label: "RGB(10,10,10)",
     type: "ImageBox",
     description: "Size: 108 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 579.4331395348837,
       y: 39.68023255813954,
@@ -919,7 +919,7 @@ export const imageBoxes259 = [
     label: "RGB(106,106,106)",
     type: "ImageBox",
     description: "Size: 25 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 541.2790697674418,
       y: 40.116279069767444,
@@ -934,7 +934,7 @@ export const imageBoxes259 = [
     label: "RGB(108,109,112)",
     type: "ImageBox",
     description: "Size: 39 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 575.5087209302326,
       y: 40.116279069767444,
@@ -949,7 +949,7 @@ export const imageBoxes259 = [
     label: "RGB(117,117,117)",
     type: "ImageBox",
     description: "Size: 52 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 541.4970930232557,
       y: 40.55232558139535,
@@ -964,7 +964,7 @@ export const imageBoxes259 = [
     label: "RGB(245,249,251)",
     type: "ImageBox",
     description: "Size: 46 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 570.7122093023256,
       y: 40.98837209302326,
@@ -979,7 +979,7 @@ export const imageBoxes259 = [
     label: "RGB(117,117,117)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 543.2412790697674,
       y: 41.20639534883721,
@@ -994,7 +994,7 @@ export const imageBoxes259 = [
     label: "RGB(115,125,126)",
     type: "ImageBox",
     description: "Size: 31 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 578.5610465116279,
       y: 41.424418604651166,
@@ -1009,7 +1009,7 @@ export const imageBoxes259 = [
     label: "RGB(10,10,10)",
     type: "ImageBox",
     description: "Size: 230 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 542.1511627906978,
       y: 41.64244186046512,
@@ -1024,7 +1024,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 175 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 555.0145348837209,
       y: 41.86046511627907,
@@ -1039,7 +1039,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 225 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 571.1482558139535,
       y: 41.86046511627907,
@@ -1054,7 +1054,7 @@ export const imageBoxes259 = [
     label: "RGB(2,3,4)",
     type: "ImageBox",
     description: "Size: 197 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 574.4186046511628,
       y: 42.07848837209302,
@@ -1069,7 +1069,7 @@ export const imageBoxes259 = [
     label: "RGB(249,254,255)",
     type: "ImageBox",
     description: "Size: 249 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 542.3691860465117,
       y: 42.51453488372093,
@@ -1084,7 +1084,7 @@ export const imageBoxes259 = [
     label: "RGB(114,114,114)",
     type: "ImageBox",
     description: "Size: 31 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 560.2470930232557,
       y: 42.51453488372093,
@@ -1099,7 +1099,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 116 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 546.9476744186047,
       y: 42.950581395348834,
@@ -1114,7 +1114,7 @@ export const imageBoxes259 = [
     label: "RGB(119,119,119)",
     type: "ImageBox",
     description: "Size: 80 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 562.4273255813953,
       y: 42.950581395348834,
@@ -1129,7 +1129,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 1329 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 562.6453488372093,
       y: 43.16860465116279,
@@ -1144,7 +1144,7 @@ export const imageBoxes259 = [
     label: "RGB(111,111,111)",
     type: "ImageBox",
     description: "Size: 34 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 573.328488372093,
       y: 43.38662790697674,
@@ -1159,7 +1159,7 @@ export const imageBoxes259 = [
     label: "RGB(3,5,5)",
     type: "ImageBox",
     description: "Size: 15 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 551.3081395348837,
       y: 43.604651162790695,
@@ -1174,7 +1174,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 1151 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 551.0901162790698,
       y: 43.604651162790695,
@@ -1189,7 +1189,7 @@ export const imageBoxes259 = [
     label: "RGB(10,10,10)",
     type: "ImageBox",
     description: "Size: 194 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 558.5029069767442,
       y: 43.82267441860465,
@@ -1204,7 +1204,7 @@ export const imageBoxes259 = [
     label: "RGB(249,253,255)",
     type: "ImageBox",
     description: "Size: 198 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.0813953488372,
       y: 45.56686046511628,
@@ -1219,7 +1219,7 @@ export const imageBoxes259 = [
     label: "RGB(113,123,124)",
     type: "ImageBox",
     description: "Size: 64 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 549.5639534883721,
       y: 46.22093023255814,
@@ -1234,7 +1234,7 @@ export const imageBoxes259 = [
     label: "RGB(116,123,124)",
     type: "ImageBox",
     description: "Size: 76 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 565.0436046511628,
       y: 47.093023255813954,
@@ -1249,7 +1249,7 @@ export const imageBoxes259 = [
     label: "RGB(255,200,102)",
     type: "ImageBox",
     description: "Size: 15 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 548.9098837209302,
       y: 47.31104651162791,
@@ -1264,7 +1264,7 @@ export const imageBoxes259 = [
     label: "RGB(113,113,113)",
     type: "ImageBox",
     description: "Size: 48 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 558.7209302325582,
       y: 47.31104651162791,
@@ -1279,7 +1279,7 @@ export const imageBoxes259 = [
     label: "RGB(251,201,109)",
     type: "ImageBox",
     description: "Size: 14 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 573.7645348837209,
       y: 47.31104651162791,
@@ -1294,7 +1294,7 @@ export const imageBoxes259 = [
     label: "RGB(2,2,2)",
     type: "ImageBox",
     description: "Size: 308 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 549.5639534883721,
       y: 47.747093023255815,
@@ -1309,7 +1309,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,4)",
     type: "ImageBox",
     description: "Size: 387 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 566.7877906976744,
       y: 47.747093023255815,
@@ -1324,7 +1324,7 @@ export const imageBoxes259 = [
     label: "RGB(255,200,104)",
     type: "ImageBox",
     description: "Size: 303 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 570.2761627906978,
       y: 49.05523255813954,
@@ -1339,7 +1339,7 @@ export const imageBoxes259 = [
     label: "RGB(255,200,102)",
     type: "ImageBox",
     description: "Size: 284 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.3546511627907,
       y: 49.27325581395349,
@@ -1354,7 +1354,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,3)",
     type: "ImageBox",
     description: "Size: 609 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 570.9302325581396,
       y: 49.491279069767444,
@@ -1369,7 +1369,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 816 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 541.4970930232557,
       y: 49.7093023255814,
@@ -1384,7 +1384,7 @@ export const imageBoxes259 = [
     label: "RGB(112,112,112)",
     type: "ImageBox",
     description: "Size: 31 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.3226744186047,
       y: 52.76162790697674,
@@ -1399,7 +1399,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 325 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.0813953488372,
       y: 55.15988372093023,
@@ -1414,7 +1414,7 @@ export const imageBoxes259 = [
     label: "RGB(1,2,2)",
     type: "ImageBox",
     description: "Size: 386 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.3226744186047,
       y: 55.377906976744185,
@@ -1429,7 +1429,7 @@ export const imageBoxes259 = [
     label: "RGB(8,8,8)",
     type: "ImageBox",
     description: "Size: 2682 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 55.377906976744185,
@@ -1444,7 +1444,7 @@ export const imageBoxes259 = [
     label: "RGB(1,2,2)",
     type: "ImageBox",
     description: "Size: 1785 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 538.4447674418604,
       y: 55.81395348837209,
@@ -1459,7 +1459,7 @@ export const imageBoxes259 = [
     label: "RGB(87,235,252)",
     type: "ImageBox",
     description: "Size: 33 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 614.5348837209302,
       y: 61.91860465116279,
@@ -1474,7 +1474,7 @@ export const imageBoxes259 = [
     label: "RGB(249,253,255)",
     type: "ImageBox",
     description: "Size: 57 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 531.0319767441861,
       y: 62.13662790697674,
@@ -1489,7 +1489,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 271 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 531.6860465116279,
       y: 62.13662790697674,
@@ -1504,7 +1504,7 @@ export const imageBoxes259 = [
     label: "RGB(255,201,102)",
     type: "ImageBox",
     description: "Size: 26 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 536.9186046511628,
       y: 62.13662790697674,
@@ -1519,7 +1519,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 2153 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.5726744186047,
       y: 62.13662790697674,
@@ -1534,7 +1534,7 @@ export const imageBoxes259 = [
     label: "RGB(249,254,255)",
     type: "ImageBox",
     description: "Size: 161 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 549.1279069767442,
       y: 63.008720930232556,
@@ -1549,7 +1549,7 @@ export const imageBoxes259 = [
     label: "RGB(3,2,3)",
     type: "ImageBox",
     description: "Size: 1218 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.953488372093,
       y: 63.008720930232556,
@@ -1564,7 +1564,7 @@ export const imageBoxes259 = [
     label: "RGB(249,254,255)",
     type: "ImageBox",
     description: "Size: 194 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 63.22674418604651,
@@ -1579,7 +1579,7 @@ export const imageBoxes259 = [
     label: "RGB(3,3,3)",
     type: "ImageBox",
     description: "Size: 282 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 557.1947674418604,
       y: 63.44476744186046,
@@ -1594,7 +1594,7 @@ export const imageBoxes259 = [
     label: "RGB(249,251,249)",
     type: "ImageBox",
     description: "Size: 365 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 582.703488372093,
       y: 63.66279069767442,
@@ -1609,7 +1609,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 194 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 64.09883720930233,
@@ -1624,7 +1624,7 @@ export const imageBoxes259 = [
     label: "RGB(96,236,255)",
     type: "ImageBox",
     description: "Size: 186 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 601.2354651162791,
       y: 64.09883720930233,
@@ -1639,7 +1639,7 @@ export const imageBoxes259 = [
     label: "RGB(93,233,249)",
     type: "ImageBox",
     description: "Size: 110 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 608.8662790697674,
       y: 64.09883720930233,
@@ -1654,7 +1654,7 @@ export const imageBoxes259 = [
     label: "RGB(88,237,254)",
     type: "ImageBox",
     description: "Size: 112 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 613.6627906976744,
       y: 64.09883720930233,
@@ -1669,7 +1669,7 @@ export const imageBoxes259 = [
     label: "RGB(249,251,254)",
     type: "ImageBox",
     description: "Size: 39 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 614.7529069767442,
       y: 64.09883720930233,
@@ -1684,7 +1684,7 @@ export const imageBoxes259 = [
     label: "RGB(255,201,104)",
     type: "ImageBox",
     description: "Size: 129 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 569.1860465116279,
       y: 64.31686046511628,
@@ -1699,7 +1699,7 @@ export const imageBoxes259 = [
     label: "RGB(89,238,255)",
     type: "ImageBox",
     description: "Size: 133 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 575.7267441860465,
       y: 64.75290697674419,
@@ -1714,7 +1714,7 @@ export const imageBoxes259 = [
     label: "RGB(253,202,113)",
     type: "ImageBox",
     description: "Size: 28 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 538.6627906976744,
       y: 65.18895348837209,
@@ -1729,7 +1729,7 @@ export const imageBoxes259 = [
     label: "RGB(2,6,6)",
     type: "ImageBox",
     description: "Size: 927 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 569.8401162790698,
       y: 65.84302325581395,
@@ -1744,7 +1744,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 36 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 603.8517441860465,
       y: 66.06104651162791,
@@ -1759,7 +1759,7 @@ export const imageBoxes259 = [
     label: "RGB(255,201,102)",
     type: "ImageBox",
     description: "Size: 143 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 541.7151162790698,
       y: 66.93313953488372,
@@ -1774,7 +1774,7 @@ export const imageBoxes259 = [
     label: "RGB(89,238,255)",
     type: "ImageBox",
     description: "Size: 108 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 540.8430232558139,
       y: 67.15116279069767,
@@ -1789,7 +1789,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 722 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 542.5872093023256,
       y: 67.80523255813954,
@@ -1804,7 +1804,7 @@ export const imageBoxes259 = [
     label: "RGB(119,118,116)",
     type: "ImageBox",
     description: "Size: 76 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 560.4651162790698,
       y: 69.11337209302326,
@@ -1819,7 +1819,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 119 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 69.11337209302326,
@@ -1834,7 +1834,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 74 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 567.2238372093022,
       y: 69.3313953488372,
@@ -1849,7 +1849,7 @@ export const imageBoxes259 = [
     label: "RGB(242,252,254)",
     type: "ImageBox",
     description: "Size: 20 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 604.0697674418604,
       y: 69.3313953488372,
@@ -1864,7 +1864,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 1625 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 550.6540697674418,
       y: 69.76744186046511,
@@ -1879,7 +1879,7 @@ export const imageBoxes259 = [
     label: "RGB(115,115,115)",
     type: "ImageBox",
     description: "Size: 1291 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 70.85755813953489,
@@ -1894,7 +1894,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 1128 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 540.1889534883721,
       y: 71.2936046511628,
@@ -1909,7 +1909,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,4)",
     type: "ImageBox",
     description: "Size: 1286 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 71.2936046511628,
@@ -1924,7 +1924,7 @@ export const imageBoxes259 = [
     label: "RGB(111,111,111)",
     type: "ImageBox",
     description: "Size: 63 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.7587209302326,
       y: 71.51162790697674,
@@ -1939,7 +1939,7 @@ export const imageBoxes259 = [
     label: "RGB(114,114,114)",
     type: "ImageBox",
     description: "Size: 335 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 538.2267441860465,
       y: 72.60174418604652,
@@ -1954,7 +1954,7 @@ export const imageBoxes259 = [
     label: "RGB(108,108,108)",
     type: "ImageBox",
     description: "Size: 92 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 582.4854651162791,
       y: 72.81976744186046,
@@ -1969,7 +1969,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,4)",
     type: "ImageBox",
     description: "Size: 15 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.3313953488372,
       y: 73.47383720930233,
@@ -1984,7 +1984,7 @@ export const imageBoxes259 = [
     label: "RGB(112,112,112)",
     type: "ImageBox",
     description: "Size: 53 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 73.69186046511628,
@@ -1999,7 +1999,7 @@ export const imageBoxes259 = [
     label: "RGB(245,252,254)",
     type: "ImageBox",
     description: "Size: 24 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 612.5726744186047,
       y: 73.90988372093024,
@@ -2014,7 +2014,7 @@ export const imageBoxes259 = [
     label: "RGB(106,106,106)",
     type: "ImageBox",
     description: "Size: 206 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 536.046511627907,
       y: 74.12790697674419,
@@ -2029,7 +2029,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 59 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 580.3052325581396,
       y: 74.12790697674419,
@@ -2044,7 +2044,7 @@ export const imageBoxes259 = [
     label: "RGB(114,114,114)",
     type: "ImageBox",
     description: "Size: 131 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 554.1424418604652,
       y: 74.34593023255815,
@@ -2059,7 +2059,7 @@ export const imageBoxes259 = [
     label: "RGB(110,110,110)",
     type: "ImageBox",
     description: "Size: 69 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 567.8779069767442,
       y: 75.65406976744185,
@@ -2074,7 +2074,7 @@ export const imageBoxes259 = [
     label: "RGB(89,238,255)",
     type: "ImageBox",
     description: "Size: 68 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 570.4941860465117,
       y: 75.65406976744185,
@@ -2089,7 +2089,7 @@ export const imageBoxes259 = [
     label: "RGB(89,238,255)",
     type: "ImageBox",
     description: "Size: 73 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 550.2180232558139,
       y: 75.87209302325581,
@@ -2104,7 +2104,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 159 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 534.5203488372093,
       y: 76.09011627906976,
@@ -2119,7 +2119,7 @@ export const imageBoxes259 = [
     label: "RGB(3,3,3)",
     type: "ImageBox",
     description: "Size: 374 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 571.3662790697674,
       y: 76.09011627906976,
@@ -2134,7 +2134,7 @@ export const imageBoxes259 = [
     label: "RGB(3,4,4)",
     type: "ImageBox",
     description: "Size: 81 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 549.5639534883721,
       y: 76.30813953488372,
@@ -2149,7 +2149,7 @@ export const imageBoxes259 = [
     label: "RGB(5,5,5)",
     type: "ImageBox",
     description: "Size: 57 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 538.8808139534883,
       y: 76.52616279069767,
@@ -2164,7 +2164,7 @@ export const imageBoxes259 = [
     label: "RGB(5,5,5)",
     type: "ImageBox",
     description: "Size: 142 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 567.0058139534883,
       y: 76.52616279069767,
@@ -2179,7 +2179,7 @@ export const imageBoxes259 = [
     label: "RGB(115,115,115)",
     type: "ImageBox",
     description: "Size: 92 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 76.96220930232558,
@@ -2194,7 +2194,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 16 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 581.3953488372093,
       y: 78.05232558139535,
@@ -2209,7 +2209,7 @@ export const imageBoxes259 = [
     label: "RGB(115,115,115)",
     type: "ImageBox",
     description: "Size: 75 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 533.2122093023256,
       y: 78.2703488372093,
@@ -2224,7 +2224,7 @@ export const imageBoxes259 = [
     label: "RGB(92,92,92)",
     type: "ImageBox",
     description: "Size: 17 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 547.8197674418604,
       y: 78.2703488372093,
@@ -2239,7 +2239,7 @@ export const imageBoxes259 = [
     label: "RGB(112,112,112)",
     type: "ImageBox",
     description: "Size: 1878 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 530.8139534883721,
       y: 78.48837209302326,
@@ -2254,7 +2254,7 @@ export const imageBoxes259 = [
     label: "RGB(117,117,117)",
     type: "ImageBox",
     description: "Size: 89 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 582.921511627907,
       y: 78.7063953488372,
@@ -2269,7 +2269,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 49 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 546.7296511627907,
       y: 79.36046511627907,
@@ -2284,7 +2284,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 205 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 600.7994186046512,
       y: 79.36046511627907,
@@ -2299,7 +2299,7 @@ export const imageBoxes259 = [
     label: "RGB(254,255,255)",
     type: "ImageBox",
     description: "Size: 105 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 579.6511627906978,
       y: 79.57848837209302,
@@ -2314,7 +2314,7 @@ export const imageBoxes259 = [
     label: "RGB(2,2,2)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.3168604651163,
       y: 80.23255813953489,
@@ -2329,7 +2329,7 @@ export const imageBoxes259 = [
     label: "RGB(119,119,119)",
     type: "ImageBox",
     description: "Size: 57 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 578.3430232558139,
       y: 80.23255813953489,
@@ -2344,7 +2344,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 75 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 545.203488372093,
       y: 80.45058139534883,
@@ -2359,7 +2359,7 @@ export const imageBoxes259 = [
     label: "RGB(115,115,115)",
     type: "ImageBox",
     description: "Size: 521 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 578.9970930232557,
       y: 80.45058139534883,
@@ -2374,7 +2374,7 @@ export const imageBoxes259 = [
     label: "RGB(123,123,123)",
     type: "ImageBox",
     description: "Size: 14 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.3313953488372,
       y: 80.88662790697674,
@@ -2389,7 +2389,7 @@ export const imageBoxes259 = [
     label: "RGB(114,114,114)",
     type: "ImageBox",
     description: "Size: 28 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 579.6511627906978,
       y: 81.54069767441861,
@@ -2404,7 +2404,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 106 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 536.7005813953488,
       y: 81.75872093023256,
@@ -2419,7 +2419,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 24 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 81.75872093023256,
@@ -2434,7 +2434,7 @@ export const imageBoxes259 = [
     label: "RGB(10,10,10)",
     type: "ImageBox",
     description: "Size: 298 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 81.75872093023256,
@@ -2449,7 +2449,7 @@ export const imageBoxes259 = [
     label: "RGB(95,238,254)",
     type: "ImageBox",
     description: "Size: 79 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 564.171511627907,
       y: 81.75872093023256,
@@ -2464,7 +2464,7 @@ export const imageBoxes259 = [
     label: "RGB(247,247,247)",
     type: "ImageBox",
     description: "Size: 88 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 540.8430232558139,
       y: 81.97674418604652,
@@ -2479,7 +2479,7 @@ export const imageBoxes259 = [
     label: "RGB(9,10,10)",
     type: "ImageBox",
     description: "Size: 139 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 557.6308139534883,
       y: 81.97674418604652,
@@ -2494,7 +2494,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 50 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 560.9011627906978,
       y: 81.97674418604652,
@@ -2509,7 +2509,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 795 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.5174418604652,
       y: 81.97674418604652,
@@ -2524,7 +2524,7 @@ export const imageBoxes259 = [
     label: "RGB(9,9,9)",
     type: "ImageBox",
     description: "Size: 24 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.9709302325582,
       y: 82.19476744186046,
@@ -2539,7 +2539,7 @@ export const imageBoxes259 = [
     label: "RGB(92,237,254)",
     type: "ImageBox",
     description: "Size: 75 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.5406976744187,
       y: 82.19476744186046,
@@ -2554,7 +2554,7 @@ export const imageBoxes259 = [
     label: "RGB(120,120,120)",
     type: "ImageBox",
     description: "Size: 43 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 545.421511627907,
       y: 82.41279069767442,
@@ -2569,7 +2569,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,4)",
     type: "ImageBox",
     description: "Size: 172 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 555.2325581395348,
       y: 82.41279069767442,
@@ -2584,7 +2584,7 @@ export const imageBoxes259 = [
     label: "RGB(120,120,120)",
     type: "ImageBox",
     description: "Size: 21 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 580.3052325581396,
       y: 82.41279069767442,
@@ -2599,7 +2599,7 @@ export const imageBoxes259 = [
     label: "RGB(119,119,119)",
     type: "ImageBox",
     description: "Size: 29 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.3313953488372,
       y: 82.63081395348837,
@@ -2614,7 +2614,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 45 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 606.9040697674418,
       y: 82.63081395348837,
@@ -2629,7 +2629,7 @@ export const imageBoxes259 = [
     label: "RGB(119,119,119)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 541.0610465116279,
       y: 83.06686046511628,
@@ -2644,7 +2644,7 @@ export const imageBoxes259 = [
     label: "RGB(3,3,3)",
     type: "ImageBox",
     description: "Size: 32 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 550.6540697674418,
       y: 83.06686046511628,
@@ -2659,7 +2659,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 148 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 547.6017441860465,
       y: 83.50290697674419,
@@ -2674,7 +2674,7 @@ export const imageBoxes259 = [
     label: "RGB(110,110,110)",
     type: "ImageBox",
     description: "Size: 109 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 608.4302325581396,
       y: 83.50290697674419,
@@ -2689,7 +2689,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 15 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 543.6773255813953,
       y: 83.72093023255815,
@@ -2704,7 +2704,7 @@ export const imageBoxes259 = [
     label: "RGB(250,250,250)",
     type: "ImageBox",
     description: "Size: 54 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 578.5610465116279,
       y: 83.72093023255815,
@@ -2719,7 +2719,7 @@ export const imageBoxes259 = [
     label: "RGB(245,245,245)",
     type: "ImageBox",
     description: "Size: 36 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 576.8168604651163,
       y: 84.15697674418604,
@@ -2734,7 +2734,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 22 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 586.4098837209302,
       y: 84.15697674418604,
@@ -2749,7 +2749,7 @@ export const imageBoxes259 = [
     label: "RGB(113,113,113)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 580.7412790697674,
       y: 84.59302325581395,
@@ -2764,7 +2764,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 118 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 610.828488372093,
       y: 84.81104651162791,
@@ -2779,7 +2779,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 20 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 581.1773255813953,
       y: 85.02906976744185,
@@ -2794,7 +2794,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 204 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 579.4331395348837,
       y: 85.02906976744185,
@@ -2809,7 +2809,7 @@ export const imageBoxes259 = [
     label: "RGB(117,117,117)",
     type: "ImageBox",
     description: "Size: 21 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 540.8430232558139,
       y: 85.24709302325581,
@@ -2824,7 +2824,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 52 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.3313953488372,
       y: 85.24709302325581,
@@ -2839,7 +2839,7 @@ export const imageBoxes259 = [
     label: "RGB(252,252,252)",
     type: "ImageBox",
     description: "Size: 68 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 553.9244186046512,
       y: 85.24709302325581,
@@ -2854,7 +2854,7 @@ export const imageBoxes259 = [
     label: "RGB(249,249,249)",
     type: "ImageBox",
     description: "Size: 64 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 572.4563953488372,
       y: 85.24709302325581,
@@ -2869,7 +2869,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 30 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 575.2906976744187,
       y: 85.46511627906976,
@@ -2884,7 +2884,7 @@ export const imageBoxes259 = [
     label: "RGB(254,254,254)",
     type: "ImageBox",
     description: "Size: 68 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 548.2558139534883,
       y: 85.68313953488372,
@@ -2899,7 +2899,7 @@ export const imageBoxes259 = [
     label: "RGB(114,114,114)",
     type: "ImageBox",
     description: "Size: 32 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 576.1627906976744,
       y: 85.68313953488372,
@@ -2914,7 +2914,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 221 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 569.6220930232557,
       y: 85.90116279069767,
@@ -2929,7 +2929,7 @@ export const imageBoxes259 = [
     label: "RGB(114,114,114)",
     type: "ImageBox",
     description: "Size: 240 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 574.6366279069767,
       y: 85.90116279069767,
@@ -2944,7 +2944,7 @@ export const imageBoxes259 = [
     label: "RGB(121,121,121)",
     type: "ImageBox",
     description: "Size: 50 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.9854651162791,
       y: 86.11918604651163,
@@ -2959,7 +2959,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 19 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 577.0348837209302,
       y: 86.11918604651163,
@@ -2974,7 +2974,7 @@ export const imageBoxes259 = [
     label: "RGB(2,2,2)",
     type: "ImageBox",
     description: "Size: 43 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 576.5988372093022,
       y: 86.55523255813954,
@@ -2989,7 +2989,7 @@ export const imageBoxes259 = [
     label: "RGB(7,7,7)",
     type: "ImageBox",
     description: "Size: 72 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 541.7151162790698,
       y: 86.77325581395348,
@@ -3004,7 +3004,7 @@ export const imageBoxes259 = [
     label: "RGB(249,253,255)",
     type: "ImageBox",
     description: "Size: 33 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 585.3197674418604,
       y: 86.77325581395348,
@@ -3019,7 +3019,7 @@ export const imageBoxes259 = [
     label: "RGB(118,118,118)",
     type: "ImageBox",
     description: "Size: 39 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 576.8168604651163,
       y: 86.99127906976744,
@@ -3034,7 +3034,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 96 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.3313953488372,
       y: 87.20930232558139,
@@ -3049,7 +3049,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,255)",
     type: "ImageBox",
     description: "Size: 62 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 550.2180232558139,
       y: 87.42732558139535,
@@ -3064,7 +3064,7 @@ export const imageBoxes259 = [
     label: "RGB(9,9,9)",
     type: "ImageBox",
     description: "Size: 214 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 574.2005813953488,
       y: 87.42732558139535,
@@ -3079,7 +3079,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 87 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.1046511627907,
       y: 87.86337209302326,
@@ -3094,7 +3094,7 @@ export const imageBoxes259 = [
     label: "RGB(5,5,5)",
     type: "ImageBox",
     description: "Size: 151 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 540.8430232558139,
       y: 88.0813953488372,
@@ -3109,7 +3109,7 @@ export const imageBoxes259 = [
     label: "RGB(131,142,255)",
     type: "ImageBox",
     description: "Size: 56 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 88.0813953488372,
@@ -3124,7 +3124,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 37 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 549.1279069767442,
       y: 88.29941860465117,
@@ -3139,7 +3139,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 29 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 552.8343023255813,
       y: 88.51744186046511,
@@ -3154,7 +3154,7 @@ export const imageBoxes259 = [
     label: "RGB(241,245,247)",
     type: "ImageBox",
     description: "Size: 59 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 536.9186046511628,
       y: 88.73546511627907,
@@ -3169,7 +3169,7 @@ export const imageBoxes259 = [
     label: "RGB(5,5,5)",
     type: "ImageBox",
     description: "Size: 337 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 555.6686046511628,
       y: 88.73546511627907,
@@ -3184,7 +3184,7 @@ export const imageBoxes259 = [
     label: "RGB(247,247,247)",
     type: "ImageBox",
     description: "Size: 56 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 571.1482558139535,
       y: 88.73546511627907,
@@ -3199,7 +3199,7 @@ export const imageBoxes259 = [
     label: "RGB(118,118,118)",
     type: "ImageBox",
     description: "Size: 23 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 548.6918604651163,
       y: 89.17151162790698,
@@ -3214,7 +3214,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 13 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 575.0726744186047,
       y: 89.17151162790698,
@@ -3229,7 +3229,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 42 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.5726744186047,
       y: 89.38953488372093,
@@ -3244,7 +3244,7 @@ export const imageBoxes259 = [
     label: "RGB(115,115,115)",
     type: "ImageBox",
     description: "Size: 117 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 571.1482558139535,
       y: 89.60755813953489,
@@ -3259,7 +3259,7 @@ export const imageBoxes259 = [
     label: "RGB(8,8,8)",
     type: "ImageBox",
     description: "Size: 56 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 554.1424418604652,
       y: 90.26162790697674,
@@ -3274,7 +3274,7 @@ export const imageBoxes259 = [
     label: "RGB(116,116,116)",
     type: "ImageBox",
     description: "Size: 19 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 569.8401162790698,
       y: 90.26162790697674,
@@ -3289,7 +3289,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 37 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 548.4738372093022,
       y: 90.4796511627907,
@@ -3304,7 +3304,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 48 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 551.7441860465117,
       y: 90.4796511627907,
@@ -3319,7 +3319,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 208 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 567.8779069767442,
       y: 91.13372093023256,
@@ -3334,7 +3334,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 105 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 563.2994186046512,
       y: 91.78779069767442,
@@ -3349,7 +3349,7 @@ export const imageBoxes259 = [
     label: "RGB(10,10,10)",
     type: "ImageBox",
     description: "Size: 44 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 550,
       y: 92.44186046511628,
@@ -3364,7 +3364,7 @@ export const imageBoxes259 = [
     label: "RGB(9,9,9)",
     type: "ImageBox",
     description: "Size: 33 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 553.2703488372093,
       y: 93.53197674418604,
@@ -3379,7 +3379,7 @@ export const imageBoxes259 = [
     label: "RGB(2,2,2)",
     type: "ImageBox",
     description: "Size: 21 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.7587209302326,
       y: 93.75,
@@ -3394,7 +3394,7 @@ export const imageBoxes259 = [
     label: "RGB(2,2,2)",
     type: "ImageBox",
     description: "Size: 16 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 544.9854651162791,
       y: 95.27616279069767,
@@ -3409,7 +3409,7 @@ export const imageBoxes259 = [
     label: "RGB(9,9,9)",
     type: "ImageBox",
     description: "Size: 96 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 546.7296511627907,
       y: 95.27616279069767,
@@ -3424,7 +3424,7 @@ export const imageBoxes259 = [
     label: "RGB(7,7,7)",
     type: "ImageBox",
     description: "Size: 49 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 568.3139534883721,
       y: 95.49418604651163,
@@ -3439,7 +3439,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 90 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 566.1337209302326,
       y: 97.89244186046511,
@@ -3454,7 +3454,7 @@ export const imageBoxes259 = [
     label: "RGB(124,141,255)",
     type: "ImageBox",
     description: "Size: 231 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 567.8779069767442,
       y: 99.8546511627907,
@@ -3469,7 +3469,7 @@ export const imageBoxes259 = [
     label: "RGB(122,139,255)",
     type: "ImageBox",
     description: "Size: 215 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.7529069767442,
       y: 101.38081395348837,
@@ -3484,7 +3484,7 @@ export const imageBoxes259 = [
     label: "RGB(251,201,117)",
     type: "ImageBox",
     description: "Size: 609 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 404.3604651162791,
       y: 115.98837209302326,
@@ -3499,7 +3499,7 @@ export const imageBoxes259 = [
     label: "RGB(245,245,245)",
     type: "ImageBox",
     description: "Size: 1643 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 416.56976744186045,
       y: 121.875,
@@ -3514,7 +3514,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,4)",
     type: "ImageBox",
     description: "Size: 12541 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 423.54651162790697,
       y: 122.52906976744185,
@@ -3529,7 +3529,7 @@ export const imageBoxes259 = [
     label: "RGB(5,5,5)",
     type: "ImageBox",
     description: "Size: 835 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 417.00581395348837,
       y: 124.92732558139535,
@@ -3544,7 +3544,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 5327 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 447.9651162790698,
       y: 127.32558139534883,
@@ -3559,7 +3559,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,255)",
     type: "ImageBox",
     description: "Size: 131 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 406.7587209302326,
       y: 131.25,
@@ -3574,7 +3574,7 @@ export const imageBoxes259 = [
     label: "RGB(173,246,113)",
     type: "ImageBox",
     description: "Size: 598 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 439.46220930232556,
       y: 133.64825581395348,
@@ -3589,7 +3589,7 @@ export const imageBoxes259 = [
     label: "RGB(246,246,246)",
     type: "ImageBox",
     description: "Size: 103 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 378.4156976744186,
       y: 135.3924418604651,
@@ -3604,7 +3604,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 184 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 403.9244186046511,
       y: 139.09883720930233,
@@ -3619,7 +3619,7 @@ export const imageBoxes259 = [
     label: "RGB(6,6,6)",
     type: "ImageBox",
     description: "Size: 5594 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 424.2005813953489,
       y: 139.3168604651163,
@@ -3634,7 +3634,7 @@ export const imageBoxes259 = [
     label: "RGB(251,255,249)",
     type: "ImageBox",
     description: "Size: 244 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 469.3313953488372,
       y: 140.18895348837208,
@@ -3649,7 +3649,7 @@ export const imageBoxes259 = [
     label: "RGB(255,251,245)",
     type: "ImageBox",
     description: "Size: 262 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 423.32848837209303,
       y: 140.625,
@@ -3664,7 +3664,7 @@ export const imageBoxes259 = [
     label: "RGB(251,251,251)",
     type: "ImageBox",
     description: "Size: 113 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 355.9593023255814,
       y: 142.15116279069767,
@@ -3679,7 +3679,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 47 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 356.61337209302326,
       y: 143.02325581395348,
@@ -3694,7 +3694,7 @@ export const imageBoxes259 = [
     label: "RGB(245,245,245)",
     type: "ImageBox",
     description: "Size: 763 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 403.9244186046511,
       y: 143.8953488372093,
@@ -3709,7 +3709,7 @@ export const imageBoxes259 = [
     label: "RGB(254,254,254)",
     type: "ImageBox",
     description: "Size: 32 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 376.8895348837209,
       y: 145.63953488372093,
@@ -3724,7 +3724,7 @@ export const imageBoxes259 = [
     label: "RGB(248,252,254)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 441.2063953488372,
       y: 145.63953488372093,
@@ -3739,7 +3739,7 @@ export const imageBoxes259 = [
     label: "RGB(248,252,254)",
     type: "ImageBox",
     description: "Size: 47 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 442.9505813953488,
       y: 146.29360465116278,
@@ -3754,7 +3754,7 @@ export const imageBoxes259 = [
     label: "RGB(165,235,106)",
     type: "ImageBox",
     description: "Size: 75 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 374.92732558139534,
       y: 147.38372093023256,
@@ -3769,7 +3769,7 @@ export const imageBoxes259 = [
     label: "RGB(247,146,255)",
     type: "ImageBox",
     description: "Size: 70 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 529.2877906976744,
       y: 147.60174418604652,
@@ -3784,7 +3784,7 @@ export const imageBoxes259 = [
     label: "RGB(9,5,9)",
     type: "ImageBox",
     description: "Size: 226 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 529.7238372093022,
       y: 148.0377906976744,
@@ -3799,7 +3799,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 55 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 440.1162790697674,
       y: 148.47383720930233,
@@ -3814,7 +3814,7 @@ export const imageBoxes259 = [
     label: "RGB(245,249,251)",
     type: "ImageBox",
     description: "Size: 166 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 509.01162790697674,
       y: 148.90988372093022,
@@ -3829,7 +3829,7 @@ export const imageBoxes259 = [
     label: "RGB(251,251,251)",
     type: "ImageBox",
     description: "Size: 30 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 373.8372093023256,
       y: 149.56395348837208,
@@ -3844,7 +3844,7 @@ export const imageBoxes259 = [
     label: "RGB(5,6,6)",
     type: "ImageBox",
     description: "Size: 1232 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 509.44767441860466,
       y: 149.56395348837208,
@@ -3859,7 +3859,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 46 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 526.0174418604652,
       y: 149.56395348837208,
@@ -3874,7 +3874,7 @@ export const imageBoxes259 = [
     label: "RGB(246,250,251)",
     type: "ImageBox",
     description: "Size: 109 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 436.84593023255815,
       y: 150.21802325581396,
@@ -3889,7 +3889,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 48 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 522.0930232558139,
       y: 150.21802325581396,
@@ -3904,7 +3904,7 @@ export const imageBoxes259 = [
     label: "RGB(247,252,253)",
     type: "ImageBox",
     description: "Size: 81 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 440.1162790697674,
       y: 150.4360465116279,
@@ -3919,7 +3919,7 @@ export const imageBoxes259 = [
     label: "RGB(248,146,255)",
     type: "ImageBox",
     description: "Size: 38 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.3546511627907,
       y: 150.4360465116279,
@@ -3934,7 +3934,7 @@ export const imageBoxes259 = [
     label: "RGB(255,248,0)",
     type: "ImageBox",
     description: "Size: 60 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 519.2587209302326,
       y: 150.65406976744185,
@@ -3949,7 +3949,7 @@ export const imageBoxes259 = [
     label: "RGB(249,253,254)",
     type: "ImageBox",
     description: "Size: 44 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 517.078488372093,
       y: 150.87209302325581,
@@ -3964,7 +3964,7 @@ export const imageBoxes259 = [
     label: "RGB(162,231,104)",
     type: "ImageBox",
     description: "Size: 70 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 372.31104651162786,
       y: 151.3081395348837,
@@ -3979,7 +3979,7 @@ export const imageBoxes259 = [
     label: "RGB(255,248,0)",
     type: "ImageBox",
     description: "Size: 86 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 543.6773255813953,
       y: 151.52616279069767,
@@ -3994,7 +3994,7 @@ export const imageBoxes259 = [
     label: "RGB(2,1,1)",
     type: "ImageBox",
     description: "Size: 270 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 521.0029069767442,
       y: 151.74418604651163,
@@ -4009,7 +4009,7 @@ export const imageBoxes259 = [
     label: "RGB(215,251,255)",
     type: "ImageBox",
     description: "Size: 67 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 364.8982558139535,
       y: 152.61627906976744,
@@ -4024,7 +4024,7 @@ export const imageBoxes259 = [
     label: "RGB(242,246,248)",
     type: "ImageBox",
     description: "Size: 15 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 434.6656976744186,
       y: 152.8343023255814,
@@ -4039,7 +4039,7 @@ export const imageBoxes259 = [
     label: "RGB(251,252,249)",
     type: "ImageBox",
     description: "Size: 89 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 369.0406976744186,
       y: 153.2703488372093,
@@ -4054,7 +4054,7 @@ export const imageBoxes259 = [
     label: "RGB(242,143,252)",
     type: "ImageBox",
     description: "Size: 62 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 528.4156976744187,
       y: 153.48837209302326,
@@ -4069,7 +4069,7 @@ export const imageBoxes259 = [
     label: "RGB(244,144,254)",
     type: "ImageBox",
     description: "Size: 15 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 521.875,
       y: 153.92441860465115,
@@ -4084,7 +4084,7 @@ export const imageBoxes259 = [
     label: "RGB(251,255,250)",
     type: "ImageBox",
     description: "Size: 819 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 424.63662790697674,
       y: 154.1424418604651,
@@ -4099,7 +4099,7 @@ export const imageBoxes259 = [
     label: "RGB(2,1,2)",
     type: "ImageBox",
     description: "Size: 284 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 522.0930232558139,
       y: 154.1424418604651,
@@ -4114,7 +4114,7 @@ export const imageBoxes259 = [
     label: "RGB(242,143,252)",
     type: "ImageBox",
     description: "Size: 41 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 535.3924418604652,
       y: 154.57848837209303,
@@ -4129,7 +4129,7 @@ export const imageBoxes259 = [
     label: "RGB(250,254,255)",
     type: "ImageBox",
     description: "Size: 40 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 366.2063953488372,
       y: 154.79651162790697,
@@ -4144,7 +4144,7 @@ export const imageBoxes259 = [
     label: "RGB(128,223,255)",
     type: "ImageBox",
     description: "Size: 19 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 556.3226744186047,
       y: 155.2325581395349,
@@ -4159,7 +4159,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 18 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 437.71802325581393,
       y: 155.66860465116278,
@@ -4174,7 +4174,7 @@ export const imageBoxes259 = [
     label: "RGB(255,248,0)",
     type: "ImageBox",
     description: "Size: 74 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 555.6686046511628,
       y: 156.75872093023256,
@@ -4189,7 +4189,7 @@ export const imageBoxes259 = [
     label: "RGB(250,251,248)",
     type: "ImageBox",
     description: "Size: 184 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 430.7412790697674,
       y: 157.19476744186048,
@@ -4204,7 +4204,7 @@ export const imageBoxes259 = [
     label: "RGB(250,148,255)",
     type: "ImageBox",
     description: "Size: 28 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 522.7470930232557,
       y: 157.19476744186048,
@@ -4219,7 +4219,7 @@ export const imageBoxes259 = [
     label: "RGB(130,222,253)",
     type: "ImageBox",
     description: "Size: 247 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 523.6191860465117,
       y: 157.19476744186048,
@@ -4234,7 +4234,7 @@ export const imageBoxes259 = [
     label: "RGB(240,244,245)",
     type: "ImageBox",
     description: "Size: 33 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 427.0348837209302,
       y: 158.0668604651163,
@@ -4249,7 +4249,7 @@ export const imageBoxes259 = [
     label: "RGB(205,251,255)",
     type: "ImageBox",
     description: "Size: 57 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 367.5145348837209,
       y: 158.72093023255815,
@@ -4264,7 +4264,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 33 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 435.53779069767444,
       y: 158.93895348837208,
@@ -4279,7 +4279,7 @@ export const imageBoxes259 = [
     label: "RGB(248,252,253)",
     type: "ImageBox",
     description: "Size: 14 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 437.28197674418607,
       y: 159.59302325581396,
@@ -4294,7 +4294,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 504 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 432.92151162790697,
       y: 160.24709302325581,
@@ -4309,7 +4309,7 @@ export const imageBoxes259 = [
     label: "RGB(248,253,254)",
     type: "ImageBox",
     description: "Size: 27 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 441.86046511627904,
       y: 160.24709302325581,
@@ -4324,7 +4324,7 @@ export const imageBoxes259 = [
     label: "RGB(249,254,254)",
     type: "ImageBox",
     description: "Size: 79 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 364.8982558139535,
       y: 160.46511627906978,
@@ -4339,7 +4339,7 @@ export const imageBoxes259 = [
     label: "RGB(246,246,246)",
     type: "ImageBox",
     description: "Size: 41 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 368.82267441860466,
       y: 160.90116279069767,
@@ -4354,7 +4354,7 @@ export const imageBoxes259 = [
     label: "RGB(247,251,252)",
     type: "ImageBox",
     description: "Size: 119 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 511.1918604651163,
       y: 160.90116279069767,
@@ -4369,7 +4369,7 @@ export const imageBoxes259 = [
     label: "RGB(207,251,255)",
     type: "ImageBox",
     description: "Size: 55 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 370.13081395348837,
       y: 163.95348837209303,
@@ -4384,7 +4384,7 @@ export const imageBoxes259 = [
     label: "RGB(249,253,254)",
     type: "ImageBox",
     description: "Size: 60 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 430.0872093023256,
       y: 163.95348837209303,
@@ -4399,7 +4399,7 @@ export const imageBoxes259 = [
     label: "RGB(250,251,123)",
     type: "ImageBox",
     description: "Size: 26 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 361.84593023255815,
       y: 165.4796511627907,
@@ -4414,7 +4414,7 @@ export const imageBoxes259 = [
     label: "RGB(249,254,255)",
     type: "ImageBox",
     description: "Size: 76 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 371.22093023255815,
       y: 165.69767441860466,
@@ -4429,7 +4429,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 810 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 408.2848837209302,
       y: 166.7877906976744,
@@ -4444,7 +4444,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,254)",
     type: "ImageBox",
     description: "Size: 110 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 359.44767441860466,
       y: 167.22383720930233,
@@ -4459,7 +4459,7 @@ export const imageBoxes259 = [
     label: "RGB(255,248,0)",
     type: "ImageBox",
     description: "Size: 142 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 537.3546511627907,
       y: 168.53197674418604,
@@ -4474,7 +4474,7 @@ export const imageBoxes259 = [
     label: "RGB(129,224,255)",
     type: "ImageBox",
     description: "Size: 118 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 529.9418604651163,
       y: 169.40406976744185,
@@ -4489,7 +4489,7 @@ export const imageBoxes259 = [
     label: "RGB(129,224,255)",
     type: "ImageBox",
     description: "Size: 56 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 551.0901162790698,
       y: 172.8924418604651,
@@ -4504,7 +4504,7 @@ export const imageBoxes259 = [
     label: "RGB(160,228,104)",
     type: "ImageBox",
     description: "Size: 91 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 357.4854651162791,
       y: 173.54651162790697,
@@ -4519,7 +4519,7 @@ export const imageBoxes259 = [
     label: "RGB(246,145,255)",
     type: "ImageBox",
     description: "Size: 84 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 526.453488372093,
       y: 175.07267441860466,
@@ -4534,7 +4534,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,254)",
     type: "ImageBox",
     description: "Size: 81 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 354.4331395348837,
       y: 175.94476744186048,
@@ -4549,7 +4549,7 @@ export const imageBoxes259 = [
     label: "RGB(239,244,245)",
     type: "ImageBox",
     description: "Size: 207 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 508.13953488372096,
       y: 176.38081395348837,
@@ -4564,7 +4564,7 @@ export const imageBoxes259 = [
     label: "RGB(7,7,7)",
     type: "ImageBox",
     description: "Size: 982 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 508.7936046511628,
       y: 177.03488372093022,
@@ -4579,7 +4579,7 @@ export const imageBoxes259 = [
     label: "RGB(247,146,255)",
     type: "ImageBox",
     description: "Size: 51 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 534.0843023255813,
       y: 177.47093023255815,
@@ -4594,7 +4594,7 @@ export const imageBoxes259 = [
     label: "RGB(249,147,255)",
     type: "ImageBox",
     description: "Size: 28 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.9709302325582,
       y: 178.99709302325581,
@@ -4609,7 +4609,7 @@ export const imageBoxes259 = [
     label: "RGB(170,236,116)",
     type: "ImageBox",
     description: "Size: 73 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 352.47093023255815,
       y: 180.74127906976744,
@@ -4624,7 +4624,7 @@ export const imageBoxes259 = [
     label: "RGB(249,147,255)",
     type: "ImageBox",
     description: "Size: 45 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 530.5959302325582,
       y: 181.17732558139534,
@@ -4639,7 +4639,7 @@ export const imageBoxes259 = [
     label: "RGB(239,142,250)",
     type: "ImageBox",
     description: "Size: 41 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 523.4011627906978,
       y: 182.04941860465115,
@@ -4654,7 +4654,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 202 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 524.0552325581396,
       y: 182.70348837209303,
@@ -4669,7 +4669,7 @@ export const imageBoxes259 = [
     label: "RGB(126,218,251)",
     type: "ImageBox",
     description: "Size: 1080 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 280.08720930232556,
       y: 253.99709302325581,
@@ -4684,7 +4684,7 @@ export const imageBoxes259 = [
     label: "RGB(5,7,8)",
     type: "ImageBox",
     description: "Size: 3469 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 287.5,
       y: 254.86918604651163,
@@ -4699,7 +4699,7 @@ export const imageBoxes259 = [
     label: "RGB(249,147,255)",
     type: "ImageBox",
     description: "Size: 145 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 274.2005813953488,
       y: 257.2674418604651,
@@ -4714,7 +4714,7 @@ export const imageBoxes259 = [
     label: "RGB(126,218,250)",
     type: "ImageBox",
     description: "Size: 934 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 255.01453488372093,
       y: 257.70348837209303,
@@ -4729,7 +4729,7 @@ export const imageBoxes259 = [
     label: "RGB(5,3,5)",
     type: "ImageBox",
     description: "Size: 2634 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 275.2906976744186,
       y: 258.13953488372096,
@@ -4744,7 +4744,7 @@ export const imageBoxes259 = [
     label: "RGB(1,2,2)",
     type: "ImageBox",
     description: "Size: 8902 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 256.1046511627907,
       y: 258.5755813953488,
@@ -4759,7 +4759,7 @@ export const imageBoxes259 = [
     label: "RGB(250,148,255)",
     type: "ImageBox",
     description: "Size: 145 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 287.0639534883721,
       y: 259.2296511627907,
@@ -4774,7 +4774,7 @@ export const imageBoxes259 = [
     label: "RGB(240,155,255)",
     type: "ImageBox",
     description: "Size: 342 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 267.22383720930236,
       y: 259.44767441860466,
@@ -4789,7 +4789,7 @@ export const imageBoxes259 = [
     label: "RGB(2,1,2)",
     type: "ImageBox",
     description: "Size: 4601 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 268.09593023255815,
       y: 260.1017441860465,
@@ -4804,7 +4804,7 @@ export const imageBoxes259 = [
     label: "RGB(3,4,5)",
     type: "ImageBox",
     description: "Size: 8785 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 279.2151162790698,
       y: 265.7703488372093,
@@ -4819,7 +4819,7 @@ export const imageBoxes259 = [
     label: "RGB(3,4,5)",
     type: "ImageBox",
     description: "Size: 797 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 307.99418604651163,
       y: 265.7703488372093,
@@ -4834,7 +4834,7 @@ export const imageBoxes259 = [
     label: "RGB(243,153,255)",
     type: "ImageBox",
     description: "Size: 206 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 280.7412790697674,
       y: 269.69476744186045,
@@ -4849,7 +4849,7 @@ export const imageBoxes259 = [
     label: "RGB(2,1,2)",
     type: "ImageBox",
     description: "Size: 339 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 281.61337209302326,
       y: 270.7848837209302,
@@ -4864,7 +4864,7 @@ export const imageBoxes259 = [
     label: "RGB(246,145,255)",
     type: "ImageBox",
     description: "Size: 389 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 293.38662790697674,
       y: 271.875,
@@ -4879,7 +4879,7 @@ export const imageBoxes259 = [
     label: "RGB(249,149,255)",
     type: "ImageBox",
     description: "Size: 132 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 283.1395348837209,
       y: 272.52906976744185,
@@ -4894,7 +4894,7 @@ export const imageBoxes259 = [
     label: "RGB(5,3,5)",
     type: "ImageBox",
     description: "Size: 3508 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 294.2587209302326,
       y: 272.9651162790698,
@@ -4909,7 +4909,7 @@ export const imageBoxes259 = [
     label: "RGB(3,3,4)",
     type: "ImageBox",
     description: "Size: 146 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 284.44767441860466,
       y: 273.4011627906977,
@@ -4924,7 +4924,7 @@ export const imageBoxes259 = [
     label: "RGB(250,148,255)",
     type: "ImageBox",
     description: "Size: 307 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 301.8895348837209,
       y: 273.83720930232556,
@@ -4939,7 +4939,7 @@ export const imageBoxes259 = [
     label: "RGB(240,142,251)",
     type: "ImageBox",
     description: "Size: 365 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 297.9651162790698,
       y: 274.92732558139534,
@@ -4954,7 +4954,7 @@ export const imageBoxes259 = [
     label: "RGB(5,3,5)",
     type: "ImageBox",
     description: "Size: 608 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 298.83720930232556,
       y: 276.0174418604651,
@@ -4969,7 +4969,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 67 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 305.37790697674416,
       y: 277.9796511627907,
@@ -4984,7 +4984,7 @@ export const imageBoxes259 = [
     label: "RGB(107,100,0)",
     type: "ImageBox",
     description: "Size: 10730 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 334.81104651162786,
       y: 278.8517441860465,
@@ -4999,7 +4999,7 @@ export const imageBoxes259 = [
     label: "RGB(250,148,255)",
     type: "ImageBox",
     description: "Size: 135 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 301.45348837209303,
       y: 279.28779069767444,
@@ -5014,7 +5014,7 @@ export const imageBoxes259 = [
     label: "RGB(4,2,4)",
     type: "ImageBox",
     description: "Size: 120 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 302.3255813953488,
       y: 280.1598837209302,
@@ -5029,7 +5029,7 @@ export const imageBoxes259 = [
     label: "RGB(250,249,247)",
     type: "ImageBox",
     description: "Size: 4744 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 508.7936046511628,
       y: 281.90406976744185,
@@ -5044,7 +5044,7 @@ export const imageBoxes259 = [
     label: "RGB(9,8,0)",
     type: "ImageBox",
     description: "Size: 255971 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 335.24709302325584,
       y: 282.5581395348837,
@@ -5059,7 +5059,7 @@ export const imageBoxes259 = [
     label: "RGB(243,143,253)",
     type: "ImageBox",
     description: "Size: 436 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 276.16279069767444,
       y: 284.0843023255814,
@@ -5074,7 +5074,7 @@ export const imageBoxes259 = [
     label: "RGB(1,0,1)",
     type: "ImageBox",
     description: "Size: 830 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 277.25290697674416,
       y: 285.1744186046512,
@@ -5089,7 +5089,7 @@ export const imageBoxes259 = [
     label: "RGB(247,146,255)",
     type: "ImageBox",
     description: "Size: 153 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 279.86918604651163,
       y: 285.82848837209303,
@@ -5104,7 +5104,7 @@ export const imageBoxes259 = [
     label: "RGB(8,4,7)",
     type: "ImageBox",
     description: "Size: 136 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 280.7412790697674,
       y: 286.9186046511628,
@@ -5119,7 +5119,7 @@ export const imageBoxes259 = [
     label: "RGB(250,148,255)",
     type: "ImageBox",
     description: "Size: 93 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 298.40116279069764,
       y: 286.9186046511628,
@@ -5134,7 +5134,7 @@ export const imageBoxes259 = [
     label: "RGB(245,145,255)",
     type: "ImageBox",
     description: "Size: 85 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 285.31976744186045,
       y: 287.57267441860466,
@@ -5149,7 +5149,7 @@ export const imageBoxes259 = [
     label: "RGB(249,147,255)",
     type: "ImageBox",
     description: "Size: 63 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 219.9127906976744,
       y: 288.0087209302326,
@@ -5164,7 +5164,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 35 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 299.05523255813955,
       y: 288.0087209302326,
@@ -5179,7 +5179,7 @@ export const imageBoxes259 = [
     label: "RGB(125,217,249)",
     type: "ImageBox",
     description: "Size: 73 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 225.1453488372093,
       y: 288.2267441860465,
@@ -5194,7 +5194,7 @@ export const imageBoxes259 = [
     label: "RGB(135,224,255)",
     type: "ImageBox",
     description: "Size: 507 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 278.34302325581393,
       y: 289.5348837209302,
@@ -5209,7 +5209,7 @@ export const imageBoxes259 = [
     label: "RGB(246,145,255)",
     type: "ImageBox",
     description: "Size: 78 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 277.90697674418607,
       y: 289.97093023255815,
@@ -5224,7 +5224,7 @@ export const imageBoxes259 = [
     label: "RGB(249,147,255)",
     type: "ImageBox",
     description: "Size: 137 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 280.9593023255814,
       y: 291.4970930232558,
@@ -5239,7 +5239,7 @@ export const imageBoxes259 = [
     label: "RGB(241,156,255)",
     type: "ImageBox",
     description: "Size: 39 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 276.8168604651163,
       y: 292.36918604651163,
@@ -5254,7 +5254,7 @@ export const imageBoxes259 = [
     label: "RGB(6,4,7)",
     type: "ImageBox",
     description: "Size: 120 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 281.8313953488372,
       y: 292.36918604651163,
@@ -5269,7 +5269,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 41 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 277.90697674418607,
       y: 293.0232558139535,
@@ -5284,7 +5284,7 @@ export const imageBoxes259 = [
     label: "RGB(127,222,253)",
     type: "ImageBox",
     description: "Size: 128 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 332.63081395348837,
       y: 325.94476744186045,
@@ -5299,7 +5299,7 @@ export const imageBoxes259 = [
     label: "RGB(251,251,250)",
     type: "ImageBox",
     description: "Size: 4790 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 332.19476744186045,
       y: 328.5610465116279,
@@ -5314,7 +5314,7 @@ export const imageBoxes259 = [
     label: "RGB(177,133,198)",
     type: "ImageBox",
     description: "Size: 2675 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 368.38662790697674,
       y: 330.9593023255814,
@@ -5329,7 +5329,7 @@ export const imageBoxes259 = [
     label: "RGB(10,8,6)",
     type: "ImageBox",
     description: "Size: 7289 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 371.65697674418607,
       y: 332.0494186046512,
@@ -5344,7 +5344,7 @@ export const imageBoxes259 = [
     label: "RGB(176,131,198)",
     type: "ImageBox",
     description: "Size: 2758 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 375.1453488372093,
       y: 334.6656976744186,
@@ -5359,7 +5359,7 @@ export const imageBoxes259 = [
     label: "RGB(10,8,6)",
     type: "ImageBox",
     description: "Size: 7449 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 376.67151162790697,
       y: 335.75581395348837,
@@ -5374,7 +5374,7 @@ export const imageBoxes259 = [
     label: "RGB(204,244,255)",
     type: "ImageBox",
     description: "Size: 3257 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 350.94476744186045,
       y: 337.71802325581393,
@@ -5389,7 +5389,7 @@ export const imageBoxes259 = [
     label: "RGB(173,128,196)",
     type: "ImageBox",
     description: "Size: 2441 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 378.4156976744186,
       y: 338.8081395348837,
@@ -5404,7 +5404,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,2)",
     type: "ImageBox",
     description: "Size: 4764 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 379.06976744186045,
       y: 340.1162790697674,
@@ -5419,7 +5419,7 @@ export const imageBoxes259 = [
     label: "RGB(177,140,200)",
     type: "ImageBox",
     description: "Size: 340 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 353.77906976744185,
       y: 340.55232558139534,
@@ -5434,7 +5434,7 @@ export const imageBoxes259 = [
     label: "RGB(3,8,8)",
     type: "ImageBox",
     description: "Size: 196 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 355.30523255813955,
       y: 340.98837209302326,
@@ -5449,7 +5449,7 @@ export const imageBoxes259 = [
     label: "RGB(10,8,10)",
     type: "ImageBox",
     description: "Size: 2526 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 353.77906976744185,
       y: 340.98837209302326,
@@ -5464,7 +5464,7 @@ export const imageBoxes259 = [
     label: "RGB(172,127,195)",
     type: "ImageBox",
     description: "Size: 2364 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 379.06976744186045,
       y: 341.86046511627904,
@@ -5479,7 +5479,7 @@ export const imageBoxes259 = [
     label: "RGB(4,4,2)",
     type: "ImageBox",
     description: "Size: 4603 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 377.9796511627907,
       y: 343.1686046511628,
@@ -5494,7 +5494,7 @@ export const imageBoxes259 = [
     label: "RGB(169,125,192)",
     type: "ImageBox",
     description: "Size: 2392 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 376.67151162790697,
       y: 345.13081395348837,
@@ -5509,7 +5509,7 @@ export const imageBoxes259 = [
     label: "RGB(172,127,195)",
     type: "ImageBox",
     description: "Size: 357 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 357.92151162790697,
       y: 346.22093023255815,
@@ -5524,7 +5524,7 @@ export const imageBoxes259 = [
     label: "RGB(228,171,255)",
     type: "ImageBox",
     description: "Size: 71 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 539.7529069767442,
       y: 347.52906976744185,
@@ -5539,7 +5539,7 @@ export const imageBoxes259 = [
     label: "RGB(4,2,2)",
     type: "ImageBox",
     description: "Size: 391 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 360.31976744186045,
       y: 347.9651162790698,
@@ -5554,7 +5554,7 @@ export const imageBoxes259 = [
     label: "RGB(222,166,254)",
     type: "ImageBox",
     description: "Size: 54 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 538.6627906976744,
       y: 350.1453488372093,
@@ -5569,7 +5569,7 @@ export const imageBoxes259 = [
     label: "RGB(228,171,255)",
     type: "ImageBox",
     description: "Size: 53 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 525.5813953488372,
       y: 352.1075581395349,
@@ -5584,7 +5584,7 @@ export const imageBoxes259 = [
     label: "RGB(226,169,255)",
     type: "ImageBox",
     description: "Size: 333 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 530.5959302325582,
       y: 354.50581395348837,
@@ -5599,7 +5599,7 @@ export const imageBoxes259 = [
     label: "RGB(227,170,255)",
     type: "ImageBox",
     description: "Size: 86 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 517.078488372093,
       y: 357.1220930232558,
@@ -5614,7 +5614,7 @@ export const imageBoxes259 = [
     label: "RGB(1,0,1)",
     type: "ImageBox",
     description: "Size: 39 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 531.9040697674418,
       y: 357.1220930232558,
@@ -5629,7 +5629,7 @@ export const imageBoxes259 = [
     label: "RGB(228,171,255)",
     type: "ImageBox",
     description: "Size: 73 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 517.5145348837209,
       y: 360.3924418604651,
@@ -5644,7 +5644,7 @@ export const imageBoxes259 = [
     label: "RGB(224,177,252)",
     type: "ImageBox",
     description: "Size: 3574 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 334.59302325581393,
       y: 366.4970930232558,
@@ -5659,7 +5659,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 4481 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 511.84593023255815,
       y: 367.58720930232556,
@@ -5674,7 +5674,7 @@ export const imageBoxes259 = [
     label: "RGB(248,248,248)",
     type: "ImageBox",
     description: "Size: 136 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 506.3953488372093,
       y: 368.8953488372093,
@@ -5689,7 +5689,7 @@ export const imageBoxes259 = [
     label: "RGB(6,5,7)",
     type: "ImageBox",
     description: "Size: 75 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 500.7267441860465,
       y: 369.98546511627904,
@@ -5704,7 +5704,7 @@ export const imageBoxes259 = [
     label: "RGB(233,195,252)",
     type: "ImageBox",
     description: "Size: 60 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 505.08720930232556,
       y: 369.98546511627904,
@@ -5719,7 +5719,7 @@ export const imageBoxes259 = [
     label: "RGB(3,2,3)",
     type: "ImageBox",
     description: "Size: 138314 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 365.98837209302326,
       y: 369.98546511627904,
@@ -5734,7 +5734,7 @@ export const imageBoxes259 = [
     label: "RGB(187,139,208)",
     type: "ImageBox",
     description: "Size: 37 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 499.2005813953488,
       y: 370.63953488372096,
@@ -5749,7 +5749,7 @@ export const imageBoxes259 = [
     label: "RGB(252,250,250)",
     type: "ImageBox",
     description: "Size: 178 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 502.0348837209302,
       y: 370.63953488372096,
@@ -5764,7 +5764,7 @@ export const imageBoxes259 = [
     label: "RGB(6,5,7)",
     type: "ImageBox",
     description: "Size: 186 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 495.0581395348837,
       y: 371.2936046511628,
@@ -5779,7 +5779,7 @@ export const imageBoxes259 = [
     label: "RGB(176,132,198)",
     type: "ImageBox",
     description: "Size: 66 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 493.96802325581393,
       y: 372.1656976744186,
@@ -5794,7 +5794,7 @@ export const imageBoxes259 = [
     label: "RGB(225,181,250)",
     type: "ImageBox",
     description: "Size: 55 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 500.94476744186045,
       y: 372.3837209302325,
@@ -5809,7 +5809,7 @@ export const imageBoxes259 = [
     label: "RGB(178,133,201)",
     type: "ImageBox",
     description: "Size: 427 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 507.48546511627904,
       y: 372.3837209302325,
@@ -5824,7 +5824,7 @@ export const imageBoxes259 = [
     label: "RGB(1,1,1)",
     type: "ImageBox",
     description: "Size: 286 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 489.6075581395349,
       y: 372.81976744186045,
@@ -5839,7 +5839,7 @@ export const imageBoxes259 = [
     label: "RGB(253,253,253)",
     type: "ImageBox",
     description: "Size: 198 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 497.6744186046512,
       y: 373.03779069767444,
@@ -5854,7 +5854,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 2172 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 504.4331395348837,
       y: 373.03779069767444,
@@ -5869,7 +5869,7 @@ export const imageBoxes259 = [
     label: "RGB(173,128,195)",
     type: "ImageBox",
     description: "Size: 103 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 488.2994186046512,
       y: 373.6918604651163,
@@ -5884,7 +5884,7 @@ export const imageBoxes259 = [
     label: "RGB(5,4,5)",
     type: "ImageBox",
     description: "Size: 248 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 485.4651162790698,
       y: 374.34593023255815,
@@ -5899,7 +5899,7 @@ export const imageBoxes259 = [
     label: "RGB(186,141,209)",
     type: "ImageBox",
     description: "Size: 394 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 503.125,
       y: 374.5639534883721,
@@ -5914,7 +5914,7 @@ export const imageBoxes259 = [
     label: "RGB(175,132,197)",
     type: "ImageBox",
     description: "Size: 125 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 484.15697674418607,
       y: 374.78197674418607,
@@ -5929,7 +5929,7 @@ export const imageBoxes259 = [
     label: "RGB(226,182,249)",
     type: "ImageBox",
     description: "Size: 53 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 496.5843023255814,
       y: 374.78197674418607,
@@ -5944,7 +5944,7 @@ export const imageBoxes259 = [
     label: "RGB(3,2,3)",
     type: "ImageBox",
     description: "Size: 50962 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 337.6453488372093,
       y: 375.4360465116279,
@@ -5959,7 +5959,7 @@ export const imageBoxes259 = [
     label: "RGB(252,250,248)",
     type: "ImageBox",
     description: "Size: 209 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 493.09593023255815,
       y: 375.4360465116279,
@@ -5974,7 +5974,7 @@ export const imageBoxes259 = [
     label: "RGB(0,0,0)",
     type: "ImageBox",
     description: "Size: 1863 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 499.8546511627907,
       y: 375.4360465116279,
@@ -5989,7 +5989,7 @@ export const imageBoxes259 = [
     label: "RGB(185,141,209)",
     type: "ImageBox",
     description: "Size: 298 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 498.54651162790697,
       y: 377.18023255813955,
@@ -6004,7 +6004,7 @@ export const imageBoxes259 = [
     label: "RGB(235,190,255)",
     type: "ImageBox",
     description: "Size: 60 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 492.00581395348837,
       y: 377.3982558139535,
@@ -6019,7 +6019,7 @@ export const imageBoxes259 = [
     label: "RGB(8,8,8)",
     type: "ImageBox",
     description: "Size: 1746 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 495.2761627906977,
       y: 377.8343023255814,
@@ -6034,7 +6034,7 @@ export const imageBoxes259 = [
     label: "RGB(248,248,248)",
     type: "ImageBox",
     description: "Size: 141 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 489.6075581395349,
       y: 378.05232558139534,
@@ -6049,7 +6049,7 @@ export const imageBoxes259 = [
     label: "RGB(225,181,247)",
     type: "ImageBox",
     description: "Size: 51 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 488.5174418604651,
       y: 379.1424418604651,
@@ -6064,7 +6064,7 @@ export const imageBoxes259 = [
     label: "RGB(175,131,198)",
     type: "ImageBox",
     description: "Size: 415 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 494.1860465116279,
       y: 379.79651162790697,
@@ -6079,7 +6079,7 @@ export const imageBoxes259 = [
     label: "RGB(250,250,250)",
     type: "ImageBox",
     description: "Size: 3380 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 435.31976744186045,
       y: 380.01453488372096,
@@ -6094,7 +6094,7 @@ export const imageBoxes259 = [
     label: "RGB(5,5,5)",
     type: "ImageBox",
     description: "Size: 1276 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 491.78779069767444,
       y: 380.4505813953488,
@@ -6109,7 +6109,7 @@ export const imageBoxes259 = [
     label: "RGB(175,131,197)",
     type: "ImageBox",
     description: "Size: 441 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 490.69767441860466,
       y: 381.5406976744186,
@@ -6124,7 +6124,7 @@ export const imageBoxes259 = [
     label: "RGB(211,211,250)",
     type: "ImageBox",
     description: "Size: 1708 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 502.90697674418607,
       y: 393.75,
@@ -6139,7 +6139,7 @@ export const imageBoxes259 = [
     label: "RGB(197,250,250)",
     type: "ImageBox",
     description: "Size: 264 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 518.8226744186047,
       y: 395.2761627906977,
@@ -6154,7 +6154,7 @@ export const imageBoxes259 = [
     label: "RGB(198,243,250)",
     type: "ImageBox",
     description: "Size: 587 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 502.47093023255815,
       y: 395.2761627906977,
@@ -6169,7 +6169,7 @@ export const imageBoxes259 = [
     label: "RGB(197,250,250)",
     type: "ImageBox",
     description: "Size: 166 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 507.92151162790697,
       y: 395.49418604651163,
@@ -6184,7 +6184,7 @@ export const imageBoxes259 = [
     label: "RGB(177,134,199)",
     type: "ImageBox",
     description: "Size: 223 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 517.9505813953488,
       y: 396.5843023255814,
@@ -6199,7 +6199,7 @@ export const imageBoxes259 = [
     label: "RGB(0,4,4)",
     type: "ImageBox",
     description: "Size: 961 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 519.4767441860465,
       y: 396.5843023255814,
@@ -6214,7 +6214,7 @@ export const imageBoxes259 = [
     label: "RGB(3,8,8)",
     type: "ImageBox",
     description: "Size: 2233 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 508.5755813953488,
       y: 396.80232558139534,
@@ -6229,7 +6229,7 @@ export const imageBoxes259 = [
     label: "RGB(191,239,241)",
     type: "ImageBox",
     description: "Size: 23 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 504.2151162790698,
       y: 398.54651162790697,
@@ -6244,7 +6244,7 @@ export const imageBoxes259 = [
     label: "RGB(201,243,250)",
     type: "ImageBox",
     description: "Size: 51 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 504.6511627906977,
       y: 400.5087209302325,
@@ -6259,7 +6259,7 @@ export const imageBoxes259 = [
     label: "RGB(179,136,202)",
     type: "ImageBox",
     description: "Size: 146 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 507.48546511627904,
       y: 400.5087209302325,
@@ -6274,7 +6274,7 @@ export const imageBoxes259 = [
     label: "RGB(3,8,8)",
     type: "ImageBox",
     description: "Size: 403 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 505.30523255813955,
       y: 401.38081395348837,
@@ -6289,7 +6289,7 @@ export const imageBoxes259 = [
     label: "RGB(221,167,254)",
     type: "ImageBox",
     description: "Size: 88 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 314.5348837209302,
       y: 402.90697674418607,
@@ -6304,7 +6304,7 @@ export const imageBoxes259 = [
     label: "RGB(227,170,255)",
     type: "ImageBox",
     description: "Size: 53 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 312.13662790697674,
       y: 405.08720930232556,
@@ -6319,7 +6319,7 @@ export const imageBoxes259 = [
     label: "RGB(198,242,249)",
     type: "ImageBox",
     description: "Size: 51 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 505.30523255813955,
       y: 406.61337209302326,
@@ -6334,7 +6334,7 @@ export const imageBoxes259 = [
     label: "RGB(196,245,247)",
     type: "ImageBox",
     description: "Size: 119 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 511.84593023255815,
       y: 407.2674418604651,
@@ -6349,7 +6349,7 @@ export const imageBoxes259 = [
     label: "RGB(221,165,252)",
     type: "ImageBox",
     description: "Size: 80 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 301.67151162790697,
       y: 407.70348837209303,
@@ -6364,7 +6364,7 @@ export const imageBoxes259 = [
     label: "RGB(226,169,255)",
     type: "ImageBox",
     description: "Size: 57 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 304.06976744186045,
       y: 409.44767441860466,
@@ -6379,7 +6379,7 @@ export const imageBoxes259 = [
     label: "RGB(111,105,0)",
     type: "ImageBox",
     description: "Size: 4396 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 361.62790697674416,
       y: 409.8837209302325,
@@ -6394,7 +6394,7 @@ export const imageBoxes259 = [
     label: "RGB(224,168,255)",
     type: "ImageBox",
     description: "Size: 389 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 306.68604651162786,
       y: 410.1017441860465,
@@ -6409,7 +6409,7 @@ export const imageBoxes259 = [
     label: "RGB(110,103,0)",
     type: "ImageBox",
     description: "Size: 10723 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 409.59302325581393,
       y: 410.1017441860465,
@@ -6424,7 +6424,7 @@ export const imageBoxes259 = [
     label: "RGB(2,1,2)",
     type: "ImageBox",
     description: "Size: 124 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 307.77616279069764,
       y: 413.5901162790698,
@@ -6439,7 +6439,7 @@ export const imageBoxes259 = [
     label: "RGB(249,147,255)",
     type: "ImageBox",
     description: "Size: 101 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 332.63081395348837,
       y: 414.68023255813955,
@@ -6454,7 +6454,7 @@ export const imageBoxes259 = [
     label: "RGB(249,248,250)",
     type: "ImageBox",
     description: "Size: 4725 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 335.02906976744185,
       y: 415.55232558139534,
@@ -6469,7 +6469,7 @@ export const imageBoxes259 = [
     label: "RGB(255,255,255)",
     type: "ImageBox",
     description: "Size: 4678 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 257.41279069767444,
       y: 416.6424418604651,
@@ -6484,7 +6484,7 @@ export const imageBoxes259 = [
     label: "RGB(8,8,8)",
     type: "ImageBox",
     description: "Size: 15671 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 274.2005813953488,
       y: 417.29651162790697,
@@ -6499,7 +6499,7 @@ export const imageBoxes259 = [
     label: "RGB(112,106,0)",
     type: "ImageBox",
     description: "Size: 5508 pixels",
-    imageUrl: "/public/images/art/Untitled_Artwork 259.png",
+    imageUrl: "/images/art/Untitled_Artwork 259.png",
     topLeft: {
       x: 262.86337209302326,
       y: 430.59593023255815,

@@ -1,11 +1,11 @@
 import { Save, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { NodeId } from "../../core/model/Node";
-import { WebLLMClient } from "../../services/WebLLMClient";
 import useAppConfigStore from "../../store/appConfigStore";
 import { ChatMessage } from "../../store/chatHistoryStore";
 import { updateDocument, useDocumentStore } from "../../store/documentStore";
 import { addNotification } from "../../store/notificationStore";
+import { WebLLMClient } from "../applets/ChatGptImporter/services/WebLLMClient";
 import "./ConversationAnalysis.css";
 
 // Define the models available for conversation analysis

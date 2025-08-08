@@ -1,7 +1,7 @@
 export interface FormSchemaField {
   validate: (value: number | boolean | string) => string | null;
   label: string;
-  type: "number" | "checkbox" | "select";
+  type: "number" | "checkbox" | "select" | "color";
   options?: { value: string; label: string }[];
   min?: number;
   max?: number;

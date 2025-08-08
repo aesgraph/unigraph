@@ -1,0 +1,492 @@
+.container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  max-width: 500px;
+  min-width: 300px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px 12px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 12px;
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.title {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Icon styles */
+.infoIcon {
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.warningIcon {
+  color: #f59e0b;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dangerIcon {
+  color: #ef4444;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Type-specific styles */
+.info {
+  border-left: 4px solid #3b82f6;
+}
+
+.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.danger {
+  border-left: 4px solid #ef4444;
+}
+
+.content {
+  padding: 16px 20px;
+}
+
+/* Metadata Section */
+.metadataSection {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.metadataGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.metadataItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.metadataLabel {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metadataValue {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+}
+
+.metadataTitle {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.metadataTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.metadataTag {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+}
+
+.entitiesList {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.entityItem {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  background: #f9fafb;
+}
+
+.entityItem:last-child {
+  margin-bottom: 0;
+}
+
+/* Compact Header */
+.entityCompactHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  padding: 1px;
+  cursor: pointer;
+  color: #6b7280;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.expandButton:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.entityCompactInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.entityCompactLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entityCompactType {
+  background: #e5e7eb;
+  color: #374151;
+  padding: 1px 6px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.entityCompactId {
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* Expanded Details */
+.entityExpandedDetails {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.entityDescription {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.entityTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.entityField {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.fieldName {
+  color: #6b7280;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.fieldValue {
+  color: #374151;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  word-break: break-all;
+}
+
+.noEntities {
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 20px;
+}
+
+.confirmationSection {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.confirmationText {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #374151;
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+.cancelButton {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.cancelButton:hover {
+  background: #e5e7eb;
+}
+
+.confirmButton {
+  color: white;
+}
+
+.confirmButton.info {
+  background: #3b82f6;
+}
+
+.confirmButton.info:hover {
+  background: #2563eb;
+}
+
+.confirmButton.warning {
+  background: #f59e0b;
+}
+
+.confirmButton.warning:hover {
+  background: #d97706;
+}
+
+.confirmButton.danger {
+  background: #ef4444;
+}
+
+.confirmButton.danger:hover {
+  background: #dc2626;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+
+  .header {
+    border-bottom-color: #374151;
+  }
+
+  .title {
+    color: #f9fafb;
+  }
+
+  .description {
+    color: #9ca3af;
+  }
+
+  .metadataSection {
+    border-bottom-color: #374151;
+  }
+
+  .metadataItem {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .metadataLabel {
+    color: #9ca3af;
+  }
+
+  .metadataValue {
+    color: #d1d5db;
+  }
+
+  .metadataTitle {
+    color: #d1d5db;
+  }
+
+  .metadataTag {
+    background: #1e3a8a;
+    color: #93c5fd;
+  }
+
+  .expandButton {
+    color: #9ca3af;
+  }
+
+  .expandButton:hover {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .entityCompactLabel {
+    color: #f9fafb;
+  }
+
+  .entityCompactType {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .entityCompactId {
+    color: #9ca3af;
+  }
+
+  .entityExpandedDetails {
+    border-top-color: #374151;
+  }
+
+  .entityItem {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .entityId {
+    color: #d1d5db;
+  }
+
+  .entityType {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .entityLabel {
+    color: #f9fafb;
+  }
+
+  .entityDescription {
+    color: #9ca3af;
+  }
+
+  .tag {
+    background: #1e3a8a;
+    color: #93c5fd;
+  }
+
+  .fieldName {
+    color: #9ca3af;
+  }
+
+  .fieldValue {
+    color: #d1d5db;
+  }
+
+  .noEntities {
+    color: #6b7280;
+  }
+
+  .confirmationSection {
+    border-top-color: #374151;
+  }
+
+  .confirmationText {
+    color: #d1d5db;
+  }
+
+  .cancelButton {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .cancelButton:hover {
+    background: #4b5563;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .container {
+    max-width: 100%;
+    min-width: auto;
+    margin: 0 16px;
+  }
+
+  .header {
+    padding: 12px 16px 8px 16px;
+  }
+
+  .content {
+    padding: 12px 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

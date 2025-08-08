@@ -9,12 +9,13 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { LayoutEngine } from "../../core/layouts/LayoutEngine";
 import useActiveLayoutStore, {
   cancelLayoutJob,
   selectLayoutJobDuration,
 } from "../../store/activeLayoutStore";
+import useAppConfigStore from "../../store/appConfigStore";
 
 export const LayoutComputationDialog: React.FC = () => {
   const [_forceUpdate, setForceUpdate] = useState(0);
@@ -23,7 +24,19 @@ export const LayoutComputationDialog: React.FC = () => {
 
   // Use state directly from the store for more responsive UI
   const { jobStatus } = useActiveLayoutStore();
+  const { forceGraph3dOptions, activeView } = useAppConfigStore();
   const isJobRunning = jobStatus.isRunning;
+
+  // Only show dialog if we're in ForceGraph3D view and Layout mode (not Physics mode)
+  const shouldShowLayoutDialog = useMemo(
+    () =>
+      isJobRunning &&
+      ((activeView === "ForceGraph3d" &&
+        forceGraph3dOptions.layout === "Layout") ||
+        activeView === "ReactFlow" ||
+        activeView === "Graphviz"),
+    [isJobRunning, activeView, forceGraph3dOptions.layout]
+  );
 
   // Format the time as mm:ss
   const formattedTime = () => {
@@ -55,24 +68,26 @@ export const LayoutComputationDialog: React.FC = () => {
   useEffect(() => {
     let showTimeout: NodeJS.Timeout;
 
-    if (isJobRunning) {
+    if (shouldShowLayoutDialog) {
       // Only show dialog after 2 seconds of continuous computation
       showTimeout = setTimeout(() => {
         setShowDialog(true);
       }, 2000);
     } else {
-      // Hide immediately when job is no longer running
+      // Hide immediately when job is no longer running or not in Layout mode
       setShowDialog(false);
 
       // Reset cancelling state when job is no longer running
-      setIsCancelling(false);
+      if (!isJobRunning) {
+        setIsCancelling(false);
+      }
     }
 
     return () => {
       // Clean up timeout on unmount or when dependencies change
       clearTimeout(showTimeout);
     };
-  }, [isJobRunning]);
+  }, [shouldShowLayoutDialog, isJobRunning]);
 
   // Start a timer to update the elapsed time
   useEffect(() => {
@@ -97,10 +112,10 @@ export const LayoutComputationDialog: React.FC = () => {
     );
   }, [isJobRunning, jobStatus]);
 
-  // Only render the dialog if it's meant to be shown after the delay
+  // Only render the dialog if it's meant to be shown after the delay and we're in Layout mode
   return (
     <Dialog
-      open={showDialog || (isJobRunning && isCancelling)}
+      open={shouldShowLayoutDialog && (showDialog || isCancelling)}
       onClose={() => {}}
       maxWidth="sm"
       fullWidth

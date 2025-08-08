@@ -1,0 +1,3915 @@
+{
+  "fromDefault": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "args": "T"
+    },
+    "returnType": "FullEntityType<T>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/entity/abstractEntity.ts"
+  },
+  "AbstractEntity": {
+    "kind": "class",
+    "properties": {
+      "data": "Data"
+    },
+    "references": {},
+    "methods": {
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getId": {
+        "arguments": {},
+        "returnType": "T"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "Data"
+      },
+      "getLabel": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getFullyQualifiedId": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setId": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "void"
+      },
+      "setType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "void"
+      },
+      "getType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setLabel": {
+        "arguments": {
+          "label": "string"
+        },
+        "returnType": "void"
+      },
+      "getTags": {
+        "arguments": {},
+        "returnType": "Set<string>"
+      },
+      "setTags": {
+        "arguments": {
+          "tags": "Set<string>"
+        },
+        "returnType": "void"
+      },
+      "addTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "void"
+      },
+      "removeTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "void"
+      },
+      "maybeGetUserData": {
+        "arguments": {
+          "key": "string"
+        },
+        "returnType": "any"
+      },
+      "getAllUserData": {
+        "arguments": {},
+        "returnType": "ObjectOf<any>"
+      },
+      "getUserData": {
+        "arguments": {
+          "key": "string"
+        },
+        "returnType": "any"
+      },
+      "setUserData": {
+        "arguments": {
+          "key": "string",
+          "value": "any"
+        },
+        "returnType": "void"
+      },
+      "setUserDataObject": {
+        "arguments": {
+          "userData": "ObjectOf<any>"
+        },
+        "returnType": "void"
+      },
+      "getUserDataObject": {
+        "arguments": {},
+        "returnType": "ObjectOf<any>"
+      },
+      "setDescription": {
+        "arguments": {
+          "description": "string"
+        },
+        "returnType": "void"
+      },
+      "getDescription": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "deepCopy": {
+        "arguments": {},
+        "returnType": "T"
+      },
+      "deepCopyValue": {
+        "arguments": {
+          "value": "any"
+        },
+        "returnType": "any"
+      },
+      "toJSON": {
+        "arguments": {},
+        "returnType": "void"
+      }
+    },
+    "implements": [
+      "IEntity"
+    ],
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/entity/abstractEntity.ts"
+  },
+  "Entity": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/entity/abstractEntity.ts"
+  },
+  "EntityIds": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "fromId": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "getAny": {
+        "arguments": {
+          "container": "EntitiesContainer<T, V>"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "getAll": {
+        "arguments": {
+          "container": "EntitiesContainer<T, V>"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "toArray": {
+        "arguments": {},
+        "returnType": "T[]"
+      },
+      "isEmpty": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "hasAll": {
+        "arguments": {
+          "ids": "EntityIds<T>"
+        },
+        "returnType": "boolean"
+      },
+      "throwIfEmpty": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "isEqualTo": {
+        "arguments": {
+          "a": "EntityIds<any>",
+          "b": "EntityIds<any>"
+        },
+        "returnType": "boolean"
+      },
+      "getDifference": {
+        "arguments": {
+          "other": "EntityIds<T>"
+        },
+        "returnType": "EntityIds<T>"
+      }
+    },
+    "extends": "Set",
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/entity/entityIds.ts"
+  },
+  "EntitiesContainer": {
+    "kind": "class",
+    "properties": {
+      "entities": "V[]",
+      "_map": "Map<T, number>"
+    },
+    "references": {},
+    "methods": {
+      "addEntity": {
+        "arguments": {
+          "entity": "V",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "addEntitySafe": {
+        "arguments": {
+          "entity": "V",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "removeEntity": {
+        "arguments": {
+          "id": "T",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "get": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "V"
+      },
+      "getIds": {
+        "arguments": {},
+        "returnType": "EntityIds<T>"
+      },
+      "maybeGet": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "V"
+      },
+      "getAny": {
+        "arguments": {
+          "ids": "EntityIds<T>"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "getAll": {
+        "arguments": {
+          "ids": "EntityIds<T> | T[]",
+          "strict": "boolean"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "first": {
+        "arguments": {},
+        "returnType": "V"
+      },
+      "isEmpty": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "removeEntities": {
+        "arguments": {
+          "ids": "EntityIds<T>",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "addEntities": {
+        "arguments": {
+          "entities": "EntitiesContainer<T, V> | V[]",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "addEntitiesSafe": {
+        "arguments": {
+          "entities": "EntitiesContainer<T, V> | V[]",
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "has": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "throwIfContains": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "throwIfNotContains": {
+        "arguments": {
+          "id": "T"
+        },
+        "returnType": "void"
+      },
+      "toArray": {
+        "arguments": {},
+        "returnType": "V[]"
+      },
+      "clear": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getTypes": {
+        "arguments": {},
+        "returnType": "Set<string>"
+      },
+      "getTags": {
+        "arguments": {},
+        "returnType": "Set<string>"
+      },
+      "filter": {
+        "arguments": {
+          "predicate": "(entity: V) => boolean"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "filterByType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "filterByTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "size": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "forEach": {
+        "arguments": {
+          "callback": "(entity: V, index: number, array: V[]) => void"
+        },
+        "returnType": "void"
+      },
+      "map": {
+        "arguments": {
+          "callbackfn": "(value: V, index: number, array: V[]) => U"
+        },
+        "returnType": "U[]"
+      },
+      "getRandomEntity": {
+        "arguments": {},
+        "returnType": "V"
+      },
+      "deepCopy": {
+        "arguments": {},
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "shallowCopy": {
+        "arguments": {},
+        "returnType": "EntitiesContainer<T, V>"
+      },
+      "getDatas": {
+        "arguments": {},
+        "returnType": "any[]"
+      },
+      "validate": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getRandom": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "toJSON": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "fromJSON": {
+        "arguments": {
+          "json": "string",
+          "entityFactory": "(json: string) => V"
+        },
+        "returnType": "EntitiesContainer<T, V>"
+      }
+    },
+    "implements": [
+      "Iterable"
+    ],
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/entity/entitiesContainer.ts"
+  },
+  "Node": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "getDimensions": {
+        "arguments": {},
+        "returnType": "Dimensions"
+      },
+      "setDimensions": {
+        "arguments": {
+          "dimensions": "Dimensions"
+        },
+        "returnType": "Node"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "NodeData"
+      },
+      "getPosition": {
+        "arguments": {},
+        "returnType": "Position"
+      },
+      "setPosition": {
+        "arguments": {
+          "position": "Position"
+        },
+        "returnType": "Node"
+      },
+      "isVisible": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "getColor": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setColor": {
+        "arguments": {
+          "color": "string"
+        },
+        "returnType": "void"
+      },
+      "setVisibility": {
+        "arguments": {
+          "isVisible": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getSize": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getOpacity": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/Node.ts"
+  },
+  "Edge": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "id": {
+        "arguments": {
+          "source": "string | NodeId",
+          "target": "string | NodeId"
+        },
+        "returnType": "EdgeId"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getUniqueConnectionId": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "EdgeData"
+      },
+      "setData": {
+        "arguments": {
+          "data": "EdgeData"
+        },
+        "returnType": "void"
+      },
+      "getSource": {
+        "arguments": {},
+        "returnType": "NodeId"
+      },
+      "getTarget": {
+        "arguments": {},
+        "returnType": "NodeId"
+      },
+      "isVisible": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "setVisibility": {
+        "arguments": {
+          "isVisible": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getColor": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setColor": {
+        "arguments": {
+          "color": "string"
+        },
+        "returnType": "void"
+      },
+      "getSize": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getOpacity": {
+        "arguments": {},
+        "returnType": "number"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/Edge.ts"
+  },
+  "Graph": {
+    "kind": "class",
+    "properties": {
+      "nodes": "NodesContainer",
+      "edges": "EdgesContainer",
+      "strict": "boolean"
+    },
+    "references": {},
+    "methods": {
+      "setStrictMode": {
+        "arguments": {
+          "strict": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getFilteredGraph": {
+        "arguments": {
+          "nodeIds": "NodeIds"
+        },
+        "returnType": "Graph"
+      },
+      "createNode": {
+        "arguments": {
+          "args": "NodeDataArgs"
+        },
+        "returnType": "Node"
+      },
+      "createEdge": {
+        "arguments": {
+          "fromNode": "string | NodeId",
+          "toNode": "string | NodeId",
+          "args": "Omit<EdgeDataArgs, \"source\" | \"target\">"
+        },
+        "returnType": "Edge"
+      },
+      "getAllEntities": {
+        "arguments": {},
+        "returnType": "EntitiesContainer<string, Entity>"
+      },
+      "createNodeIfMissing": {
+        "arguments": {
+          "id": "string | NodeId",
+          "args": "NodeDataArgs"
+        },
+        "returnType": "Node"
+      },
+      "createEdgeIfMissing": {
+        "arguments": {
+          "from": "string | NodeId",
+          "to": "string | NodeId",
+          "args": "Omit<EdgeDataArgs, \"source\" | \"target\">"
+        },
+        "returnType": "Edge"
+      },
+      "addNode": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "void"
+      },
+      "getNode": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "Node"
+      },
+      "maybeGetNode": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "Node"
+      },
+      "maybeGetEdge": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "Edge"
+      },
+      "maybeGetEntity": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "IEntity<string>"
+      },
+      "removeNode": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "containsNode": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "boolean"
+      },
+      "addEdge": {
+        "arguments": {
+          "edge": "Edge"
+        },
+        "returnType": "void"
+      },
+      "getEdge": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "Edge"
+      },
+      "removeEdge": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "void"
+      },
+      "containsEdge": {
+        "arguments": {
+          "edgeId": "EdgeId"
+        },
+        "returnType": "boolean"
+      },
+      "getNodesByTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "Node[]"
+      },
+      "getEdgesByTag": {
+        "arguments": {
+          "tag": "string"
+        },
+        "returnType": "Edge[]"
+      },
+      "getNodes": {
+        "arguments": {},
+        "returnType": "NodesContainer"
+      },
+      "getEdges": {
+        "arguments": {},
+        "returnType": "EdgesContainer"
+      },
+      "getEdgesOf": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "Edge[]"
+      },
+      "getNodesOf": {
+        "arguments": {
+          "edge": "Edge"
+        },
+        "returnType": "[Node, Node]"
+      },
+      "getIslands": {
+        "arguments": {},
+        "returnType": "Node[][]"
+      },
+      "requireEntity": {
+        "arguments": {
+          "entityId": "string"
+        },
+        "returnType": "IEntity<string>"
+      },
+      "requireEntities": {
+        "arguments": {
+          "entityIds": "string[]"
+        },
+        "returnType": "IEntity<string>[]"
+      },
+      "getEntity": {
+        "arguments": {
+          "entityId": "string"
+        },
+        "returnType": "IEntity<string>"
+      },
+      "getEntities": {
+        "arguments": {
+          "entityIds": "string[]"
+        },
+        "returnType": "IEntity<string>[]"
+      },
+      "maybeGetEntities": {
+        "arguments": {
+          "entityIds": "string[]"
+        },
+        "returnType": "IEntity<string>[]"
+      },
+      "getNodesByType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "NodesContainer"
+      },
+      "getEdgesTo": {
+        "arguments": {
+          "nodeIds": "NodeId | EntityIds<NodeId>"
+        },
+        "returnType": "Edge[]"
+      },
+      "getEdgesFrom": {
+        "arguments": {
+          "nodeIds": "NodeId | EntityIds<NodeId>"
+        },
+        "returnType": "Edge[]"
+      },
+      "getOutgoingEdges": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "Edge[]"
+      },
+      "getIncomingEdges": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "Edge[]"
+      },
+      "getGraphMap": {
+        "arguments": {},
+        "returnType": "Map<NodeId, NodeId[]>"
+      },
+      "getAllEdgesConnectingBetween": {
+        "arguments": {
+          "nodeIds": "NodeIds"
+        },
+        "returnType": "EdgesContainer"
+      },
+      "getEdgesConnectedToNodes": {
+        "arguments": {
+          "nodeIds": "NodeId | NodeIds",
+          "mode": "\"both\" | \"from\" | \"to\""
+        },
+        "returnType": "EdgesContainer"
+      },
+      "validateGraph": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "deleteNode": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "deleteNodes": {
+        "arguments": {
+          "nodeIds": "NodeIds | NodeId[]"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/Graph.ts"
+  },
+  "createGraphologyGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "Graph"
+    },
+    "returnType": "Graph<Attributes, Attributes, Attributes>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts"
+  },
+  "normalizePositions": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "positions": "ObjectOf<Position>"
+    },
+    "returnType": "ObjectOf<Position>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts"
+  },
+  "scalePositions": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "positions": "ObjectOf<Position>",
+      "width": "number",
+      "height": "number"
+    },
+    "returnType": "ObjectOf<Position>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts"
+  },
+  "centerPositions": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "positions": "ObjectOf<Position>"
+    },
+    "returnType": "ObjectOf<Position>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts"
+  },
+  "fitToRect": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "width": "number",
+      "height": "number",
+      "positions": "ObjectOf<Position>"
+    },
+    "returnType": "ObjectOf<Position>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts"
+  },
+  "GraphBuilder": {
+    "kind": "class",
+    "properties": {
+      "_graph": "Graph",
+      "addNode": "(id: string, type: string) => void",
+      "addNodes": "(nodeIds: string[], type: string) => void",
+      "addEdge": "(input: string, edgeType: string, output: string) => void"
+    },
+    "references": {},
+    "methods": {
+      "graph": {
+        "arguments": {},
+        "returnType": "Graph"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/GraphBuilder.ts"
+  },
+  "RenderingManager": {
+    "kind": "class",
+    "properties": {
+      "config": "RenderingConfig"
+    },
+    "references": {},
+    "methods": {
+      "getColor": {
+        "arguments": {
+          "entity": "IEntity<string>",
+          "config": "DisplayConfig",
+          "mode": "\"type\" | \"tag\""
+        },
+        "returnType": "string"
+      },
+      "getVisibility": {
+        "arguments": {
+          "entity": "IEntity<string>",
+          "config": "DisplayConfig",
+          "mode": "RenderingManager__DisplayMode"
+        },
+        "returnType": "boolean"
+      },
+      "getDisplayConfig": {
+        "arguments": {
+          "entityType": "GraphEntityType",
+          "mode": "RenderingManager__DisplayMode"
+        },
+        "returnType": "DisplayConfig"
+      },
+      "setDisplayConfig": {
+        "arguments": {
+          "mode": "RenderingManager__DisplayMode",
+          "entityType": "GraphEntityType",
+          "config": "DisplayConfig"
+        },
+        "returnType": "void"
+      },
+      "getNodeColor": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "string"
+      },
+      "getEdgeColor": {
+        "arguments": {
+          "edge": "Edge"
+        },
+        "returnType": "string"
+      },
+      "getNodeIsVisible": {
+        "arguments": {
+          "node": "Node"
+        },
+        "returnType": "boolean"
+      },
+      "getEdgeIsVisibleByTag": {
+        "arguments": {
+          "edge": "Edge",
+          "graph": "Graph"
+        },
+        "returnType": "boolean"
+      },
+      "getEdgeIsVisibleByType": {
+        "arguments": {
+          "edge": "Edge",
+          "graph": "Graph"
+        },
+        "returnType": "boolean"
+      },
+      "getEdgeIsVisible": {
+        "arguments": {
+          "edge": "Edge",
+          "graph": "Graph"
+        },
+        "returnType": "boolean"
+      },
+      "getConfig": {
+        "arguments": {},
+        "returnType": "RenderingConfig"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/controllers/RenderingManager.ts"
+  },
+  "EntityCache": {
+    "kind": "class",
+    "properties": {
+      "cache": "Map<string, EntitiesContainer<any, any>>"
+    },
+    "references": {},
+    "methods": {
+      "addEntity": {
+        "arguments": {
+          "entity": "IEntity<string>"
+        },
+        "returnType": "void"
+      },
+      "addEntities": {
+        "arguments": {
+          "entities": "EntitiesContainer<any, any>"
+        },
+        "returnType": "void"
+      },
+      "getEntitiesOfType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "EntitiesContainer<any, any>"
+      },
+      "clearEntitiesOfType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "void"
+      },
+      "getTypes": {
+        "arguments": {},
+        "returnType": "string[]"
+      },
+      "getSize": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "maybeGetEntityById": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "IEntity<string>"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/entity/entityCache.ts"
+  },
+  "SceneGraph": {
+    "kind": "class",
+    "properties": {
+      "data": "SceneGraphData",
+      "listeners": "ISceneGraphListeners"
+    },
+    "references": {},
+    "methods": {
+      "refreshDisplayConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getCommittedDisplayConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "saveLayout": {
+        "arguments": {
+          "layout": "Layout"
+        },
+        "returnType": "void"
+      },
+      "setDocument": {
+        "arguments": {
+          "storageKey": "string",
+          "document": "DocumentState"
+        },
+        "returnType": "void"
+      },
+      "getDocuments": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getDocument": {
+        "arguments": {
+          "storageKey": "string"
+        },
+        "returnType": "void"
+      },
+      "commitDisplayConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "bindListeners": {
+        "arguments": {
+          "listeners": "ISceneGraphListeners"
+        },
+        "returnType": "void"
+      },
+      "notifyDisplayConfigChanged": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "notifyGraphChanged": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getData": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getEntityCache": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getMetadata": {
+        "arguments": {},
+        "returnType": "ISceneGraphMetadata"
+      },
+      "setMetadata": {
+        "arguments": {
+          "data": "ISceneGraphMetadata"
+        },
+        "returnType": "void"
+      },
+      "getForceGraphRenderConfig": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "setForceGraphRenderConfig": {
+        "arguments": {
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "void"
+      },
+      "getGraph": {
+        "arguments": {},
+        "returnType": "Graph"
+      },
+      "getNodes": {
+        "arguments": {},
+        "returnType": "NodesContainer"
+      },
+      "getEdges": {
+        "arguments": {},
+        "returnType": "EdgesContainer"
+      },
+      "getNodeById": {
+        "arguments": {
+          "id": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getEdgeById": {
+        "arguments": {
+          "id": "EdgeId"
+        },
+        "returnType": "void"
+      },
+      "getEdgeByNodes": {
+        "arguments": {
+          "source": "NodeId",
+          "target": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getDisplayConfig": {
+        "arguments": {},
+        "returnType": "RenderingConfig"
+      },
+      "setDisplayConfig": {
+        "arguments": {
+          "config": "RenderingConfig"
+        },
+        "returnType": "void"
+      },
+      "getNodePositions": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "setNodePositions": {
+        "arguments": {
+          "positions": "ObjectOf<Position>"
+        },
+        "returnType": "void"
+      },
+      "setNodePosition": {
+        "arguments": {
+          "nodeId": "NodeId",
+          "position": "Position",
+          "notify": "boolean"
+        },
+        "returnType": "void"
+      },
+      "getNode": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getEdgeByNodeIds": {
+        "arguments": {
+          "sourceId": "NodeId",
+          "targetId": "NodeId"
+        },
+        "returnType": "void"
+      },
+      "getNodePosition": {
+        "arguments": {
+          "nodeId": "NodeId"
+        },
+        "returnType": "Position"
+      },
+      "getVisibleNodes": {
+        "arguments": {},
+        "returnType": "EntityIds<NodeId>"
+      },
+      "getColor": {
+        "arguments": {
+          "entity": "IEntity<string>"
+        },
+        "returnType": "string"
+      },
+      "getVisibility": {
+        "arguments": {
+          "entity": "Node | Edge"
+        },
+        "returnType": "boolean"
+      },
+      "saveFilter": {
+        "arguments": {
+          "name": "string",
+          "filter": "Filter"
+        },
+        "returnType": "void"
+      },
+      "getSavedFilters": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "clearFilters": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getNodesByType": {
+        "arguments": {
+          "type": "string"
+        },
+        "returnType": "void"
+      },
+      "fromJSON": {
+        "arguments": {
+          "json": "string"
+        },
+        "returnType": "SceneGraph"
+      },
+      "toSerialized": {
+        "arguments": {},
+        "returnType": "SerializedSceneGraph"
+      },
+      "fromSerialized": {
+        "arguments": {
+          "serialized": "SerializedSceneGraph"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/SceneGraph.ts"
+  },
+  "GraphologyLayoutEngine": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "computeLayout": {
+        "arguments": {
+          "modelGraph": "Graph",
+          "layoutType": "GraphologyLayoutType"
+        },
+        "returnType": "Promise<ObjectOf<Position>>"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/GraphologyLayoutEngine.ts"
+  },
+  "extractPositionsFromGraphlogyGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "Graph<Attributes, Attributes, Attributes>"
+    },
+    "returnType": "ObjectOf<Position>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/GraphologyLayoutEngine.ts"
+  },
+  "DisplayManager": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "applyVisibilityFromFilterRulesToGraph": {
+        "arguments": {
+          "graph": "Graph",
+          "filterRules": "FilterRuleDefinition[]"
+        },
+        "returnType": "void"
+      },
+      "setOnlyNodesVisible": {
+        "arguments": {
+          "graph": "Graph",
+          "nodeIds": "string[]"
+        },
+        "returnType": "void"
+      },
+      "setAllVisible": {
+        "arguments": {
+          "graph": "Graph"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/model/DisplayManager.ts"
+  },
+  "extractIntersection": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "intersects": "Intersection<Object3D<Object3DEventMap>>[]",
+      "id": "string"
+    },
+    "returnType": "T",
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/webglHelpers.ts"
+  },
+  "extractIntersections": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "intersects": "Intersection<Object3D<Object3DEventMap>>[]",
+      "id": "string"
+    },
+    "returnType": "T[]",
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/webglHelpers.ts"
+  },
+  "getImagePixelCoordinates": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "camera": "Camera",
+      "renderer": "WebGLRenderer"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/webglHelpers.ts"
+  },
+  "convertPixelCoordinatesToPositions": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "pixelCoordinates": "{ x: number; y: number; width: number; height: number; }"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/webglHelpers.ts"
+  },
+  "extractSelectionBoxGroups": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "intersects": "Intersection<Object3D<Object3DEventMap>>[]"
+    },
+    "returnType": "SelectionBoxGroup[]",
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/selectionArea.ts"
+  },
+  "findNodeInForceGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "forceGraphInstance": "ForceGraph3DInstance",
+      "nodeId": "NodeId"
+    },
+    "returnType": "any",
+    "file": "/Users/andrew/workspace/unigraph/src/core/force-graph/forceGraphHelpers.ts"
+  },
+  "selectNodesInSelectionBox": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "sceneGraph": "SceneGraph",
+      "selectionBox": "SelectionBox"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/core/force-graph/createForceGraph.ts"
+  },
+  "updateHighlight": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/core/force-graph/createForceGraph.ts"
+  },
+  "ForceGraphManager": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "createImageSprite": {
+        "arguments": {
+          "imageUrl": "string"
+        },
+        "returnType": "Sprite<Object3DEventMap>"
+      },
+      "createImageBoxElement": {
+        "arguments": {
+          "imageBoxData": "ImageBoxData"
+        },
+        "returnType": "HTMLDivElement"
+      },
+      "createShapeElement": {
+        "arguments": {
+          "n": "Node",
+          "shape": "string",
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "HTMLDivElement"
+      },
+      "createLabelElement": {
+        "arguments": {
+          "n": "Node",
+          "config": "IForceGraphRenderConfig",
+          "isForShape": "boolean"
+        },
+        "returnType": "HTMLElement"
+      },
+      "createNodeThreeObject": {
+        "arguments": {
+          "node": "any",
+          "sceneGraph": "SceneGraph",
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "Sprite<Object3DEventMap> | CSS2DObject"
+      },
+      "createLinkThreeObject": {
+        "arguments": {
+          "link": "any",
+          "sceneGraph": "SceneGraph",
+          "config": "IForceGraphRenderConfig"
+        },
+        "returnType": "CSS2DObject"
+      },
+      "applyForceGraphRenderConfig": {
+        "arguments": {
+          "instance": "ForceGraph3DInstance",
+          "config": "IForceGraphRenderConfig",
+          "sceneGraph": "SceneGraph",
+          "reheatSimulation": "boolean"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/force-graph/ForceGraphManager.ts"
+  },
+  "computeGraphBounds": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodes": "Node[]"
+    },
+    "returnType": "GraphBounds",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/exampleCode/forceGraph3dCamera.ts"
+  },
+  "setupDynamicCamera": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/exampleCode/forceGraph3dCamera.ts"
+  },
+  "SongAnnotation": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "SongAnnotationData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getTime": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "setTime": {
+        "arguments": {
+          "time": "number"
+        },
+        "returnType": "void"
+      },
+      "getText": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "setText": {
+        "arguments": {
+          "text": "string"
+        },
+        "returnType": "void"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/mp3/SongAnnotation.ts"
+  },
+  "runManagedAnimation": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "callback": "(elapsedTime: number, frameCount: number) => void",
+      "config": "AnimationConfig"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/animationRunner.ts"
+  },
+  "transitionToConfig": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "targetConfig": "IForceGraphRenderConfig",
+      "options": "TransitionOptions"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/transition.ts"
+  },
+  "playConfigSequence": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "configs": "TimedConfig[]",
+      "options": "SequenceConfig"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/configSequencePlayer.ts"
+  },
+  "generateRandomConfig": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "annotation": "SongAnnotation",
+      "config": "SongVisualizationConfig"
+    },
+    "returnType": "IForceGraphRenderConfig",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts"
+  },
+  "generateConfigsFromAnnotations": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "annotations": "SongAnnotationData[]",
+      "options": "Partial<ConfigGeneratorOptions>"
+    },
+    "returnType": "TimedConfig[]",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts"
+  },
+  "createAnnotationNodeSpawner": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotationData[]",
+      "config": "SpawnerConfig",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts"
+  },
+  "applyRandomEffects": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotation[]",
+      "config": "RandomEffectsConfig"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/applyRandomEffects2.ts"
+  },
+  "applyStaggeredEffects": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotation[]",
+      "config": "StaggeredEffectsConfig"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts"
+  },
+  "pulsateNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "sceneGraph": "SceneGraph",
+      "options": "PulsateOptions"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/pulsate.ts"
+  },
+  "createSongVisualizationTimeline": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "ForceGraph3DInstance",
+      "annotations": "SongAnnotation[]",
+      "options": "SongVisualizationConfig"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts"
+  },
+  "bfsQuery": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "dbpediaId": "string",
+      "limitLevel1": "number",
+      "limitLevel2": "number",
+      "totalLimit": "number"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/_experimental/yasgui/yasguiHelpers.ts"
+  },
+  "createBlobMesh": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "radius": "number",
+      "shells": "number",
+      "nodesPerShell": "number"
+    },
+    "returnType": "Graph",
+    "file": "/Users/andrew/workspace/unigraph/src/data/graphs/blobMesh.ts"
+  },
+  "GraphvizLayoutEngine": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "computeLayout": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "GraphvizLayoutType"
+        },
+        "returnType": "Promise<GraphvizOutput>"
+      },
+      "convertToDot": {
+        "arguments": {
+          "graph": "any"
+        },
+        "returnType": "string"
+      },
+      "extractPositionsFromDot": {
+        "arguments": {
+          "dot": "string"
+        },
+        "returnType": "ObjectOf<Position>"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/GraphvizLayoutEngine.ts"
+  },
+  "getLayoutWorker": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "Worker",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutEngine.ts"
+  },
+  "LayoutEngine": {
+    "kind": "class",
+    "properties": {
+      "isComputingSafeLayout": "boolean"
+    },
+    "references": {},
+    "methods": {
+      "resetComputationState": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "safeComputeLayout": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "LayoutEngineOption",
+          "nodeIds": "EntityIds<NodeId>"
+        },
+        "returnType": "Promise<ILayoutEngineResult>"
+      },
+      "cancelCurrentLayout": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "computeLayoutWithWorker": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "LayoutEngineOption"
+        },
+        "returnType": "Promise<ILayoutEngineResult>"
+      },
+      "computeLayout": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "layoutType": "LayoutEngineOption"
+        },
+        "returnType": "Promise<ILayoutEngineResult>"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutEngine.ts"
+  },
+  "applyLayoutAndTriggerAppUpdate": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "layout": "Layout"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/sceneGraphHooks.ts"
+  },
+  "computeLayoutAndTriggerAppUpdate": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "layout": "LayoutEngineOption",
+      "nodeSelection": "EntityIds<NodeId>"
+    },
+    "returnType": "Promise<ILayoutEngineResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/store/sceneGraphHooks.ts"
+  },
+  "computeLayoutAndTriggerUpdateForCurrentSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "layout": "LayoutEngineOption",
+      "nodeSelection": "EntityIds<NodeId>"
+    },
+    "returnType": "Promise<ILayoutEngineResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/store/sceneGraphHooks.ts"
+  },
+  "saveWebpage": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "webpage": "Webpage"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/webpagesApi.ts"
+  },
+  "listWebpages": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/webpagesApi.ts"
+  },
+  "getWebpage": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/webpagesApi.ts"
+  },
+  "saveAnnotation": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "annotation": "Annotation"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/annotationsApi.ts"
+  },
+  "listAnnotations": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/annotationsApi.ts"
+  },
+  "getAnnotation": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/annotationsApi.ts"
+  },
+  "serializeSceneGraphToJson": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toFromJson.ts"
+  },
+  "deserializeSceneGraphFromJson": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "json": "string"
+    },
+    "returnType": "SceneGraph",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toFromJson.ts"
+  },
+  "compressSceneGraphJsonForUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toFromJson.ts"
+  },
+  "decompressSceneGraphJsonFromUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "compressed": "string"
+    },
+    "returnType": "SceneGraph",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toFromJson.ts"
+  },
+  "saveProjectToSupabase": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts"
+  },
+  "listProjects": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "Promise<Omit<SupabaseProject, \"data\">[]>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts"
+  },
+  "getProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "params": "{ id?: string; name?: string; }"
+    },
+    "returnType": "Promise<SupabaseProject>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts"
+  },
+  "deleteProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string"
+    },
+    "returnType": "Promise<void>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts"
+  },
+  "updateProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string",
+      "updates": "UpdateProjectParams"
+    },
+    "returnType": "Promise<SupabaseProject>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts"
+  },
+  "exportProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string",
+      "projectName": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "deleteProjectAction": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string",
+      "projectName": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "copyProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string",
+      "newName": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "editProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string",
+      "updates": "UpdateProjectParams"
+    },
+    "returnType": "Promise<ProjectActionResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "loadProject": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "projectId": "string"
+    },
+    "returnType": "Promise<ProjectActionResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "handleProjectActionResult": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "result": "ProjectActionResult",
+      "onSuccess": "(data?: any) => void",
+      "onError": "(message: string) => void"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "confirmAction": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "message": "string"
+    },
+    "returnType": "Promise<boolean>",
+    "file": "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+  },
+  "extractReferences": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "typeStr": "string",
+      "allTypes": "Set<string>"
+    },
+    "returnType": "string[]",
+    "file": "/Users/andrew/workspace/unigraph/src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+  },
+  "demo_scenegraph_ast": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "Promise<SceneGraph>",
+    "file": "/Users/andrew/workspace/unigraph/src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+  },
+  "KnowledgeGraphBuilder": {
+    "kind": "class",
+    "properties": {
+      "graph": "Graph",
+      "thinkers2": "SceneGraph"
+    },
+    "references": {},
+    "methods": {
+      "addPerson": {
+        "arguments": {
+          "person": "Person"
+        },
+        "returnType": "void"
+      },
+      "addField": {
+        "arguments": {
+          "field": "Field"
+        },
+        "returnType": "void"
+      },
+      "addInitialNodes": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "buildGraph": {
+        "arguments": {},
+        "returnType": "Graph"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/data/graphs/thinkers1Graph.ts"
+  },
+  "loadSvgFromUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "url": "string",
+      "options": "any"
+    },
+    "returnType": "Promise<SceneGraph>",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/svgLoader.ts"
+  },
+  "findClosestNode": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodes": "any[]",
+      "x": "number",
+      "y": "number"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/svgLoader.ts"
+  },
+  "generateRandomNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "Graph",
+      "options": "RandomNodeOptions"
+    },
+    "returnType": "NodeId[]",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/graphUtils.ts"
+  },
+  "generateRandomEdges": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graph": "Graph",
+      "nodeIds": "NodeId[]",
+      "options": "RandomEdgeOptions"
+    },
+    "returnType": "number",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/graphUtils.ts"
+  },
+  "generateRandomGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "nodeOptions": "RandomNodeOptions",
+      "edgeOptions": "RandomEdgeOptions"
+    },
+    "returnType": "{ nodeIds: NodeId[]; edgeCount: number; }",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/graphUtils.ts"
+  },
+  "addRandomCluster": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "centerNodeId": "NodeId",
+      "clusterSize": "number",
+      "connectivityDensity": "number"
+    },
+    "returnType": "NodeId[]",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/graphUtils.ts"
+  },
+  "createStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "id": "string",
+      "title": "string",
+      "description": "string"
+    },
+    "returnType": "StoryCard",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "createMarkdownStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "id": "string",
+      "title": "string",
+      "markdownFile": "string"
+    },
+    "returnType": "StoryCard",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "addStoryCardToGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "card": "StoryCard"
+    },
+    "returnType": "NodeId",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "createStoryChoice": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "parentCardId": "NodeId",
+      "childCardId": "NodeId",
+      "choiceLabel": "string"
+    },
+    "returnType": "EdgeId",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "getChildStoryCards": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "parentCardId": "NodeId"
+    },
+    "returnType": "NodeId[]",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "getParentStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "childCardId": "NodeId"
+    },
+    "returnType": "NodeId",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "findRootStoryCard": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "NodeId",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "reconstructStoryHierarchy": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "rootNodeId": "NodeId"
+    },
+    "returnType": "{ card: StoryCard; children: { card: StoryCard; children: any[]; }[]; }",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "addStoryTreeToGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "storyTree": "any"
+    },
+    "returnType": "Map<string, NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "convertStoryCardToEntity": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "card": "StoryCard"
+    },
+    "returnType": "StoryCardEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "createStoryGraphFromTree": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "storyTree": "any"
+    },
+    "returnType": "SceneGraph",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "exportStoryTree": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "rootNodeId": "NodeId"
+    },
+    "returnType": "any",
+    "file": "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+  },
+  "StoryCard": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "StoryCardData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getTitle": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getDescription": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getAuthor": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getCreatedAt": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getDifficulty": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getImageUrl": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getPosition": {
+        "arguments": {},
+        "returnType": "Position"
+      },
+      "setTitle": {
+        "arguments": {
+          "title": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setDescription": {
+        "arguments": {
+          "description": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setAuthor": {
+        "arguments": {
+          "author": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setDifficulty": {
+        "arguments": {
+          "difficulty": "number"
+        },
+        "returnType": "StoryCard"
+      },
+      "setImageUrl": {
+        "arguments": {
+          "imageUrl": "string"
+        },
+        "returnType": "StoryCard"
+      },
+      "setPosition": {
+        "arguments": {
+          "position": "Position"
+        },
+        "returnType": "StoryCard"
+      },
+      "create": {
+        "arguments": {
+          "args": "StoryCardDataArgs"
+        },
+        "returnType": "StoryCard"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/core/types/StoryCard.ts"
+  },
+  "createFeatureSet": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "name": "string",
+      "features": "E"
+    },
+    "returnType": "FeatureSet<E>",
+    "file": "/Users/andrew/workspace/unigraph/src/data/graphs/Feature.ts"
+  },
+  "createSphereMesh": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "radius": "number",
+      "segments": "number"
+    },
+    "returnType": "Graph",
+    "file": "/Users/andrew/workspace/unigraph/src/data/graphs/sphereMesh.ts"
+  },
+  "createCylindricalMesh": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "radius": "number",
+      "latitudeCount": "number",
+      "longitudeCount": "number"
+    },
+    "returnType": "Graph",
+    "file": "/Users/andrew/workspace/unigraph/src/data/graphs/sphericalMesh.ts"
+  },
+  "getAllDemoSceneGraphCategories": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "string[]",
+    "file": "/Users/andrew/workspace/unigraph/src/data/DemoSceneGraphs.ts"
+  },
+  "getDemoSceneGraphTree": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "DemoSceneGraphTree",
+    "file": "/Users/andrew/workspace/unigraph/src/data/DemoSceneGraphs.ts"
+  },
+  "setShowLoadSceneGraphWindow": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowSaveSceneGraphDialog": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowSaveAsNewProjectDialog": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowPathAnalysis": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowEntityTables": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowEntityTablesV2": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowLayoutManager": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "mode": "\"save\" | \"load\"",
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowSceneGraphDetailView": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean",
+      "readOnly": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowFilterManager": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "mode": "\"save\" | \"load\"",
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowFilterWindow": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "setShowCommandPalette": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "open": "boolean"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts"
+  },
+  "WebLLMClient": {
+    "kind": "class",
+    "properties": {
+      "engine": "MLCEngine",
+      "model": "string",
+      "initProgressCallback": "(report: { progress: number; }) => void"
+    },
+    "references": {},
+    "methods": {
+      "getModel": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "load": {
+        "arguments": {},
+        "returnType": "Promise<void>"
+      },
+      "reload": {
+        "arguments": {},
+        "returnType": "Promise<void>"
+      },
+      "isLoaded": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "chatCompletion": {
+        "arguments": {
+          "messages": "ChatMessage[]",
+          "params": "ExtendedCompletionParams"
+        },
+        "returnType": "Promise<string>"
+      },
+      "streamChatCompletion": {
+        "arguments": {
+          "messages": "ChatMessage[]"
+        },
+        "returnType": "Promise<string>"
+      },
+      "getMessage": {
+        "arguments": {},
+        "returnType": "Promise<string>"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/WebLLMClient.ts"
+  },
+  "analyzeDocumentForTags": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "content": "string",
+      "llmClient": "WebLLMClient"
+    },
+    "returnType": "Promise<string[]>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
+  },
+  "analyzeAllDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "onProgress": "(progress: AnalysisProgress) => void"
+    },
+    "returnType": "Promise<DocumentTags>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
+  },
+  "applyTagsToDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "documentTags": "DocumentTags"
+    },
+    "returnType": "Promise<number>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
+  },
+  "exportTagsToJson": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "documentTags": "DocumentTags",
+      "filename": "string"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
+  },
+  "runConversationsAnalysis": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "applyTags": "boolean",
+      "exportFile": "boolean",
+      "onProgress": "(progress: AnalysisProgress) => void"
+    },
+    "returnType": "Promise<DocumentTags>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts"
+  },
+  "MenuConfig": {
+    "kind": "class",
+    "properties": {
+      "callbacks": "IMenuConfigCallbacks",
+      "sceneGraph": "SceneGraph",
+      "forceGraphInstance": "ForceGraph3DInstance"
+    },
+    "references": {},
+    "methods": {
+      "createGraphSubmenu": {
+        "arguments": {
+          "category": "SceneGraphCategory"
+        },
+        "returnType": "IMenuConfig"
+      },
+      "buildGraphMenu": {
+        "arguments": {},
+        "returnType": "IMenuConfig"
+      },
+      "getConfig": {
+        "arguments": {},
+        "returnType": "MenuConfigType"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/components/MenuConfig.ts"
+  },
+  "fetchChatGptConversation": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "Promise<ParsedConversation>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "parseConversationsJson": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "data": "any"
+    },
+    "returnType": "ParsedConversation[]",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "parseConversationItem": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "conversation": "any"
+    },
+    "returnType": "ParsedConversation",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "createFormattedConversationDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "conversation": "ParsedConversation"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "getRoleLabel": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "role": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "importChatGptConversation": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "url": "string",
+      "sceneGraph": "SceneGraph",
+      "createMessageNodes": "boolean"
+    },
+    "returnType": "Promise<NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "getLabelForRole": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "role": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "getTypeForRole": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "role": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "importChatGptFromFile": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "file": "File",
+      "sceneGraph": "SceneGraph",
+      "createMessageNodes": "boolean",
+      "conversationSampleRatio": "number"
+    },
+    "returnType": "Promise<NodeId | NodeId[]>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "importParsedConversation": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "conversation": "ParsedConversation",
+      "sceneGraph": "SceneGraph",
+      "fileName": "string",
+      "createMessageNodes": "boolean"
+    },
+    "returnType": "Promise<NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "downsampleConversations": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "conversations": "ParsedConversation[]",
+      "ratio": "number"
+    },
+    "returnType": "ParsedConversation[]",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+  },
+  "importConversations": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "jsonFilePath": "string",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "Promise<{ imported: number; matched: number; }>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
+  "createTopicNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "{ topics: number; connections: number; }",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
+  "createKeywordNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph",
+      "minOccurrences": "number"
+    },
+    "returnType": "{ keywords: number; connections: number; }",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
+  "importConversationsWithStructure": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "jsonFilePath": "string",
+      "sceneGraph": "SceneGraph",
+      "createTopics": "boolean",
+      "createKeywords": "boolean",
+      "keywordMinOccurrences": "number"
+    },
+    "returnType": "Promise<{ imported: number; matched: number; topics?: { topics: number; connections: number; }; keywords?: { keywords: number; connections: number; }; }>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
+  },
+  "SceneGraphController": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {},
+    "file": "/Users/andrew/workspace/unigraph/src/core/force-graph/SceneGraphController.ts"
+  },
+  "getSystemPromptWithCommands": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "getCommandsContextForLLM": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "callLLMStudioAPI": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "messages": "ChatMessage[]",
+      "options": "LLMStudioOptions"
+    },
+    "returnType": "Promise<string>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "normalizeMessages": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "messages": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]"
+    },
+    "returnType": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "getEnhancedSystemPrompt": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "checkLLMStudioAvailability": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "Promise<boolean>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "main": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/testLlm.ts"
+  },
+  "$convertMentionElement": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "domNode": "HTMLElement"
+    },
+    "returnType": "DOMConversionOutput",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes/MentionNode.ts"
+  },
+  "MentionNode": {
+    "kind": "class",
+    "properties": {
+      "__mention": "string"
+    },
+    "references": {},
+    "methods": {
+      "getType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "clone": {
+        "arguments": {
+          "node": "MentionNode"
+        },
+        "returnType": "MentionNode"
+      },
+      "importJSON": {
+        "arguments": {
+          "serializedNode": "SerializedMentionNode"
+        },
+        "returnType": "MentionNode"
+      },
+      "exportJSON": {
+        "arguments": {},
+        "returnType": "SerializedMentionNode"
+      },
+      "createDOM": {
+        "arguments": {
+          "config": "EditorConfig"
+        },
+        "returnType": "HTMLElement"
+      },
+      "exportDOM": {
+        "arguments": {},
+        "returnType": "DOMExportOutput"
+      },
+      "importDOM": {
+        "arguments": {},
+        "returnType": "DOMConversionMap"
+      },
+      "isTextEntity": {
+        "arguments": {},
+        "returnType": "true"
+      },
+      "canInsertTextBefore": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "canInsertTextAfter": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isSegmented": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isSimpleText": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isInert": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isToken": {
+        "arguments": {},
+        "returnType": "boolean"
+      }
+    },
+    "extends": "TextNode",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes/MentionNode.ts"
+  },
+  "$createMentionNode": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "mentionName": "string",
+      "textContent": "string"
+    },
+    "returnType": "MentionNode",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes/MentionNode.ts"
+  },
+  "$isMentionNode": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "node": "LexicalNode"
+    },
+    "returnType": "boolean",
+    "file": "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes/MentionNode.ts"
+  },
+  "getDownstreamNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+  },
+  "getUpstreamNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+  },
+  "getAllPaths": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+  },
+  "findOriginNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<NodeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+  },
+  "getEdgesBetweenNodes": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodes": "EntityIds<NodeId>",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "EntityIds<EdgeId>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+  },
+  "getEntirePath": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "nodeIds": "NodeId[]",
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "{ nodes: EntityIds<NodeId>; edges: EntityIds<EdgeId>; }",
+    "file": "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+  },
+  "loadMarkdownFile": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "path": "string"
+    },
+    "returnType": "Promise<string>",
+    "file": "/Users/andrew/workspace/unigraph/src/components/markdown/markdownLoader.ts"
+  },
+  "extractFirstImageSrc": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "markdown": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/utils/markdownUtils.ts"
+  },
+  "removeFirstImage": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "markdown": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/components/utils/markdownUtils.ts"
+  },
+  "SceneGraphCache": {
+    "kind": "class",
+    "properties": {
+      "sceneGraph": "SceneGraph",
+      "allTags": "Map<any, Set<string>>",
+      "allTypes": "Map<any, Set<string>>"
+    },
+    "references": {},
+    "methods": {
+      "rebuildCache": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getTags": {
+        "arguments": {
+          "entityType": "GraphEntityType"
+        },
+        "returnType": "Set<string>"
+      },
+      "getTypes": {
+        "arguments": {
+          "entityType": "GraphEntityType"
+        },
+        "returnType": "Set<string>"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/controllers/SceneGraphCache.ts"
+  },
+  "ForceGraphInstanceController": {
+    "kind": "class",
+    "properties": {
+      "sceneGraph": "SceneGraph",
+      "forceGraphInstance": "ForceGraph3DInstance"
+    },
+    "references": {},
+    "methods": {
+      "bindEventsToGraphInstance": {
+        "arguments": {
+          "eventHandlers": "IForceGraphEventHandlers"
+        },
+        "returnType": "void"
+      },
+      "initializeInstance": {
+        "arguments": {
+          "dom": "HTMLElement",
+          "appConfig": "AppConfig"
+        },
+        "returnType": "ForceGraph3DInstance"
+      },
+      "getInstance": {
+        "arguments": {},
+        "returnType": "ForceGraph3DInstance"
+      },
+      "applyFixedLayout": {
+        "arguments": {
+          "positions": "ObjectOf<Position>"
+        },
+        "returnType": "void"
+      },
+      "setBackgroundColor": {
+        "arguments": {
+          "color": "string"
+        },
+        "returnType": "void"
+      },
+      "setHighlightedNodes": {
+        "arguments": {
+          "nodeIds": "NodeId[]"
+        },
+        "returnType": "void"
+      }
+    },
+    "implements": [
+      "IForceGraphInstanceController"
+    ],
+    "file": "/Users/andrew/workspace/unigraph/src/core/force-graph/forceGraphController.ts"
+  },
+  "deserializeSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "serializedGraph": "SerializedSceneGraph"
+    },
+    "returnType": "SceneGraph",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutWorker.ts"
+  },
+  "handleComputeLayout": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "message": "LayoutWorkerMessage"
+    },
+    "returnType": "Promise<ILayoutEngineResult>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutWorker.ts"
+  },
+  "serializeSongAnnotationContainerToJson": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "container": "EntitiesContainer<SongAnnotationId, SongAnnotation>"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toFromSongAnnotationContainer.ts"
+  },
+  "deserializeSongAnnotationContainerFromJson": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "json": "string"
+    },
+    "returnType": "EntitiesContainer<SongAnnotationId, SongAnnotation>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toFromSongAnnotationContainer.ts"
+  },
+  "deserializeDotToSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "dotContent": "string"
+    },
+    "returnType": "SceneGraph",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/fromDot.ts"
+  },
+  "deserializeGraphmlToSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "graphmlContent": "string"
+    },
+    "returnType": "Promise<SceneGraph>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/fromGraphml.ts"
+  },
+  "loadSceneGraphFromFile": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "file": "File"
+    },
+    "returnType": "Promise<SceneGraph>",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/sceneGraphLoader.ts"
+  },
+  "serializeSceneGraphToDot": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toDot.ts"
+  },
+  "serializeSceneGraphToGraphml": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "sceneGraph": "SceneGraph"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/core/serializers/toGraphml.ts"
+  },
+  "PersistentStoreManager": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "openDB": {
+        "arguments": {},
+        "returnType": "Promise<IDBDatabase>"
+      },
+      "checkIdExists": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<boolean>"
+      },
+      "generateUniqueId": {
+        "arguments": {},
+        "returnType": "Promise<string>"
+      },
+      "generateThumbnail": {
+        "arguments": {
+          "_sceneGraph": "SceneGraph"
+        },
+        "returnType": "Promise<string>"
+      },
+      "saveSceneGraph": {
+        "arguments": {
+          "sceneGraph": "SceneGraph",
+          "options": "{ id?: string; createThumbnail?: boolean; }"
+        },
+        "returnType": "Promise<string>"
+      },
+      "loadSceneGraph": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<SceneGraph>"
+      },
+      "listSceneGraphs": {
+        "arguments": {},
+        "returnType": "Promise<StoredSceneGraphInfo[]>"
+      },
+      "deleteSceneGraph": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<boolean>"
+      },
+      "exportSceneGraph": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "Promise<Blob>"
+      },
+      "importSceneGraph": {
+        "arguments": {
+          "file": "File"
+        },
+        "returnType": "Promise<string>"
+      },
+      "updateSceneGraph": {
+        "arguments": {
+          "id": "string",
+          "sceneGraph": "SceneGraph",
+          "options": "{ createThumbnail?: boolean; }"
+        },
+        "returnType": "Promise<string>"
+      }
+    },
+    "implements": [
+      "IPersistentStore"
+    ],
+    "file": "/Users/andrew/workspace/unigraph/src/core/storage/PersistentStoreManager.ts"
+  },
+  "ImageAnnotation": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "getData": {
+        "arguments": {},
+        "returnType": "ImageAnnotationData"
+      },
+      "getEntityType": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "create": {
+        "arguments": {
+          "args": "ImageAnnotationDataArgs"
+        },
+        "returnType": "ImageAnnotation"
+      }
+    },
+    "extends": "AbstractEntity",
+    "file": "/Users/andrew/workspace/unigraph/src/core/types/ImageAnnotation.ts"
+  },
+  "CameraHelper": {
+    "kind": "class",
+    "properties": {
+      "camera": "PerspectiveCamera | OrthographicCamera",
+      "controls": "OrbitControls",
+      "scene": "Scene",
+      "isAnimating": "boolean"
+    },
+    "references": {},
+    "methods": {
+      "centerOnObject": {
+        "arguments": {
+          "target": "Object3D<Object3DEventMap>",
+          "options": "{ duration?: number; distance?: number; offset?: Vector3; immediate?: boolean; onComplete?: () => void; }"
+        },
+        "returnType": "void"
+      },
+      "calculateCameraPosition": {
+        "arguments": {
+          "targetPos": "Vector3",
+          "distance": "number",
+          "offset": "Vector3"
+        },
+        "returnType": "Vector3"
+      },
+      "animateCameraToPosition": {
+        "arguments": {
+          "targetCameraPosition": "Vector3",
+          "lookAtPosition": "Vector3",
+          "duration": "number",
+          "onComplete": "() => void"
+        },
+        "returnType": "void"
+      },
+      "setCameraPosition": {
+        "arguments": {
+          "position": "Vector3",
+          "lookAtPosition": "Vector3"
+        },
+        "returnType": "void"
+      },
+      "easeInOutCubic": {
+        "arguments": {
+          "t": "number"
+        },
+        "returnType": "number"
+      },
+      "isCurrentlyAnimating": {
+        "arguments": {},
+        "returnType": "boolean"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/CameraHelper.ts"
+  },
+  "applyParticleEffects": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "svgElements": "SVGElement[]",
+      "container": "HTMLDivElement",
+      "renderer": "WebGLRenderer",
+      "scene": "Scene",
+      "camera": "PerspectiveCamera"
+    },
+    "returnType": "void",
+    "file": "/Users/andrew/workspace/unigraph/src/core/webgl/simulations/applyParticleEffects.ts"
+  },
+  "commandMatchesQueryUnordered": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "command": "Command",
+      "query": "string"
+    },
+    "returnType": "boolean",
+    "file": "/Users/andrew/workspace/unigraph/src/hooks/commandPaletteUtils.ts"
+  },
+  "getCommandMatchScore": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "command": "Command",
+      "query": "string"
+    },
+    "returnType": "number",
+    "file": "/Users/andrew/workspace/unigraph/src/hooks/commandPaletteUtils.ts"
+  },
+  "fetchSvgSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "svgUrl": "string"
+    },
+    "returnType": "Promise<{ sceneGraph: SceneGraph; error: Error; }>",
+    "file": "/Users/andrew/workspace/unigraph/src/hooks/useSvgSceneGraph.ts"
+  },
+  "useSvgSceneGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "svgUrl": "string"
+    },
+    "returnType": "{ sceneGraph: SceneGraph; loading: boolean; error: Error; }",
+    "file": "/Users/andrew/workspace/unigraph/src/hooks/useSvgSceneGraph.ts"
+  },
+  "DisplayConfigManager": {
+    "kind": "class",
+    "properties": {},
+    "references": {},
+    "methods": {
+      "addKeyToDisplayConfig": {
+        "arguments": {
+          "key": "string",
+          "config": "DisplayConfigData",
+          "mode": "\"type\" | \"tag\"",
+          "entityType": "GraphEntityType",
+          "sceneGraph": "SceneGraph"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "/Users/andrew/workspace/unigraph/src/store/TagManager.ts"
+  },
+  "replaceUnigraphUrlsWithLocalhost": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "html": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/urlUtils.ts"
+  },
+  "getUnigraphBaseUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {},
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/urlUtils.ts"
+  },
+  "fixWikipediaLinks": {
+    "kind": "function",
+    "properties": {},
+    "references": {},
+    "arguments": {
+      "html": "string",
+      "language": "string"
+    },
+    "returnType": "string",
+    "file": "/Users/andrew/workspace/unigraph/src/utils/urlUtils.ts"
+  },
+  "_files": {
+    "/Users/andrew/workspace/unigraph/src/core/model/entity/abstractEntity.ts": [
+      "fromDefault",
+      "AbstractEntity",
+      "Entity"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/entity/entityIds.ts": [
+      "EntityIds"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/entity/entitiesContainer.ts": [
+      "EntitiesContainer"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/Node.ts": [
+      "Node"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/Edge.ts": [
+      "Edge"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/Graph.ts": [
+      "Graph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts": [
+      "createGraphologyGraph",
+      "normalizePositions",
+      "scalePositions",
+      "centerPositions",
+      "fitToRect"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/GraphBuilder.ts": [
+      "GraphBuilder"
+    ],
+    "/Users/andrew/workspace/unigraph/src/controllers/RenderingManager.ts": [
+      "RenderingManager"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/entity/entityCache.ts": [
+      "EntityCache"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/SceneGraph.ts": [
+      "SceneGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/layouts/GraphologyLayoutEngine.ts": [
+      "GraphologyLayoutEngine",
+      "extractPositionsFromGraphlogyGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model/DisplayManager.ts": [
+      "DisplayManager"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/webgl/webglHelpers.ts": [
+      "extractIntersection",
+      "extractIntersections",
+      "getImagePixelCoordinates",
+      "convertPixelCoordinatesToPositions"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/webgl/selectionArea.ts": [
+      "extractSelectionBoxGroups"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/force-graph/forceGraphHelpers.ts": [
+      "findNodeInForceGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/force-graph/createForceGraph.ts": [
+      "selectNodesInSelectionBox",
+      "updateHighlight"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/force-graph/ForceGraphManager.ts": [
+      "ForceGraphManager"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/exampleCode/forceGraph3dCamera.ts": [
+      "computeGraphBounds",
+      "setupDynamicCamera"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/mp3/SongAnnotation.ts": [
+      "SongAnnotation"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/animationRunner.ts": [
+      "runManagedAnimation"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/transition.ts": [
+      "transitionToConfig"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/configSequencePlayer.ts": [
+      "playConfigSequence"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts": [
+      "generateRandomConfig",
+      "createSongVisualizationTimeline"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts": [
+      "generateConfigsFromAnnotations"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts": [
+      "createAnnotationNodeSpawner"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/applyRandomEffects2.ts": [
+      "applyRandomEffects"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts": [
+      "applyStaggeredEffects"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/pulsate.ts": [
+      "pulsateNodes"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/yasgui/yasguiHelpers.ts": [
+      "bfsQuery"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/graphs/blobMesh.ts": [
+      "createBlobMesh"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/layouts/GraphvizLayoutEngine.ts": [
+      "GraphvizLayoutEngine"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutEngine.ts": [
+      "getLayoutWorker",
+      "LayoutEngine"
+    ],
+    "/Users/andrew/workspace/unigraph/src/store/sceneGraphHooks.ts": [
+      "applyLayoutAndTriggerAppUpdate",
+      "computeLayoutAndTriggerAppUpdate",
+      "computeLayoutAndTriggerUpdateForCurrentSceneGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/api/webpagesApi.ts": [
+      "saveWebpage",
+      "listWebpages",
+      "getWebpage"
+    ],
+    "/Users/andrew/workspace/unigraph/src/api/annotationsApi.ts": [
+      "saveAnnotation",
+      "listAnnotations",
+      "getAnnotation"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/toFromJson.ts": [
+      "serializeSceneGraphToJson",
+      "deserializeSceneGraphFromJson",
+      "compressSceneGraphJsonForUrl",
+      "decompressSceneGraphJsonFromUrl"
+    ],
+    "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts": [
+      "saveProjectToSupabase",
+      "listProjects",
+      "getProject",
+      "deleteProject",
+      "updateProject"
+    ],
+    "/Users/andrew/workspace/unigraph/src/api/projectActions.ts": [
+      "exportProject",
+      "deleteProjectAction",
+      "copyProject",
+      "editProject",
+      "loadProject",
+      "handleProjectActionResult",
+      "confirmAction"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/demo-graphs/interfaceAstToSceneGraph.ts": [
+      "extractReferences",
+      "demo_scenegraph_ast"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/graphs/thinkers1Graph.ts": [
+      "KnowledgeGraphBuilder"
+    ],
+    "/Users/andrew/workspace/unigraph/src/utils/svgLoader.ts": [
+      "loadSvgFromUrl",
+      "findClosestNode"
+    ],
+    "/Users/andrew/workspace/unigraph/src/utils/graphUtils.ts": [
+      "generateRandomNodes",
+      "generateRandomEdges",
+      "generateRandomGraph",
+      "addRandomCluster"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts": [
+      "createStoryCard",
+      "createMarkdownStoryCard",
+      "addStoryCardToGraph",
+      "createStoryChoice",
+      "getChildStoryCards",
+      "getParentStoryCard",
+      "findRootStoryCard",
+      "reconstructStoryHierarchy",
+      "addStoryTreeToGraph",
+      "convertStoryCardToEntity",
+      "createStoryGraphFromTree",
+      "exportStoryTree"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/types/StoryCard.ts": [
+      "StoryCard"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/graphs/Feature.ts": [
+      "createFeatureSet"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/graphs/sphereMesh.ts": [
+      "createSphereMesh"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/graphs/sphericalMesh.ts": [
+      "createCylindricalMesh"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/DemoSceneGraphs.ts": [
+      "getAllDemoSceneGraphCategories",
+      "getDemoSceneGraphTree"
+    ],
+    "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts": [
+      "setShowLoadSceneGraphWindow",
+      "setShowSaveSceneGraphDialog",
+      "setShowSaveAsNewProjectDialog",
+      "setShowPathAnalysis",
+      "setShowEntityTables",
+      "setShowEntityTablesV2",
+      "setShowLayoutManager",
+      "setShowSceneGraphDetailView",
+      "setShowFilterManager",
+      "setShowFilterWindow",
+      "setShowCommandPalette"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/WebLLMClient.ts": [
+      "WebLLMClient"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts": [
+      "analyzeDocumentForTags",
+      "analyzeAllDocuments",
+      "applyTagsToDocuments",
+      "exportTagsToJson",
+      "runConversationsAnalysis"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/MenuConfig.ts": [
+      "MenuConfig"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts": [
+      "fetchChatGptConversation",
+      "parseConversationsJson",
+      "parseConversationItem",
+      "createFormattedConversationDocument",
+      "getRoleLabel",
+      "importChatGptConversation",
+      "getLabelForRole",
+      "getTypeForRole",
+      "importChatGptFromFile",
+      "importParsedConversation",
+      "downsampleConversations"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/conversationsImporter.ts": [
+      "importConversations",
+      "createTopicNodes",
+      "createKeywordNodes",
+      "importConversationsWithStructure"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/force-graph/SceneGraphController.ts": [
+      "SceneGraphController"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts": [
+      "getSystemPromptWithCommands",
+      "getCommandsContextForLLM",
+      "callLLMStudioAPI",
+      "normalizeMessages",
+      "getEnhancedSystemPrompt",
+      "checkLLMStudioAvailability"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/testLlm.ts": [
+      "main"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes/MentionNode.ts": [
+      "$convertMentionElement",
+      "MentionNode",
+      "$createMentionNode",
+      "$isMentionNode"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts": [
+      "getDownstreamNodes",
+      "getUpstreamNodes",
+      "getAllPaths",
+      "findOriginNodes",
+      "getEdgesBetweenNodes",
+      "getEntirePath"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/markdown/markdownLoader.ts": [
+      "loadMarkdownFile"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/utils/markdownUtils.ts": [
+      "extractFirstImageSrc",
+      "removeFirstImage"
+    ],
+    "/Users/andrew/workspace/unigraph/src/controllers/SceneGraphCache.ts": [
+      "SceneGraphCache"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/force-graph/forceGraphController.ts": [
+      "ForceGraphInstanceController"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutWorker.ts": [
+      "deserializeSceneGraph",
+      "handleComputeLayout"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/toFromSongAnnotationContainer.ts": [
+      "serializeSongAnnotationContainerToJson",
+      "deserializeSongAnnotationContainerFromJson"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/fromDot.ts": [
+      "deserializeDotToSceneGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/fromGraphml.ts": [
+      "deserializeGraphmlToSceneGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/sceneGraphLoader.ts": [
+      "loadSceneGraphFromFile"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/toDot.ts": [
+      "serializeSceneGraphToDot"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers/toGraphml.ts": [
+      "serializeSceneGraphToGraphml"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/storage/PersistentStoreManager.ts": [
+      "PersistentStoreManager"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/types/ImageAnnotation.ts": [
+      "ImageAnnotation"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/webgl/CameraHelper.ts": [
+      "CameraHelper"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/webgl/simulations/applyParticleEffects.ts": [
+      "applyParticleEffects"
+    ],
+    "/Users/andrew/workspace/unigraph/src/hooks/commandPaletteUtils.ts": [
+      "commandMatchesQueryUnordered",
+      "getCommandMatchScore"
+    ],
+    "/Users/andrew/workspace/unigraph/src/hooks/useSvgSceneGraph.ts": [
+      "fetchSvgSceneGraph",
+      "useSvgSceneGraph"
+    ],
+    "/Users/andrew/workspace/unigraph/src/store/TagManager.ts": [
+      "DisplayConfigManager"
+    ],
+    "/Users/andrew/workspace/unigraph/src/utils/urlUtils.ts": [
+      "replaceUnigraphUrlsWithLocalhost",
+      "getUnigraphBaseUrl",
+      "fixWikipediaLinks"
+    ]
+  },
+  "_directories": {
+    "/Users/andrew/workspace/unigraph/src/core/model/entity": [
+      "/Users/andrew/workspace/unigraph/src/core/model/entity/abstractEntity.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/entity/entityIds.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/entity/entitiesContainer.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/entity/entityCache.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/model": [
+      "/Users/andrew/workspace/unigraph/src/core/model/Node.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/Edge.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/Graph.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/GraphBuilder.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/SceneGraph.ts",
+      "/Users/andrew/workspace/unigraph/src/core/model/DisplayManager.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/layouts": [
+      "/Users/andrew/workspace/unigraph/src/core/layouts/layoutHelpers.ts",
+      "/Users/andrew/workspace/unigraph/src/core/layouts/GraphologyLayoutEngine.ts",
+      "/Users/andrew/workspace/unigraph/src/core/layouts/GraphvizLayoutEngine.ts",
+      "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutEngine.ts",
+      "/Users/andrew/workspace/unigraph/src/core/layouts/LayoutWorker.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/controllers": [
+      "/Users/andrew/workspace/unigraph/src/controllers/RenderingManager.ts",
+      "/Users/andrew/workspace/unigraph/src/controllers/SceneGraphCache.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/webgl": [
+      "/Users/andrew/workspace/unigraph/src/core/webgl/webglHelpers.ts",
+      "/Users/andrew/workspace/unigraph/src/core/webgl/selectionArea.ts",
+      "/Users/andrew/workspace/unigraph/src/core/webgl/CameraHelper.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/force-graph": [
+      "/Users/andrew/workspace/unigraph/src/core/force-graph/forceGraphHelpers.ts",
+      "/Users/andrew/workspace/unigraph/src/core/force-graph/createForceGraph.ts",
+      "/Users/andrew/workspace/unigraph/src/core/force-graph/ForceGraphManager.ts",
+      "/Users/andrew/workspace/unigraph/src/core/force-graph/SceneGraphController.ts",
+      "/Users/andrew/workspace/unigraph/src/core/force-graph/forceGraphController.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/exampleCode": [
+      "/Users/andrew/workspace/unigraph/src/_experimental/exampleCode/forceGraph3dCamera.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/mp3": [
+      "/Users/andrew/workspace/unigraph/src/_experimental/mp3/SongAnnotation.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics": [
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/animationRunner.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/transition.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/configSequencePlayer.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/songAnnotationTransitions.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/annotationConfigGenerator.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/annotationNodeSpawner.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/applyRandomEffects2.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/applyStaggeredEffects.ts",
+      "/Users/andrew/workspace/unigraph/src/_experimental/force-graph-dynamics/pulsate.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/_experimental/yasgui": [
+      "/Users/andrew/workspace/unigraph/src/_experimental/yasgui/yasguiHelpers.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/graphs": [
+      "/Users/andrew/workspace/unigraph/src/data/graphs/blobMesh.ts",
+      "/Users/andrew/workspace/unigraph/src/data/graphs/thinkers1Graph.ts",
+      "/Users/andrew/workspace/unigraph/src/data/graphs/Feature.ts",
+      "/Users/andrew/workspace/unigraph/src/data/graphs/sphereMesh.ts",
+      "/Users/andrew/workspace/unigraph/src/data/graphs/sphericalMesh.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/store": [
+      "/Users/andrew/workspace/unigraph/src/store/sceneGraphHooks.ts",
+      "/Users/andrew/workspace/unigraph/src/store/dialogStore.ts",
+      "/Users/andrew/workspace/unigraph/src/store/TagManager.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/api": [
+      "/Users/andrew/workspace/unigraph/src/api/webpagesApi.ts",
+      "/Users/andrew/workspace/unigraph/src/api/annotationsApi.ts",
+      "/Users/andrew/workspace/unigraph/src/api/supabaseProjects.ts",
+      "/Users/andrew/workspace/unigraph/src/api/projectActions.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/serializers": [
+      "/Users/andrew/workspace/unigraph/src/core/serializers/toFromJson.ts",
+      "/Users/andrew/workspace/unigraph/src/core/serializers/toFromSongAnnotationContainer.ts",
+      "/Users/andrew/workspace/unigraph/src/core/serializers/fromDot.ts",
+      "/Users/andrew/workspace/unigraph/src/core/serializers/fromGraphml.ts",
+      "/Users/andrew/workspace/unigraph/src/core/serializers/sceneGraphLoader.ts",
+      "/Users/andrew/workspace/unigraph/src/core/serializers/toDot.ts",
+      "/Users/andrew/workspace/unigraph/src/core/serializers/toGraphml.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/demo-graphs": [
+      "/Users/andrew/workspace/unigraph/src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/utils": [
+      "/Users/andrew/workspace/unigraph/src/utils/svgLoader.ts",
+      "/Users/andrew/workspace/unigraph/src/utils/graphUtils.ts",
+      "/Users/andrew/workspace/unigraph/src/utils/urlUtils.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data/models": [
+      "/Users/andrew/workspace/unigraph/src/data/models/StoryCard.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/types": [
+      "/Users/andrew/workspace/unigraph/src/core/types/StoryCard.ts",
+      "/Users/andrew/workspace/unigraph/src/core/types/ImageAnnotation.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/data": [
+      "/Users/andrew/workspace/unigraph/src/data/DemoSceneGraphs.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services": [
+      "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/WebLLMClient.ts",
+      "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/runConversationsAnalysis.ts",
+      "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/conversationsImporter.ts",
+      "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/llmStudioService.ts",
+      "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/services/testLlm.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components": [
+      "/Users/andrew/workspace/unigraph/src/components/MenuConfig.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter": [
+      "/Users/andrew/workspace/unigraph/src/components/applets/ChatGptImporter/chatGptImportUtils.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes": [
+      "/Users/andrew/workspace/unigraph/src/components/applets/Lexical/nodes/MentionNode.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms": [
+      "/Users/andrew/workspace/unigraph/src/core/graphAlgorithms/getAllPaths.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/markdown": [
+      "/Users/andrew/workspace/unigraph/src/components/markdown/markdownLoader.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/components/utils": [
+      "/Users/andrew/workspace/unigraph/src/components/utils/markdownUtils.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/storage": [
+      "/Users/andrew/workspace/unigraph/src/core/storage/PersistentStoreManager.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/core/webgl/simulations": [
+      "/Users/andrew/workspace/unigraph/src/core/webgl/simulations/applyParticleEffects.ts"
+    ],
+    "/Users/andrew/workspace/unigraph/src/hooks": [
+      "/Users/andrew/workspace/unigraph/src/hooks/commandPaletteUtils.ts",
+      "/Users/andrew/workspace/unigraph/src/hooks/useSvgSceneGraph.ts"
+    ]
+  }
+}
