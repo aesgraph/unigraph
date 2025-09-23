@@ -1,0 +1,100 @@
+/* UnigraphIframe Component Styles */
+
+.unigraph-iframe-container {
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unigraph-iframe-container:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.unigraph-iframe-container button {
+  transition: all 0.2s ease;
+}
+
+.unigraph-iframe-container button:hover {
+  background: rgba(255, 255, 255, 1) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.unigraph-iframe-container button:active {
+  transform: translateY(0);
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Fullscreen styles */
+.unigraph-iframe-container:fullscreen {
+  background: white;
+  padding: 20px;
+}
+
+.unigraph-iframe-container:fullscreen iframe {
+  border-radius: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .unigraph-iframe-container {
+    border-radius: 4px;
+  }
+
+  .unigraph-iframe-container button {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .unigraph-iframe-container {
+    background-color: #2a2a2a;
+    border-color: #444;
+  }
+
+  .unigraph-iframe-container button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: #555;
+    color: #fff;
+  }
+
+  .unigraph-iframe-container button:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+/* Error state styling */
+.unigraph-iframe-container .error-state {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Loading state styling */
+.unigraph-iframe-container .loading-state {
+  background: rgba(33, 150, 243, 0.1);
+}
+
+/* Resize handle hover effect */
+.unigraph-iframe-container .resize-handle:hover {
+  background: linear-gradient(
+    -45deg,
+    transparent 30%,
+    #999 30%,
+    #999 70%,
+    transparent 70%
+  ) !important;
+}

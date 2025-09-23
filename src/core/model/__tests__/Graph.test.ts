@@ -24,6 +24,16 @@ describe("Graph", () => {
     expect(Array.from(graph.getEdges()).length).toBe(1);
   });
 
+  it("should create an edge with length", () => {
+    const _source = graph.createNode({ id: "SourceNode" });
+    const _target = graph.createNode({ id: "TargetNode" });
+    const edge = graph.createEdge("SourceNode", "TargetNode", { length: 150 });
+    expect(edge.getSource()).toBe("SourceNode");
+    expect(edge.getTarget()).toBe("TargetNode");
+    expect(edge.getLength()).toBe(150);
+    expect(Array.from(graph.getEdges()).length).toBe(1);
+  });
+
   it("should add and remove tags from nodes", () => {
     const node = graph.createNode({ id: "TestNode" });
     node.addTag("testTag");

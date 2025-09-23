@@ -1,0 +1,776 @@
+/* Base container with light theme */
+.lexical-editor-container {
+  display: flex;
+  flex-direction: column;
+  border: none; /* Remove default border that might be causing lines */
+  border-radius: 4px;
+  overflow: hidden;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  height: 100%; /* Take full height of parent */
+  min-height: 100%; /* Ensure minimum height */
+  box-sizing: border-box; /* Ensure padding and border are included in the total width/height */
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Toolbar styling with right-aligned buttons */
+.lexical-toolbar {
+  display: flex;
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f8f8;
+  flex-shrink: 0; /* Prevent toolbar from shrinking */
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between; /* Space between tags and buttons */
+  align-items: center;
+}
+
+/* Add a flexible spacer to push buttons to the right */
+.toolbar-spacer {
+  flex: 1;
+}
+
+/* Container for right-aligned buttons */
+.toolbar-right-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.lexical-toolbar-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+  color: #333;
+}
+
+.lexical-toolbar-button.last {
+  margin-right: 0;
+}
+
+.lexical-toolbar-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Content area */
+.lexical-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  height: 100%; /* Take full height */
+  min-height: 0; /* Allow flex to shrink if needed */
+  width: 100%; /* Ensure full width */
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+}
+
+.editor-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex; /* Add flex display */
+  flex-direction: column; /* Stack children vertically */
+  height: 100%; /* Take full height */
+  width: 100%; /* Ensure full width */
+  margin: 0; /* Remove any margin */
+}
+
+.editor-inner {
+  background: #fff;
+  position: relative;
+  height: 100%; /* Take full height */
+  overflow-y: auto;
+  flex: 1; /* Take remaining space */
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Ensure full width */
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+}
+
+.editor-input {
+  flex: 1; /* Make editor input take full space */
+  min-height: 100%; /* Minimum height should be 100% */
+  padding: 16px;
+  position: relative;
+  tab-size: 1;
+  outline: 0;
+  caret-color: var(--editor-text-color, #333);
+  box-sizing: border-box; /* Include padding in height calculation */
+  color: var(--editor-text-color, #333);
+}
+
+.editor-placeholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 16px;
+  left: 16px;
+  user-select: none;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* Hide placeholder when editor has content */
+.editor-input[data-lexical-editor="true"][contenteditable="true"]:focus
+  + .editor-placeholder,
+.editor-input[data-lexical-editor="true"]:not(:empty) + .editor-placeholder {
+  display: none;
+}
+
+/* Make sure the placeholder is not shown when the editor has content */
+.editor-input[data-lexical-editor="true"]:not(.editor-empty)
+  ~ .editor-placeholder {
+  display: none;
+}
+
+/* Hide placeholder when focused even if empty */
+.editor-inner:focus-within .editor-placeholder {
+  display: none;
+}
+
+/* Additional styles for better editor experience */
+.editor-input:focus {
+  outline: none;
+}
+
+.editor-paragraph {
+  margin: 0;
+  position: relative;
+  color: var(--editor-text-color, #333);
+}
+
+.preview-section {
+  flex: 1;
+  border-left: 1px solid #e0e0e0;
+  padding: 16px;
+  overflow-y: auto;
+  background-color: #f8f8f8;
+}
+
+/* Toolbar container that wraps toolbar and autosave indicator */
+.toolbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f8f8;
+  width: 100%;
+  position: relative;
+}
+
+/* Toolbar styles */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8px;
+  flex-shrink: 0; /* Prevent toolbar from shrinking */
+  margin: 0; /* Remove any margin */
+  box-sizing: border-box; /* Include padding in width calculation */
+  align-items: center;
+  flex: 1; /* Let toolbar take available space */
+  width: calc(100% - 150px); /* Reserve space for the autosave indicator */
+}
+
+.toolbar-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.toolbar-right {
+  display: flex;
+  gap: 8px;
+  margin-left: auto; /* Push to the right */
+  padding-right: 8px;
+  z-index: 2; /* Ensure buttons appear above other elements */
+}
+
+.toolbar-item {
+  border: 0;
+  display: flex;
+  background: none;
+  border-radius: 4px;
+  padding: 6px;
+  cursor: pointer;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.toolbar-item:hover {
+  background-color: #e8e8e8;
+}
+
+.divider {
+  width: 1px;
+  background-color: #e0e0e0;
+  margin: 0 8px;
+}
+
+/* Text formatting */
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-text-underlineStrikethrough {
+  text-decoration: underline line-through;
+}
+
+.editor-text-code {
+  background-color: #f0f0f0;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #333;
+}
+
+/* Headings */
+.editor-heading-h1 {
+  font-size: 24px;
+  color: #333;
+  font-weight: 700;
+  margin: 16px 0 8px;
+}
+
+.editor-heading-h2 {
+  font-size: 20px;
+  color: #333;
+  font-weight: 700;
+  margin: 14px 0 8px;
+}
+
+.editor-heading-h3 {
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+  margin: 12px 0 8px;
+}
+
+/* Lists */
+.editor-list-ol {
+  padding: 0;
+  margin: 0 0 0 16px;
+  color: #333;
+}
+
+.editor-list-ul {
+  padding: 0;
+  margin: 0 0 0 16px;
+  color: #333;
+}
+
+.editor-listitem {
+  margin: 4px 0;
+  color: #333;
+}
+
+.editor-nested-listitem {
+  list-style-type: none;
+  color: #333;
+}
+
+/* Quote */
+.editor-quote {
+  border-left: 4px solid #e0e0e0;
+  margin: 16px 0;
+  padding-left: 16px;
+  color: #666;
+}
+
+/* Error state */
+.editor-error {
+  color: #e53935;
+  padding: 16px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+/* Tag Input styles */
+.tag-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-right: 8px;
+  flex: 1;
+}
+
+.tag-icon {
+  color: #666;
+}
+
+.tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: #7ab8f7;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.tag-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #0366d6;
+}
+
+.tag-remove:hover {
+  color: #024dab;
+}
+
+.tag-input {
+  border: none;
+  outline: none;
+  padding: 4px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 100px;
+}
+
+/* Tag styles - updated for more subtle highlighting */
+.tags-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: transparent;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+/* Style for hashtags in the editor - more subtle */
+[data-lexical-text] [data-hashtag] {
+  color: #6c757d;
+  font-weight: normal;
+  background-color: #f8f9fa;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Update the theme to include more subtle hashtag styling */
+.editor-text-hashtag {
+  color: #6c757d;
+  font-weight: normal;
+  background-color: #f8f9fa;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Add these clear styles for hashtags IN THE EDITOR CONTENT */
+[data-lexical-decorator="true"] {
+  color: inherit;
+}
+
+span[data-hashtag="true"] {
+  background-color: rgba(88, 175, 223, 0.15);
+  color: #2a85ca;
+  border-radius: 2px;
+  padding: 1px 3px;
+  margin: 0 1px;
+}
+
+/* This is the class that gets applied by the theme */
+.editor-text-hashtag {
+  background-color: rgba(88, 175, 223, 0.15);
+  color: #2a85ca;
+  border-radius: 2px;
+  padding: 1px 3px;
+  margin: 0 1px;
+}
+
+.my-hashtag-class {
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Entity reference styles */
+.editor-text-entity-reference {
+  color: #7c3aed;
+  background-color: rgba(124, 58, 237, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin: 0 1px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.editor-text-entity-reference:hover {
+  background-color: rgba(124, 58, 237, 0.2);
+}
+
+/* Mention plugin styles */
+.mention-dropdown {
+  position: fixed; /* Changed from absolute to fixed for better positioning */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px; /* Increased width */
+  max-width: 320px; /* Added max-width */
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10000;
+}
+
+.mention-dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.mention-dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+.mention-dropdown-item.selected {
+  background-color: #e8f0fe;
+}
+
+.mention-dropdown-empty {
+  padding: 8px 12px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Dark mode styles */
+.dark .mention-dropdown {
+  background-color: #1e1e1e;
+  border-color: #333;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark .mention-dropdown-item {
+  color: #e0e0e0;
+}
+
+.dark .mention-dropdown-item:hover {
+  background-color: #2c2c2c;
+}
+
+.dark .mention-dropdown-item.selected {
+  background-color: #2c3e50;
+}
+
+.dark .mention-dropdown-empty {
+  color: #999;
+}
+
+/* Updated Mentions Plugin Styles */
+.mentions-menu {
+  position: fixed;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
+  max-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 10000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mentions-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.mentions-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.1s ease;
+}
+
+.mentions-menu-item:hover {
+  background-color: #f5f7f9;
+}
+
+.mentions-menu-item.selected {
+  background-color: #edf2f7;
+  color: #1a56db;
+}
+
+.mentions-menu-item-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mentions-menu-item-type {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #666;
+  opacity: 0.7;
+}
+
+.dark .mentions-menu-item-type {
+  color: #999;
+}
+
+/* Dark mode styles */
+.dark .mentions-menu {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .mentions-menu-item {
+  color: #e0e0e0;
+}
+
+.dark .mentions-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .mentions-menu-item.selected {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+}
+
+/* Tag Autocomplete Plugin Styles */
+.tag-mentions-menu {
+  position: fixed;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 220px;
+  max-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 10000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tag-mentions-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.tag-mentions-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.1s ease;
+}
+
+.tag-mentions-menu-item:hover {
+  background-color: #f5f7f9;
+}
+
+.tag-mentions-menu-item.selected {
+  background-color: #edf2f7;
+  color: #1a56db;
+}
+
+.tag-color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tag-mentions-menu-item-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dark mode styles for tag autocomplete */
+.dark .tag-mentions-menu {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .tag-mentions-menu-item {
+  color: #e0e0e0;
+}
+
+.dark .tag-mentions-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .tag-mentions-menu-item.selected {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+}
+
+.dark .tag-color-indicator {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Tag Node Styles - High specificity to override theme styles */
+.lexical-editor-container .tag-node,
+.editor-input .tag-node,
+.lexical-content .tag-node {
+  display: inline-block !important;
+  padding: 2px 6px !important;
+  border-radius: 12px !important;
+  font-size: 0.9em !important;
+  font-weight: 500 !important;
+  margin: 0 2px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.tag-node:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode styles for tag nodes */
+.dark .tag-node {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .tag-node:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Autosave indicator */
+.autosave-indicator {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #666;
+  background-color: rgba(240, 240, 240, 0.9);
+  border-radius: 4px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  z-index: 5; /* Above editor content but below dropdowns */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.autosave-indicator.persistent {
+  opacity: 0.8;
+}
+
+/* Dark mode styles for the autosave indicator */
+.dark-mode .autosave-indicator {
+  color: #ccc;
+  background-color: rgba(40, 40, 40, 0.7);
+  border-color: #444;
+}
+
+/* Context menu styles */
+.editor-context-menu {
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  min-width: 150px;
+  z-index: 10000; /* Increased z-index to ensure it appears on top */
+  overflow: hidden; /* Ensure clean corners */
+}
+
+.dark-mode .editor-context-menu {
+  background-color: #333;
+  border-color: #555;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.context-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #333;
+  font-size: 14px;
+  user-select: none;
+}
+
+.context-menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.dark-mode .context-menu-item {
+  color: #f0f0f0;
+}
+
+.dark-mode .context-menu-item:hover {
+  background-color: #444;
+}

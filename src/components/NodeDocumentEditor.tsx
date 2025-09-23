@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { NodeId } from "../core/model/Node";
 import useAppConfigStore from "../store/appConfigStore";
 import { useDocument, useDocumentStore } from "../store/documentStore";
-import LexicalEditorV2 from "./LexicalEditor";
 import "./NodeDocumentEditor.css";
+import LexicalEditorV2 from "./applets/Lexical/LexicalEditor";
 
 interface NodeDocumentEditorProps {
   nodeId: NodeId;

@@ -8,22 +8,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000;
 }
 
 .dialog {
-  background: white;
   border-radius: 8px;
   padding: 20px;
   width: 80vw;
   height: 80vh;
   display: flex;
   flex-direction: column;
-}
-
-.dark .dialog {
-  background: #1f2937;
-  color: white;
+  max-height: 80vh;
+  overflow: auto;
 }
 
 .header {
@@ -31,6 +27,25 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+
+.headerButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.newProjectButton {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.newProjectButton:hover {
+  opacity: 0.8;
 }
 
 .header h2 {
@@ -42,11 +57,6 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #666;
-}
-
-.dark .closeButton {
-  color: #999;
 }
 
 .tabs {
@@ -64,8 +74,8 @@
   cursor: pointer;
   text-align: center;
   font-size: 14px;
-  color: #666;
   border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 .tabButton:hover:not(.activeTab) {
@@ -93,7 +103,6 @@
   height: 200px;
   padding: 8px;
   font-size: 14px;
-  border: 1px solid #ddd;
   border-radius: 4px;
   resize: none;
 }
@@ -101,15 +110,14 @@
 .submitButton {
   padding: 8px 16px;
   font-size: 14px;
-  background: #007bff;
-  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
 .submitButton:hover {
-  background: #0056b3;
+  opacity: 0.8;
 }
 
 .fileTab {
@@ -280,6 +288,264 @@
   width: 80%;
   padding: 8px;
   font-size: 14px;
+  border-radius: 4px;
+}
+
+.serverTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.serverProjectsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.serverProjectButton {
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dark .serverProjectButton {
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  color: white;
+}
+
+.serverProjectButton:hover {
+  background: #e9ecef;
+  border-color: #007bff;
+}
+
+.dark .serverProjectButton:hover {
+  background: #374151;
+  border-color: #4a90e2;
+}
+
+.projectInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.projectName {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.dark .projectName {
+  color: white;
+}
+
+.projectDescription {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.dark .projectDescription {
+  color: #a0a0a0;
+}
+
+.projectDate {
+  font-size: 11px;
+  color: #999;
+}
+
+.dark .projectDate {
+  color: #666;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Edit Dialog Styles */
+.editOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.editDialog {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dark .editDialog {
+  background: #1f2937;
+  color: white;
+}
+
+.editHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.editHeader h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.editContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editField label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.editInput,
+.editTextarea {
+  padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
+  background: white;
+  color: #333;
+}
+
+.dark .editInput,
+.dark .editTextarea {
+  background: #2d3748;
+  color: white;
+  border: 1px solid #4a5568;
+}
+
+.editInput:focus,
+.editTextarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.dark .editInput:focus,
+.dark .editTextarea:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
+}
+
+.editTextarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancelButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background: #5a6268;
+}
+
+.saveButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background: #0056b3;
+}
+
+.loginPrompt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 200px;
+}
+
+.loginContent {
+  text-align: center;
+  max-width: 400px;
+  padding: 32px;
+  border-radius: 8px;
+}
+
+.loginContent h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.loginContent p {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.loginButton {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.loginButton:hover {
+  opacity: 0.8;
 }

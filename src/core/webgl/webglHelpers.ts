@@ -39,8 +39,27 @@ export const handleMouseHover = (
   }
 };
 
-export const flyToNode = (instance: ForceGraph3DInstance, node: any) => {
-  // Aim at node from outside it
+export const flyToNode = (
+  instance: ForceGraph3DInstance,
+  node: any,
+  mode: "Layout" | "Physics" = "Physics"
+) => {
+  if (mode === "Layout") {
+    // Top-down 2D view: camera high above Z, looking at node
+    const distance = 200;
+    const newPos = {
+      x: node.x,
+      y: node.y,
+      z: node.z + distance,
+    };
+    instance.cameraPosition(
+      newPos, // new position
+      node, // lookAt ({ x, y, z })
+      1000 // Shorter duration for 2D
+    );
+    return;
+  }
+  // 3D/Physics mode (default)
   const distance = 200; // Increased base distance
   const distRatio = 1.5 + distance / Math.hypot(node.x, node.y, node.z); // Reduced ratio multiplier
 

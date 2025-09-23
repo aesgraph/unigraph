@@ -1,0 +1,532 @@
+.story-navigator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e6eef8 100%);
+  color: #333;
+  font-family: "Bookerly", "Georgia", serif;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 1.5rem 1.5rem 4rem;
+}
+
+.story-path {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0.5rem 0 1.5rem;
+  font-size: 0.9rem;
+  max-width: 80%;
+  justify-content: center;
+}
+
+.path-item {
+  display: flex;
+  align-items: center;
+  margin: 0.25rem;
+}
+
+.path-separator {
+  margin: 0 0.5rem;
+  color: #7c8ba1;
+}
+
+.path-node {
+  color: #3e6a97;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.path-node:hover {
+  color: #1c4f80;
+  text-decoration: underline;
+}
+
+.parent-card-container {
+  width: 90%;
+  max-width: 1200px;
+  height: calc(100vh - 140px);
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+}
+
+.parent-card-container.transitioning {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.parent-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f5f7fa 100%);
+  border-radius: 16px;
+  padding: 3.5rem 2rem 2rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: hidden; /* Contain the scrollable area */
+}
+
+.parent-card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll; /* Only vertical scroll */
+  overflow-x: hidden; /* Explicitly hide horizontal scroll */
+  -webkit-overflow-scrolling: touch;
+  padding: 0 15px 0 0;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f8f9fa;
+}
+
+.parent-card-content::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+  position: absolute;
+  right: 0;
+}
+
+.parent-card-content::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+.parent-card-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  min-height: 40px;
+}
+
+.parent-card-content::-webkit-scrollbar-thumb:hover {
+  background: #bfc7d1;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.parent-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.parent-card-title {
+  flex-grow: 1;
+  font-size: 2rem;
+  text-align: center;
+  margin: 0;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.parent-card-description {
+  font-size: 1.2rem;
+  color: #34495e;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  flex-shrink: 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.back-button,
+.restart-button {
+  background: #e6eef8;
+  border: 1px solid #bdc3c7;
+  color: #34495e;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: absolute;
+  top: 1rem;
+}
+
+.back-button {
+  left: 1rem;
+}
+
+.restart-button {
+  right: 1rem;
+}
+
+.back-button:hover,
+.restart-button:hover {
+  background: #d5e3f7;
+}
+
+.child-cards-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0.5rem;
+  overflow-y: visible;
+  align-content: flex-start;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.child-card {
+  flex: 1;
+  min-width: 220px;
+  max-width: 300px;
+  height: 380px;
+  background: #e4ecf7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #c8d5e6;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.child-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: #adb5bd;
+}
+
+.child-card-title {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.child-card-description {
+  color: #5d6d7e;
+  font-size: 1rem;
+  text-align: center;
+  line-height: 1.4;
+  flex-grow: 1;
+  overflow-y: hidden;
+}
+
+.story-ending {
+  text-align: center;
+  margin: 2rem 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2rem;
+}
+
+.story-ending p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #34495e;
+}
+
+.story-ending .restart-button {
+  position: static;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* Remove these overridden scrollbar styles that aren't needed anymore */
+.child-cards-container::-webkit-scrollbar,
+.child-card-description::-webkit-scrollbar {
+  width: 8px;
+  display: none; /* Hide these scrollbars */
+}
+
+.child-cards-container::-webkit-scrollbar-track,
+.child-card-description::-webkit-scrollbar-track,
+.child-cards-container::-webkit-scrollbar-thumb,
+.child-card-description::-webkit-scrollbar-thumb,
+.child-cards-container::-webkit-scrollbar-thumb:hover,
+.child-card-description::-webkit-scrollbar-thumb:hover {
+  display: none; /* Hide these scrollbar elements */
+}
+
+.markdown-content {
+  font-size: 1.125rem;
+  color: #24292f;
+  text-align: left;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  overflow-y: visible;
+  max-height: none;
+  padding: 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif;
+}
+
+.markdown-excerpt {
+  font-size: 0.875rem;
+  max-height: none;
+  position: relative;
+  overflow: hidden;
+  color: #57606a;
+  line-height: 1.5;
+}
+
+/* Create a new class without the fade effect */
+.markdown-excerpt-no-fade {
+  font-size: 0.875rem;
+  max-height: none;
+  position: relative;
+  overflow: hidden;
+  color: #57606a;
+  line-height: 1.5;
+}
+
+/* Remove or comment out the fade effect from markdown-excerpt */
+/*.markdown-excerpt::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, #e4ecf7);
+}*/
+
+.markdown-loading,
+.markdown-error {
+  text-align: center;
+  padding: 20px;
+  color: #7f8c8d;
+}
+
+.markdown-error {
+  color: #e74c3c;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  color: #24292f;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-content h1 {
+  font-size: 2rem;
+  border-bottom: 1px solid #d0d7de;
+  padding-bottom: 0.3rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #d0d7de;
+  padding-bottom: 0.3rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h4 {
+  font-size: 1rem;
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+
+.markdown-content li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: 0.25rem;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+  color: #24292f;
+}
+
+.markdown-content li strong {
+  font-weight: 600;
+  color: #24292f;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #d0d7de;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  color: #57606a;
+  font-style: normal;
+  background-color: #f6f8fa;
+  padding: 0.5rem 1rem;
+  border-radius: 0 6px 6px 0;
+}
+
+.markdown-content pre,
+.markdown-content code {
+  background-color: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 0.2em 0.4em;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.875em;
+  color: #24292f;
+}
+
+.markdown-content pre {
+  padding: 1rem;
+  overflow-x: auto;
+  line-height: 1.45;
+}
+
+.markdown-content pre code {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Links */
+.markdown-content a {
+  color: #0969da;
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+/* Tables */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #d0d7de;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+}
+
+.markdown-content tr:nth-child(even) {
+  background-color: #f6f8fa;
+}
+
+/* Horizontal rules */
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #d0d7de;
+  margin: 2rem 0;
+}
+
+/* Images */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* Emphasis */
+.markdown-content em {
+  font-style: italic;
+  color: #24292f;
+}
+
+/* Lists */
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content ul ul {
+  list-style-type: circle;
+}
+
+.markdown-content ol ol {
+  list-style-type: lower-alpha;
+}
+
+.child-card-markdown {
+  color: #57606a;
+  font-size: 0.875rem;
+  text-align: left;
+  line-height: 1.5;
+  flex-grow: 1;
+  overflow-y: hidden;
+  position: relative;
+}
+
+.child-card-markdown::after {
+  content: "...";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0 0.5rem;
+}
+
+.latex-block {
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.latex-error {
+  color: #e74c3c;
+  font-style: italic;
+  padding: 0.5rem;
+  border-left: 3px solid #e74c3c;
+  background-color: #fadbd8;
+}
+
+@media (max-height: 800px) {
+  .parent-card-container {
+    height: calc(100vh - 100px);
+  }
+
+  .parent-card-description {
+    margin-bottom: 1.5rem;
+  }
+
+  .child-card {
+    height: 320px;
+  }
+}

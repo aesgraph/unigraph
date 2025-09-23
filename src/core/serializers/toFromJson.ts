@@ -1,3 +1,7 @@
+import {
+  compressToEncodedURIComponent,
+  decompressFromEncodedURIComponent,
+} from "lz-string";
 import { JSONString } from "../model/entity/entitiesContainer";
 import { Graph } from "../model/Graph";
 import { NodeDataArgs } from "../model/Node";
@@ -10,7 +14,7 @@ export function serializeSceneGraphToJson(sceneGraph: SceneGraph): string {
 
 export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
   const malformedSceneGraphData = JSON.parse(json);
-  console.log("MALFORMED", malformedSceneGraphData);
+
   const graph = new Graph();
 
   type NodeDataArgsAndId = NodeDataArgs & { id: string };
@@ -21,9 +25,6 @@ export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
       graph.createNode(node);
     }
   );
-
-  console.log("sceneGraphData is ", malformedSceneGraphData);
-  console.log("sceneGraphData is ", malformedSceneGraphData.data);
 
   malformedSceneGraphData.data.graph.edges.forEach(
     (edge: EdgeDataArgsAndId) => {
@@ -40,6 +41,29 @@ export function deserializeSceneGraphFromJson(json: JSONString): SceneGraph {
     ...malformedSceneGraphData.data,
     graph,
   });
+}
+
+/**
+ * Compress a SceneGraph to a URL-safe string using lz-string.
+ * @param sceneGraph The SceneGraph to serialize and compress
+ * @returns Compressed, URL-safe string
+ */
+export function compressSceneGraphJsonForUrl(sceneGraph: SceneGraph): string {
+  const json = serializeSceneGraphToJson(sceneGraph);
+  return compressToEncodedURIComponent(json);
+}
+
+/**
+ * Decompress a URL-safe string to SceneGraph JSON and deserialize it.
+ * @param compressed Compressed, URL-safe string
+ * @returns SceneGraph instance
+ */
+export function decompressSceneGraphJsonFromUrl(
+  compressed: string
+): SceneGraph {
+  const json = decompressFromEncodedURIComponent(compressed);
+  if (!json) throw new Error("Failed to decompress scenegraph string");
+  return deserializeSceneGraphFromJson(json);
 }
 
 export const compareEquality = (a: SceneGraph, b: SceneGraph) => {

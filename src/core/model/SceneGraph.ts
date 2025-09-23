@@ -1,3 +1,4 @@
+import { WorkspaceState } from "@aesgraph/app-shell";
 import { AppConfig, DEFAULT_APP_CONFIG } from "../../AppConfig";
 import {
   CLONE_RENDERING_CONFIG,
@@ -44,9 +45,10 @@ export interface ISceneGraphMetadata {
 }
 
 export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
-  const displayConfig = GET_DEFAULT_RENDERING_CONFIG(new Graph());
+  const graph = new Graph();
+  const displayConfig = GET_DEFAULT_RENDERING_CONFIG(graph);
   return {
-    graph: new Graph(),
+    graph: graph,
     displayConfig: displayConfig,
     forceGraphDisplayConfig: {
       nodeTextLabels: false,
@@ -56,6 +58,10 @@ export const DEFAULT_SCENE_GRAPH_DATA = (): SceneGraphData => {
       linkWidth: 2,
       linkOpacity: 0.3,
       chargeStrength: -30,
+      backgroundColor: "rgb(0, 0, 0)",
+      cameraPosition: { x: 0, y: 0, z: 500 },
+      cameraTarget: { x: 0, y: 0, z: 0 },
+      initialZoom: 1,
     },
     metadata: {},
     entityCache: new EntityCache(),
@@ -79,6 +85,8 @@ export type SceneGraphData = {
   defaultAppConfig?: AppConfig;
   committed_DisplayConfig: RenderingConfig;
   documents: ObjectOf<DocumentState>; // for storing additional documents, by entityId for now
+  // current app config
+  workspaceState?: WorkspaceState;
 };
 
 export class SceneGraph {
@@ -151,6 +159,19 @@ export class SceneGraph {
 
   getDocument(storageKey: string) {
     return this.data.documents[storageKey];
+  }
+
+  // Workspace state management
+  getWorkspaceState(): WorkspaceState | undefined {
+    return this.data.workspaceState;
+  }
+
+  setWorkspaceState(workspaceState: WorkspaceState) {
+    this.data.workspaceState = workspaceState;
+  }
+
+  clearWorkspaceState() {
+    delete this.data.workspaceState;
   }
 
   // clearDocuments() {
@@ -247,6 +268,18 @@ export class SceneGraph {
   setNodePositions(positions: NodePositionData) {
     this.data.displayConfig.nodePositions = positions;
     this.listeners?.onPositionsChanged?.(positions);
+  }
+
+  setNodePosition(nodeId: NodeId, position: Position, notify: boolean = true) {
+    if (!this.data.displayConfig.nodePositions) {
+      this.data.displayConfig.nodePositions = {};
+    }
+    this.data.displayConfig.nodePositions[nodeId] = position;
+    if (notify) {
+      this.listeners?.onPositionsChanged?.(
+        this.data.displayConfig.nodePositions
+      );
+    }
   }
 
   getNode(nodeId: NodeId) {
@@ -413,7 +446,8 @@ export class SceneGraph {
     const graph = this.getGraph();
 
     // Clear existing graph
-    graph.getNodes().forEach((node) => graph.removeNode(node.getId()));
+    graph.getNodes().clear();
+    graph.getEdges().clear();
 
     // Add nodes from serialized data
     serialized.graph.nodes.forEach((nodeData) => {

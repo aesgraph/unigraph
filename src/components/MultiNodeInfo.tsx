@@ -20,7 +20,8 @@ const MultiNodeInfo: React.FC<MultiNodeInfoProps> = ({
   onFocusNode,
   onZoomToNode,
 }) => {
-  const { forceGraphInstance, activeView } = useAppConfigStore();
+  const { forceGraphInstance, activeView, forceGraph3dOptions } =
+    useAppConfigStore();
   const [searchQuery, setSearchQuery] = useState("");
   const sceneGraph = getCurrentSceneGraph();
 
@@ -34,7 +35,7 @@ const MultiNodeInfo: React.FC<MultiNodeInfoProps> = ({
     if (forceGraphInstance && activeView === "ForceGraph3d") {
       const node = findNodeInForceGraph(forceGraphInstance, nodeId);
       if (node) {
-        flyToNode(forceGraphInstance, node);
+        flyToNode(forceGraphInstance, node, forceGraph3dOptions.layout);
       }
     }
   };

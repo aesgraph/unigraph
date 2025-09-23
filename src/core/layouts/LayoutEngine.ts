@@ -15,17 +15,15 @@ import {
   GraphologyLayoutEngine,
   GraphologyLayoutType,
 } from "./GraphologyLayoutEngine";
-import {
-  GraphvizLayoutEngine,
-  GraphvizLayoutType,
-} from "./GraphvizLayoutEngine";
+import { GraphvizLayoutEngine } from "./GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "./GraphvizLayoutType";
 import { ILayoutEngineResult, LayoutEngineOption } from "./layoutEngineTypes";
 
 // Map to store pending layout computations by ID
 const pendingComputations = new Map<
   string,
   {
-    resolve: (result: ILayoutEngineResult) => void;
+    resolve_layout: (result: ILayoutEngineResult) => void;
     reject: (error: Error) => void;
   }
 >();
@@ -68,7 +66,7 @@ function getLayoutWorker(): Worker {
           if (response.error) {
             pendingComputation.reject(new Error(response.error));
           } else {
-            pendingComputation.resolve(response.result);
+            pendingComputation.resolve_layout(response.result);
           }
           pendingComputations.delete(response.id);
         }
@@ -162,6 +160,20 @@ export class LayoutEngine {
         sceneGraphRef,
         layoutType
       );
+      // Add a check for NaN
+      if (result && result.positions) {
+        for (const key in result.positions) {
+          const pos = result.positions[key];
+          if (
+            typeof pos.x !== "number" ||
+            isNaN(pos.x) ||
+            typeof pos.y !== "number" ||
+            isNaN(pos.y)
+          ) {
+            console.warn("NaN detected in result.positions:", key, pos);
+          }
+        }
+      }
       return result;
     } catch (error) {
       console.error("Worker layout computation failed:", error);
@@ -251,7 +263,7 @@ export class LayoutEngine {
 
         // Store the callbacks
         pendingComputations.set(workerId, {
-          resolve: (result) => {
+          resolve_layout: (result) => {
             console.log("Layout computation resolved:", workerId);
             finishLayoutJob();
             resolve(result);

@@ -4,6 +4,7 @@ import {
   GetTopLeft,
   SelectionBoxGroup,
 } from "../webgl/selectionArea";
+import { WebUrlResourceId } from "./ResourceId";
 
 export type ImageBoxData = {
   id: string;
@@ -15,7 +16,17 @@ export type ImageBoxData = {
   topLeft: Position;
   bottomRight: Position;
   imageSource?: any; // raw data
+  annotations?: Annotation[];
 };
+
+export interface Annotation {
+  id: string;
+  label: string;
+  description: string;
+  date?: string;
+  tags?: string[];
+  urls?: WebUrlResourceId[];
+}
 
 export const fromSelectionArea = (
   selectionArea: SelectionBoxGroup,

@@ -156,6 +156,7 @@ export class ForceGraphInstanceController
       nodeEl.style.color = getNodeColor(
         this.sceneGraph.getNode(node.id as NodeId)
       );
+      nodeEl.style.fontSize = `${config.fontSize}px`;
       return new CSS2DObject(nodeEl);
     });
     this.getInstance().nodeThreeObjectExtend(true);

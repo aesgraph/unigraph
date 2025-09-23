@@ -101,4 +101,5 @@ const MenuBar: React.FC<MenuBarProps> = ({ config = defaultConfig }) => {
 };
 
 export default MenuBar;
-export { defaultConfig, MenuConfig };
+export { defaultConfig };
+export type { MenuConfig };

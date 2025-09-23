@@ -1,4 +1,4 @@
-import { Annotation } from "../../components/lumina/AnnotationsList";
+import { Annotation } from "../../_experimental/lumina/AnnotationsList";
 
 export const solvay_annotations: Annotation[] = [
   {

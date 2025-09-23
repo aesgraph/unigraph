@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <title>PDF Debug Test</title>
+  </head>
+  <body>
+    <h1>PDF Debug Test</h1>
+    <div id="status">Loading...</div>
+
+    <script>
+      // Test 1: Check if PDF files are accessible
+      async function testPdfAccess() {
+        const urls = ["/test.pdf", "/pdfjs/test.pdf", "../test.pdf"];
+
+        for (const url of urls) {
+          try {
+            const response = await fetch(url);
+            console.log(`${url}: ${response.status} ${response.statusText}`);
+            console.log(
+              `Content-Type: ${response.headers.get("content-type")}`
+            );
+          } catch (error) {
+            console.error(`${url}: Failed - ${error.message}`);
+          }
+        }
+      }
+
+      // Test 2: Check if PDF.js worker is accessible
+      async function testWorkerAccess() {
+        const workerUrls = [
+          "/pdf.worker.min.mjs",
+          "/pdfjs/build/pdf.worker.mjs",
+          "../build/pdf.worker.mjs",
+        ];
+
+        for (const url of workerUrls) {
+          try {
+            const response = await fetch(url);
+            console.log(
+              `Worker ${url}: ${response.status} ${response.statusText}`
+            );
+          } catch (error) {
+            console.error(`Worker ${url}: Failed - ${error.message}`);
+          }
+        }
+      }
+
+      // Test 3: Try to load PDF.js directly
+      async function testPdfJsLoad() {
+        try {
+          const script = document.createElement("script");
+          script.src = "/pdfjs/pdfjs.js";
+          script.type = "module";
+          script.onload = () => {
+            console.log("PDF.js loaded successfully");
+            if (window.pdfjsLib) {
+              console.log("pdfjsLib available:", window.pdfjsLib);
+            }
+          };
+          script.onerror = (error) => {
+            console.error("Failed to load PDF.js:", error);
+          };
+          document.head.appendChild(script);
+        } catch (error) {
+          console.error("Error loading PDF.js:", error);
+        }
+      }
+
+      async function runTests() {
+        console.log("=== Starting PDF Debug Tests ===");
+        await testPdfAccess();
+        await testWorkerAccess();
+        await testPdfJsLoad();
+        document.getElementById("status").textContent =
+          "Tests complete - check console";
+      }
+
+      runTests();
+    </script>
+  </body>
+</html>

@@ -452,3 +452,17 @@ export class PersistentStoreManager implements IPersistentStore {
 
 // Create and export a singleton instance
 export const persistentStore = new PersistentStoreManager();
+
+// Add function to get most recent project
+export const getMostRecentProjectId = async (): Promise<string | undefined> => {
+  try {
+    const projects = await persistentStore.listSceneGraphs();
+    if (projects.length > 0) {
+      // Projects are already sorted by lastModified in descending order
+      return projects[0].id;
+    }
+  } catch (err) {
+    console.error("Failed to get recent projects:", err);
+  }
+  return undefined;
+};

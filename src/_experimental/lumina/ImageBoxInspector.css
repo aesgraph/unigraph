@@ -1,0 +1,324 @@
+.image-box-inspector {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 16px;
+  max-width: 450px;
+  min-width: 350px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.image-box-inspector-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.inspector-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.header-actions button {
+  padding: 6px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.edit-button {
+  color: #007bff;
+}
+
+.edit-button:hover {
+  background-color: #f0f8ff;
+}
+
+.delete-button {
+  color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #fff5f5;
+}
+
+.close-button {
+  background-color: #6c757d;
+  color: white;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.close-button:hover {
+  background-color: #545b62;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.image-box-canvas {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  padding: 20px;
+  font-weight: 500;
+}
+
+.loading-message {
+  color: #6c757d;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+.image-box-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-group:last-child {
+  border-bottom: none;
+}
+
+.detail-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  min-width: 80px;
+}
+
+.detail-group span {
+  color: #333;
+  font-size: 13px;
+  text-align: right;
+  flex: 1;
+  margin-left: 12px;
+}
+
+.coordinates {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* Edit mode styles */
+.image-box-inspector-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.image-box-inspector-edit h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.coordinate-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.coordinate-inputs input {
+  flex: 1;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.button-group button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.save-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #545b62;
+}
+
+/* Annotations Section Styles */
+.annotations-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.annotations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.annotations-header label {
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+}
+
+.add-annotation-button {
+  transition: all 0.2s;
+}
+
+.add-annotation-button:hover {
+  background-color: #f0f8ff !important;
+}
+
+.add-annotation-form {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.annotations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.annotation-item {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 8px;
+  transition: all 0.2s;
+}
+
+.annotation-item:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.annotation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.annotation-header strong {
+  font-size: 13px;
+  color: #333;
+}
+
+.annotation-item p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}

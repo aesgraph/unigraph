@@ -1,0 +1,793 @@
+/* Title display */
+.markdown-title {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid;
+}
+
+.markdown-title h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Toggle button for raw markdown view */
+.markdown-toggle-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  padding: 8px 12px;
+  font-size: 12px;
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: monospace;
+  transition: opacity 0.2s;
+}
+
+.markdown-toggle-button:hover {
+  opacity: 0.8;
+}
+
+.markdown-toggle-button.active {
+  opacity: 1;
+}
+
+.markdown-toggle-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Raw markdown view styles */
+.markdown-raw-view {
+  height: calc(100% - 40px);
+  border: 1px solid;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Styles for defined terms */
+.defined-term {
+  color: #0066cc;
+  text-decoration: underline dotted;
+  cursor: pointer;
+  border-bottom: 1px dotted #0066cc;
+  transition: background-color 0.2s;
+  position: relative; /* Ensure relative positioning for absolute popup */
+}
+
+.defined-term:hover {
+  background-color: rgba(0, 102, 204, 0.1);
+}
+
+/* Definition popup styles */
+.definition-popup {
+  position: fixed; /* Try fixed positioning instead of absolute */
+  z-index: 1000; /* Ensure very high z-index */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  max-width: 300px;
+  min-width: 200px; /* Ensure a minimum width */
+  margin-bottom: 10px; /* Add some spacing below */
+  transform: translate(
+    -50%,
+    -100%
+  ); /* Center horizontally and position above */
+  animation: fadeIn 0.2s ease;
+}
+
+.definition-popup:after {
+  content: "";
+  position: absolute;
+  bottom: -8px; /* Position it just below the popup */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white; /* Arrow color matching popup background */
+}
+
+.definition-popup:before {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid #ccc; /* Arrow outline matching popup border */
+}
+
+.definition-popup.dragging {
+  opacity: 0.9;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.definition-popup h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-weight: 600;
+  cursor: grab;
+  padding: 4px 20px 4px 0; /* Space for close button */
+}
+
+.definition-popup h4:active {
+  cursor: grabbing;
+}
+
+.definition-popup-header {
+  margin: -10px -15px 10px -15px;
+  padding: 8px 15px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #eee;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  cursor: grab;
+}
+
+.definition-popup-header:active {
+  cursor: grabbing;
+}
+
+.definition-popup p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.definition-popup-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.definition-popup-close:hover {
+  color: #333;
+  background-color: #eaeaea;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Markdown container styling */
+.markdown-container {
+  height: 100%;
+  padding: 20px;
+}
+
+/* Add bottom padding to markdown content */
+.markdown-content {
+  padding-bottom: 20px;
+}
+
+/* Additional markdown content styling */
+.markdown-content .defined-term {
+  font-weight: 500;
+}
+
+/* Style tables in markdown content better */
+.markdown-content table,
+.markdown-excerpt table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+  border: 1px solid var(--border-color, #e1e4e8);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.markdown-content th,
+.markdown-excerpt th {
+  background-color: var(--surface-color, #f6f8fa);
+  color: var(--text-color, #24292e);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #e1e4e8);
+  border-right: 1px solid var(--border-color, #e1e4e8);
+}
+
+.markdown-content th:last-child,
+.markdown-excerpt th:last-child {
+  border-right: none;
+}
+
+.markdown-content td,
+.markdown-excerpt td {
+  padding: 12px 16px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border-color, #e1e4e8);
+  border-right: 1px solid var(--border-color, #e1e4e8);
+  background-color: var(--background-color, #ffffff);
+}
+
+.markdown-content td:last-child,
+.markdown-excerpt td:last-child {
+  border-right: none;
+}
+
+.markdown-content tr:last-child td,
+.markdown-excerpt tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-content tr:nth-child(even) td,
+.markdown-excerpt tr:nth-child(even) td {
+  background-color: var(--surface-color, #f6f8fa);
+}
+
+/* Dark mode support for tables */
+@media (prefers-color-scheme: dark) {
+  .markdown-content table,
+  .markdown-excerpt table {
+    border-color: var(--border-color, #30363d);
+  }
+
+  .markdown-content th,
+  .markdown-excerpt th {
+    background-color: var(--surface-color, #21262d);
+    color: var(--text-color, #f0f6fc);
+    border-color: var(--border-color, #30363d);
+  }
+
+  .markdown-content td,
+  .markdown-excerpt td {
+    background-color: var(--background-color, #0d1117);
+    border-color: var(--border-color, #30363d);
+    color: var(--text-color, #f0f6fc);
+  }
+
+  .markdown-content tr:nth-child(even) td,
+  .markdown-excerpt tr:nth-child(even) td {
+    background-color: var(--surface-color, #161b22);
+  }
+}
+
+.markdown-content td img,
+.markdown-excerpt td img {
+  display: block;
+  margin: 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-content td p,
+.markdown-excerpt td p {
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}
+
+.markdown-content td p:first-child,
+.markdown-excerpt td p:first-child {
+  margin-top: 0;
+}
+
+/* Completely revise excerpt styling */
+.markdown-excerpt {
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #5d6d7e;
+  max-height: 300px !important;
+  overflow: hidden !important;
+}
+
+.markdown-excerpt table {
+  margin: 0;
+  width: 100%;
+}
+
+.markdown-excerpt td {
+  vertical-align: top;
+  padding: 0 10px 0 0;
+}
+
+.markdown-excerpt td:first-child {
+  width: 40%;
+  min-width: 100px;
+}
+
+.markdown-excerpt td img {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+}
+
+.markdown-excerpt::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px; /* More gradual fade */
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Make excerpt fill the height of the child card
+.child-card .markdown-excerpt {
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+} */
+
+/* Code block styling */
+.markdown-content pre {
+  background-color: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family:
+    "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New",
+    monospace;
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre;
+  word-wrap: break-word;
+  max-width: 100%;
+  text-shadow: none;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+.markdown-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  color: #24292e;
+  white-space: pre;
+  word-wrap: break-word;
+  display: block;
+  width: 100%;
+  text-shadow: none;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* Dark mode support for code blocks */
+/* Force light colors for better contrast in dark themes */
+.markdown-content pre {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.markdown-content pre code {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* Override all syntax highlighting tokens to use light colors */
+.markdown-content pre code .token {
+  color: #ffffff !important;
+}
+
+.markdown-content pre code .token.comment {
+  color: #a8a8a8 !important;
+}
+
+.markdown-content pre code .token.punctuation {
+  color: #d4d4d4 !important;
+}
+
+.markdown-content pre code .token.property,
+.markdown-content pre code .token.tag,
+.markdown-content pre code .token.boolean,
+.markdown-content pre code .token.number,
+.markdown-content pre code .token.constant,
+.markdown-content pre code .token.symbol {
+  color: #b5cea8 !important;
+}
+
+.markdown-content pre code .token.selector,
+.markdown-content pre code .token.attr-name,
+.markdown-content pre code .token.string,
+.markdown-content pre code .token.char,
+.markdown-content pre code .token.builtin {
+  color: #ce9178 !important;
+}
+
+.markdown-content pre code .token.operator,
+.markdown-content pre code .token.entity,
+.markdown-content pre code .token.url {
+  color: #d4d4d4 !important;
+}
+
+.markdown-content pre code .token.atrule,
+.markdown-content pre code .token.attr-value {
+  color: #ce9178 !important;
+}
+
+.markdown-content pre code .token.keyword {
+  color: #569cd6 !important;
+}
+
+.markdown-content pre code .token.function {
+  color: #dcdcaa !important;
+}
+
+.markdown-content pre code .token.class-name {
+  color: #4ec9b0 !important;
+}
+
+.markdown-content pre code .token.regex,
+.markdown-content pre code .token.important,
+.markdown-content pre code .token.variable {
+  color: #d16969 !important;
+}
+
+/* Prevent React component rendering in code blocks */
+.markdown-content pre * {
+  pointer-events: none;
+}
+
+.markdown-content pre code * {
+  pointer-events: none;
+}
+
+/* Ensure code blocks are treated as text, not React components */
+.markdown-content pre code[data-code="true"] {
+  display: block !important;
+  pointer-events: none !important;
+}
+
+.markdown-content pre code[data-code="true"] * {
+  pointer-events: none !important;
+  user-select: text !important;
+}
+
+/* Prevent any React component rendering in code blocks */
+.markdown-content pre code {
+  display: block !important;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+  white-space: pre !important;
+  word-wrap: break-word !important;
+  text-shadow: none !important;
+  -webkit-font-smoothing: auto !important;
+  -moz-osx-font-smoothing: auto !important;
+  font-smooth: never !important;
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
+.markdown-content pre code * {
+  display: inline !important;
+  font-family: inherit !important;
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
+/* Remove any background highlighting from Prism.js tokens */
+.markdown-content pre code .token {
+  background: transparent !important;
+}
+
+.markdown-content pre code .token.string,
+.markdown-content pre code .token.number,
+.markdown-content pre code .token.boolean,
+.markdown-content pre code .token.keyword,
+.markdown-content pre code .token.function,
+.markdown-content pre code .token.class-name,
+.markdown-content pre code .token.tag,
+.markdown-content pre code .token.attr-name,
+.markdown-content pre code .token.attr-value,
+.markdown-content pre code .token.punctuation,
+.markdown-content pre code .token.operator,
+.markdown-content pre code .token.comment {
+  background: transparent !important;
+}
+
+/* Remove any badge/highlighting effects from JSX tags */
+.markdown-content pre code .token.tag,
+.markdown-content pre code .token.tag-name,
+.markdown-content pre code .token.component {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Ensure all JSX elements have no special styling */
+.markdown-content pre code .token.tag .token.tag-name,
+.markdown-content pre code .token.tag .token.punctuation,
+.markdown-content pre code .token.tag .token.attr-name,
+.markdown-content pre code .token.tag .token.attr-value {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Style for UnigraphIframe placeholders */
+.markdown-content .unigraph-iframe-placeholder {
+  margin: 20px 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+/* Ensure proper line breaks in code blocks */
+.markdown-content pre,
+.markdown-content pre code {
+  text-shadow: none !important;
+  -webkit-font-smoothing: auto !important;
+  -moz-osx-font-smoothing: auto !important;
+  font-smooth: never !important;
+  white-space: pre !important;
+  word-wrap: break-word !important;
+}
+
+/* Syntax highlighting improvements */
+.markdown-content .token.comment,
+.markdown-content .token.prolog,
+.markdown-content .token.doctype,
+.markdown-content .token.cdata {
+  color: #6a737d;
+}
+
+.markdown-content .token.punctuation {
+  color: #24292e;
+}
+
+.markdown-content .token.property,
+.markdown-content .token.tag,
+.markdown-content .token.boolean,
+.markdown-content .token.number,
+.markdown-content .token.constant,
+.markdown-content .token.symbol,
+.markdown-content .token.deleted {
+  color: #d73a49;
+}
+
+.markdown-content .token.selector,
+.markdown-content .token.attr-name,
+.markdown-content .token.string,
+.markdown-content .token.char,
+.markdown-content .token.builtin,
+.markdown-content .token.inserted {
+  color: #032f62;
+}
+
+.markdown-content .token.operator,
+.markdown-content .token.entity,
+.markdown-content .token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #d73a49;
+}
+
+.markdown-content .token.atrule,
+.markdown-content .token.attr-value,
+.markdown-content .token.keyword {
+  color: #d73a49;
+}
+
+.markdown-content .token.function {
+  color: #6f42c1;
+}
+
+.markdown-content .token.class-name {
+  color: #6f42c1;
+}
+
+.markdown-content .token.regex,
+.markdown-content .token.important,
+.markdown-content .token.variable {
+  color: #e36209;
+}
+
+/* TypeScript/TSX specific highlighting */
+.markdown-content .language-tsx .token.keyword,
+.markdown-content .language-typescript .token.keyword {
+  color: #d73a49;
+}
+
+.markdown-content .language-tsx .token.string,
+.markdown-content .language-typescript .token.string {
+  color: #032f62;
+}
+
+.markdown-content .language-tsx .token.punctuation,
+.markdown-content .language-typescript .token.punctuation {
+  color: #24292e;
+}
+
+.markdown-content .language-tsx .token.tag,
+.markdown-content .language-typescript .token.tag {
+  color: #d73a49;
+}
+
+.markdown-content .language-tsx .token.attr-name,
+.markdown-content .language-typescript .token.attr-name {
+  color: #6f42c1;
+}
+
+.markdown-content .language-tsx .token.attr-value,
+.markdown-content .language-typescript .token.attr-value {
+  color: #032f62;
+}
+
+/* Dark mode syntax highlighting */
+@media (prefers-color-scheme: dark) {
+  .markdown-content .token.comment,
+  .markdown-content .token.prolog,
+  .markdown-content .token.doctype,
+  .markdown-content .token.cdata {
+    color: #6b7280;
+  }
+
+  .markdown-content .token.punctuation {
+    color: #e5e7eb;
+  }
+
+  .markdown-content .token.property,
+  .markdown-content .token.tag,
+  .markdown-content .token.boolean,
+  .markdown-content .token.number,
+  .markdown-content .token.constant,
+  .markdown-content .token.symbol,
+  .markdown-content .token.deleted {
+    color: #f87171;
+  }
+
+  .markdown-content .token.selector,
+  .markdown-content .token.attr-name,
+  .markdown-content .token.string,
+  .markdown-content .token.char,
+  .markdown-content .token.builtin,
+  .markdown-content .token.inserted {
+    color: #34d399;
+  }
+
+  .markdown-content .token.operator,
+  .markdown-content .token.entity,
+  .markdown-content .token.url,
+  .language-css .token.string,
+  .style .token.string {
+    color: #f87171;
+  }
+
+  .markdown-content .token.atrule,
+  .markdown-content .token.attr-value,
+  .markdown-content .token.keyword {
+    color: #f87171;
+  }
+
+  .markdown-content .token.function {
+    color: #a78bfa;
+  }
+
+  .markdown-content .token.class-name {
+    color: #a78bfa;
+  }
+
+  .markdown-content .token.regex,
+  .markdown-content .token.important,
+  .markdown-content .token.variable {
+    color: #fbbf24;
+  }
+
+  /* Dark mode TypeScript/TSX specific highlighting */
+  .markdown-content .language-tsx .token.keyword,
+  .markdown-content .language-typescript .token.keyword {
+    color: #f87171;
+  }
+
+  .markdown-content .language-tsx .token.string,
+  .markdown-content .language-typescript .token.string {
+    color: #34d399;
+  }
+
+  .markdown-content .language-tsx .token.punctuation,
+  .markdown-content .language-typescript .token.punctuation {
+    color: #e5e7eb;
+  }
+
+  .markdown-content .language-tsx .token.tag,
+  .markdown-content .language-typescript .token.tag {
+    color: #f87171;
+  }
+
+  .markdown-content .language-tsx .token.attr-name,
+  .markdown-content .language-typescript .token.attr-name {
+    color: #a78bfa;
+  }
+
+  .markdown-content .language-tsx .token.attr-value,
+  .markdown-content .language-typescript .token.attr-value {
+    color: #34d399;
+  }
+}
+
+/* Line highlighting for search results */
+.markdown-highlighted-line {
+  background-color: rgba(255, 255, 0, 0.1);
+  border-left: 3px solid #ffeb3b;
+  padding-left: 8px;
+  margin-left: -8px;
+  border-radius: 4px;
+  animation: highlight-fade 2s ease-out;
+}
+
+/* Term highlighting for search results */
+.markdown-highlighted-term {
+  background-color: #ffeb3b;
+  color: #000;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+  animation: term-highlight-fade 3s ease-out;
+}
+
+@keyframes highlight-fade {
+  0% {
+    background-color: rgba(255, 255, 0, 0.3);
+  }
+  100% {
+    background-color: rgba(255, 255, 0, 0.1);
+  }
+}
+
+@keyframes term-highlight-fade {
+  0% {
+    background-color: #ffeb3b;
+    color: #000;
+  }
+  100% {
+    background-color: rgba(255, 235, 59, 0.3);
+    color: inherit;
+  }
+}
+
+/* Dark mode adjustments for line highlighting */
+@media (prefers-color-scheme: dark) {
+  .markdown-highlighted-line {
+    background-color: rgba(255, 255, 0, 0.15);
+    border-left-color: #ffeb3b;
+  }
+
+  .markdown-highlighted-term {
+    background-color: #ffeb3b;
+    color: #000;
+  }
+}

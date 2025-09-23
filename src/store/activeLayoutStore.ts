@@ -36,7 +36,10 @@ interface ActiveLayoutsState {
   clearLayouts: () => void;
 
   // Layout result operations
-  setCurrentLayoutResult: (result: ILayoutEngineResult | null) => void;
+  setCurrentLayoutResult: (
+    result: ILayoutEngineResult | null,
+    forceGraph3dLayoutMode: "Physics" | "Layout"
+  ) => void;
   getCurrentLayoutResult: () => ILayoutEngineResult | null;
 
   // Job status operations
@@ -81,9 +84,15 @@ const useActiveLayoutStore = create<ActiveLayoutsState>((set, get) => ({
   },
 
   // Layout result operations
-  setCurrentLayoutResult: (result) => {
+  setCurrentLayoutResult: (
+    result,
+    forceGraph3dOptionsLayoutMode: "Physics" | "Layout" = "Layout"
+  ) => {
     set({ currentLayoutResult: result });
-    setActiveLayout(result?.layoutType ?? "error");
+    setActiveLayout(
+      result?.layoutType ?? "error",
+      forceGraph3dOptionsLayoutMode
+    );
   },
 
   getCurrentLayoutResult: () => {
@@ -151,8 +160,18 @@ export const getSavedLayouts = () => {
 };
 
 // Layout result actions
-export const setCurrentLayoutResult = (result: ILayoutEngineResult | null) => {
-  useActiveLayoutStore.getState().setCurrentLayoutResult(result);
+export const setCurrentLayoutResult = (
+  result: ILayoutEngineResult | null,
+  forceGraph3dOptionsLayoutMode: "Layout" | "Physics" = "Layout"
+) => {
+  console.log("before", JSON.parse(JSON.stringify(result)));
+  console.log("setting current layout result to", result);
+  // if (result) {
+  //   result.positions = JSON.parse((result as any).serialization || "{}"); // Ensure positions are parsed correctly
+  // }
+  useActiveLayoutStore
+    .getState()
+    .setCurrentLayoutResult(result, forceGraph3dOptionsLayoutMode);
 };
 
 export const getCurrentLayoutResult = (): ILayoutEngineResult | null => {

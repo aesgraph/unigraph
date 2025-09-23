@@ -5,10 +5,8 @@ import {
   GraphologyLayoutEngine,
   GraphologyLayoutType,
 } from "./GraphologyLayoutEngine";
-import {
-  GraphvizLayoutEngine,
-  GraphvizLayoutType,
-} from "./GraphvizLayoutEngine";
+import { GraphvizLayoutEngine } from "./GraphvizLayoutEngine";
+import { GraphvizLayoutType } from "./GraphvizLayoutType";
 import { ILayoutEngineResult, LayoutEngineOption } from "./layoutEngineTypes";
 
 // Define message format for the worker
@@ -149,6 +147,7 @@ async function handleComputeLayout(
 
     clearInterval(progressInterval);
     activeComputations.delete(id);
+    console.log("returning result here", result);
     return result!;
   } catch (error) {
     clearInterval(progressInterval);
@@ -173,7 +172,6 @@ self.onmessage = async (e: MessageEvent<LayoutWorkerMessage>) => {
       // Start the computation
       try {
         const result = await handleComputeLayout(message);
-
         // Send complete result back
         self.postMessage({
           id: message.id,

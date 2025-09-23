@@ -1,10 +1,19 @@
 import { create } from "zustand";
 
+export interface ChatImage {
+  id: string;
+  dataUrl: string;
+  fileName?: string;
+  fileType: string;
+  size: number;
+}
+
 export interface ChatMessage {
   id: string;
-  role: "user" | "assistant" | "system";
+  role: "user" | "assistant" | "system" | "error";
   content: string;
   timestamp: Date;
+  images?: ChatImage[];
 }
 
 interface ChatHistoryState {

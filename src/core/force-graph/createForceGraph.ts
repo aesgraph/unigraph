@@ -16,7 +16,10 @@ import {
   getEdgeLegendConfig,
   getNodeLegendConfig,
 } from "../../store/activeLegendConfigStore";
-import { getLegendMode } from "../../store/appConfigStore";
+import {
+  getInteractivityFlags,
+  getLegendMode,
+} from "../../store/appConfigStore";
 import {
   DEFAULT_FORCE_GRAPH_RENDER_CONFIG,
   IForceGraphRenderConfig,
@@ -48,6 +51,7 @@ import {
   getActiveSection,
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
+import { getLocalCoords } from "../../utils/getLocalCoords";
 import { ILayoutEngineResult } from "../layouts/layoutEngineTypes";
 import { NodePositionData } from "../layouts/layoutHelpers";
 import { EdgeId } from "../model/Edge";
@@ -72,16 +76,16 @@ export const createForceGraph = (
   // console.log("creating here", options, layout, positions);
   const data = exportGraphDataForReactFlow(sceneGraph);
   // console.log("data is ", data);
-
   // const controlMode = getMouseControlMode();
-
   const graph = new ForceGraph3D(dom, {
     extraRenderers: [new CSS2DRenderer()],
   })
     .graphData({ nodes: data.nodes, links: data.edges })
+    .showNavInfo(getMouseControlMode() === "orbital")
     .nodeLabel("label")
     .nodeColor((node) => {
       if (getHoveredNodeIds().has(node.id as NodeId)) {
+        console.log("hovered node is ", node.id);
         return MOUSE_HOVERED_NODE_COLOR;
       } else if (
         getSelectedNodeId() === node.id ||
@@ -112,13 +116,13 @@ export const createForceGraph = (
       );
     })
     .linkLabel("type")
-    .backgroundColor("#1a1a1a")
+    .backgroundColor(options.backgroundColor ?? "#1a1a1a")
     .enableNodeDrag(true)
-    .onNodeClick((node) => {
-      flyToNode(graph, node);
+    .onNodeClick((node: any) => {
+      flyToNode(graph, node, layout);
       console.log("node clicked");
     })
-    .onNodeDrag((node, translate: any) => {
+    .onNodeDrag((node: any, translate: any) => {
       setIsDraggingNode(true);
       // console.log("translate is ", translate);
 
@@ -139,7 +143,11 @@ export const createForceGraph = (
         ForceGraphManager.updateNodePositions(graph, forceGraphPositionData);
       }
     })
-    .onNodeDragEnd((node, _translate: any) => {
+    .onNodeDragEnd((node: any, _translate: any) => {
+      if (node == undefined || node.id == undefined) {
+        setIsDraggingNode(false);
+        return;
+      }
       // console.log("translate end is ", translate);
       const selectedNodeIds = getSelectedNodeIds();
       let positions: NodePositionData = {};
@@ -148,7 +156,7 @@ export const createForceGraph = (
           graph,
           selectedNodeIds
         );
-      } else {
+      } else if (node.id) {
         positions[node.id as NodeId] = {
           x: node.fx! ?? node.x ?? 0,
           y: node.fy! ?? node.y ?? 0,
@@ -166,11 +174,11 @@ export const createForceGraph = (
             z: pos.z,
           });
 
-        sceneGraph.getDisplayConfig().nodePositions![id as NodeId] = {
+        sceneGraph.setNodePosition(id as NodeId, {
           x: pos.x,
           y: -pos.y,
           z: pos.z,
-        };
+        });
       });
       setIsDraggingNode(false);
     });
@@ -249,16 +257,26 @@ export const createForceGraph = (
   // .cooldownTicks(100) // Number of ticks before stopping
   // .d3VelocityDecay(0.1); // "Friction" - lower means more movement
 
+  // Apply per-link distance using d3-force link once the instance is created
+  // const linkForce: any = (graph as any).d3Force("link");
+  // if (linkForce && typeof linkForce.distance === "function") {
+  //   linkForce.distance((link: any) =>
+  //     typeof link?.length === "number" ? link.length : 1
+  //   );
+  //   if (typeof linkForce.strength === "function") {
+  //     // Enforce target distances more strictly to reduce distortion from other forces
+  //     linkForce.strength((link: any) =>
+  //       typeof link?.length === "number" ? 1 : 0.5
+  //     );
+  //   }
+  // }
+
   if (options.nodeTextLabels) {
-    console.log("node text labels enabled", sceneGraph.getGraph());
     graph
-      .nodeThreeObject((node) => {
-        console.log("EHYYY");
+      .nodeThreeObject((node: any) => {
         const n = sceneGraph.getGraph().getNode(node.id as NodeId);
         const imageUrl = n.maybeGetUserData("imageUrl") as string | undefined;
-        console.log("node is ", n);
         if (imageUrl) {
-          console.log("entered");
           const texture = new TextureLoader().load(imageUrl);
           texture.colorSpace = SRGBColorSpace;
           const material = new SpriteMaterial({ map: texture });
@@ -302,10 +320,26 @@ export const createForceGraph = (
           getNodeLegendConfig(),
           getLegendMode()
         );
+
+        nodeEl.style.fontSize = `${options.fontSize}px`;
+
         nodeEl.className = "node-label";
         return new CSS2DObject(nodeEl);
       })
       .nodeThreeObjectExtend(true);
+  }
+
+  // Check if camera controls are disabled via interactivityFlags
+  const interactivityFlags = getInteractivityFlags();
+  if (interactivityFlags?.cameraControls === false) {
+    console.log("Camera controls are disabled via interactivityFlags");
+    const controls = graph.controls() as any;
+    if (controls) {
+      controls.enableRotate = false;
+      controls.enableZoom = false;
+      controls.enablePan = false;
+      controls.update();
+    }
   }
 
   if (layout === "Layout" && positions) {
@@ -318,6 +352,60 @@ export const createForceGraph = (
     sceneGraph,
     true
   );
+
+  // Apply initial camera settings if provided
+  if (options.cameraPosition && options.cameraTarget) {
+    console.log(
+      "setting camera position",
+      options.cameraPosition,
+      options.cameraTarget
+    );
+    console.log("Camera target Z value:", options.cameraTarget.z);
+
+    graph.cameraPosition(
+      options.cameraPosition,
+      options.cameraTarget,
+      0 // Immediate transition for initial setup
+    );
+
+    // Debug: Check what the camera target actually is after setting
+    const controls = graph.controls() as any;
+    if (controls && controls.target) {
+      console.log("Camera target after setting:", controls.target);
+
+      // Manually set the controls target to ensure Z coordinate is applied
+      if (controls.target.set) {
+        controls.target.set(
+          options.cameraTarget.x,
+          options.cameraTarget.y,
+          options.cameraTarget.z
+        );
+        controls.update();
+        console.log("Manually set camera target to:", controls.target);
+      }
+    }
+  }
+
+  // Apply initial zoom if provided
+  if (options.initialZoom && options.initialZoom !== 1) {
+    console.log("setting initial zoom", options.initialZoom);
+    const controls = graph.controls() as any;
+    if (controls && controls.object) {
+      controls.object.zoom = options.initialZoom;
+      controls.update();
+    }
+  }
+  // @TODO: This is a working block of code, but it should only be used when lengths are defined.
+  // Turning off because not sure how to handle the case where some lengths are not defined.
+  // Configure link distance using target node depth, following the working example pattern
+  // Respect per-link length baked into the edges. Fallback to 1.
+  // const linkForce = graph.d3Force("link");
+  // if (linkForce && typeof linkForce.distance === "function") {
+  // linkForce.distance((link: any) => (link?.length ?? 1) as number);
+  // linkForce.strength((link: any) => (link?.length ? 1 : undefined) as number);
+  // linkForce.iterations(4);
+  // }
+  // graph.numDimensions(3);
 
   return graph;
 };
@@ -455,7 +543,8 @@ export const bindEventsToGraphInstance = (
           getHoveredNodeIds().size === 0
         ) {
           isDragging = true;
-          startSelectionBox(event.clientX, event.clientY, event.shiftKey);
+          const { x, y } = getLocalCoords(event, container);
+          startSelectionBox(x, y, event.shiftKey);
           // event.preventDefault();
         }
       }
@@ -468,7 +557,8 @@ export const bindEventsToGraphInstance = (
         isDragging &&
         !getIsDraggingNode()
       ) {
-        updateSelectionBox(event.clientX, event.clientY);
+        const { x, y } = getLocalCoords(event, container);
+        updateSelectionBox(x, y);
         event.preventDefault();
       }
     });
@@ -478,13 +568,7 @@ export const bindEventsToGraphInstance = (
       if (controlMode === "multiselection" && isDragging) {
         isDragging = false;
         endSelectionBox();
-
-        // Select nodes that are within the selection box
-        const adjustedSelectionBox = { ...getSelectionBox() };
-        adjustedSelectionBox.startY = adjustedSelectionBox.startY - 45; //@warn: this is a hack for the uniapptoolbar. forcegraph screencoords are relative to the forcegraph container. seleectionBox coords are relative to the full app container
-        adjustedSelectionBox.endY = adjustedSelectionBox.endY - 45;
-        selectNodesInSelectionBox(graph, sceneGraph, adjustedSelectionBox);
-
+        selectNodesInSelectionBox(graph, sceneGraph, getSelectionBox());
         event.preventDefault();
       }
     });

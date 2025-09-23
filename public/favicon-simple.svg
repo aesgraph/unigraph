@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- White background with rounded corners -->
+  <rect x="0" y="0" width="32" height="32" rx="8" ry="8" fill="#ffffff"/>
+  
+  <!-- Subtle border for definition -->
+  <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" ry="7.5" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Dark blue "A" - larger and better positioned -->
+  <text x="16" y="24" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" text-anchor="middle" fill="#2563eb">A</text>
+</svg> 

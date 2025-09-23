@@ -7,6 +7,31 @@ import {
 import { NodeId } from "./Node";
 
 export type EdgeId = EntityId & { readonly kind: "edge" };
+export const createEdgeId = (
+  source: NodeId | string,
+  target: NodeId | string
+): EdgeId => {
+  return `${source}:::${target}` as EdgeId;
+};
+
+export interface DisplayEdgeData {
+  isVisible: boolean;
+  color: string;
+  size: number;
+  opacity: number;
+  drawType?: "arrow" | "line";
+  length?: number;
+}
+
+export type DisplayEdgeDataArgs = Partial<DisplayEdgeData>;
+
+export const DEFAULT_DISPLAY_EDGE_DATA: DisplayEdgeData = {
+  isVisible: true,
+  color: "#000000",
+  size: 1,
+  opacity: 1,
+  drawType: "line",
+};
 
 type EdgeData = EntityData & {
   source: NodeId;
@@ -16,26 +41,12 @@ type EdgeData = EntityData & {
 export type EdgeDataArgs = EntityDataArgs & {
   source: NodeId | string;
   target: NodeId | string;
-};
+} & DisplayEdgeDataArgs;
 
-export interface DisplayEdgeData {
-  isVisible: boolean;
-  color: string;
-  size: number;
-  opacity: number;
-}
-
-export const DEFAULT_DISPLAY_EDGE_DATA: DisplayEdgeData = {
-  isVisible: true,
-  color: "#000000",
-  size: 1,
-  opacity: 1,
-};
-
-export type DisplayEdgeDataArgs = Partial<DisplayEdgeData>;
 class Edge extends AbstractEntity<EdgeId, EdgeData> {
   constructor(args: EdgeDataArgs) {
     const id = Edge.id(args.source, args.target);
+
     super({ ...DEFAULT_DISPLAY_EDGE_DATA, ...args, id });
   }
 
@@ -90,6 +101,11 @@ class Edge extends AbstractEntity<EdgeId, EdgeData> {
   getOpacity(): number {
     return this.data.opacity;
   }
+
+  getLength(): number | undefined {
+    return this.data.length;
+  }
 }
 
-export { Edge, EdgeData };
+export { Edge };
+export type { EdgeData };

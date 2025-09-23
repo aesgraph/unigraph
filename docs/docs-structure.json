@@ -1,0 +1,474 @@
+{
+  "path": "/",
+  "type": "directory",
+  "children": [
+    {
+      "path": "_sass",
+      "type": "directory",
+      "children": [
+        {
+          "path": "_sass/custom",
+          "type": "directory",
+          "children": []
+        }
+      ]
+    },
+    {
+      "path": "aesgraph",
+      "type": "directory",
+      "children": [
+        {
+          "path": "aesgraph/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Aesgraph",
+          "order": 12
+        }
+      ]
+    },
+    {
+      "path": "applets",
+      "type": "directory",
+      "children": [
+        {
+          "path": "applets/applets.md",
+          "type": "file",
+          "name": "applets.md",
+          "title": "Applets",
+          "order": 11
+        }
+      ]
+    },
+    {
+      "path": "assets",
+      "type": "directory",
+      "children": [
+        {
+          "path": "assets/css",
+          "type": "directory",
+          "children": []
+        },
+        {
+          "path": "assets/images",
+          "type": "directory",
+          "children": [
+            {
+              "path": "assets/images/loadFromSvg",
+              "type": "directory",
+              "children": []
+            },
+            {
+              "path": "assets/images/loadMermaidjs",
+              "type": "directory",
+              "children": []
+            },
+            {
+              "path": "assets/images/unigraphDesign",
+              "type": "directory",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "capabilities",
+      "type": "directory",
+      "children": [
+        {
+          "path": "capabilities/copilot.md",
+          "type": "file",
+          "name": "copilot.md",
+          "title": "Copilot Integrations",
+          "order": 2
+        },
+        {
+          "path": "capabilities/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Capabilities",
+          "order": 1
+        },
+        {
+          "path": "capabilities/toDot.md",
+          "type": "file",
+          "name": "toDot.md",
+          "title": "Graphviz Integrations",
+          "order": 1
+        }
+      ]
+    },
+    {
+      "path": "coreConcepts",
+      "type": "directory",
+      "children": [
+        {
+          "path": "coreConcepts/coreConcepts.md",
+          "type": "file",
+          "name": "coreConcepts.md",
+          "title": "Core Concepts",
+          "order": 2
+        }
+      ]
+    },
+    {
+      "path": "developer",
+      "type": "directory",
+      "children": [
+        {
+          "path": "developer/LIVE_CHAT_SETUP.md",
+          "type": "file",
+          "name": "LIVE_CHAT_SETUP.md"
+        }
+      ]
+    },
+    {
+      "path": "developmentNotes",
+      "type": "directory",
+      "children": [
+        {
+          "path": "developmentNotes/developmentMilestones.md",
+          "type": "file",
+          "name": "developmentMilestones.md",
+          "title": "Milestones",
+          "order": 5
+        },
+        {
+          "path": "developmentNotes/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Development Notes",
+          "order": 7
+        },
+        {
+          "path": "developmentNotes/renderingAttributes.md",
+          "type": "file",
+          "name": "renderingAttributes.md",
+          "title": "Whitepaper Drafts",
+          "order": 10
+        },
+        {
+          "path": "developmentNotes/technicalDetailsAndPlanning.md",
+          "type": "file",
+          "name": "technicalDetailsAndPlanning.md",
+          "title": "Technical Details and Planning",
+          "order": 7
+        },
+        {
+          "path": "developmentNotes/v0_designDecisions.md",
+          "type": "file",
+          "name": "v0_designDecisions.md",
+          "title": "v0 Design Decisions",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "path": "examples",
+      "type": "directory",
+      "children": [
+        {
+          "path": "examples/chatsWithCopilot",
+          "type": "directory",
+          "children": [
+            {
+              "path": "examples/chatsWithCopilot/e8PetrieWalkthrough.md",
+              "type": "file",
+              "name": "e8PetrieWalkthrough.md",
+              "title": "E8 Lattice Projections",
+              "order": 6
+            },
+            {
+              "path": "examples/chatsWithCopilot/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Chats with Copilot",
+              "order": 5
+            }
+          ]
+        },
+        {
+          "path": "examples/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Examples",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "path": "index.md",
+      "type": "file",
+      "name": "index.md",
+      "title": "Home"
+    },
+    {
+      "path": "logging-system.md",
+      "type": "file",
+      "name": "logging-system.md"
+    },
+    {
+      "path": "overview",
+      "type": "directory",
+      "children": [
+        {
+          "path": "overview/currentProjects.md",
+          "type": "file",
+          "name": "currentProjects.md",
+          "title": "Current Projects",
+          "order": 1
+        },
+        {
+          "path": "overview/goals.md",
+          "type": "file",
+          "name": "goals.md",
+          "title": "Goals",
+          "order": 2
+        },
+        {
+          "path": "overview/introductoryIdeas",
+          "type": "directory",
+          "children": [
+            {
+              "path": "overview/introductoryIdeas/deepTyping.md",
+              "type": "file",
+              "name": "deepTyping.md",
+              "title": "Deep Typing",
+              "order": 11
+            },
+            {
+              "path": "overview/introductoryIdeas/humanCentric.md",
+              "type": "file",
+              "name": "humanCentric.md",
+              "title": "Human-centricism",
+              "order": 10
+            }
+          ]
+        },
+        {
+          "path": "overview/motivation.md",
+          "type": "file",
+          "name": "motivation.md",
+          "title": "Motivation",
+          "order": 0
+        },
+        {
+          "path": "overview/overview.md",
+          "type": "file",
+          "name": "overview.md",
+          "title": "Overview",
+          "order": 0
+        },
+        {
+          "path": "overview/terminology.md",
+          "type": "file",
+          "name": "terminology.md",
+          "title": "Terminology",
+          "order": 5
+        }
+      ]
+    },
+    {
+      "path": "quickGuides",
+      "type": "directory",
+      "children": [
+        {
+          "path": "quickGuides/importingFromDot.md",
+          "type": "file",
+          "name": "importingFromDot.md",
+          "title": "Load Dot",
+          "order": 5
+        },
+        {
+          "path": "quickGuides/importingFromMermaid.md",
+          "type": "file",
+          "name": "importingFromMermaid.md",
+          "title": "Load MermaidJS",
+          "order": 4
+        },
+        {
+          "path": "quickGuides/loadingFromSvg.md",
+          "type": "file",
+          "name": "loadingFromSvg.md",
+          "title": "Load SVGs",
+          "order": 3
+        },
+        {
+          "path": "quickGuides/quickGuides.md",
+          "type": "file",
+          "name": "quickGuides.md",
+          "title": "Quick Guides",
+          "order": 3
+        }
+      ]
+    },
+    {
+      "path": "unigraphTheory",
+      "type": "directory",
+      "children": [
+        {
+          "path": "unigraphTheory/apiForApis.md",
+          "type": "file",
+          "name": "apiForApis.md",
+          "title": "An API for APIs",
+          "order": 4
+        },
+        {
+          "path": "unigraphTheory/dataDiscovery.md",
+          "type": "file",
+          "name": "dataDiscovery.md",
+          "title": "Data Discovery and Marketplace",
+          "order": 4
+        },
+        {
+          "path": "unigraphTheory/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Theory",
+          "order": 6
+        }
+      ]
+    },
+    {
+      "path": "useCases",
+      "type": "directory",
+      "children": [
+        {
+          "path": "useCases/dataAnalytics.md",
+          "type": "file",
+          "name": "dataAnalytics.md",
+          "title": "Data Analytics",
+          "order": 12
+        },
+        {
+          "path": "useCases/index.md",
+          "type": "file",
+          "name": "index.md",
+          "title": "Use Cases",
+          "order": 8
+        },
+        {
+          "path": "useCases/quickInteractiveDiagrams",
+          "type": "directory",
+          "children": [
+            {
+              "path": "useCases/quickInteractiveDiagrams/factorGraph.md",
+              "type": "file",
+              "name": "factorGraph.md",
+              "title": "Factor Graph",
+              "order": 12
+            },
+            {
+              "path": "useCases/quickInteractiveDiagrams/index.md",
+              "type": "file",
+              "name": "index.md",
+              "title": "Quick Interactive Diagrams",
+              "order": 7
+            }
+          ]
+        },
+        {
+          "path": "useCases/researchAndCollaboration.md",
+          "type": "file",
+          "name": "researchAndCollaboration.md",
+          "title": "Research and Collaboration",
+          "order": 12
+        },
+        {
+          "path": "useCases/scientificApplications",
+          "type": "directory",
+          "children": [
+            {
+              "path": "useCases/scientificApplications/chemistryToolkit.md",
+              "type": "file",
+              "name": "chemistryToolkit.md",
+              "title": "Chemistry Toolkit",
+              "order": 12
+            },
+            {
+              "path": "useCases/scientificApplications/circuitDesignToolkit.md",
+              "type": "file",
+              "name": "circuitDesignToolkit.md",
+              "title": "Circuit Design Toolkit",
+              "order": 12
+            },
+            {
+              "path": "useCases/scientificApplications/crystallographyToolkit.md",
+              "type": "file",
+              "name": "crystallographyToolkit.md",
+              "title": "Crystallography Toolkit",
+              "order": 12
+            },
+            {
+              "path": "useCases/scientificApplications/imageLabelingToolkit.md",
+              "type": "file",
+              "name": "imageLabelingToolkit.md",
+              "title": "Image Labeling Toolkit",
+              "order": 12
+            },
+            {
+              "path": "useCases/scientificApplications/index.md",
+              "type": "file",
+              "name": "index.md"
+            }
+          ]
+        },
+        {
+          "path": "useCases/semanticTechnology",
+          "type": "directory",
+          "children": [
+            {
+              "path": "useCases/semanticTechnology/dataDiscovery.md",
+              "type": "file",
+              "name": "dataDiscovery.md",
+              "title": "Data Discovery",
+              "order": 9
+            },
+            {
+              "path": "useCases/semanticTechnology/knowledgeGraph.md",
+              "type": "file",
+              "name": "knowledgeGraph.md",
+              "title": "Knowledge Graphs",
+              "order": 10
+            },
+            {
+              "path": "useCases/semanticTechnology/messaging.md",
+              "type": "file",
+              "name": "messaging.md",
+              "title": "Messaging",
+              "order": 0
+            },
+            {
+              "path": "useCases/semanticTechnology/ontology.md",
+              "type": "file",
+              "name": "ontology.md",
+              "title": "Ontology",
+              "order": 9
+            },
+            {
+              "path": "useCases/semanticTechnology/semanticTech.md",
+              "type": "file",
+              "name": "semanticTech.md",
+              "title": "Semantic Technology",
+              "order": 9
+            }
+          ]
+        },
+        {
+          "path": "useCases/softwareDevelopmentUsecase.md",
+          "type": "file",
+          "name": "softwareDevelopmentUsecase.md",
+          "title": "Software Development and Debugging",
+          "order": 9
+        },
+        {
+          "path": "useCases/systemDiagramming.md",
+          "type": "file",
+          "name": "systemDiagramming.md",
+          "title": "System Diagramming",
+          "order": 8
+        }
+      ]
+    }
+  ]
+}

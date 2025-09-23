@@ -1,0 +1,22 @@
+/* Global CSS isolation for AppShell to prevent conflicts with main app */
+
+/* Scope all app-shell related CSS to only affect elements within the isolated container */
+.aesgraph-app-shell-isolated {
+  /* Create a completely isolated CSS environment but allow proper layout */
+  isolation: isolate;
+  /* Remove contain: layout style paint as it's too restrictive */
+}
+
+/* Prevent any global app-shell CSS from affecting elements outside the container */
+.aesgraph-app-shell-isolated * {
+  /* Ensure box-sizing is consistent */
+  box-sizing: border-box;
+}
+
+/* Much lighter touch - only prevent obvious conflicts */
+.aesgraph-app-shell-isolated {
+  /* Ensure the container itself doesn't inherit problematic styles */
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+}

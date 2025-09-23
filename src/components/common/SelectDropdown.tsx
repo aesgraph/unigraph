@@ -144,7 +144,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
           {showClearButton && value && !isOpen && (
             <X
               className={`${styles.icon} ${styles.clearIcon}`}
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 handleClear();
               }}

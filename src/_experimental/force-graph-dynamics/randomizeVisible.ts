@@ -1,0 +1,47 @@
+import { ForceGraph3DInstance } from "3d-force-graph";
+import { EdgeId } from "../../core/model/Edge";
+import { EntityIds } from "../../core/model/entity/entityIds";
+import { NodeId } from "../../core/model/Node";
+import { SceneGraph } from "../../core/model/SceneGraph";
+
+export const randomizeVisible = (
+  forceGraph3dInstance: ForceGraph3DInstance,
+  percentDecimalVisible: number
+) => {
+  forceGraph3dInstance.nodeVisibility((_node) => {
+    return Math.random() < percentDecimalVisible;
+  });
+  forceGraph3dInstance.linkVisibility((_link) => {
+    return Math.random() < percentDecimalVisible;
+  });
+};
+
+export const randomizeVisibleAndPhysics = (
+  forceGraph3dInstance: ForceGraph3DInstance,
+  sceneGraph: SceneGraph,
+  percentDecimalVisible: number
+) => {
+  const visibleNodeIds = sceneGraph
+    .getGraph()
+    .getNodes()
+    .filter((_node) => {
+      return Math.random() < percentDecimalVisible;
+    })
+    .map((node) => node.getId());
+
+  const visibleEdgeIds = sceneGraph
+    .getGraph()
+    .getAllEdgesConnectingBetween(new EntityIds(visibleNodeIds))
+    .map((edge) => {
+      return edge.getId();
+    });
+
+  forceGraph3dInstance.graphData({
+    nodes: forceGraph3dInstance.graphData().nodes.filter((node) => {
+      return visibleNodeIds.includes(node.id as NodeId);
+    }),
+    links: forceGraph3dInstance.graphData().links.filter((link) => {
+      return visibleEdgeIds.includes((link as any).id as EdgeId);
+    }),
+  });
+};

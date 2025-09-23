@@ -137,7 +137,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
             <X
               className={styles.removeOption}
               style={{ color: getTextColorBasedOnBackground(value.color) }}
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 handleRemove(value);
               }}
@@ -163,7 +163,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
           {values.length > 0 && !isOpen && (
             <X
               className={`${styles.icon} ${styles.clearIcon}`}
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 handleClear();
               }}
