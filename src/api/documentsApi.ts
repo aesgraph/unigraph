@@ -1,11 +1,16 @@
 import { supabase } from "../utils/supabaseClient";
 
+export interface DocumentMetadata {
+  [key: string]: any;
+  references?: DocumentReference[];
+}
+
 export interface Document {
   id: string;
   title: string;
   content?: string;
   extension?: string;
-  metadata?: any;
+  metadata?: DocumentMetadata;
   data: any; // JSONB field for additional data
   user_id: string;
   project_id?: string | null;
@@ -14,11 +19,18 @@ export interface Document {
   last_updated_at?: string | null;
 }
 
+export interface DocumentReference {
+  referenceEntityType: string;
+  referenceId: string;
+  referenceTags: string[];
+  referenceRelationType: "parent" | "child" | "sibling";
+}
+
 export interface CreateDocumentParams {
   title: string;
   content?: string;
   extension?: string;
-  metadata?: any;
+  metadata?: DocumentMetadata;
   data: any;
   project_id?: string;
   parent_id?: string;
@@ -29,7 +41,7 @@ export interface UpdateDocumentParams {
   title?: string;
   content?: string;
   extension?: string;
-  metadata?: any;
+  metadata?: DocumentMetadata;
   data?: any;
   project_id?: string;
   parent_id?: string;

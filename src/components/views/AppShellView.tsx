@@ -36,6 +36,7 @@ import ReactFlowPanelV2 from "./ReactFlowPanelV2";
 import ResourceManagerView from "./ResourceManagerView";
 import SandpackEditorWithFileTree from "./SandpackEditorWithFileTree";
 import SystemMonitorView from "./SystemMonitorView";
+import UserActivityLogsView from "./UserActivityLogsView";
 import { VIEW_DEFINITIONS } from "./viewDefinitions";
 import YouTubePlayerView from "./YouTubePlayerView";
 
@@ -901,6 +902,14 @@ const youtubePlayerView = {
   category: "media",
 };
 
+const userActivityLogsView = {
+  id: VIEW_DEFINITIONS["user-activity-logs"].id,
+  title: VIEW_DEFINITIONS["user-activity-logs"].title,
+  icon: VIEW_DEFINITIONS["user-activity-logs"].icon,
+  component: (props: any) => <UserActivityLogsView {...props} />,
+  category: VIEW_DEFINITIONS["user-activity-logs"].category,
+};
+
 const MarkdownViewerWrapper: React.FC<any> = (props) => {
   const currentSceneGraph = useAppConfigStore(
     (state) => state.currentSceneGraph
@@ -1023,6 +1032,7 @@ const allViews = [
   resourceManagerView,
   pdfViewerView,
   youtubePlayerView,
+  userActivityLogsView,
 ];
 
 // Example: Create a custom theme for demonstration

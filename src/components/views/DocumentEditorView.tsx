@@ -25,6 +25,8 @@ import {
   getDocument,
   updateDocument,
 } from "../../api/documentsApi";
+import { logDocumentActivity } from "../../api/userActivitiesApi";
+import { useAuth } from "../../hooks/useAuth";
 import { addNotification } from "../../store/notificationStore";
 import LexicalEditorV3 from "../applets/Lexical/LexicalEditorV3";
 import DocumentContentSearch, {
@@ -652,6 +654,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
   documentId: initialDocumentId,
 }) => {
   const { theme } = useTheme();
+  const { user } = useAuth();
   const [content, setContent] = useState<string>(initialContent);
   const [_originalContent, setOriginalContent] =
     useState<string>(initialContent);
@@ -690,6 +693,17 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           setOriginalContent(document.content || "");
           setCurrentDocumentId(document.id);
           setHasUnsavedChanges(false);
+
+          // Log document access activity
+          if (user?.id) {
+            logDocumentActivity("document_opened", document.id, {
+              document_title: document.title,
+              document_extension: document.extension,
+              access_type: "auto_load",
+            }).catch((error) => {
+              console.error("Failed to log document access:", error);
+            });
+          }
         })
         .catch((error) => {
           console.error("Error auto-loading document:", error);
@@ -698,7 +712,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
           setIsLoading(false);
         });
     }
-  }, [initialDocumentId]);
+  }, [initialDocumentId, user?.id]);
 
   // Create document editor file tree instance
   const documentEditorInstance: FileTreeInstance = useMemo(
@@ -763,6 +777,17 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
             }
             lastAutoSavedContentRef.current = loadedContent;
             console.log("Loaded document:", document);
+
+            // Log document access activity
+            if (user?.id) {
+              logDocumentActivity("document_opened", document.id, {
+                document_title: document.title,
+                document_extension: document.extension,
+                access_type: "file_selection",
+              }).catch((error) => {
+                console.error("Failed to log document access:", error);
+              });
+            }
           } catch (error) {
             console.error("Error loading document:", error);
             // Fallback to default content
@@ -948,7 +973,7 @@ export const DocumentEditorView: React.FC<DocumentEditorViewProps> = ({
         }
       },
     }),
-    [userId, projectId, filename] // Removed currentDocumentId to prevent unnecessary FileTreeView re-renders
+    [userId, projectId, filename, user?.id] // Removed currentDocumentId to prevent unnecessary FileTreeView re-renders
   );
 
   // Removed Sandpack-related code

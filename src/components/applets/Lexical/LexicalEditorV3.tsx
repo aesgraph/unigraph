@@ -43,6 +43,7 @@ import { EntityReferenceNode } from "./plugins/EntityReferencePlugin";
 import MentionsPlugin from "./plugins/MentionsPlugin";
 import TagAutocompletePlugin from "./plugins/TagAutocompletePlugin";
 import { TagPlugin } from "./plugins/TagPlugin";
+import TimestampPlugin, { TimestampNode } from "./plugins/TimestampPlugin";
 import { ToolbarPlugin } from "./plugins/ToolbarPlugin";
 
 // Create a separate PlaceholderPlugin component
@@ -277,6 +278,7 @@ interface LexicalEditorV3Props {
   onChange?: (content: string, serializedState?: string) => void; // Updated to include serialized state
   autoSaveInterval?: number; // Auto-save interval in milliseconds
   onLastSavedChange?: (date: Date | null) => void; // Callback to update parent's last saved timestamp
+  onTimestampInsert?: (insertFn: (timestamp: string) => void) => void; // Callback to receive timestamp insertion function
 }
 
 const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
@@ -285,6 +287,7 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
   onChange,
   autoSaveInterval = 500, // Default 0.5 seconds
   onLastSavedChange,
+  onTimestampInsert,
 }) => {
   const { theme: appTheme } = useTheme();
 
@@ -529,6 +532,7 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
         EntityReferenceNode,
         MentionNode,
         TagNode,
+        TimestampNode,
       ],
       onError: (error: Error) => {
         console.error("LexicalEditorV3: Lexical error:", error);
@@ -630,6 +634,7 @@ const LexicalEditorV3: React.FC<LexicalEditorV3Props> = ({
               <CheckListPlugin />
               <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
               <ClearEditorPlugin />
+              <TimestampPlugin onInsertTimestamp={onTimestampInsert} />
 
               {/* Custom onChange handler */}
               <CustomOnChangePlugin onChange={handleEditorChange} />

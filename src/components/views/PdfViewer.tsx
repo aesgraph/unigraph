@@ -5,6 +5,8 @@ import type {
 } from "pdfjs-dist/types/src/display/api";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
+// PDF Viewer Component
+
 // Configure PDF.js worker - use local worker from node_modules
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",

@@ -1,5 +1,9 @@
 import { supabase } from "../utils/supabaseClient";
 
+export interface AccessLog {
+  accessTime: string;
+}
+
 export interface YouTubeVideo {
   id: string;
   title?: string | null;
@@ -18,6 +22,8 @@ export interface YouTubeVideo {
   thumbnail_default_url?: string | null;
   thumbnail_medium_url?: string | null;
   thumbnail_high_url?: string | null;
+  accessLogs?: AccessLog[] | null;
+  lastAccessTime?: string | null;
 }
 
 // List YouTube videos with optional limit and ordering by published date

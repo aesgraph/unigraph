@@ -8,6 +8,7 @@ import {
   listDocuments,
   savePdfDocument,
 } from "../../api/documentsApi";
+import { listUserActivities, UserActivity } from "../../api/userActivitiesApi";
 import {
   checkWebpagesContent,
   listWebpages,
@@ -21,6 +22,10 @@ import { useAuth } from "../../hooks/useAuth";
 import useAppConfigStore from "../../store/appConfigStore";
 import { useDocumentEventsStore } from "../../store/documentEventsStore";
 import { useTagStore } from "../../store/tagStore";
+import {
+  getDocumentLastAccessTime,
+  userActivityCache,
+} from "../../utils/userActivityCache";
 import EntityTableV2 from "../common/EntityTableV2";
 
 type ResourceManagerViewProps = Record<string, never>;
@@ -44,6 +49,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   const [annotations, setAnnotations] = useState<Annotation[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [youtubeVideos, setYouTubeVideos] = useState<YouTubeVideo[]>([]);
+  const [_userActivities, setUserActivities] = useState<UserActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [webpageContentAvailability, setWebpageContentAvailability] = useState<{
     [id: string]: { hasHtml: boolean; hasScreenshot: boolean };
@@ -70,6 +76,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
     webpageContentAvailability: {
       [id: string]: { hasHtml: boolean; hasScreenshot: boolean };
     } | null;
+    userActivities: UserActivity[] | null;
     lastFetched: number | null;
   }>({
     webpages: null,
@@ -77,6 +84,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
     documents: null,
     youtubeVideos: null,
     webpageContentAvailability: null,
+    userActivities: null,
     lastFetched: null,
   });
 
@@ -157,6 +165,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         dataCache.documents &&
         dataCache.webpageContentAvailability &&
         dataCache.youtubeVideos &&
+        dataCache.userActivities &&
         cacheValid
       ) {
         console.log("Using cached data, age:", cacheAge, "ms");
@@ -165,6 +174,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         setDocuments(dataCache.documents);
         setYouTubeVideos(dataCache.youtubeVideos);
         setWebpageContentAvailability(dataCache.webpageContentAvailability);
+        setUserActivities(dataCache.userActivities);
         setLoading(false);
         return;
       }
@@ -174,11 +184,16 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         console.log("Fetching fresh data from server");
 
         // Fetch webpages (only when signed in)
+        let activitiesData: UserActivity[] = [];
         let webpagesData: Webpage[] = [];
         let contentAvailability: {
           [id: string]: { hasHtml: boolean; hasScreenshot: boolean };
         } = {};
         if (user?.id) {
+          activitiesData = (await listUserActivities({
+            userId: user.id,
+          })) as UserActivity[];
+
           webpagesData = (await listWebpages({
             userId: user.id,
             includeContent: false,
@@ -251,6 +266,10 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
 
         // Collect tags from YouTube videos (handle CSV or JSON array stored in text)
         (youTubeVideosData || []).forEach((video: YouTubeVideo) => {
+          const lastAccessTime = userActivityCache.getLastAccessTime(video.id);
+          if (lastAccessTime) {
+            video.lastAccessTime = lastAccessTime;
+          }
           let tags: string[] = [];
           const t = video.tags;
           if (Array.isArray(t)) {
@@ -271,12 +290,23 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         });
 
         // Update state
+        setUserActivities(activitiesData || []);
         setWebpages(webpagesData || []);
         setAnnotations(annotationsData || []);
         setDocuments(documentsData || []);
         setWebpageContentAvailability(contentAvailability);
         setYouTubeVideos(youTubeVideosData || []);
         setTagCache(newTagCache);
+
+        // Update user activity cache
+        if (activitiesData && activitiesData.length > 0) {
+          userActivityCache.updateCache(activitiesData);
+          console.log(
+            "User activity cache updated with",
+            activitiesData.length,
+            "activities"
+          );
+        }
 
         // Update cache
         setDataCache({
@@ -285,6 +315,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
           documents: documentsData || [],
           youtubeVideos: youTubeVideosData || [],
           webpageContentAvailability: contentAvailability,
+          userActivities: activitiesData || [],
           lastFetched: now,
         });
       } catch (error) {
@@ -391,10 +422,15 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
 
       // Fetch data without setting loading state
       let webpagesData: Webpage[] = [];
+      let activitiesData: UserActivity[] = [];
       let contentAvailability: {
         [id: string]: { hasHtml: boolean; hasScreenshot: boolean };
       } = {};
       if (user?.id) {
+        activitiesData = (await listUserActivities({
+          userId: user.id,
+        })) as UserActivity[];
+
         webpagesData = (await listWebpages({
           userId: user.id,
           includeContent: false,
@@ -468,6 +504,10 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
 
       // Collect tags from YouTube videos
       (youTubeVideosData || []).forEach((video) => {
+        const lastAccessTime = userActivityCache.getLastAccessTime(video.id);
+        if (lastAccessTime) {
+          video.lastAccessTime = lastAccessTime;
+        }
         let tags: string[] = [];
         const t = (video as any).tags as unknown;
         if (Array.isArray(t)) {
@@ -495,6 +535,16 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
       setYouTubeVideos(youTubeVideosData || []);
       setTagCache(newTagCache);
 
+      // Update user activity cache
+      if (activitiesData && activitiesData.length > 0) {
+        userActivityCache.updateCache(activitiesData);
+        console.log(
+          "User activity cache updated (silent) with",
+          activitiesData.length,
+          "activities"
+        );
+      }
+
       // Update cache
       setDataCache({
         webpages: webpagesData || [],
@@ -502,6 +552,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         documents: documentsData || [],
         youtubeVideos: youTubeVideosData || [],
         webpageContentAvailability: contentAvailability,
+        userActivities: activitiesData || [],
         lastFetched: Date.now(),
       });
 
@@ -763,6 +814,9 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
 
   const documentsContainer = new EntitiesContainer(
     documents.map((document) => {
+      // Get last access time from cache
+      const lastAccessTime = getDocumentLastAccessTime(document.id);
+
       // Create a mock entity for documents that implements the required interface
       return {
         getId: () => document.id,
@@ -779,6 +833,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
           parent_id: document.parent_id,
           created_at: document.created_at,
           last_updated_at: document.last_updated_at,
+          lastAccessTime: lastAccessTime ?? "",
           userData: document,
         }),
         getEntityType: () => "node",
@@ -800,6 +855,8 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   // Create container for YouTube videos
   const youtubeVideosContainer = new EntitiesContainer(
     youtubeVideos.map((video) => {
+      // Get last access time from cache
+      const lastAccessTime = userActivityCache.getLastAccessTime(video.id);
       // Normalize tags from possible CSV string or JSON array in text column
       let tags: string[] = [];
       const rawTags = (video as any).tags as unknown;
@@ -824,17 +881,18 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         getLabel: () => video.title || video.id,
         getTags: () => new Set(tags),
         getData: () => ({
-          id: video.id,
           label: video.title || video.id,
-          type: "youtube_video",
           title: video.title,
+          lastAccessTime: lastAccessTime ?? "",
+          tags,
+          // type: "youtube_video",
           description: video.description,
           publishedAt: video.publishedAt,
           duration: video.duration,
           viewCount: video.viewCount,
           likeCount: video.likeCount,
           commentCount: video.commentCount,
-          tags,
+
           categoryId: video.categoryId,
           defaultLanguage: video.defaultLanguage,
           defaultAudioLanguage: video.defaultAudioLanguage,
@@ -843,6 +901,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
           thumbnail_default_url: video.thumbnail_default_url,
           thumbnail_medium_url: video.thumbnail_medium_url,
           thumbnail_high_url: video.thumbnail_high_url,
+          id: video.id,
           userData: video,
         }),
         getEntityType: () => "node",

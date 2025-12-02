@@ -203,6 +203,13 @@ export const VIEW_DEFINITIONS: Record<string, ViewDefinition> = {
     description:
       "View and interact with PDF documents with zoom, navigation, and search capabilities",
   },
+  "user-activity-logs": {
+    id: "user-activity-logs",
+    title: "User Activity Logs",
+    icon: "📊",
+    category: "analytics",
+    description: "View and analyze user activity logs and engagement metrics",
+  },
 };
 
 // Helper function to get all available view IDs
