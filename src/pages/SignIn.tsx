@@ -90,7 +90,9 @@ export default function SignIn() {
 
     // For popup, redirect back to the same page after OAuth
     // For regular page, redirect to main app
-    const redirectTo = isPopup
+    // Check window.opener directly to avoid race condition with isPopup state
+    const isPopupWindow = window.opener !== null;
+    const redirectTo = isPopupWindow
       ? window.location.origin + "/signin" // Stay in popup for OAuth
       : window.location.origin + "/"; // Redirect to main app if not popup
 
@@ -253,7 +255,7 @@ export default function SignIn() {
         alignItems: "center",
         justifyContent: "center",
         background: "#f9fafb",
-        padding: "20px 0",
+        padding: "20px",
       }}
     >
       <div
@@ -469,29 +471,6 @@ export default function SignIn() {
           </div>
         </form>
 
-        {/* Toggle between sign in and sign up - moved here */}
-        <div style={{ fontSize: 14, color: "#666", marginBottom: 24 }}>
-          {isSignUp ? "Already have an account? " : "Don't have an account? "}
-          <button
-            type="button"
-            onClick={() => {
-              setIsSignUp(!isSignUp);
-              setError("");
-              setFormData({ email: "", password: "", confirmPassword: "" });
-            }}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#4285f4",
-              cursor: "pointer",
-              fontSize: 14,
-              fontWeight: 500,
-            }}
-          >
-            {isSignUp ? "Sign in" : "Sign up"}
-          </button>
-        </div>
-
         {/* Divider */}
         <div
           style={{
@@ -557,6 +536,29 @@ export default function SignIn() {
               <span>Continue with {p.name}</span>
             </button>
           ))}
+        </div>
+
+        {/* Toggle between sign in and sign up */}
+        <div style={{ fontSize: 14, color: "#666" }}>
+          {isSignUp ? "Already have an account? " : "Don't have an account? "}
+          <button
+            type="button"
+            onClick={() => {
+              setIsSignUp(!isSignUp);
+              setError("");
+              setFormData({ email: "", password: "", confirmPassword: "" });
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#4285f4",
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: 500,
+            }}
+          >
+            {isSignUp ? "Sign in" : "Sign up"}
+          </button>
         </div>
 
         <div style={{ marginTop: 32, fontSize: 13, color: "#888" }}>

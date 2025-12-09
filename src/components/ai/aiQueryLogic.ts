@@ -3,6 +3,8 @@ import { supabase } from "../../utils/supabaseClient";
 import { callLLMStudioAPI } from "../applets/ChatGptImporter/services/llmStudioService";
 import { OpenAITool, ToolCall } from "./aiTools";
 
+//TODO: Refactor
+
 export type ApiProvider = "openai" | "llm-studio" | "live-chat";
 
 export interface AIResponse {
@@ -68,12 +70,51 @@ export async function callLiveChatAPI(
   if (!isCustomEndpoint && (!isSignedIn || !user)) {
     throw new Error("User not authenticated");
   }
-  if (!liveChatUrl) {
-    throw new Error("Live chat URL not configured");
+  // Default Vercel URL if not configured
+  const DEFAULT_VERCEL_URL = "https://unigraph-routes.vercel.app/api/chat";
+
+  // Use default if liveChatUrl is empty, just "/", or whitespace
+  let apiUrl = (liveChatUrl || "").trim();
+  if (!apiUrl || apiUrl === "/" || apiUrl === "") {
+    apiUrl = DEFAULT_VERCEL_URL;
+  } else {
+    // Ensure the URL is absolute (has protocol) to prevent browser from treating it as relative
+    if (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
+      // If no protocol, assume https://
+      apiUrl = `https://${apiUrl}`;
+    }
+
+    // If the URL is just a domain (no path), append /api/chat
+    try {
+      const urlObj = new URL(apiUrl);
+      if (urlObj.pathname === "/" || urlObj.pathname === "") {
+        apiUrl = `${apiUrl}/api/chat`;
+      }
+    } catch {
+      // If URL parsing fails, try to append /api/chat if it doesn't already have a path
+      if (!apiUrl.includes("/api/chat") && !apiUrl.match(/\/[^/]+$/)) {
+        apiUrl = `${apiUrl}/api/chat`;
+      }
+    }
   }
+
+  // Final validation - ensure we have a valid URL
+  if (!apiUrl || apiUrl === "/" || apiUrl === "") {
+    throw new Error(
+      "Live chat URL is invalid. Please configure VITE_LIVE_CHAT_URL with a valid URL."
+    );
+  }
+
+  // Log the URL being used for debugging (only in development)
+  if (import.meta.env.DEV) {
+    console.log("[callLiveChatAPI] Using API URL:", apiUrl);
+    console.log("[callLiveChatAPI] Original liveChatUrl:", liveChatUrl);
+  }
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
+
   if (!isCustomEndpoint) {
     try {
       const {
@@ -89,7 +130,9 @@ export async function callLiveChatAPI(
       throw new Error("Authentication failed");
     }
   }
-  const response = await fetch(liveChatUrl, {
+
+  // Always use the live unigraph route
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers,
     body: JSON.stringify({
