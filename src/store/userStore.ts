@@ -97,6 +97,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
             });
           }
         } else if (event === "SIGNED_OUT") {
+          const { isSignedIn: wasSignedIn } = get();
+
           set({
             isSignedIn: false,
             user: null,
@@ -104,12 +106,15 @@ export const useUserStore = create<UserStore>((set, get) => ({
           });
           console.log("UserStore: User signed out");
 
-          // Show logout notification
-          addNotification({
-            message: "User logged out",
-            type: "info",
-            duration: 3000,
-          });
+          // Only show logout notification if user was previously signed in
+          // This prevents duplicate notifications when the event fires multiple times
+          if (wasSignedIn) {
+            addNotification({
+              message: "User logged out",
+              type: "info",
+              duration: 3000,
+            });
+          }
         } else if (event === "TOKEN_REFRESHED" && session?.user) {
           set({
             user: session.user,

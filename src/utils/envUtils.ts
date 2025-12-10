@@ -13,6 +13,7 @@ interface EnvVars {
   VITE_SUPABASE_ANON_KEY?: string;
   VITE_LIVE_CHAT_URL?: string;
   VITE_DEFAULT_CHAT_URL?: string;
+  VITE_YOUTUBE_API_KEY?: string;
   [key: string]: string | undefined;
 }
 
@@ -158,5 +159,6 @@ export const ENV = {
   SUPABASE_ANON_KEY: getEnvVar("VITE_SUPABASE_ANON_KEY"),
   LIVE_CHAT_URL: getEnvVar("VITE_LIVE_CHAT_URL"),
   DEFAULT_CHAT_URL: getEnvVar("VITE_DEFAULT_CHAT_URL"),
+  YOUTUBE_API_KEY: getEnvVar("VITE_YOUTUBE_API_KEY"),
   NODE_ENV: getEnvVar("NODE_ENV") || getEnvVar("VITE_NODE_ENV"),
 } as const;

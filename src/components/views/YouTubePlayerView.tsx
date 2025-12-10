@@ -425,66 +425,135 @@ const YouTubePlayerView: React.FC<YouTubePlayerViewProps> = ({
           return;
         }
 
-        // Load existing annotation for this video
-        const annotations = (await listAnnotations({
-          userId: user?.id,
-          parentResourceType: "youtube_video",
-          parentResourceId: videoId,
-          includeContent: true,
-        })) as Annotation[];
-
-        let annotationContent = "";
-        if (annotations && annotations.length > 0) {
-          const a = annotations[0];
-          setExistingAnnotationId(a.id);
-          let data = a.data as any;
-          if (typeof data === "string") {
-            try {
-              data = JSON.parse(data);
-            } catch {
-              // ignore
+        // Check if user is signed in - document creation requires authentication
+        if (!user?.id) {
+          console.warn(
+            "User not signed in, cannot create document for YouTube notes"
+          );
+          // Still try to load from localStorage if available
+          const existingDocId = localStorage.getItem(storageKey);
+          if (existingDocId) {
+            console.log(
+              "Found existing document ID in localStorage:",
+              existingDocId
+            );
+            if (isMounted) {
+              setDocumentId(existingDocId);
+              initializationRef.current = true;
+            }
+          } else {
+            console.log(
+              "No document found and user not signed in - notes will not be available"
+            );
+            if (isMounted) {
+              // Set a flag to show a message instead of "Loading notes..."
+              setDocumentId(null);
             }
           }
-          annotationContent = data?.comment || "";
+          return;
         }
 
-        // If there is an existing annotation, prefer its id for updates
-        // so we don't create duplicates.
-        if (annotations && annotations.length > 0) {
-          const _existingAnnotation = annotations[0];
+        // Load existing annotation for this video
+        let annotations: Annotation[] = [];
+        let annotationContent = "";
+        try {
+          annotations = (await listAnnotations({
+            userId: user.id,
+            parentResourceType: "youtube_video",
+            parentResourceId: videoId,
+            includeContent: true,
+          })) as Annotation[];
+
+          if (annotations && annotations.length > 0) {
+            const a = annotations[0];
+            setExistingAnnotationId(a.id);
+            let data = a.data as any;
+            if (typeof data === "string") {
+              try {
+                data = JSON.parse(data);
+              } catch {
+                // ignore
+              }
+            }
+            annotationContent = data?.comment || "";
+          }
+        } catch (annotationError) {
+          console.warn("Failed to load annotations:", annotationError);
+          // Continue with document creation even if annotation loading fails
         }
 
         // Ensure a backing document exists for LexicalEditorV3
         let existingDocId = localStorage.getItem(storageKey);
         if (!existingDocId) {
           console.log("Creating new document for video:", videoId);
-          const newDoc = await createDocument({
-            title: `${title || videoId} Notes`,
-            content: annotationContent || "",
-            extension: "txt",
-            metadata: {
-              type: "youtube_note",
-              references: [
-                {
-                  referenceEntityType: "youtube_video",
-                  referenceId: videoId,
-                  referenceTags: [],
-                  referenceRelationType: "parent",
+          try {
+            const newDoc = await createDocument({
+              title: `${title || videoId} Notes`,
+              content: annotationContent || "",
+              extension: "txt",
+              metadata: {
+                type: "youtube_note",
+                references: [
+                  {
+                    referenceEntityType: "youtube_video",
+                    referenceId: videoId,
+                    referenceTags: [],
+                    referenceRelationType: "parent",
+                  },
+                ],
+              },
+              data: {},
+            });
+            existingDocId = newDoc.id;
+            localStorage.setItem(storageKey, existingDocId);
+            console.log("Created new document with ID:", existingDocId);
+          } catch (docError) {
+            console.error("Failed to create document:", docError);
+            throw docError; // Re-throw to be caught by outer catch
+          }
+        } else {
+          // Verify the document still exists
+          try {
+            // Try to update with annotation content if present
+            if (annotationContent) {
+              console.log("Updating existing document with annotation content");
+              await updateDocument({
+                id: existingDocId,
+                content: annotationContent,
+              });
+            }
+          } catch (updateError) {
+            console.warn(
+              "Failed to update document, but continuing:",
+              updateError
+            );
+            // Document might not exist anymore, create a new one
+            try {
+              const newDoc = await createDocument({
+                title: `${title || videoId} Notes`,
+                content: annotationContent || "",
+                extension: "txt",
+                metadata: {
+                  type: "youtube_note",
+                  references: [
+                    {
+                      referenceEntityType: "youtube_video",
+                      referenceId: videoId,
+                      referenceTags: [],
+                      referenceRelationType: "parent",
+                    },
+                  ],
                 },
-              ],
-            },
-            data: {},
-          });
-          existingDocId = newDoc.id;
-          localStorage.setItem(storageKey, existingDocId);
-          console.log("Created new document with ID:", existingDocId);
-        } else if (annotationContent) {
-          // Sync annotation content into existing doc if present
-          console.log("Updating existing document with annotation content");
-          await updateDocument({
-            id: existingDocId,
-            content: annotationContent,
-          });
+                data: {},
+              });
+              existingDocId = newDoc.id;
+              localStorage.setItem(storageKey, existingDocId);
+              console.log("Recreated document with ID:", existingDocId);
+            } catch (recreateError) {
+              console.error("Failed to recreate document:", recreateError);
+              throw recreateError;
+            }
+          }
         }
 
         if (isMounted) {
@@ -494,6 +563,10 @@ const YouTubePlayerView: React.FC<YouTubePlayerViewProps> = ({
         }
       } catch (err) {
         console.error("YouTube notes init failed:", err);
+        // Show error state instead of infinite loading
+        if (isMounted) {
+          setDocumentId(null);
+        }
       }
     })();
     return () => {
@@ -631,9 +704,18 @@ const YouTubePlayerView: React.FC<YouTubePlayerViewProps> = ({
                 />
               );
             })()
-          ) : (
+          ) : user?.id ? (
             <div style={{ padding: 12, color: getColor(theme.colors, "text") }}>
               Loading notes...
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: 12,
+                color: getColor(theme.colors, "textSecondary"),
+              }}
+            >
+              Please sign in to create and edit notes for this video.
             </div>
           )}
         </div>

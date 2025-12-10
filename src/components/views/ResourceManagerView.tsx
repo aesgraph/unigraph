@@ -14,7 +14,11 @@ import {
   listWebpages,
   Webpage,
 } from "../../api/webpagesApi";
-import { listYouTubeVideos, YouTubeVideo } from "../../api/youtubeVideosApi";
+import {
+  importYouTubeVideo,
+  listYouTubeVideos,
+  YouTubeVideo,
+} from "../../api/youtubeVideosApi";
 import { Graph } from "../../core/model/Graph";
 import { SceneGraph } from "../../core/model/SceneGraph";
 import { EntitiesContainer } from "../../core/model/entity/entitiesContainer";
@@ -42,7 +46,7 @@ interface TabData {
 const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   const { currentSceneGraph } = useAppConfigStore();
   const { theme } = useTheme();
-  const { user } = useAuth();
+  const { user, isSignedIn } = useAuth();
   const { setTagMetadata, getTagColor, getTagMetadata } = useTagStore();
   const [activeTab, setActiveTab] = useState<string>("nodes");
   const [webpages, setWebpages] = useState<Webpage[]>([]);
@@ -63,6 +67,14 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   const [pdfTitleInput, setPdfTitleInput] = useState("");
   const [pdfDialogError, setPdfDialogError] = useState<string | null>(null);
   const [pdfCreating, setPdfCreating] = useState(false);
+
+  // YouTube video import dialog state
+  const [youtubeDialogOpen, setYoutubeDialogOpen] = useState(false);
+  const [youtubeUrlInput, setYoutubeUrlInput] = useState("");
+  const [youtubeDialogError, setYoutubeDialogError] = useState<string | null>(
+    null
+  );
+  const [youtubeImporting, setYoutubeImporting] = useState(false);
 
   // Ref to access the EntityTableV2 grid API for silent refresh
   // const entityTableRef = useRef<any>(null);
@@ -219,8 +231,10 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
           })) as Document[];
         }
 
-        // Fetch YouTube videos (no user filter, no order to avoid case-sensitive column issues)
-        const youTubeVideosData = await listYouTubeVideos();
+        // Fetch YouTube videos for the current user
+        const youTubeVideosData = await listYouTubeVideos({
+          userId: user?.id,
+        });
         console.log("YouTube videos fetched:", youTubeVideosData?.length || 0);
 
         // Collect tags during loading
@@ -330,6 +344,13 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Auto-refresh when user logs in or out
+  useEffect(() => {
+    // Force refresh when user authentication state changes
+    fetchData(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, isSignedIn]);
 
   // Listen for document events and refresh documents tab
   useEffect(() => {
@@ -454,8 +475,10 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         })) as Document[];
       }
 
-      // Refresh YouTube videos (no user filter)
-      const youTubeVideosData = await listYouTubeVideos();
+      // Refresh YouTube videos for the current user
+      const youTubeVideosData = await listYouTubeVideos({
+        userId: user?.id,
+      });
       console.log(
         "YouTube videos fetched (silent):",
         youTubeVideosData?.length || 0
@@ -631,8 +654,8 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
 
       // Extract tags from metadata
       let tags: string[] = [];
-      console.log("Webpage metadata:", webpage.metadata);
-      console.log("Webpage metadata type:", typeof webpage.metadata);
+      // console.log("Webpage metadata:", webpage.metadata);
+      // console.log("Webpage metadata type:", typeof webpage.metadata);
 
       let metadataObj = webpage.metadata;
 
@@ -647,27 +670,27 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
           console.warn("Parse error:", "ignored");
         }
       } else {
-        console.log("Metadata is not a string, type:", typeof metadataObj);
+        // console.log("Metadata is not a string, type:", typeof metadataObj);
       }
 
       if (metadataObj && typeof metadataObj === "object") {
-        console.log("Metadata object keys:", Object.keys(metadataObj));
-        console.log("Full metadata object:", metadataObj);
+        // console.log("Metadata object keys:", Object.keys(metadataObj));
+        // console.log("Full metadata object:", metadataObj);
 
         // Try to extract tags from metadata.tags or metadata.tag or metadata.keywords
         const tagsFromTags = (metadataObj as any).tags;
         const tagsFromTag = (metadataObj as any).tag;
         const tagsFromKeywords = (metadataObj as any).keywords;
 
-        console.log("tags from .tags:", tagsFromTags);
-        console.log("tags from .tag:", tagsFromTag);
-        console.log("tags from .keywords:", tagsFromKeywords);
+        // console.log("tags from .tags:", tagsFromTags);
+        // console.log("tags from .tag:", tagsFromTag);
+        // console.log("tags from .keywords:", tagsFromKeywords);
 
         tags = tagsFromTags || tagsFromTag || tagsFromKeywords || [];
 
-        console.log("Final extracted tags:", tags);
-        console.log("Tags type:", typeof tags);
-        console.log("Is tags array:", Array.isArray(tags));
+        // console.log("Final extracted tags:", tags);
+        // console.log("Tags type:", typeof tags);
+        // console.log("Is tags array:", Array.isArray(tags));
 
         // Ensure tags is an array
         if (!Array.isArray(tags)) {
@@ -724,7 +747,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   const annotationsContainer = new EntitiesContainer(
     annotations.map((annotation) => {
       // Create a mock entity for annotations that implements the required interface
-      console.log("Raw annotation from database:", annotation);
+      // console.log("Raw annotation from database:", annotation);
       let annotationData = annotation.data;
 
       // If data is a string, try to parse it as JSON
@@ -762,16 +785,16 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
       }
 
       // Debug logging to see what's in the data
-      console.log("Extracted annotation data:", {
-        id: annotation.id,
-        type: annotationType,
-        selected_text: selectedText,
-        image_url: imageUrl,
-        page_url: pageUrl,
-        comment: comment,
-        secondary_comment: secondaryComment,
-        tags: tags,
-      });
+      // console.log("Extracted annotation data:", {
+      //   id: annotation.id,
+      //   type: annotationType,
+      //   selected_text: selectedText,
+      //   image_url: imageUrl,
+      //   page_url: pageUrl,
+      //   comment: comment,
+      //   secondary_comment: secondaryComment,
+      //   tags: tags,
+      // });
 
       return {
         getId: () => annotation.id,
@@ -1192,6 +1215,106 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
       </div>
 
       {/* Tab Toolbar (below refresh, above table) */}
+      {activeTab === "youtube-videos" && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "8px 16px",
+            backgroundColor: theme.colors.surface,
+            borderBottom: `1px solid ${theme.colors.border}`,
+          }}
+        >
+          <div
+            style={{ position: "relative" }}
+            onMouseMove={(e) => {
+              if (!user?.id) {
+                const tooltip = e.currentTarget.querySelector(
+                  ".youtube-import-tooltip"
+                ) as HTMLElement;
+                if (tooltip) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  tooltip.style.opacity = "1";
+                  tooltip.style.left = `${e.clientX - rect.left + 12}px`;
+                  tooltip.style.top = `${e.clientY - rect.top - 8}px`;
+                  tooltip.style.transform = "none";
+                }
+              }
+            }}
+            onMouseEnter={(e) => {
+              if (!user?.id) {
+                const tooltip = e.currentTarget.querySelector(
+                  ".youtube-import-tooltip"
+                ) as HTMLElement;
+                if (tooltip) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  tooltip.style.opacity = "1";
+                  tooltip.style.left = `${e.clientX - rect.left + 12}px`;
+                  tooltip.style.top = `${e.clientY - rect.top - 8}px`;
+                  tooltip.style.transform = "none";
+                }
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!user?.id) {
+                const tooltip = e.currentTarget.querySelector(
+                  ".youtube-import-tooltip"
+                ) as HTMLElement;
+                if (tooltip) {
+                  tooltip.style.opacity = "0";
+                }
+              }
+            }}
+          >
+            <button
+              style={{
+                border: "none",
+                background: theme.colors.primary,
+                color: theme.colors.textInverse,
+                padding: "6px 10px",
+                borderRadius: 4,
+                cursor: user?.id ? "pointer" : "not-allowed",
+                opacity: user?.id ? 1 : 0.6,
+              }}
+              title={user?.id ? "Import YouTube video from URL" : undefined}
+              onClick={() => {
+                if (!user?.id) {
+                  return;
+                }
+                setYoutubeDialogError(null);
+                setYoutubeUrlInput("");
+                setYoutubeDialogOpen(true);
+              }}
+            >
+              Import from URL
+            </button>
+            {!user?.id && (
+              <div
+                className="youtube-import-tooltip"
+                style={{
+                  position: "absolute",
+                  padding: "10px 14px",
+                  background: theme.colors.surface,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: 6,
+                  boxShadow: theme.sizes.shadow.md,
+                  color: theme.colors.text,
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                  zIndex: 1000,
+                  pointerEvents: "none",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                }}
+              >
+                Sign in first to import YouTube videos
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {activeTab === "documents" && (
         <div
           style={{
@@ -1203,7 +1326,47 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
             borderBottom: `1px solid ${theme.colors.border}`,
           }}
         >
-          <div style={{ position: "relative" }}>
+          <div
+            style={{ position: "relative" }}
+            onMouseMove={(e) => {
+              if (!user?.id) {
+                const tooltip = e.currentTarget.querySelector(
+                  ".doc-create-tooltip"
+                ) as HTMLElement;
+                if (tooltip) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  tooltip.style.opacity = "1";
+                  tooltip.style.left = `${e.clientX - rect.left + 12}px`;
+                  tooltip.style.top = `${e.clientY - rect.top - 8}px`;
+                  tooltip.style.transform = "none";
+                }
+              }
+            }}
+            onMouseEnter={(e) => {
+              if (!user?.id) {
+                const tooltip = e.currentTarget.querySelector(
+                  ".doc-create-tooltip"
+                ) as HTMLElement;
+                if (tooltip) {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  tooltip.style.opacity = "1";
+                  tooltip.style.left = `${e.clientX - rect.left + 12}px`;
+                  tooltip.style.top = `${e.clientY - rect.top - 8}px`;
+                  tooltip.style.transform = "none";
+                }
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!user?.id) {
+                const tooltip = e.currentTarget.querySelector(
+                  ".doc-create-tooltip"
+                ) as HTMLElement;
+                if (tooltip) {
+                  tooltip.style.opacity = "0";
+                }
+              }
+            }}
+          >
             <button
               style={{
                 border: "none",
@@ -1211,10 +1374,14 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
                 color: theme.colors.textInverse,
                 padding: "6px 10px",
                 borderRadius: 4,
-                cursor: "pointer",
+                cursor: user?.id ? "pointer" : "not-allowed",
+                opacity: user?.id ? 1 : 0.6,
               }}
-              title="Create new document"
+              title={user?.id ? "Create new document" : undefined}
               onClick={() => {
+                if (!user?.id) {
+                  return;
+                }
                 const menu = document.getElementById("doc-create-menu");
                 if (menu) {
                   const isOpen = menu.getAttribute("data-open") === "true";
@@ -1225,6 +1392,29 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
             >
               Create new ▾
             </button>
+            {!user?.id && (
+              <div
+                className="doc-create-tooltip"
+                style={{
+                  position: "absolute",
+                  padding: "10px 14px",
+                  background: theme.colors.surface,
+                  border: `1px solid ${theme.colors.border}`,
+                  borderRadius: 6,
+                  boxShadow: theme.sizes.shadow.md,
+                  color: theme.colors.text,
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                  zIndex: 1000,
+                  pointerEvents: "none",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                }}
+              >
+                Sign in first to create documents
+              </div>
+            )}
             <div
               id="doc-create-menu"
               data-open="false"
@@ -1317,6 +1507,145 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
                   {opt.label}
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* YouTube Import Dialog */}
+      {youtubeDialogOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2147483646,
+          }}
+          onClick={() => {
+            if (!youtubeImporting) setYoutubeDialogOpen(false);
+          }}
+        >
+          <div
+            style={{
+              width: 420,
+              maxWidth: "90vw",
+              background: theme.colors.surface,
+              border: `1px solid ${theme.colors.border}`,
+              borderRadius: 8,
+              boxShadow: theme.sizes.shadow.lg || theme.sizes.shadow.md,
+              padding: 16,
+              color: theme.colors.text,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ margin: 0, marginBottom: 12 }}>
+              Import YouTube Video
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <label style={{ fontSize: 13 }}>YouTube URL</label>
+              <input
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={youtubeUrlInput}
+                onChange={(e) => setYoutubeUrlInput(e.target.value)}
+                style={{
+                  padding: "8px 10px",
+                  borderRadius: 6,
+                  border: `1px solid ${theme.colors.border}`,
+                  background: theme.colors.background,
+                  color: theme.colors.text,
+                }}
+              />
+              {youtubeDialogError && (
+                <div style={{ color: theme.colors.error, fontSize: 12 }}>
+                  {youtubeDialogError}
+                </div>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                marginTop: 16,
+              }}
+            >
+              <button
+                onClick={() => !youtubeImporting && setYoutubeDialogOpen(false)}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 6,
+                  border: `1px solid ${theme.colors.border}`,
+                  background: theme.colors.surface,
+                  color: theme.colors.text,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    setYoutubeDialogError(null);
+                    if (!youtubeUrlInput.trim()) {
+                      setYoutubeDialogError("Please enter a YouTube URL");
+                      return;
+                    }
+                    if (!user?.id) {
+                      setYoutubeDialogError(
+                        "You must be signed in to import videos"
+                      );
+                      setYoutubeImporting(false);
+                      return;
+                    }
+                    setYoutubeImporting(true);
+                    const video = await importYouTubeVideo(
+                      youtubeUrlInput.trim(),
+                      user.id
+                    );
+                    await silentRefreshData();
+                    setYoutubeImporting(false);
+                    setYoutubeDialogOpen(false);
+
+                    // Optionally open the video in a new tab
+                    const tabId = `youtube-player-${video.id}`;
+                    addViewAsTab({
+                      viewId: "youtube-player",
+                      pane: "center",
+                      tabId,
+                      title: video.title || video.id,
+                      props: {
+                        videoId: video.id,
+                        title: video.title || video.id,
+                      },
+                      activate: true,
+                    });
+                  } catch (err) {
+                    console.error("Failed to import YouTube video", err);
+                    setYoutubeDialogError(
+                      err instanceof Error
+                        ? err.message
+                        : "Failed to import YouTube video"
+                    );
+                    setYoutubeImporting(false);
+                  }
+                }}
+                disabled={youtubeImporting}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 6,
+                  border: "none",
+                  background: theme.colors.primary,
+                  color: theme.colors.textInverse,
+                  cursor: youtubeImporting ? "default" : "pointer",
+                  opacity: youtubeImporting ? 0.7 : 1,
+                }}
+              >
+                {youtubeImporting ? "Importing..." : "Import"}
+              </button>
             </div>
           </div>
         </div>

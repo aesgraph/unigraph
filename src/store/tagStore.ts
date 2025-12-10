@@ -35,11 +35,11 @@ export const useTagStore = create<TagStore>((set, get) => ({
   },
 
   setTagMetadata: (tag: string, metadata: TagInfo) => {
-    console.log("setTagMetadata called:", tag, metadata);
+    // console.log("setTagMetadata called:", tag, metadata);
     set((state) => {
       const newTagMetadata = new Map(state.tagMetadata);
       newTagMetadata.set(tag, metadata);
-      console.log("Updated tagMetadata map:", newTagMetadata);
+      // console.log("Updated tagMetadata map:", newTagMetadata);
       return { tagMetadata: newTagMetadata };
     });
   },
@@ -62,7 +62,7 @@ export const useTagStore = create<TagStore>((set, get) => ({
   getTagMetadata: (tag: string) => {
     const state = get();
     const metadata = state.tagMetadata.get(tag);
-    console.log("getTagMetadata called:", tag, "returning:", metadata);
+    // console.log("getTagMetadata called:", tag, "returning:", metadata);
     return metadata;
   },
 
