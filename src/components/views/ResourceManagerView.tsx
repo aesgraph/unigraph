@@ -59,6 +59,9 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
     [id: string]: { hasHtml: boolean; hasScreenshot: boolean };
   }>({});
   const [tagCache, setTagCache] = useState<Set<string>>(new Set());
+  const [tagUsageCounts, setTagUsageCounts] = useState<Map<string, number>>(
+    new Map()
+  );
   const docEventsVersion = useDocumentEventsStore((s) => s.version);
 
   // PDF creation dialog state
@@ -237,32 +240,39 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         });
         console.log("YouTube videos fetched:", youTubeVideosData?.length || 0);
 
-        // Collect tags during loading
+        // Collect tags during loading and build usage count map
         const newTagCache = new Set<string>();
+        const tagCountMap = new Map<string, number>();
 
-        // Collect tags from webpages
-        (webpagesData || []).forEach((webpage: Webpage) => {
+        // Helper function to extract tags from an object
+        const extractTags = (obj: any): string[] => {
           let tags: string[] = [];
-          let metadataObj = webpage.metadata;
-          if (typeof metadataObj === "string") {
+          if (typeof obj === "string") {
             try {
-              metadataObj = JSON.parse(metadataObj);
+              obj = JSON.parse(obj);
             } catch {
               /* Ignore parse errors */
             }
           }
-          if (metadataObj && typeof metadataObj === "object") {
-            const tagsFromTags = (metadataObj as any).tags;
-            const tagsFromTag = (metadataObj as any).tag;
-            const tagsFromKeywords = (metadataObj as any).keywords;
+          if (obj && typeof obj === "object") {
+            const tagsFromTags = obj.tags;
+            const tagsFromTag = obj.tag;
+            const tagsFromKeywords = obj.keywords;
             tags = tagsFromTags || tagsFromTag || tagsFromKeywords || [];
           }
-          if (Array.isArray(tags)) {
-            tags.forEach((tag) => newTagCache.add(tag));
-          }
+          return Array.isArray(tags) ? tags : [];
+        };
+
+        // Collect tags from webpages and count usage
+        (webpagesData || []).forEach((webpage: Webpage) => {
+          const tags = extractTags(webpage.metadata);
+          tags.forEach((tag) => {
+            newTagCache.add(tag);
+            tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+          });
         });
 
-        // Collect tags from annotations
+        // Collect tags from annotations and count usage
         (annotationsData || []).forEach((annotation: Annotation) => {
           let annotationData = annotation.data;
           if (typeof annotationData === "string") {
@@ -272,13 +282,16 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
               /* Ignore parse errors */
             }
           }
-          const tags = (annotationData as any).tags || [];
+          const tags = (annotationData as any)?.tags || [];
           if (Array.isArray(tags)) {
-            tags.forEach((tag) => newTagCache.add(tag));
+            tags.forEach((tag) => {
+              newTagCache.add(tag);
+              tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+            });
           }
         });
 
-        // Collect tags from YouTube videos (handle CSV or JSON array stored in text)
+        // Collect tags from YouTube videos and count usage
         (youTubeVideosData || []).forEach((video: YouTubeVideo) => {
           const lastAccessTime = userActivityCache.getLastAccessTime(video.id);
           if (lastAccessTime) {
@@ -300,7 +313,10 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
                 .filter((s) => s.length > 0);
             }
           }
-          tags.forEach((tag) => newTagCache.add(tag));
+          tags.forEach((tag) => {
+            newTagCache.add(tag);
+            tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+          });
         });
 
         // Update state
@@ -311,6 +327,8 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         setWebpageContentAvailability(contentAvailability);
         setYouTubeVideos(youTubeVideosData || []);
         setTagCache(newTagCache);
+        setTagUsageCounts(tagCountMap);
+        setTagUsageCounts(tagCountMap);
 
         // Update user activity cache
         if (activitiesData && activitiesData.length > 0) {
@@ -365,40 +383,8 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   useEffect(() => {
     if (tagCache.size > 0 && !loading) {
       tagCache.forEach((tag) => {
-        // Calculate usage statistics
-        const webResourceCount = webpages.filter((w) => {
-          let tags: string[] = [];
-          let metadataObj = w.metadata;
-          if (typeof metadataObj === "string") {
-            try {
-              metadataObj = JSON.parse(metadataObj);
-            } catch {
-              /* Ignore parse errors */
-            }
-          }
-          if (metadataObj && typeof metadataObj === "object") {
-            const tagsFromTags = (metadataObj as any).tags;
-            const tagsFromTag = (metadataObj as any).tag;
-            const tagsFromKeywords = (metadataObj as any).keywords;
-            tags = tagsFromTags || tagsFromTag || tagsFromKeywords || [];
-          }
-          return Array.isArray(tags) && tags.includes(tag);
-        }).length;
-
-        const annotationCount = annotations.filter((a) => {
-          let annotationData = a.data;
-          if (typeof annotationData === "string") {
-            try {
-              annotationData = JSON.parse(annotationData);
-            } catch {
-              /* Ignore parse errors */
-            }
-          }
-          const tags = (annotationData as any).tags || [];
-          return Array.isArray(tags) && tags.includes(tag);
-        }).length;
-
-        const totalUsage = webResourceCount + annotationCount;
+        // Get usage count from the pre-built map
+        const totalUsage = tagUsageCounts.get(tag) || 0;
 
         // Store tag metadata in the store, but preserve user-set descriptions
         const existingMetadata = getTagMetadata(tag);
@@ -426,9 +412,8 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
     }
   }, [
     tagCache,
+    tagUsageCounts,
     loading,
-    webpages,
-    annotations,
     setTagMetadata,
     getTagColor,
     getTagMetadata,
@@ -484,32 +469,39 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
         youTubeVideosData?.length || 0
       );
 
-      // Collect tags during silent refresh
+      // Collect tags during silent refresh and build usage count map
       const newTagCache = new Set<string>();
+      const tagCountMap = new Map<string, number>();
 
-      // Collect tags from webpages
-      (webpagesData || []).forEach((webpage: Webpage) => {
+      // Helper function to extract tags from an object
+      const extractTags = (obj: any): string[] => {
         let tags: string[] = [];
-        let metadataObj = webpage.metadata;
-        if (typeof metadataObj === "string") {
+        if (typeof obj === "string") {
           try {
-            metadataObj = JSON.parse(metadataObj);
+            obj = JSON.parse(obj);
           } catch {
             /* Ignore parse errors */
           }
         }
-        if (metadataObj && typeof metadataObj === "object") {
-          const tagsFromTags = (metadataObj as any).tags;
-          const tagsFromTag = (metadataObj as any).tag;
-          const tagsFromKeywords = (metadataObj as any).keywords;
+        if (obj && typeof obj === "object") {
+          const tagsFromTags = obj.tags;
+          const tagsFromTag = obj.tag;
+          const tagsFromKeywords = obj.keywords;
           tags = tagsFromTags || tagsFromTag || tagsFromKeywords || [];
         }
-        if (Array.isArray(tags)) {
-          tags.forEach((tag) => newTagCache.add(tag));
-        }
+        return Array.isArray(tags) ? tags : [];
+      };
+
+      // Collect tags from webpages and count usage
+      (webpagesData || []).forEach((webpage: Webpage) => {
+        const tags = extractTags(webpage.metadata);
+        tags.forEach((tag) => {
+          newTagCache.add(tag);
+          tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+        });
       });
 
-      // Collect tags from annotations
+      // Collect tags from annotations and count usage
       (annotationsData || []).forEach((annotation: Annotation) => {
         let annotationData = annotation.data;
         if (typeof annotationData === "string") {
@@ -519,13 +511,16 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
             /* Ignore parse errors */
           }
         }
-        const tags = (annotationData as any).tags || [];
+        const tags = (annotationData as any)?.tags || [];
         if (Array.isArray(tags)) {
-          tags.forEach((tag) => newTagCache.add(tag));
+          tags.forEach((tag) => {
+            newTagCache.add(tag);
+            tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+          });
         }
       });
 
-      // Collect tags from YouTube videos
+      // Collect tags from YouTube videos and count usage
       (youTubeVideosData || []).forEach((video) => {
         const lastAccessTime = userActivityCache.getLastAccessTime(video.id);
         if (lastAccessTime) {
@@ -547,7 +542,10 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
               .filter((s) => s.length > 0);
           }
         }
-        tags.forEach((tag) => newTagCache.add(tag));
+        tags.forEach((tag) => {
+          newTagCache.add(tag);
+          tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+        });
       });
 
       // Update state silently (no loading state)
@@ -557,6 +555,7 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
       setWebpageContentAvailability(contentAvailability);
       setYouTubeVideos(youTubeVideosData || []);
       setTagCache(newTagCache);
+      setTagUsageCounts(tagCountMap);
 
       // Update user activity cache
       if (activitiesData && activitiesData.length > 0) {
@@ -946,40 +945,8 @@ const ResourceManagerView: React.FC<ResourceManagerViewProps> = () => {
   // Create tags container with color and description columns using cached tags
   const tagsContainer = new EntitiesContainer(
     Array.from(tagCache).map((tag) => {
-      // Calculate usage statistics
-      const webResourceCount = webpages.filter((w) => {
-        let tags: string[] = [];
-        let metadataObj = w.metadata;
-        if (typeof metadataObj === "string") {
-          try {
-            metadataObj = JSON.parse(metadataObj);
-          } catch {
-            /* Ignore parse errors */
-          }
-        }
-        if (metadataObj && typeof metadataObj === "object") {
-          const tagsFromTags = (metadataObj as any).tags;
-          const tagsFromTag = (metadataObj as any).tag;
-          const tagsFromKeywords = (metadataObj as any).keywords;
-          tags = tagsFromTags || tagsFromTag || tagsFromKeywords || [];
-        }
-        return Array.isArray(tags) && tags.includes(tag);
-      }).length;
-
-      const annotationCount = annotations.filter((a) => {
-        let annotationData = a.data;
-        if (typeof annotationData === "string") {
-          try {
-            annotationData = JSON.parse(annotationData);
-          } catch {
-            /* Ignore parse errors */
-          }
-        }
-        const tags = (annotationData as any).tags || [];
-        return Array.isArray(tags) && tags.includes(tag);
-      }).length;
-
-      const totalUsage = webResourceCount + annotationCount;
+      // Get usage count from the pre-built map
+      const totalUsage = tagUsageCounts.get(tag) || 0;
 
       return {
         getId: () => `tag-${tag}`,

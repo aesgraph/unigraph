@@ -237,12 +237,8 @@ const YouTubePlayerView: React.FC<YouTubePlayerViewProps> = ({
               "10 seconds of watch time reached, calling logVideoAccess"
             );
             logVideoAccess();
-            // Clear the interval since we no longer need to track for logging purposes
-            if (timeTrackingIntervalRef.current) {
-              clearInterval(timeTrackingIntervalRef.current);
-              timeTrackingIntervalRef.current = null;
-              console.log("Cleared watch time tracking interval after logging");
-            }
+            // Don't clear the interval - we need to keep updating currentTimeRef
+            // for timestamp insertion to work correctly
           }
         }
       }, 1000);
@@ -655,7 +651,27 @@ const YouTubePlayerView: React.FC<YouTubePlayerViewProps> = ({
               />
               <button
                 onClick={() => {
-                  const timestamp = formatTimestamp(currentTimeRef.current);
+                  // Get current time directly from player to ensure it's accurate
+                  let currentTime = currentTimeRef.current;
+                  if (playerRef.current && playerRef.current.getCurrentTime) {
+                    try {
+                      const playerTime = playerRef.current.getCurrentTime();
+                      if (
+                        typeof playerTime === "number" &&
+                        !isNaN(playerTime)
+                      ) {
+                        currentTime = playerTime;
+                        currentTimeRef.current = playerTime; // Update ref for consistency
+                      }
+                    } catch (error) {
+                      console.warn(
+                        "Error getting current time from player:",
+                        error
+                      );
+                      // Fall back to ref value
+                    }
+                  }
+                  const timestamp = formatTimestamp(currentTime);
                   if (insertTimestampRef.current) {
                     insertTimestampRef.current(timestamp);
                   }

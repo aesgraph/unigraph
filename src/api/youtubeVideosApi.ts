@@ -87,6 +87,15 @@ export async function getYouTubeVideo(
   return (data as YouTubeVideo) || null;
 }
 
+// Delete a YouTube video by id
+export async function deleteYouTubeVideo(id: string): Promise<void> {
+  const { error } = await supabase.from("youtube_videos").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
 // Extract video ID from YouTube URL
 function extractVideoId(url: string): string | null {
   const patterns = [

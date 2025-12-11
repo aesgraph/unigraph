@@ -43,7 +43,10 @@ import { EntityReferenceNode } from "./plugins/EntityReferencePlugin";
 import MentionsPlugin from "./plugins/MentionsPlugin";
 import TagAutocompletePlugin from "./plugins/TagAutocompletePlugin";
 import { TagPlugin } from "./plugins/TagPlugin";
-import TimestampPlugin, { TimestampNode } from "./plugins/TimestampPlugin";
+import TimestampPlugin, {
+  TimestampNode,
+  $createTimestampNode,
+} from "./plugins/TimestampPlugin";
 import { ToolbarPlugin } from "./plugins/ToolbarPlugin";
 
 // Create a separate PlaceholderPlugin component
@@ -221,6 +224,7 @@ const EditorStateInitializer: React.FC<{
       }
 
       // Fallback to creating simple text nodes for plain text content
+      // But also detect and convert timestamp patterns to TimestampNode instances
       editor.update(() => {
         const root = $getRoot();
         root.clear();
@@ -233,7 +237,48 @@ const EditorStateInitializer: React.FC<{
             const lines = paragraph.split(/\r?\n/);
 
             for (let i = 0; i < lines.length; i++) {
-              paragraphNode.append($createTextNode(lines[i]));
+              const line = lines[i];
+
+              // Detect timestamp patterns like [0:23] or [1:23:45] and convert them to TimestampNode
+              const timestampPattern = /\[(\d{1,2}:\d{2}(?::\d{2})?)\]/g;
+              let lastIndex = 0;
+              let match;
+              let hasTimestamps = false;
+
+              // Reset regex lastIndex for each line
+              timestampPattern.lastIndex = 0;
+
+              while ((match = timestampPattern.exec(line)) !== null) {
+                hasTimestamps = true;
+                // Add text before the timestamp
+                if (match.index > lastIndex) {
+                  const textBefore = line.substring(lastIndex, match.index);
+                  if (textBefore.length > 0) {
+                    paragraphNode.append($createTextNode(textBefore));
+                  }
+                }
+
+                // Create and append timestamp node
+                const timestampValue = match[1]; // Extract timestamp without brackets
+                const timestampNode = $createTimestampNode(timestampValue);
+                paragraphNode.append(timestampNode);
+
+                lastIndex = match.index + match[0].length;
+              }
+
+              // Add remaining text after the last timestamp
+              if (lastIndex < line.length) {
+                const textAfter = line.substring(lastIndex);
+                if (textAfter.length > 0) {
+                  paragraphNode.append($createTextNode(textAfter));
+                }
+              }
+
+              // If no timestamps were found, add the whole line as text
+              if (!hasTimestamps) {
+                paragraphNode.append($createTextNode(line));
+              }
+
               if (i < lines.length - 1) {
                 // Add line breaks between lines in the same paragraph
                 paragraphNode.append($createLineBreakNode());

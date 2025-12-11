@@ -110,6 +110,15 @@ export async function getAnnotation(id: string) {
   return data;
 }
 
+// Delete an annotation by id
+export async function deleteAnnotation(id: string): Promise<void> {
+  const { error } = await supabase.from("annotations").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
 // Check if annotation has heavy content available
 export async function checkAnnotationContent(id: string) {
   const { data, error } = await supabase

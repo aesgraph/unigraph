@@ -128,6 +128,127 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
     );
 
     // Value formatting
+    // Format ISO 8601 duration (PT8M26S) to human-readable format (8:26)
+    const formatYouTubeDuration = useCallback((duration: string): string => {
+      if (!duration || typeof duration !== "string") return "";
+
+      // Parse ISO 8601 duration format (PT8M26S, PT1H23M45S, etc.)
+      const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      if (!match) return duration; // Return original if parsing fails
+
+      const hours = parseInt(match[1] || "0", 10);
+      const minutes = parseInt(match[2] || "0", 10);
+      const seconds = parseInt(match[3] || "0", 10);
+
+      if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      }
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    }, []);
+
+    // Format large numbers with K, M suffixes (e.g., 1200 -> "1.2K", 1500000 -> "1.5M")
+    const formatNumber = useCallback(
+      (value: number | string | null | undefined): string => {
+        if (value == null) return "";
+        const num = typeof value === "string" ? parseInt(value, 10) : value;
+        if (isNaN(num)) return String(value);
+
+        if (num >= 1000000) {
+          return `${(num / 1000000).toFixed(1)}M`;
+        } else if (num >= 1000) {
+          return `${(num / 1000).toFixed(1)}K`;
+        }
+        return num.toString();
+      },
+      []
+    );
+
+    // Convert field names to human-readable column headers
+    const getColumnHeaderName = useCallback(
+      (col: string, entityType?: string): string => {
+        // YouTube videos column mappings
+        if (entityType === "youtube-videos") {
+          const youtubeMappings: Record<string, string> = {
+            label: "Title",
+            duration: "Duration",
+            viewCount: "Views",
+            likeCount: "Likes",
+            commentCount: "Comments",
+            publishedAt: "Published",
+            description: "Description",
+            url: "URL",
+          };
+          return youtubeMappings[col] || col;
+        }
+
+        // Documents column mappings
+        if (entityType === "documents") {
+          const documentMappings: Record<string, string> = {
+            label: "Title",
+            type: "Type",
+            extension: "Extension",
+            project_id: "Project ID",
+            content: "Content",
+            metadata: "Metadata",
+            created_at: "Created",
+            last_updated_at: "Last Updated",
+            lastAccessTime: "Last Access Time",
+          };
+          return documentMappings[col] || col;
+        }
+
+        // Annotations column mappings
+        if (entityType === "annotations") {
+          const annotationMappings: Record<string, string> = {
+            label: "Annotation",
+            type: "Type",
+            tags: "Tags",
+            selected_text: "Selected Text",
+            image_url: "Image URL",
+            page_url: "Page URL",
+            comment: "Comment",
+            secondary_comment: "Secondary Comment",
+            id: "ID",
+            parent_resource_type: "Parent Resource Type",
+          };
+          return annotationMappings[col] || col;
+        }
+
+        // Web Resources column mappings
+        if (entityType === "web-resources") {
+          const webResourceMappings: Record<string, string> = {
+            label: "Title",
+            type: "Type",
+            tags: "Tags",
+            url: "URL",
+            html_content: "HTML Content",
+            screenshot_url: "Screenshot URL",
+            id: "ID",
+          };
+          return webResourceMappings[col] || col;
+        }
+
+        // Tags column mappings
+        if (entityType === "tags") {
+          const tagMappings: Record<string, string> = {
+            label: "Tag",
+            color: "Color",
+            description: "Description",
+            usage_count: "Usage Count",
+            id: "ID",
+          };
+          return tagMappings[col] || col;
+        }
+
+        // Default: convert camelCase to Title Case
+        return col
+          .replace(/([A-Z])/g, " $1")
+          .replace(/^./, (str) => str.toUpperCase())
+          .trim();
+      },
+      []
+    );
+
     const formatValue = useCallback((value: any): string => {
       if (value === null) return "null";
       if (value === undefined) return "undefined";
@@ -1891,6 +2012,222 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
                 );
               }
             })();
+          } else if (entityType === "youtube-videos") {
+            // For YouTube videos, show confirmation dialog
+            const title =
+              entityData.title ||
+              entityData.label ||
+              entityData.url ||
+              "this video";
+            const confirmed = window.confirm(
+              `Are you sure you want to delete "${title}"? This will permanently remove it from your saved videos.`
+            );
+
+            if (!confirmed) {
+              return;
+            }
+
+            // Store original data for potential revert
+            const originalEntity = props.data;
+
+            // Optimistically remove from the table immediately
+            if (gridRef.current?.api) {
+              gridRef.current.api.applyTransaction({
+                remove: [props.data],
+              });
+            }
+
+            // Delete from the graph immediately
+            const nodeId = entityId as NodeId;
+            if (nodeId) {
+              console.log(`Deleting node: ${nodeId}`);
+              sceneGraph.getGraph().deleteNode(nodeId);
+              sceneGraph.notifyGraphChanged();
+            }
+
+            // Then delete from Supabase in the background
+            (async () => {
+              try {
+                const { deleteYouTubeVideo } = await import(
+                  "../../api/youtubeVideosApi"
+                );
+                await deleteYouTubeVideo(entityId);
+                console.log(`Deleted YouTube video from Supabase: ${entityId}`);
+              } catch (error) {
+                console.error(
+                  `Error deleting YouTube video from Supabase: ${entityId}`,
+                  error
+                );
+
+                // Revert the optimistic change if Supabase deletion failed
+                if (gridRef.current?.api) {
+                  // Add the row back to the grid
+                  gridRef.current.api.applyTransaction({
+                    add: [originalEntity],
+                  });
+                }
+
+                // Restore the node in the graph
+                if (nodeId) {
+                  const entityData = originalEntity.getData();
+                  const { id: _id, ...nodeData } = entityData; // Remove id from data to avoid duplication
+                  const restoredNode = new ModelNode({
+                    id: nodeId,
+                    ...nodeData,
+                  });
+                  sceneGraph.getGraph().addNode(restoredNode);
+                  sceneGraph.notifyGraphChanged();
+                }
+
+                alert(
+                  "Failed to delete YouTube video from server. The item has been restored."
+                );
+              }
+            })();
+          } else if (entityType === "annotations") {
+            // For annotations, show confirmation dialog
+            const title =
+              entityData.label ||
+              entityData.title ||
+              entityData.comment ||
+              "this annotation";
+            const confirmed = window.confirm(
+              `Are you sure you want to delete "${title}"? This will permanently remove this annotation.`
+            );
+
+            if (!confirmed) {
+              return;
+            }
+
+            // Store original data for potential revert
+            const originalEntity = props.data;
+
+            // Optimistically remove from the table immediately
+            if (gridRef.current?.api) {
+              gridRef.current.api.applyTransaction({
+                remove: [props.data],
+              });
+            }
+
+            // Delete from the graph immediately
+            const nodeId = entityId as NodeId;
+            if (nodeId) {
+              console.log(`Deleting node: ${nodeId}`);
+              sceneGraph.getGraph().deleteNode(nodeId);
+              sceneGraph.notifyGraphChanged();
+            }
+
+            // Then delete from Supabase in the background
+            (async () => {
+              try {
+                const { deleteAnnotation } = await import(
+                  "../../api/annotationsApi"
+                );
+                await deleteAnnotation(entityId);
+                console.log(`Deleted annotation from Supabase: ${entityId}`);
+              } catch (error) {
+                console.error(
+                  `Error deleting annotation from Supabase: ${entityId}`,
+                  error
+                );
+
+                // Revert the optimistic change if Supabase deletion failed
+                if (gridRef.current?.api) {
+                  // Add the row back to the grid
+                  gridRef.current.api.applyTransaction({
+                    add: [originalEntity],
+                  });
+                }
+
+                // Restore the node in the graph
+                if (nodeId) {
+                  const entityData = originalEntity.getData();
+                  const { id: _id, ...nodeData } = entityData; // Remove id from data to avoid duplication
+                  const restoredNode = new ModelNode({
+                    id: nodeId,
+                    ...nodeData,
+                  });
+                  sceneGraph.getGraph().addNode(restoredNode);
+                  sceneGraph.notifyGraphChanged();
+                }
+
+                alert(
+                  "Failed to delete annotation from server. The item has been restored."
+                );
+              }
+            })();
+          } else if (entityType === "documents") {
+            // For documents, show confirmation dialog
+            const title =
+              entityData.label ||
+              entityData.title ||
+              entityData.filename ||
+              "this document";
+            const confirmed = window.confirm(
+              `Are you sure you want to delete "${title}"? This will permanently remove this document.`
+            );
+
+            if (!confirmed) {
+              return;
+            }
+
+            // Store original data for potential revert
+            const originalEntity = props.data;
+
+            // Optimistically remove from the table immediately
+            if (gridRef.current?.api) {
+              gridRef.current.api.applyTransaction({
+                remove: [props.data],
+              });
+            }
+
+            // Delete from the graph immediately
+            const nodeId = entityId as NodeId;
+            if (nodeId) {
+              console.log(`Deleting node: ${nodeId}`);
+              sceneGraph.getGraph().deleteNode(nodeId);
+              sceneGraph.notifyGraphChanged();
+            }
+
+            // Then delete from Supabase in the background
+            (async () => {
+              try {
+                const { deleteDocument } = await import(
+                  "../../api/documentsApi"
+                );
+                await deleteDocument(entityId);
+                console.log(`Deleted document from Supabase: ${entityId}`);
+              } catch (error) {
+                console.error(
+                  `Error deleting document from Supabase: ${entityId}`,
+                  error
+                );
+
+                // Revert the optimistic change if Supabase deletion failed
+                if (gridRef.current?.api) {
+                  // Add the row back to the grid
+                  gridRef.current.api.applyTransaction({
+                    add: [originalEntity],
+                  });
+                }
+
+                // Restore the node in the graph
+                if (nodeId) {
+                  const entityData = originalEntity.getData();
+                  const { id: _id, ...nodeData } = entityData; // Remove id from data to avoid duplication
+                  const restoredNode = new ModelNode({
+                    id: nodeId,
+                    ...nodeData,
+                  });
+                  sceneGraph.getGraph().addNode(restoredNode);
+                  sceneGraph.notifyGraphChanged();
+                }
+
+                alert(
+                  "Failed to delete document from server. The item has been restored."
+                );
+              }
+            })();
           } else {
             // For non-web resources, use the original delete logic
             try {
@@ -2007,7 +2344,7 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
 
         // Create data columns for annotations
         const dataColumns = finalColumns.map((col) => ({
-          headerName: col === "label" ? "Annotation" : col,
+          headerName: getColumnHeaderName(col, entityType),
           field: col,
           flex: col === "label" ? 2 : 1,
           minWidth: col === "label" ? 200 : 120,
@@ -2147,7 +2484,7 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
         );
       } else if (entityType === "documents") {
         // Documents specific configuration
-        COLUMN_ORDER = ["label", "type", "extension", "project_id"];
+        COLUMN_ORDER = ["label", "extension", "project_id"];
         EXCLUDED_COLUMNS = [
           "userData",
           "metadata",
@@ -2155,6 +2492,7 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
           "last_updated_at",
           "parent_id",
           "id",
+          "type",
         ];
         console.log("Documents configuration - COLUMN_ORDER:", COLUMN_ORDER);
         console.log(
@@ -2167,6 +2505,28 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
         EXCLUDED_COLUMNS = ["userData", "id", "type"];
         console.log("Tags configuration - COLUMN_ORDER:", COLUMN_ORDER);
         console.log("Tags configuration - EXCLUDED_COLUMNS:", EXCLUDED_COLUMNS);
+      } else if (entityType === "youtube-videos") {
+        // YouTube videos specific configuration
+        COLUMN_ORDER = [
+          "label",
+          "duration",
+          "viewCount",
+          "likeCount",
+          "publishedAt",
+        ];
+        EXCLUDED_COLUMNS = [
+          "userData",
+          "id",
+          "type",
+          "title",
+          "categoryId",
+          "defaultLanguage",
+          "defaultAudioLanguage",
+          "liveBroadcastContent",
+          "thumbnail_default_url",
+          "thumbnail_medium_url",
+          "thumbnail_high_url",
+        ];
       } else {
         // Default configuration for other entity types
         COLUMN_ORDER = [
@@ -2251,7 +2611,7 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
 
       // Create data columns
       const dataColumns = finalColumns.map((col) => ({
-        headerName: col,
+        headerName: getColumnHeaderName(col, entityType),
         field: col, // Add field property to match the column name
         flex: col === "label" ? 2 : col === "type" || col === "tags" ? 1.5 : 1,
         minWidth:
@@ -2313,6 +2673,22 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
             console.log(`Column ${col}:`, value, "Type:", typeof value);
           }
 
+          // Format duration for YouTube videos
+          if (col === "duration" && entityType === "youtube-videos" && value) {
+            return formatYouTubeDuration(value);
+          }
+
+          // Format viewCount, likeCount for YouTube videos
+          if (
+            (col === "viewCount" ||
+              col === "likeCount" ||
+              col === "commentCount") &&
+            entityType === "youtube-videos" &&
+            value != null
+          ) {
+            return formatNumber(value);
+          }
+
           if (col === "tags") {
             // console.log(
             //   "Tags valueGetter called - value:",
@@ -2359,7 +2735,16 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
       // unfortunately there is an issue with the cell renderer dependencies
       // and forcegraph3d causing them to rerender on every mouse move
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [container, formatValue, searchInValue, getTagMetadata, entityType]);
+    }, [
+      container,
+      formatValue,
+      formatYouTubeDuration,
+      formatNumber,
+      getColumnHeaderName,
+      searchInValue,
+      getTagMetadata,
+      entityType,
+    ]);
 
     // Default column definition
     const defaultColDef = useMemo(
@@ -2551,6 +2936,59 @@ const EntityTableV2 = forwardRef<any, EntityTableV2Props>(
                   });
                 } catch (error) {
                   console.error("Error loading markdown document:", error);
+                }
+              })();
+            }
+          }
+          // For TXT documents, double-click should open in document editor
+          else if (
+            entityType === "documents" &&
+            entityData &&
+            entityData.extension === "txt"
+          ) {
+            const documentId = entityData.id;
+
+            if (documentId) {
+              (async () => {
+                try {
+                  const { getDocument } = await import(
+                    "../../api/documentsApi"
+                  );
+                  const document = await getDocument(documentId);
+                  const actualTitle = document.title || "Text Document";
+
+                  const timestamp = Date.now();
+                  const tabId = `document-editor-${documentId}-${timestamp}`;
+
+                  addViewAsTab({
+                    viewId: "document-editor",
+                    pane: "center",
+                    tabId: tabId,
+                    title: `${actualTitle}.txt`,
+                    props: {
+                      documentId: documentId,
+                      filename: `${actualTitle}.txt`,
+                    },
+                    activate: true,
+                  });
+                } catch (error) {
+                  console.error("Error loading document title:", error);
+                  // Fallback to the entity data title
+                  const fallbackTitle = entityData.title || "Text Document";
+                  const timestamp = Date.now();
+                  const tabId = `document-editor-${documentId}-${timestamp}`;
+
+                  addViewAsTab({
+                    viewId: "document-editor",
+                    pane: "center",
+                    tabId: tabId,
+                    title: `${fallbackTitle}.txt`,
+                    props: {
+                      documentId: documentId,
+                      filename: `${fallbackTitle}.txt`,
+                    },
+                    activate: true,
+                  });
                 }
               })();
             }
