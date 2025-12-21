@@ -61,8 +61,10 @@ export const ConvertSceneGraphToGraphviz = (
 
       const fromNodeId = getUuid(edge.getSource());
       const toNodeId = getUuid(edge.getTarget());
+      // Use edge label if available, fallback to type if label is empty
+      const edgeLabel = edge.getLabel() || edge.getType();
       g.edge([fromNodeId.replace(/:/g, "_"), toNodeId.replace(/:/g, "_")], {
-        label: edge.getType(),
+        label: edgeLabel,
         color: renderingManager.getEdgeColor(edge),
         fontcolor: renderingManager.getEdgeColor(edge) as Color,
       });
