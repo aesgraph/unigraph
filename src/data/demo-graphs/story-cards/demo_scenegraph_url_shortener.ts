@@ -1,7 +1,9 @@
 import { DEFAULT_APP_CONFIG } from "../../../AppConfig";
+import { PresetLayoutType } from "../../../core/layouts/layoutEngineTypes";
 import { Graph } from "../../../core/model/Graph";
 import { createEdgesTo } from "../../../core/model/GraphUtils";
 import { SceneGraph } from "../../../core/model/SceneGraph";
+import { extractPositionsFromNodes } from "../../graphs/blobMesh";
 
 export const demo_URL_Shortener = () => {
   const graph = new Graph();
@@ -581,7 +583,7 @@ export const demo_URL_Shortener = () => {
     label: "Secure",
   });
 
-  return new SceneGraph({
+  const sceneGraph = new SceneGraph({
     graph,
     metadata: {
       name: "URL Shortener System Design",
@@ -590,8 +592,15 @@ export const demo_URL_Shortener = () => {
     },
     defaultAppConfig: {
       ...DEFAULT_APP_CONFIG(),
-      activeLayout: "dot",
+      activeLayout: PresetLayoutType.NodePositions,
       activeView: "ReactFlow",
     },
   });
+
+  // Extract positions from nodes and set them in displayConfig.nodePositions
+  // This is required for NodePositions layout to work properly
+  const positions = extractPositionsFromNodes(sceneGraph);
+  sceneGraph.setNodePositions(positions);
+
+  return sceneGraph;
 };
