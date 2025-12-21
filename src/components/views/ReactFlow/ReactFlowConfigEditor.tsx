@@ -15,7 +15,7 @@ export interface ReactFlowRenderConfig {
   nodeFontSize?: number;
   edgeStrokeWidth?: number;
   edgeFontSize?: number;
-  edgeLabelVisible?: boolean;
+  edgeTextDisplay?: "label" | "type" | "none";
   backgroundColor?: string;
   connectionLineStyle?:
     | "default"
@@ -37,7 +37,7 @@ export const DEFAULT_REACTFLOW_CONFIG: ReactFlowRenderConfig = {
   nodeFontSize: 12,
   edgeStrokeWidth: 1,
   edgeFontSize: 10,
-  edgeLabelVisible: true,
+  edgeTextDisplay: "label",
   backgroundColor: undefined, // Will default to theme background color
   connectionLineStyle: "bezier",
   minimap: true,
@@ -145,10 +145,15 @@ const formSchema: FormSchema = {
     label: "Snap to Grid",
     type: "checkbox",
   },
-  edgeLabelVisible: {
+  edgeTextDisplay: {
     validate: () => null,
-    label: "Show Edge Labels",
-    type: "checkbox",
+    label: "Edge Text Display",
+    type: "select",
+    options: [
+      { value: "label", label: "Label" },
+      { value: "type", label: "Type" },
+      { value: "none", label: "None" },
+    ],
   },
   backgroundColor: {
     validate: (value) => {

@@ -320,6 +320,25 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const edgeLegendConfig = getEdgeLegendConfig();
   const legendMode = getLegendMode();
 
+  // Helper function to get edge text based on edgeTextDisplay setting
+  const getEdgeText = useCallback(
+    (edge: any, sceneGraphEdge: any): string | undefined => {
+      const displayMode = reactFlowConfig.edgeTextDisplay || "label";
+      if (displayMode === "none") {
+        return undefined;
+      } else if (displayMode === "type") {
+        const type = sceneGraphEdge?.getType();
+        return type ? String(type) : undefined;
+      } else {
+        // displayMode === "label"
+        // Get label from sceneGraphEdge (Edge extends AbstractEntity which has getLabel())
+        const label = sceneGraphEdge?.getLabel();
+        return label ? String(label) : undefined;
+      }
+    },
+    [reactFlowConfig.edgeTextDisplay]
+  );
+
   // Get current layout result for reactivity
   const { currentLayoutResult } = useActiveLayoutStore();
 
@@ -347,28 +366,30 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
       targetPosition: Position.Left,
     }));
 
-    const edgesWithStyling = data.edges.map((edge) => ({
-      ...edge,
-      type: "default",
-      style: {
-        stroke: RenderingManager.getColor(
-          sceneGraph.getGraph().getEdge(edge.id as EdgeId),
-          edgeLegendConfig,
-          legendMode
-        ),
-        strokeWidth: reactFlowConfig.edgeStrokeWidth || 1,
-      },
-      labelStyle: {
-        fill: RenderingManager.getColor(
-          sceneGraph.getGraph().getEdge(edge.id as EdgeId),
-          edgeLegendConfig,
-          legendMode
-        ),
-        fontWeight: 700,
-      },
-      label:
-        reactFlowConfig.edgeLabelVisible !== false ? edge.label : undefined,
-    }));
+    const edgesWithStyling = data.edges.map((edge) => {
+      const sceneGraphEdge = sceneGraph.getGraph().getEdge(edge.id as EdgeId);
+      return {
+        ...edge,
+        type: "default",
+        style: {
+          stroke: RenderingManager.getColor(
+            sceneGraphEdge,
+            edgeLegendConfig,
+            legendMode
+          ),
+          strokeWidth: reactFlowConfig.edgeStrokeWidth || 1,
+        },
+        labelStyle: {
+          fill: RenderingManager.getColor(
+            sceneGraphEdge,
+            edgeLegendConfig,
+            legendMode
+          ),
+          fontWeight: 700,
+        },
+        label: getEdgeText(edge, sceneGraphEdge),
+      };
+    });
 
     return {
       nodes: nodesWithPositions,
@@ -381,6 +402,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     legendMode,
     nodeTypes,
     reactFlowConfig,
+    getEdgeText,
   ]);
 
   // PRE-PROCESS nodes without selection state - let ReactFlow handle selection internally
@@ -569,28 +591,30 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
         };
       });
 
-      const edgesWithStyling = data.edges.map((edge) => ({
-        ...edge,
-        type: "default",
-        style: {
-          stroke: RenderingManager.getColor(
-            sceneGraph.getGraph().getEdge(edge.id as EdgeId),
-            edgeLegendConfig,
-            legendMode
-          ),
-          strokeWidth: reactFlowConfig.edgeStrokeWidth || 1,
-        },
-        labelStyle: {
-          fill: RenderingManager.getColor(
-            sceneGraph.getGraph().getEdge(edge.id as EdgeId),
-            edgeLegendConfig,
-            legendMode
-          ),
-          fontWeight: 700,
-        },
-        label:
-          reactFlowConfig.edgeLabelVisible !== false ? edge.label : undefined,
-      }));
+      const edgesWithStyling = data.edges.map((edge) => {
+        const sceneGraphEdge = sceneGraph.getGraph().getEdge(edge.id as EdgeId);
+        return {
+          ...edge,
+          type: "default",
+          style: {
+            stroke: RenderingManager.getColor(
+              sceneGraphEdge,
+              edgeLegendConfig,
+              legendMode
+            ),
+            strokeWidth: reactFlowConfig.edgeStrokeWidth || 1,
+          },
+          labelStyle: {
+            fill: RenderingManager.getColor(
+              sceneGraphEdge,
+              edgeLegendConfig,
+              legendMode
+            ),
+            fontWeight: 700,
+          },
+          label: getEdgeText(edge, sceneGraphEdge),
+        };
+      });
 
       setNodes(nodesWithNewPositions);
       setEdges(edgesWithStyling);
@@ -606,7 +630,8 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     setNodes,
     setEdges,
     reactFlowConfig.edgeStrokeWidth,
-    reactFlowConfig.edgeLabelVisible,
+    reactFlowConfig.edgeTextDisplay,
+    getEdgeText,
   ]);
 
   // Fix the onInit handler to use the correct type and avoid camera flickering
@@ -658,17 +683,34 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
         );
 
         reactFlowInstance.current.setEdges((currentEdges) =>
-          currentEdges.map((edge) => ({
-            ...edge,
-            style: {
-              ...edge.style,
-              strokeWidth: newConfig.edgeStrokeWidth || 1,
-              fontSize: newConfig.edgeFontSize,
-            },
-            label:
-              newConfig.edgeLabelVisible !== false ? edge.label : undefined,
-            selected: selectedEdgeIds.has(edge.id as EdgeId),
-          }))
+          currentEdges.map((edge) => {
+            const sceneGraphEdge = sceneGraph
+              ?.getGraph()
+              .getEdge(edge.id as EdgeId);
+            const displayMode = newConfig.edgeTextDisplay || "label";
+            let edgeLabel: string | undefined;
+            if (displayMode === "none") {
+              edgeLabel = undefined;
+            } else if (displayMode === "type") {
+              const type = sceneGraphEdge?.getType();
+              edgeLabel = type ? String(type) : undefined;
+            } else {
+              // displayMode === "label"
+              // Get label from sceneGraphEdge (Edge extends AbstractEntity which has getLabel())
+              const label = sceneGraphEdge?.getLabel();
+              edgeLabel = label ? String(label) : undefined;
+            }
+            return {
+              ...edge,
+              style: {
+                ...edge.style,
+                strokeWidth: newConfig.edgeStrokeWidth || 1,
+                fontSize: newConfig.edgeFontSize,
+              },
+              label: edgeLabel,
+              selected: selectedEdgeIds.has(edge.id as EdgeId),
+            };
+          })
         );
       }
     });
@@ -676,7 +718,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     return () => {
       unsubscribe();
     };
-  }, [selectedNodeIds, selectedEdgeIds]);
+  }, [selectedNodeIds, selectedEdgeIds, sceneGraph]);
 
   // Handle container resize for AppShell pane changes
   useEffect(() => {
