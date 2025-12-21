@@ -38,7 +38,7 @@ export const DEFAULT_REACTFLOW_CONFIG: ReactFlowRenderConfig = {
   edgeStrokeWidth: 1,
   edgeFontSize: 10,
   edgeLabelVisible: true,
-  backgroundColor: "#ffffff",
+  backgroundColor: undefined, // Will default to theme background color
   connectionLineStyle: "bezier",
   minimap: true,
   backgroundVariant: BackgroundVariant.Dots,
@@ -152,14 +152,15 @@ const formSchema: FormSchema = {
   },
   backgroundColor: {
     validate: (value) => {
-      if (value === null || value === undefined) return "Color is required";
+      // Allow undefined to use theme color by default
+      if (value === null || value === undefined || value === "") return null;
       // Basic hex color validation
       if (typeof value !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(value))
         return "Must be a valid hex color (e.g., #ffffff)";
       return null;
     },
     label: "Background Color",
-    type: "text",
+    type: "color",
   },
 };
 
@@ -237,20 +238,33 @@ const FormField: React.FC<FormFieldProps> = ({
     );
   }
 
-  if (field.type === "text") {
+  if (field.type === "color") {
     return (
       <div className={styles.controlGroup}>
         <label className={styles.label} htmlFor={name}>
           {field.label}
+          {!value && (
+            <span
+              style={{ fontSize: "11px", color: "#9ca3af", marginLeft: "4px" }}
+            >
+              (uses theme)
+            </span>
+          )}
         </label>
         <input
-          type="text"
+          type="color"
           id={name}
           name={name}
-          value={value as string}
+          value={(value as string) || "#ffffff"}
           onChange={onChange}
-          className={styles.textInput}
-          placeholder="#ffffff"
+          className={styles.colorInput}
+          style={{
+            width: "100%",
+            height: "32px",
+            border: "1px solid #374151",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
         />
         {error && <div className={styles.error}>{error}</div>}
       </div>

@@ -473,6 +473,47 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     []
   );
 
+  // Handle node drag stop - save positions to sceneGraph
+  const handleNodeDragStop = useCallback(
+    (event: React.MouseEvent, node: Node, nodes: Node[]) => {
+      if (!sceneGraph) return;
+
+      const nodesToUpdate = [...nodes, node];
+
+      // Update the cached positions in SceneGraph
+      if (!sceneGraph.getDisplayConfig().nodePositions) {
+        sceneGraph.getDisplayConfig().nodePositions = {};
+      }
+
+      for (const draggedNode of nodesToUpdate) {
+        sceneGraph.getDisplayConfig().nodePositions![draggedNode.id] = {
+          x: draggedNode.position.x,
+          y: draggedNode.position.y,
+          z: 0,
+        };
+
+        const sceneGraphNode = sceneGraph.getNode(draggedNode.id as NodeId);
+        if (sceneGraphNode) {
+          sceneGraphNode.setPosition({
+            x: draggedNode.position.x,
+            y: draggedNode.position.y,
+            z: 0,
+          });
+        }
+
+        // Update active layout result if it exists
+        if (currentLayoutResult?.positions) {
+          currentLayoutResult.positions[draggedNode.id] = {
+            x: draggedNode.position.x,
+            y: draggedNode.position.y,
+            z: 0,
+          };
+        }
+      }
+    },
+    [sceneGraph, currentLayoutResult]
+  );
+
   // Sync initial selection state with ReactFlow after initialization
   useEffect(() => {
     if (!isInitializingRef.current && reactFlowInstance.current) {
@@ -985,9 +1026,10 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             onSelectionChange={handleSelectionChange}
             onNodeDoubleClick={handleNodeDoubleClick}
             onViewportChange={handleViewportChange}
+            onNodeDragStop={handleNodeDragStop}
             minZoom={0.01}
             maxZoom={1000}
-            nodesDraggable={false}
+            nodesDraggable={true}
             nodesConnectable={false}
             elementsSelectable={true}
             connectionLineType={ConnectionLineType.Bezier}
