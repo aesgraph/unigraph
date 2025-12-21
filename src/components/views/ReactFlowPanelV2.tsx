@@ -16,6 +16,7 @@ import {
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
+import { Settings2 } from "lucide-react";
 import React, {
   useCallback,
   useEffect,
@@ -47,8 +48,8 @@ import useGraphInteractionStore, {
   setSelectedNodeId,
   setSelectedNodeIds,
 } from "../../store/graphInteractionStore";
-import {
-  getReactFlowConfig,
+import useReactFlowConfigStore, {
+  applyReactFlowConfig,
   subscribeToReactFlowConfigChanges,
 } from "../../store/reactFlowConfigStore";
 import { computeLayoutAndTriggerUpdateForCurrentSceneGraph } from "../../store/sceneGraphHooks";
@@ -56,6 +57,9 @@ import useWorkspaceConfigStore, {
   setRightActiveSection,
 } from "../../store/workspaceConfigStore";
 import GraphLayoutToolbar from "../common/GraphLayoutToolbar";
+import ReactFlowConfigEditor, {
+  ReactFlowRenderConfig,
+} from "./ReactFlow/ReactFlowConfigEditor";
 import CustomNode from "./ReactFlow/nodes/CustomNode";
 import WebpageNode from "./ReactFlow/nodes/WebpageNode";
 import ResizerNode from "./ReactFlow/nodes/resizerNode";
@@ -269,7 +273,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     getReactFlowViewportState,
   } = useAppConfigStore();
   const sceneGraph = currentSceneGraph;
-  const reactFlowConfig = getReactFlowConfig();
+  const reactFlowConfig = useReactFlowConfigStore((state) => state.config);
   const { setActiveDocument } = useDocumentStore();
   const { selectedNodeIds, selectedEdgeIds, hoveredNodeIds } =
     useGraphInteractionStore();
@@ -292,6 +296,9 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   const [currentHoveredNodeId, setCurrentHoveredNodeId] = useState<
     string | null
   >(null);
+  const [showDisplayConfig, setShowDisplayConfig] = useState(false);
+  const displayConfigEditorRef = useRef<HTMLDivElement>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const {
     setActiveView: setAppActiveView,
     activeView,
@@ -349,6 +356,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
           edgeLegendConfig,
           legendMode
         ),
+        strokeWidth: reactFlowConfig.edgeStrokeWidth || 1,
       },
       labelStyle: {
         fill: RenderingManager.getColor(
@@ -358,13 +366,22 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
         ),
         fontWeight: 700,
       },
+      label:
+        reactFlowConfig.edgeLabelVisible !== false ? edge.label : undefined,
     }));
 
     return {
       nodes: nodesWithPositions,
       edges: edgesWithStyling,
     };
-  }, [sceneGraph, nodeLegendConfig, edgeLegendConfig, legendMode, nodeTypes]);
+  }, [
+    sceneGraph,
+    nodeLegendConfig,
+    edgeLegendConfig,
+    legendMode,
+    nodeTypes,
+    reactFlowConfig,
+  ]);
 
   // PRE-PROCESS nodes without selection state - let ReactFlow handle selection internally
   const processedNodes = useMemo(() => {
@@ -421,6 +438,40 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
   useEffect(() => {
     setEdges(initialEdges);
   }, [initialEdges, setEdges]);
+
+  // Detect dark mode
+  useEffect(() => {
+    const match = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDarkMode(match.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    match.addEventListener("change", handler);
+    return () => match.removeEventListener("change", handler);
+  }, []);
+
+  // Click outside to close config panel
+  useEffect(() => {
+    if (!showDisplayConfig) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        displayConfigEditorRef.current &&
+        event.target instanceof Element &&
+        !displayConfigEditorRef.current.contains(event.target)
+      ) {
+        setShowDisplayConfig(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showDisplayConfig]);
+
+  // Handle config apply
+  const handleApplyReactFlowConfig = useCallback(
+    (config: ReactFlowRenderConfig) => {
+      useReactFlowConfigStore.getState().setConfig(config);
+      applyReactFlowConfig(config);
+    },
+    []
+  );
 
   // Sync initial selection state with ReactFlow after initialization
   useEffect(() => {
@@ -486,6 +537,7 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             edgeLegendConfig,
             legendMode
           ),
+          strokeWidth: reactFlowConfig.edgeStrokeWidth || 1,
         },
         labelStyle: {
           fill: RenderingManager.getColor(
@@ -495,6 +547,8 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
           ),
           fontWeight: 700,
         },
+        label:
+          reactFlowConfig.edgeLabelVisible !== false ? edge.label : undefined,
       }));
 
       setNodes(nodesWithNewPositions);
@@ -510,6 +564,8 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
     nodeTypes,
     setNodes,
     setEdges,
+    reactFlowConfig.edgeStrokeWidth,
+    reactFlowConfig.edgeLabelVisible,
   ]);
 
   // Fix the onInit handler to use the correct type and avoid camera flickering
@@ -565,9 +621,11 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             ...edge,
             style: {
               ...edge.style,
-              strokeWidth: newConfig.edgeStrokeWidth,
+              strokeWidth: newConfig.edgeStrokeWidth || 1,
               fontSize: newConfig.edgeFontSize,
             },
+            label:
+              newConfig.edgeLabelVisible !== false ? edge.label : undefined,
             selected: selectedEdgeIds.has(edge.id as EdgeId),
           }))
         );
@@ -949,6 +1007,9 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
                 height: "100%",
                 margin: 0,
                 padding: 0,
+                backgroundColor:
+                  reactFlowConfig.backgroundColor ||
+                  getColor(theme.colors, "background"),
                 "--node-border-radius": `${reactFlowConfig.nodeBorderRadius}px`,
                 "--node-stroke-width": `${reactFlowConfig.nodeStrokeWidth}px`,
                 "--node-font-size": `${reactFlowConfig.nodeFontSize}px`,
@@ -956,9 +1017,11 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             }
           >
             <Background
-              variant={BackgroundVariant.Dots}
-              gap={12}
-              size={1}
+              variant={
+                reactFlowConfig.backgroundVariant || BackgroundVariant.Dots
+              }
+              gap={reactFlowConfig.backgroundGap || 12}
+              size={reactFlowConfig.backgroundSize || 1}
               color={getColor(theme.colors, "border")}
             />
             <Controls
@@ -1004,8 +1067,109 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
           activeLayout={activeLayout as LayoutEngineOption}
           onLayoutChange={handleLayoutChange}
           physicsMode={forceGraph3dOptions.layout === "Physics"}
-          isDarkMode={false} // ReactFlow doesn't have dark mode detection, using false for now
+          isDarkMode={isDarkMode}
         />
+
+        {/* Display Config Button/Panel */}
+        <div
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            zIndex: 1000,
+          }}
+        >
+          {!showDisplayConfig ? (
+            <button
+              onClick={() => setShowDisplayConfig(true)}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                border: "none",
+                backgroundColor: isDarkMode
+                  ? "rgba(255,255,255,0.1)"
+                  : "rgba(0,0,0,0.1)",
+                color: isDarkMode ? "#e2e8f0" : "#1f2937",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.2s ease",
+                backdropFilter: "blur(10px)",
+              }}
+              title="Display Configuration"
+            >
+              <Settings2 size={20} />
+            </button>
+          ) : (
+            <div
+              ref={displayConfigEditorRef}
+              style={{
+                width: 320,
+                maxWidth: "calc(100vw - 40px)",
+                maxHeight: "calc(100vh - 40px)",
+                backgroundColor: isDarkMode ? "#1f2937" : "#fff",
+                border: `1px solid ${isDarkMode ? "#374151" : "#d1d5db"}`,
+                borderRadius: 12,
+                boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px 16px",
+                  borderBottom: `1px solid ${isDarkMode ? "#374151" : "#e5e7eb"}`,
+                  backgroundColor: isDarkMode ? "#111827" : "#f9fafb",
+                }}
+              >
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: isDarkMode ? "#e2e8f0" : "#1f2937",
+                  }}
+                >
+                  Display Configuration
+                </h3>
+                <button
+                  onClick={() => setShowDisplayConfig(false)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: isDarkMode ? "#9ca3af" : "#6b7280",
+                    cursor: "pointer",
+                    padding: 4,
+                    borderRadius: 4,
+                    fontSize: 16,
+                    lineHeight: 1,
+                    transition: "color 0.2s ease",
+                  }}
+                  title="Close"
+                >
+                  ×
+                </button>
+              </div>
+              <div
+                style={{
+                  maxHeight: "calc(100vh - 100px)",
+                  overflowY: "auto",
+                  padding: 16,
+                }}
+              >
+                <ReactFlowConfigEditor
+                  onApply={handleApplyReactFlowConfig}
+                  isDarkMode={isDarkMode}
+                  initialConfig={reactFlowConfig}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

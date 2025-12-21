@@ -252,3 +252,9 @@
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
+
+.textInput {
+  composes: input;
+  color: #ffffff;
+  background-color: #1f2937;
+}

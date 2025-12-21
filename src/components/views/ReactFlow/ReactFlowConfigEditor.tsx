@@ -15,6 +15,8 @@ export interface ReactFlowRenderConfig {
   nodeFontSize?: number;
   edgeStrokeWidth?: number;
   edgeFontSize?: number;
+  edgeLabelVisible?: boolean;
+  backgroundColor?: string;
   connectionLineStyle?:
     | "default"
     | "straight"
@@ -35,6 +37,8 @@ export const DEFAULT_REACTFLOW_CONFIG: ReactFlowRenderConfig = {
   nodeFontSize: 12,
   edgeStrokeWidth: 1,
   edgeFontSize: 10,
+  edgeLabelVisible: true,
+  backgroundColor: "#ffffff",
   connectionLineStyle: "bezier",
   minimap: true,
   backgroundVariant: BackgroundVariant.Dots,
@@ -141,6 +145,22 @@ const formSchema: FormSchema = {
     label: "Snap to Grid",
     type: "checkbox",
   },
+  edgeLabelVisible: {
+    validate: () => null,
+    label: "Show Edge Labels",
+    type: "checkbox",
+  },
+  backgroundColor: {
+    validate: (value) => {
+      if (value === null || value === undefined) return "Color is required";
+      // Basic hex color validation
+      if (typeof value !== "string" || !/^#[0-9A-Fa-f]{6}$/.test(value))
+        return "Must be a valid hex color (e.g., #ffffff)";
+      return null;
+    },
+    label: "Background Color",
+    type: "text",
+  },
 };
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -212,6 +232,26 @@ const FormField: React.FC<FormFieldProps> = ({
             </option>
           ))}
         </select>
+        {error && <div className={styles.error}>{error}</div>}
+      </div>
+    );
+  }
+
+  if (field.type === "text") {
+    return (
+      <div className={styles.controlGroup}>
+        <label className={styles.label} htmlFor={name}>
+          {field.label}
+        </label>
+        <input
+          type="text"
+          id={name}
+          name={name}
+          value={value as string}
+          onChange={onChange}
+          className={styles.textInput}
+          placeholder="#ffffff"
+        />
         {error && <div className={styles.error}>{error}</div>}
       </div>
     );
