@@ -64,14 +64,17 @@ export async function computeLayoutAndTriggerAppUpdate(
     throw new Error(`Invalid layout option ${layout}`);
   }
   console.log("layout selected is ", layout);
-  if (
-    layout === PresetLayoutType.Preset ||
-    layout === PresetLayoutType.NodePositions
-  ) {
+  if (layout === PresetLayoutType.Preset) {
     console.log(
       "Skipping layout computation for preset layout. Preset must be loaded"
     );
     return null;
+  } else if (layout === PresetLayoutType.NodePositions) {
+    console.log("Applying positions stored in graph nodes");
+    const positions = extractPositionsFromNodes(sceneGraph);
+    const output = { positions, layoutType: layout };
+    setCurrentLayoutResult(output, "Layout");
+    return output;
   }
   const output = await Compute_Layout(
     sceneGraph,

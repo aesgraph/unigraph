@@ -3,7 +3,6 @@ import { PresetLayoutType } from "../../../core/layouts/layoutEngineTypes";
 import { Graph } from "../../../core/model/Graph";
 import { createEdgesTo } from "../../../core/model/GraphUtils";
 import { SceneGraph } from "../../../core/model/SceneGraph";
-import { extractPositionsFromNodes } from "../../graphs/blobMesh";
 
 export const demo_URL_Shortener = () => {
   const graph = new Graph();
@@ -599,8 +598,8 @@ export const demo_URL_Shortener = () => {
 
   // Extract positions from nodes and set them in displayConfig.nodePositions
   // This is required for NodePositions layout to work properly
-  const positions = extractPositionsFromNodes(sceneGraph);
-  sceneGraph.setNodePositions(positions);
+  //   const positions = extractPositionsFromNodes(sceneGraph);
+  //   sceneGraph.setNodePositions(positions);
 
   return sceneGraph;
 };
