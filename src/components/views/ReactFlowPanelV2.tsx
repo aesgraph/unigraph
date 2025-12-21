@@ -174,6 +174,15 @@ const ReactFlowStyles: React.FC<{ theme: any }> = ({ theme }) => {
     // Create dynamic styles with theme colors
     const dynamicStyles = document.createElement("style");
     dynamicStyles.textContent = `
+      /* Remove white background from edge labels and lift text above edge */
+      .react-flow__edge-text {
+        background: transparent !important;
+        transform: translateY(-10px);
+      }
+      .react-flow__edge-textbg {
+        fill: transparent !important;
+        fill-opacity: 0 !important;
+      }
       .react-flow__node.selected {
         box-shadow: 0 0 0 2px ${SELECTED_NODE_COLOR} !important;
       }
@@ -387,6 +396,12 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
           ),
           fontWeight: 700,
         },
+        labelBgStyle: {
+          fill: "transparent",
+          fillOpacity: 0,
+        },
+        labelBgPadding: [0, 0] as [number, number],
+        labelBgBorderRadius: 0,
         label: getEdgeText(edge, sceneGraphEdge),
       };
     });
@@ -612,6 +627,12 @@ const ReactFlowPanelV2: React.FC<ReactFlowPanelV2Props> = ({
             ),
             fontWeight: 700,
           },
+          labelBgStyle: {
+            fill: "transparent",
+            fillOpacity: 0,
+          },
+          labelBgPadding: [0, 0] as [number, number],
+          labelBgBorderRadius: 0,
           label: getEdgeText(edge, sceneGraphEdge),
         };
       });
