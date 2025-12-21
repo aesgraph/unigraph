@@ -11,7 +11,7 @@ export const demo_URL_Shortener = () => {
   // Client (left)
   const client = graph.createNode({
     id: "Client",
-    type: "storyCard",
+    type: "client",
     position: { x: -600, y: 0, z: 0 },
     userData: {
       title: "Client",
@@ -24,7 +24,7 @@ export const demo_URL_Shortener = () => {
   // Edge/CDN (optional) (center-left)
   const edgeCdn = graph.createNode({
     id: "Edge/CDN (optional)",
-    type: "storyCard",
+    type: "cdn",
     position: { x: -200, y: 0, z: 0 },
     userData: {
       title: "Edge/CDN (optional)",
@@ -37,7 +37,7 @@ export const demo_URL_Shortener = () => {
   // Redirect Service (center)
   const redirectService = graph.createNode({
     id: "Redirect Service",
-    type: "storyCard",
+    type: "service",
     position: { x: 200, y: 0, z: 0 },
     userData: {
       title: "Redirect Service",
@@ -50,7 +50,7 @@ export const demo_URL_Shortener = () => {
   // Redis Cache (top-right)
   const redisCache = graph.createNode({
     id: "Redis Cache",
-    type: "storyCard",
+    type: "database",
     position: { x: 400, y: -300, z: 0 },
     userData: {
       title: "Redis Cache",
@@ -63,7 +63,7 @@ export const demo_URL_Shortener = () => {
   // KV Shard (bottom-right)
   const kvShard = graph.createNode({
     id: "KV Shard",
-    type: "storyCard",
+    type: "database",
     position: { x: 400, y: 300, z: 0 },
     userData: {
       title: "KV Shard",
@@ -76,7 +76,7 @@ export const demo_URL_Shortener = () => {
   // Event Queue (bottom-right, below KV Shard)
   const eventQueue = graph.createNode({
     id: "Event Queue",
-    type: "storyCard",
+    type: "queue",
     position: { x: 400, y: 500, z: 0 },
     userData: {
       title: "Event Queue",
@@ -87,89 +87,74 @@ export const demo_URL_Shortener = () => {
   });
 
   // ========== EDGES - Exact flows from diagram ==========
+  // Based on the second diagram showing the redirect hot path with specific labels
 
-  // Synchronous flows (solid lines)
-
-  // Client → Edge/CDN: GET /{code}
-  graph.createEdge(client.getId(), edgeCdn.getId(), {
-    type: "redirect",
-    label: "GET /{code}",
-  });
-
-  // Edge/CDN → Redirect Service: forward (or cache miss)
-  graph.createEdge(edgeCdn.getId(), redirectService.getId(), {
-    type: "redirect",
-    label: "forward (or cache miss)",
-  });
-
-  // Synchronous flows (solid lines)
-
-  // Client → Edge/CDN: GET /{code}
+  // 1. Client → Edge/CDN: GET /{code}
   graph.createEdgeIfMissing(client.getId(), edgeCdn.getId(), {
-    type: "redirect",
+    type: "request",
     label: "GET /{code}",
   });
 
-  // Edge/CDN → Redirect Service: forward (or cache miss)
+  // 2. Edge/CDN → Client: redirect response
+  graph.createEdgeIfMissing(edgeCdn.getId(), client.getId(), {
+    type: "response",
+    label: "redirect response",
+  });
+
+  // 3. Edge/CDN → Redirect Service: forward (or cache miss)
   graph.createEdgeIfMissing(edgeCdn.getId(), redirectService.getId(), {
-    type: "redirect",
+    type: "request",
     label: "forward (or cache miss)",
   });
 
-  // Redirect Service → Redis Cache: GET code
+  // 4. Redirect Service → Edge/CDN: 302/301 + Location
+  graph.createEdgeIfMissing(redirectService.getId(), edgeCdn.getId(), {
+    type: "response",
+    label: "302/301 + Location",
+  });
+
+  // 5. Redirect Service → Redis Cache: GET code (synchronous)
   const redirectToRedisEdge = graph.createEdgeIfMissing(
     redirectService.getId(),
     redisCache.getId(),
     {
-      type: "redirect",
+      type: "cache",
       label: "GET code",
     }
   );
 
-  // Redis Cache → Redirect Service: hit: longURL or miss
+  // 6. Redis Cache → Redirect Service: hit: longURL or miss
   graph.createEdgeIfMissing(redisCache.getId(), redirectService.getId(), {
-    type: "redirect",
+    type: "cache",
     label: "hit: longURL or miss",
   });
 
-  // Redirect Service → KV Shard: miss: read mapping
-  graph.createEdgeIfMissing(redirectService.getId(), kvShard.getId(), {
-    type: "redirect",
-    label: "miss: read mapping",
-  });
-
-  // KV Shard → Redirect Service: longURL + flags
-  graph.createEdgeIfMissing(kvShard.getId(), redirectService.getId(), {
-    type: "redirect",
-    label: "longURL + flags",
-  });
-
-  // Redirect Service → Edge/CDN: 302/301 + Location
-  graph.createEdgeIfMissing(redirectService.getId(), edgeCdn.getId(), {
-    type: "redirect",
-    label: "302/301 + Location",
-  });
-
-  // Edge/CDN → Client: redirect response
-  graph.createEdgeIfMissing(edgeCdn.getId(), client.getId(), {
-    type: "redirect",
-    label: "redirect response",
-  });
-
-  // Asynchronous flows (dashed lines)
-  // Note: The graph model only allows one edge per source-target pair.
-  // For the async "set hot entry" flow from Redirect Service → Redis Cache,
-  // we'll store it in the existing edge's userData since we already have
-  // a synchronous edge between these nodes.
+  // 7. Redirect Service → Redis Cache: set hot entry (asynchronous)
+  // Note: Since Graph only allows one edge per source-target pair,
+  // we store the async flow information in the edge's userData.
+  // The visualization layer should show both flows on this edge.
   if (redirectToRedisEdge) {
+    const currentUserData = redirectToRedisEdge.getData().userData || {};
     redirectToRedisEdge.getData().userData = {
-      ...redirectToRedisEdge.getData().userData,
-      asyncLabel: "set hot entry",
+      ...currentUserData,
+      asyncFlow: "set hot entry",
       hasAsyncFlow: true,
     };
   }
 
-  // Redirect Service → Event Queue: click event (async)
+  // 8. Redirect Service → KV Shard: miss: read mapping
+  graph.createEdgeIfMissing(redirectService.getId(), kvShard.getId(), {
+    type: "database",
+    label: "miss: read mapping",
+  });
+
+  // 9. KV Shard → Redirect Service: longURL + flags
+  graph.createEdgeIfMissing(kvShard.getId(), redirectService.getId(), {
+    type: "database",
+    label: "longURL + flags",
+  });
+
+  // 10. Redirect Service → Event Queue: click event (async)
   graph.createEdgeIfMissing(redirectService.getId(), eventQueue.getId(), {
     type: "async",
     label: "click event (async)",
