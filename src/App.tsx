@@ -2173,7 +2173,6 @@ const AppContentInner = ({
 
   useEffect(() => {
     if (
-      activeView === "ForceGraph3d" &&
       forceGraphInstance &&
       currentLayoutResult &&
       Object.keys(currentLayoutResult.positions).length > 0 &&
@@ -2195,17 +2194,8 @@ const AppContentInner = ({
         currentLayoutResult.layoutType,
         currentLayoutResult
       );
-    } else if (
-      activeView === "Graphviz" &&
-      graphvizRef.current &&
-      currentLayoutResult &&
-      currentLayoutResult.svg
-    ) {
-      console.log(
-        "Updating Graphviz view with SVG:",
-        currentLayoutResult.svg.substring(0, 100)
-      );
-      graphvizRef.current.innerHTML = currentLayoutResult.svg;
+    } else if (graphvizRef.current && currentLayoutResult) {
+      graphvizRef.current.innerHTML = currentLayoutResult.svg ?? "";
       enableZoomAndPanOnSvg(graphvizRef.current);
       graphvizFitToView(graphvizRef.current);
     }
@@ -2214,7 +2204,6 @@ const AppContentInner = ({
     // window.history.pushState({}, "", url.toString());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    activeView,
     forceGraphInstance,
     // Skip currentLayoutResult dependency for Physics mode to prevent applying fixed positions
     // eslint-disable-next-line react-hooks/exhaustive-deps

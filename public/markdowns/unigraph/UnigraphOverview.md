@@ -25,7 +25,7 @@ https://unigraph.vercel.app/
 
 ### Product Statement
 
-Unigraph is a tool to attack organizational complexity encountered in software engineering.
+Unigraph is a tool to attack organizational complexity encountered in the collaborational aspect of software engineering.
 It aims to address challenges found in the creation, discovery, and management of information.
 In theory, Unigraph should be able to fully represent a software system as a single graph object that can be interspected.
 
@@ -38,16 +38,15 @@ Unigraph offers:
 Unigraph has:
 
 - 2D and 3D Graph Interspection Tools
-- Table and Tree Views
-- Code and Text-document Editor Tools
-- A high-powered web ingestion and data annotation system
-- LLM Copilot
+- Document Editor Tools
+- A high-powered web ingestion and annotation system
+- An LLM Copilot
 
 ---
 
 ### Definitions and Terms
 
-**Interspection** is a single word to describe the interrelated actions of inspecting, navigating, and interacting with information in Unigraph. This term arises from the fact that Unigraph is built specifically for composing high-dimensional objects that cannot be reasoned about all at once.
+**Interspection** is a single term to describe the interrelated actions of inspecting, navigating, and interacting with information in Unigraph. This term arises from the fact that Unigraph is built specifically for composing high-dimensional objects that cannot be reasoned about all at once.
 
 **Synthropy** is an antonym of entropy, meaning structured emergence and synthesis. It is the process of reducing informational chaos, often through statistical reasoning or formal axiomatic structures.
 
@@ -65,4 +64,4 @@ Entities, fundamental units of information, are structured into graphs using nod
 Unigraph provides first-class mechanisms for managing display scenes independently from the underlying graph model, allowing flexible customizations and multiple perspectives of the same underlying data that can be tailored to different needs and audiences.
 
 **Application Development**
-Unigraph implements an Entity Component System (ECS) that unifies data modeling, UI behavior, and state management under a single abstraction. New entity types, data, and application behaviors can be easily integrated into Unigraph using its Entity Component System.
+Unigraph implements an Entity Component System (ECS) that unifies data modeling, UI behavior, and state management under a single abstraction. New entity types, data, and application behaviors can be easily integrated into Unigraph using the Entity Component System.

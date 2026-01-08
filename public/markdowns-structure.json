@@ -7,11 +7,24 @@
       "type": "directory",
       "children": [
         {
+          "path": "unigraph/ProductDemoVideos.md",
+          "type": "file",
+          "name": "ProductDemoVideos.md",
+          "title": "Product Demo Videos",
+          "order": 2
+        },
+        {
           "path": "unigraph/UnigraphChromeExtension.md",
           "type": "file",
           "name": "UnigraphChromeExtension.md",
           "title": "Unigraph Chrome Extension",
           "order": 1
+        },
+        {
+          "path": "unigraph/UnigraphCore.md",
+          "type": "file",
+          "name": "UnigraphCore.md",
+          "title": "Unigraph Core"
         },
         {
           "path": "unigraph/UnigraphOverview.md",
@@ -76,9 +89,19 @@
               "name": "PresentationPlatform.md"
             },
             {
+              "path": "unigraph/applications/RichSearchPortals.md",
+              "type": "file",
+              "name": "RichSearchPortals.md"
+            },
+            {
               "path": "unigraph/applications/SemanticWebConnector.md",
               "type": "file",
               "name": "SemanticWebConnector.md"
+            },
+            {
+              "path": "unigraph/applications/YoutubeStudyCompanion.md",
+              "type": "file",
+              "name": "YoutubeStudyCompanion.md"
             },
             {
               "path": "unigraph/applications/index.md",
@@ -88,6 +111,11 @@
               "order": 5
             }
           ]
+        },
+        {
+          "path": "unigraph/basic-examples-draft.md",
+          "type": "file",
+          "name": "basic-examples-draft.md"
         },
         {
           "path": "unigraph/capabilities",

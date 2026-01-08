@@ -9,9 +9,7 @@ import { probabilisticBranchingGraph } from "./demo-graphs/random/probabilisticB
 import { randomBigGraph } from "./demo-graphs/random/randomBig";
 import { randomBiggestGraph } from "./demo-graphs/random/randomBiggest";
 import { starWithDecreasingLengthsGraph } from "./demo-graphs/random/starWithDecreasingLengths";
-import { demo_Job_Scheduler } from "./demo-graphs/story-cards/demo_scenegraph_job_scheduler";
 import { demo_Unigraph_Applications } from "./demo-graphs/story-cards/demo_scenegraph_unigraph_applications";
-import { demo_URL_Shortener } from "./demo-graphs/story-cards/demo_scenegraph_url_shortener";
 import { demo_sceneGraph_academicsKG } from "./graphs/academicsKGraph";
 import { blobMeshGraph } from "./graphs/blobMesh";
 import { demo_scenegraph_all_writings } from "./graphs/demo_all_writings_graph";
@@ -92,20 +90,12 @@ const total_writing_graph = () => {
 };
 
 export const DEMO_SCENE_GRAPHS: { [key: string]: SceneGraphCategory } = {
-  "System Designs": {
-    label: "System Designs",
-    graphs: {
-      jobScheduler: () => demo_Job_Scheduler(),
-      urlShortener: () => demo_URL_Shortener(),
-    },
-  },
   Test: {
     label: "Test",
     graphs: {
       "Demo Story Cards": () => demo_SceneGraph_StoryCards(),
       numbers: () => demo_SceneGraph_Numbers_Story(),
       unigraphApplications: () => demo_Unigraph_Applications(),
-      jobScheduler: () => demo_Job_Scheduler(),
       wikipediaDemo: () => demo_Wikipedia_Articles(),
       factorGraph: () => demo_SceneGraph_FactorGraph(),
       complexFactorGraph: () => demo_SceneGraph_FactorGraph_ComplexExpansion(),
