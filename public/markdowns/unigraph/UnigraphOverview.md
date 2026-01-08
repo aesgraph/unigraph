@@ -19,7 +19,7 @@ Unigraph is a lightweight web-based data analytics application and bootstrap lib
 Unigraph is an integration environment for various existing web-based tools, and can function as a dashboard tool to navigate and inspect high-dimensional data.
 
 Aesgraph is an organization that serves an instance of Unigraph on the web.
-https://unigraph-git-new-features-2-aesgraph.vercel.app/
+https://unigraph.vercel.app/
 
 ---
 
@@ -50,8 +50,6 @@ Unigraph has:
 **Interspection** is a single word to describe the interrelated actions of inspecting, navigating, and interacting with information in Unigraph. This term arises from the fact that Unigraph is built specifically for composing high-dimensional objects that cannot be reasoned about all at once.
 
 **Synthropy** is an antonym of entropy, meaning structured emergence and synthesis. It is the process of reducing informational chaos, often through statistical reasoning or formal axiomatic structures.
-
-**Particulated** is the property of being divisible and remixable into new structures.
 
 ---
 
