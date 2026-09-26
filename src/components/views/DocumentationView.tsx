@@ -11,7 +11,7 @@ import "./DocumentationView.css";
 
 const DocumentationView: React.FC = () => {
   const { theme } = useTheme();
-  const [selectedFile, setSelectedFile] = useState<string | null>(
+  const [selectedFile, setSelectedFile] = useState<string>(
     "/markdowns/unigraph/UnigraphOverview.md"
   );
   const [sidebarWidth, setSidebarWidth] = useState(370);
@@ -53,7 +53,8 @@ const DocumentationView: React.FC = () => {
           url: "/markdowns-structure.json",
         },
       },
-      rootPath: "/markdowns",
+      rootPath: "/markdowns/unigraph",
+      structureRootPath: "unigraph", // Use the "unigraph" folder as the root of the tree
       hideEmptyFolders: true,
       onFileSelect: handleFileSelect,
     }),
@@ -121,7 +122,7 @@ const DocumentationView: React.FC = () => {
                 console.log("FileTreeView onFileSelect called directly");
                 handleFileSelect(filePath, metadata);
               }}
-              selectedFile={selectedFile || undefined}
+              selectedFile={selectedFile}
               showHeader={true}
               readOnly={true}
             />
@@ -131,7 +132,7 @@ const DocumentationView: React.FC = () => {
                 filePath: string,
                 metadata?: Record<string, any>
               ) => handleFileSelect(filePath, metadata)}
-              selectedFile={selectedFile || undefined}
+              selectedFile={selectedFile}
             />
           )}
         </div>
@@ -155,154 +156,18 @@ const DocumentationView: React.FC = () => {
           overflow: "auto",
         }}
       >
-        {selectedFile ? (
-          <div style={{ height: "100%" }}>
-            <MarkdownViewer
-              filename={selectedFile}
-              sceneGraph={currentSceneGraph}
-              showRawToggle={true}
-              onAnnotate={(text) => {
-                console.log("Annotation created:", text);
-                // You can add additional annotation handling here
-              }}
-            />
-          </div>
-        ) : (
-          <div
-            className="documentation-welcome"
-            style={{
-              color: textColors.primary,
-            }}
-          >
-            <h2
-              style={{
-                color: textColors.primary,
-              }}
-            >
-              Documentation Browser
-            </h2>
-            <p
-              style={{
-                color: textColors.secondary,
-              }}
-            >
-              Select a file from the sidebar to view its contents. The
-              documentation includes guides, tutorials, and reference materials
-              for Unigraph.
-            </p>
-            <div
-              className="documentation-features"
-              style={{
-                backgroundColor: getColor(theme.colors, "surface"),
-                border: `1px solid ${getColor(theme.colors, "border")}`,
-              }}
-            >
-              <h3
-                style={{
-                  color: textColors.primary,
-                }}
-              >
-                Available Documentation
-              </h3>
-              <ul>
-                <li
-                  style={{
-                    color: textColors.secondary,
-                  }}
-                >
-                  <strong style={{ color: textColors.primary }}>
-                    Overview
-                  </strong>{" "}
-                  - Introduction and motivation for Unigraph
-                </li>
-                <li
-                  style={{
-                    color: textColors.secondary,
-                  }}
-                >
-                  <strong style={{ color: textColors.primary }}>
-                    User Guide
-                  </strong>{" "}
-                  - How to use Unigraph features
-                </li>
-                <li
-                  style={{
-                    color: textColors.secondary,
-                  }}
-                >
-                  <strong style={{ color: textColors.primary }}>
-                    Quick Guides
-                  </strong>{" "}
-                  - Step-by-step tutorials
-                </li>
-                <li
-                  style={{
-                    color: textColors.secondary,
-                  }}
-                >
-                  <strong style={{ color: textColors.primary }}>
-                    Markdowns
-                  </strong>{" "}
-                  - Additional documentation files
-                </li>
-              </ul>
-            </div>
-            <div
-              style={{
-                marginTop: "32px",
-                backgroundColor: getColor(theme.colors, "surface"),
-                border: `1px solid ${getColor(theme.colors, "border")}`,
-                borderRadius: "8px",
-                padding: "20px",
-              }}
-            >
-              <h3
-                style={{
-                  color: textColors.primary,
-                  marginTop: 0,
-                  marginBottom: "16px",
-                }}
-              >
-                Unigraph Demo Series
-              </h3>
-              <div
-                style={{
-                  position: "relative",
-                  paddingBottom: "56.25%", // 16:9 aspect ratio
-                  height: 0,
-                  overflow: "hidden",
-                  borderRadius: "4px",
-                }}
-              >
-                <iframe
-                  width="100%"
-                  height="100%"
-                  src="https://www.youtube.com/embed/fmJjdF8vKhM?list=PLr2u9sq9Pv82ipOKPFyfcAr-4OAy7G9Y5"
-                  title="Unigraph Demo Series"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+        <MarkdownViewer
+          filename={selectedFile}
+          sceneGraph={currentSceneGraph}
+          showRawToggle={true}
+          onAnnotate={(text) => {
+            console.log("Annotation created:", text);
+            // You can add additional annotation handling here
+          }}
+        />
       </div>
     ),
-    [
-      selectedFile,
-      currentSceneGraph,
-      textColors.primary,
-      textColors.secondary,
-      theme.colors,
-    ]
+    [selectedFile, currentSceneGraph]
   );
 
   return (

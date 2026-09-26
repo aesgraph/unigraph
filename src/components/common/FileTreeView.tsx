@@ -54,6 +54,7 @@ export interface FileTreeInstance {
   name: string;
   dataSource: FileTreeDataSource;
   rootPath?: string;
+  structureRootPath?: string; // Path within the structure JSON to use as root (e.g., "unigraph")
   hideEmptyFolders?: boolean;
   onFileSelect?: (filePath: string, metadata?: Record<string, any>) => void;
   onCreateDocument?: (
@@ -935,8 +936,98 @@ export default React.memo(
                 if (response.ok) {
                   const data = await response.json();
                   console.log("JSON data loaded:", data);
+
+                  // Navigate to the specified structure root path if provided
+                  let structureToProcess = data;
+                  let unwrappedFolderName: string | null = null;
+                  if (instance.structureRootPath) {
+                    const findStructureAtPath = (
+                      structure: any,
+                      targetPath: string
+                    ): any | null => {
+                      // Split path by '/' and navigate through the structure
+                      const pathParts = targetPath.split("/").filter((p) => p);
+
+                      let current = structure;
+                      for (const part of pathParts) {
+                        if (
+                          current &&
+                          current.children &&
+                          Array.isArray(current.children)
+                        ) {
+                          const found = current.children.find(
+                            (child: any) =>
+                              child.path === part ||
+                              child.path?.endsWith(`/${part}`) ||
+                              child.name === part
+                          );
+                          if (found) {
+                            current = found;
+                          } else {
+                            console.warn(
+                              `Could not find path segment "${part}" in structure`
+                            );
+                            return null;
+                          }
+                        } else {
+                          return null;
+                        }
+                      }
+                      return current;
+                    };
+
+                    const rootStructure = findStructureAtPath(
+                      data,
+                      instance.structureRootPath
+                    );
+                    if (rootStructure) {
+                      // Store the folder name to filter it out if it appears as a file
+                      unwrappedFolderName =
+                        rootStructure.name ||
+                        instance.structureRootPath.split("/").pop() ||
+                        null;
+
+                      // Only use the children of the found structure, not the folder itself
+                      // Filter out any file that matches the folder name to prevent the folder appearing as a file
+                      const filteredChildren = (
+                        rootStructure.children || []
+                      ).filter((child: any) => {
+                        if (unwrappedFolderName && child.type === "file") {
+                          const fileName =
+                            child.name || child.path.split("/").pop() || "";
+                          // Check if file name matches the unwrapped folder name (with or without extension)
+                          const matchesFolderName =
+                            fileName.toLowerCase() ===
+                              unwrappedFolderName.toLowerCase() ||
+                            fileName.toLowerCase().replace(/\.md$/i, "") ===
+                              unwrappedFolderName.toLowerCase();
+                          if (matchesFolderName) {
+                            console.log(
+                              `Filtering out file that matches unwrapped folder name: ${fileName}`
+                            );
+                            return false;
+                          }
+                        }
+                        return true;
+                      });
+
+                      structureToProcess = {
+                        path: "/",
+                        type: "directory",
+                        children: filteredChildren,
+                      };
+                      console.log(
+                        `Using structure root at path: ${instance.structureRootPath}, unwrapping ${filteredChildren.length} children (filtered from ${rootStructure.children?.length || 0})`
+                      );
+                    } else {
+                      console.warn(
+                        `Could not find structure root at path: ${instance.structureRootPath}, using root structure`
+                      );
+                    }
+                  }
+
                   treeData = await convertStructureToFileNodes(
-                    data,
+                    structureToProcess,
                     "" // No basePath needed since we use paths directly
                   );
                   console.log("Converted tree data:", treeData);
@@ -1107,6 +1198,7 @@ export default React.memo(
             };
 
             if (child.children && child.children.length > 0) {
+              // Recursively process children
               node.children = await convertStructureToFileNodes(
                 child,
                 "" // No basePath needed since we use paths directly

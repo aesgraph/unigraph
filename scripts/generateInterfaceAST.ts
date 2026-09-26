@@ -316,28 +316,30 @@ function parseInterfaces(files: string[]) {
 const rootDir = path.resolve(__dirname, "../src"); // Adjust as needed
 const files = getAllTSFiles(rootDir);
 const ast = parseInterfaces(files);
+const repoRoot = path.resolve(__dirname, "..");
 
-// Convert Sets to Arrays for JSON serialization
+// Convert Sets to Arrays for JSON serialization; record files relative to the
+// repo root so the output carries no machine-specific absolute paths
 const serializedAst = Object.fromEntries(
   Object.entries(ast).map(([name, data]) => [
     name,
-    { ...data, references: Array.from(data.references) },
+    {
+      ...data,
+      references: Array.from(data.references),
+      file: path.relative(repoRoot, data.file),
+    },
   ])
 );
 
 // Build file mapping using relative paths
 const fileMapping: Record<string, string[]> = {};
 for (const file of files) {
-  const relativePath = path.relative(path.resolve(__dirname, ".."), file);
+  const relativePath = path.relative(repoRoot, file);
   fileMapping[relativePath] = [];
 
   // Find which symbols are defined in this file
   Object.entries(serializedAst).forEach(([symbolName, symbolData]) => {
-    const symbolRelativePath = path.relative(
-      path.resolve(__dirname, ".."),
-      symbolData.file
-    );
-    if (symbolRelativePath === relativePath) {
+    if (symbolData.file === relativePath) {
       fileMapping[relativePath].push(symbolName);
     }
   });
@@ -346,7 +348,7 @@ for (const file of files) {
 // Build directory mapping
 const allDirectories = new Set<string>();
 for (const file of files) {
-  const relativePath = path.relative(path.resolve(__dirname, ".."), file);
+  const relativePath = path.relative(repoRoot, file);
   const dir = path.dirname(relativePath);
 
   // Add all parent directories
@@ -361,7 +363,7 @@ for (const file of files) {
 const directoryMapping: Record<string, string[]> = {};
 for (const dir of allDirectories) {
   directoryMapping[dir] = files
-    .map((file) => path.relative(path.resolve(__dirname, ".."), file))
+    .map((file) => path.relative(repoRoot, file))
     .filter((relativePath) => path.dirname(relativePath) === dir);
 }
 

@@ -74,6 +74,7 @@
     },
     "references": [
       "IEntity",
+      "Data",
       "T"
     ],
     "methods": {
@@ -580,7 +581,8 @@
       "color": "string",
       "size": "number",
       "opacity": "number",
-      "drawType": "\"arrow\" | \"line\""
+      "drawType": "\"arrow\" | \"line\"",
+      "length": "number"
     },
     "references": [],
     "file": "src/core/model/Edge.ts"
@@ -690,6 +692,10 @@
         "returnType": "number"
       },
       "getOpacity": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "getLength": {
         "arguments": {},
         "returnType": "number"
       }
@@ -1148,6 +1154,48 @@
     "references": [],
     "file": "src/utils/colorUtils.ts"
   },
+  "getRelativeLuminance": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "r": "number",
+      "g": "number",
+      "b": "number"
+    },
+    "returnType": "number",
+    "file": "src/utils/colorUtils.ts"
+  },
+  "parseColor": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "color": "string"
+    },
+    "returnType": "[number, number, number]",
+    "file": "src/utils/colorUtils.ts"
+  },
+  "isDarkBackground": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "backgroundColor": "string"
+    },
+    "returnType": "boolean",
+    "file": "src/utils/colorUtils.ts"
+  },
+  "getContrastingTextColors": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "backgroundColor": "string"
+    },
+    "returnType": "{ primary: string; secondary: string; }",
+    "file": "src/utils/colorUtils.ts"
+  },
   "DisplayConfigData": {
     "kind": "type",
     "properties": {},
@@ -1182,11 +1230,11 @@
     "properties": {},
     "references": [
       "Node",
+      "of",
       "Position",
       "DisplayConfig",
       "EntitiesDisplayConfig",
       "RenderingManager__DisplayMode",
-      "of",
       "NodePosition",
       "NodePositionData",
       "on"
@@ -1382,6 +1430,7 @@
       "AppConfig",
       "for",
       "to",
+      "Window",
       "RenderingManager__DisplayMode",
       "or",
       "LayoutEngineOption",
@@ -1621,6 +1670,7 @@
     "properties": {},
     "references": [
       "AppConfig",
+      "Document",
       "for",
       "to",
       "Metadata",
@@ -1652,6 +1702,7 @@
       "ISceneGraphListeners",
       "Layout",
       "DocumentState",
+      "WorkspaceState",
       "ISceneGraphMetadata",
       "IForceGraphRenderConfig",
       "Graph",
@@ -1695,6 +1746,20 @@
         "arguments": {
           "storageKey": "string"
         },
+        "returnType": "void"
+      },
+      "getWorkspaceState": {
+        "arguments": {},
+        "returnType": "WorkspaceState"
+      },
+      "setWorkspaceState": {
+        "arguments": {
+          "workspaceState": "WorkspaceState"
+        },
+        "returnType": "void"
+      },
+      "clearWorkspaceState": {
+        "arguments": {},
         "returnType": "void"
       },
       "commitDisplayConfig": {
@@ -2110,16 +2175,60 @@
     "returnType": "SelectionBoxGroup[]",
     "file": "src/core/webgl/selectionArea.ts"
   },
+  "ResourceId": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "type": "string",
+      "label": "string",
+      "description": "string"
+    },
+    "references": [],
+    "file": "src/core/types/ResourceId.ts"
+  },
+  "WebUrlResourceId": {
+    "kind": "interface",
+    "properties": {
+      "type": "\"web-url\"",
+      "url": "string"
+    },
+    "references": [],
+    "file": "src/core/types/ResourceId.ts"
+  },
   "ImageBoxData": {
     "kind": "type",
     "properties": {},
     "references": [
+      "Annotation",
       "to",
       "Position",
       "on"
     ],
     "definition": "ImageBoxData",
     "file": "src/core/types/ImageBoxData.ts"
+  },
+  "Annotation": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "label": "string",
+      "description": "string",
+      "imageBoxId": "string",
+      "references": "string[]"
+    },
+    "references": [],
+    "file": "src/utils/generateAnnotations.ts"
+  },
+  "getLocalCoords": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "event": "MouseEvent | React.MouseEvent<Element, MouseEvent>",
+      "container": "HTMLElement"
+    },
+    "returnType": "void",
+    "file": "src/utils/getLocalCoords.ts"
   },
   "findNodeInForceGraph": {
     "kind": "function",
@@ -3006,6 +3115,63 @@
     "returnType": "Promise<ILayoutEngineResult>",
     "file": "src/store/sceneGraphHooks.ts"
   },
+  "EnvVars": {
+    "kind": "interface",
+    "properties": {
+      "VITE_OPENAI_API_KEY": "string",
+      "VITE_SUPABASE_URL": "string",
+      "VITE_SUPABASE_ANON_KEY": "string",
+      "VITE_LIVE_CHAT_URL": "string",
+      "VITE_DEFAULT_CHAT_URL": "string",
+      "VITE_YOUTUBE_API_KEY": "string"
+    },
+    "references": [],
+    "file": "src/utils/envUtils.ts"
+  },
+  "getEnvVar": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "key": "string"
+    },
+    "returnType": "string",
+    "file": "src/utils/envUtils.ts"
+  },
+  "getAllEnvVars": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "EnvVars"
+    ],
+    "arguments": {},
+    "returnType": "EnvVars",
+    "file": "src/utils/envUtils.ts"
+  },
+  "isVercel": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "boolean",
+    "file": "src/utils/envUtils.ts"
+  },
+  "isDevelopment": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "boolean",
+    "file": "src/utils/envUtils.ts"
+  },
+  "debugEnvVars": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void",
+    "file": "src/utils/envUtils.ts"
+  },
   "Webpage": {
     "kind": "interface",
     "properties": {
@@ -3052,6 +3218,67 @@
     "returnType": "void",
     "file": "src/api/webpagesApi.ts"
   },
+  "getWebpageContent": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "src/api/webpagesApi.ts"
+  },
+  "getWebpagesWithContent": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "ids": "string[]"
+    },
+    "returnType": "void",
+    "file": "src/api/webpagesApi.ts"
+  },
+  "checkWebpageContent": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "src/api/webpagesApi.ts"
+  },
+  "checkWebpagesContent": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "ids": "string[]"
+    },
+    "returnType": "void",
+    "file": "src/api/webpagesApi.ts"
+  },
+  "updateWebpageTitle": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string",
+      "title": "string"
+    },
+    "returnType": "void",
+    "file": "src/api/webpagesApi.ts"
+  },
+  "deleteWebpage": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "src/api/webpagesApi.ts"
+  },
   "TextSelectionAnnotationData": {
     "kind": "interface",
     "properties": {
@@ -3072,31 +3299,26 @@
       "to",
       "Position",
       "EntityData",
+      "ResourceId",
       "on"
     ],
     "definition": "ImageAnnotationData",
     "file": "src/core/types/ImageAnnotation.ts"
   },
-  "Annotation": {
-    "kind": "interface",
-    "properties": {
-      "id": "string",
-      "label": "string",
-      "description": "string",
-      "imageBoxId": "string",
-      "references": "string[]"
-    },
+  "generateUUID": {
+    "kind": "function",
+    "properties": {},
     "references": [],
-    "file": "src/utils/generateAnnotations.ts"
+    "arguments": {},
+    "returnType": "string",
+    "file": "src/api/annotationsApi.ts"
   },
   "saveAnnotation": {
     "kind": "function",
     "properties": {},
-    "references": [
-      "Annotation"
-    ],
+    "references": [],
     "arguments": {
-      "annotation": "Annotation"
+      "annotation": "Annotation | Omit<Annotation, \"id\">"
     },
     "returnType": "void",
     "file": "src/api/annotationsApi.ts"
@@ -3118,6 +3340,320 @@
     },
     "returnType": "void",
     "file": "src/api/annotationsApi.ts"
+  },
+  "deleteAnnotation": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<void>",
+    "file": "src/api/annotationsApi.ts"
+  },
+  "checkAnnotationContent": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "src/api/annotationsApi.ts"
+  },
+  "getAnnotationContent": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "void",
+    "file": "src/api/annotationsApi.ts"
+  },
+  "DocumentMetadata": {
+    "kind": "interface",
+    "properties": {
+      "references": "DocumentReference[]"
+    },
+    "references": [],
+    "file": "src/api/documentsApi.ts"
+  },
+  "Document": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "content": "string",
+      "extension": "string",
+      "metadata": "DocumentMetadata",
+      "data": "any",
+      "user_id": "string",
+      "project_id": "string",
+      "parent_id": "string",
+      "created_at": "string",
+      "last_updated_at": "string"
+    },
+    "references": [
+      "DocumentMetadata"
+    ],
+    "file": "src/api/documentsApi.ts"
+  },
+  "DocumentReference": {
+    "kind": "interface",
+    "properties": {
+      "referenceEntityType": "string",
+      "referenceId": "string",
+      "referenceTags": "string[]",
+      "referenceRelationType": "\"parent\" | \"child\" | \"sibling\""
+    },
+    "references": [],
+    "file": "src/api/documentsApi.ts"
+  },
+  "CreateDocumentParams": {
+    "kind": "interface",
+    "properties": {
+      "title": "string",
+      "content": "string",
+      "extension": "string",
+      "metadata": "DocumentMetadata",
+      "data": "any",
+      "project_id": "string",
+      "parent_id": "string"
+    },
+    "references": [
+      "DocumentMetadata"
+    ],
+    "file": "src/api/documentsApi.ts"
+  },
+  "UpdateDocumentParams": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "content": "string",
+      "extension": "string",
+      "metadata": "DocumentMetadata",
+      "data": "any",
+      "project_id": "string",
+      "parent_id": "string"
+    },
+    "references": [
+      "DocumentMetadata"
+    ],
+    "file": "src/api/documentsApi.ts"
+  },
+  "SearchResult": {
+    "kind": "interface",
+    "properties": {
+      "snippet": "string",
+      "matchCount": "number"
+    },
+    "references": [],
+    "file": "src/api/documentsApi.ts"
+  },
+  "createDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "CreateDocumentParams"
+    ],
+    "arguments": {
+      "params": "CreateDocumentParams"
+    },
+    "returnType": "Promise<Document>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<Document>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "updateDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UpdateDocumentParams"
+    ],
+    "arguments": {
+      "params": "UpdateDocumentParams"
+    },
+    "returnType": "Promise<Document>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "deleteDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<void>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "deleteDocumentRecursive": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<void>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "listDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<Document[]>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getDocumentsByProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "projectId": "string"
+    },
+    "returnType": "Promise<Document[]>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getChildDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "parentId": "string"
+    },
+    "returnType": "Promise<Document[]>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getDocumentTree": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<Document[]>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "duplicateDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "documentId": "string",
+      "newTitle": "string"
+    },
+    "returnType": "Promise<Document>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "moveDocumentToProject": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "documentId": "string",
+      "newProjectId": "string"
+    },
+    "returnType": "Promise<Document>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getDocumentStats": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<{ total: number; byExtension: Record<string, number>; byProject: Record<string, number>; }>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getDocumentsByExtension": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "extension": "string"
+    },
+    "returnType": "Promise<Document[]>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "searchDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<SearchResult[]>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "savePdfDocument": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<Document>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "getPdfDocumentData": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "documentId": "string"
+    },
+    "returnType": "Promise<{ blob: Blob; metadata: any; }>",
+    "file": "src/api/documentsApi.ts"
+  },
+  "SaveFileParams": {
+    "kind": "interface",
+    "properties": {
+      "filePath": "string",
+      "content": "string"
+    },
+    "references": [],
+    "file": "src/api/filesApi.ts"
+  },
+  "SaveFileResult": {
+    "kind": "interface",
+    "properties": {
+      "success": "boolean",
+      "message": "string",
+      "filePath": "string"
+    },
+    "references": [],
+    "file": "src/api/filesApi.ts"
+  },
+  "saveMarkdownFile": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<SaveFileResult>",
+    "file": "src/api/filesApi.ts"
+  },
+  "checkFileWritable": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "filePath": "string"
+    },
+    "returnType": "Promise<boolean>",
+    "file": "src/api/filesApi.ts"
+  },
+  "getFileMetadata": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "filePath": "string"
+    },
+    "returnType": "Promise<{ lastModified?: Date; size?: number; writable: boolean; }>",
+    "file": "src/api/filesApi.ts"
   },
   "NotificationType": {
     "kind": "type",
@@ -3366,10 +3902,429 @@
     "returnType": "Promise<boolean>",
     "file": "src/api/projectActions.ts"
   },
+  "ResourceReference": {
+    "kind": "interface",
+    "properties": {
+      "resourceType": "string",
+      "resourceId": "string"
+    },
+    "references": [],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "UserActivityContext": {
+    "kind": "interface",
+    "properties": {
+      "resource": "ResourceReference"
+    },
+    "references": [
+      "ResourceReference"
+    ],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "UserActivity": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "user_id": "string",
+      "timestamp": "string",
+      "activity_id": "string",
+      "context": "UserActivityContext",
+      "log": "string"
+    },
+    "references": [
+      "UserActivityContext"
+    ],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "CreateUserActivityParams": {
+    "kind": "interface",
+    "properties": {
+      "activity_id": "string",
+      "context": "UserActivityContext",
+      "log": "string",
+      "user_id": "string"
+    },
+    "references": [
+      "UserActivityContext"
+    ],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "UpdateUserActivityParams": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "activity_id": "string",
+      "context": "UserActivityContext",
+      "log": "string"
+    },
+    "references": [
+      "UserActivityContext"
+    ],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "ListUserActivitiesParams": {
+    "kind": "interface",
+    "properties": {
+      "userId": "string",
+      "activityId": "string",
+      "startDate": "string",
+      "endDate": "string",
+      "limit": "number",
+      "offset": "number"
+    },
+    "references": [],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "UserActivityStats": {
+    "kind": "interface",
+    "properties": {
+      "total": "number",
+      "byActivityId": "Record<string, number>",
+      "byDate": "Record<string, number>"
+    },
+    "references": [],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "createUserActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "CreateUserActivityParams"
+    ],
+    "arguments": {
+      "params": "CreateUserActivityParams"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "getUserActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "updateUserActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UpdateUserActivityParams"
+    ],
+    "arguments": {
+      "params": "UpdateUserActivityParams"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "deleteUserActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<void>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "listUserActivities": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ListUserActivitiesParams"
+    ],
+    "arguments": {
+      "params": "ListUserActivitiesParams"
+    },
+    "returnType": "Promise<UserActivity[]>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "GetUserActivitiesParams": {
+    "kind": "interface",
+    "properties": {
+      "userId": "string",
+      "page": "number",
+      "pageSize": "number",
+      "sortBy": "string",
+      "sortOrder": "\"asc\" | \"desc\"",
+      "activityId": "string",
+      "startDate": "string",
+      "endDate": "string"
+    },
+    "references": [],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "GetUserActivitiesResult": {
+    "kind": "interface",
+    "properties": {
+      "data": "UserActivity[]",
+      "total": "number",
+      "page": "number",
+      "pageSize": "number",
+      "totalPages": "number"
+    },
+    "references": [],
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "getUserActivities": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "GetUserActivitiesParams"
+    ],
+    "arguments": {
+      "params": "GetUserActivitiesParams"
+    },
+    "returnType": "Promise<GetUserActivitiesResult>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "getUserActivitiesByActivityId": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "activityId": "string",
+      "userId": "string"
+    },
+    "returnType": "Promise<UserActivity[]>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "getRecentUserActivities": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "userId": "string",
+      "limit": "number"
+    },
+    "returnType": "Promise<UserActivity[]>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "getUserActivityStats": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "userId": "string",
+      "startDate": "string",
+      "endDate": "string"
+    },
+    "returnType": "Promise<UserActivityStats>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "logActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UserActivityContext"
+    ],
+    "arguments": {
+      "activityId": "string",
+      "log": "string",
+      "context": "UserActivityContext"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "logYouTubeActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UserActivityContext"
+    ],
+    "arguments": {
+      "activityId": "string",
+      "videoId": "string",
+      "timestamp": "number",
+      "context": "UserActivityContext"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "logDocumentActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UserActivityContext"
+    ],
+    "arguments": {
+      "activityId": "string",
+      "documentId": "string",
+      "context": "UserActivityContext"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "logAnnotationActivity": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "activityId": "string",
+      "annotationId": "string",
+      "context": "any"
+    },
+    "returnType": "Promise<UserActivity>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "deleteOldActivities": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "olderThanDays": "number",
+      "userId": "string"
+    },
+    "returnType": "Promise<{ deletedCount: number; }>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "getActivityTimeline": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "userId": "string",
+      "days": "number"
+    },
+    "returnType": "Promise<Record<string, UserActivity[]>>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "searchUserActivities": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "searchTerm": "string",
+      "userId": "string",
+      "limit": "number"
+    },
+    "returnType": "Promise<UserActivity[]>",
+    "file": "src/api/userActivitiesApi.ts"
+  },
+  "AccessLog": {
+    "kind": "interface",
+    "properties": {
+      "accessTime": "string"
+    },
+    "references": [],
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "YouTubeVideo": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "user_id": "string",
+      "title": "string",
+      "description": "string",
+      "publishedAt": "string",
+      "duration": "string",
+      "viewCount": "number",
+      "likeCount": "number",
+      "commentCount": "number",
+      "tags": "string | string[]",
+      "categoryId": "number",
+      "defaultLanguage": "string",
+      "defaultAudioLanguage": "string",
+      "liveBroadcastContent": "string",
+      "url": "string",
+      "thumbnail_default_url": "string",
+      "thumbnail_medium_url": "string",
+      "thumbnail_high_url": "string",
+      "accessLogs": "AccessLog[]",
+      "lastAccessTime": "string"
+    },
+    "references": [],
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "listYouTubeVideos": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<YouTubeVideo[]>",
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "getYouTubeVideo": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string",
+      "userId": "string"
+    },
+    "returnType": "Promise<YouTubeVideo>",
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "deleteYouTubeVideo": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "Promise<void>",
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "extractVideoId": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "string",
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "YouTubeVideoMetadata": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "description": "string",
+      "publishedAt": "string",
+      "thumbnails": "{ default?: { url: string; width: number; height: number; }; medium?: { url: string; width: number; height: number; }; high?: { url: string; width: number; height: number; }; standard?: { url: string; width: number; height: number; }; maxres?: { ...; }; }",
+      "duration": "string",
+      "viewCount": "string",
+      "likeCount": "string",
+      "commentCount": "string",
+      "tags": "string[]",
+      "categoryId": "string",
+      "defaultLanguage": "string",
+      "defaultAudioLanguage": "string",
+      "liveBroadcastContent": "string",
+      "url": "string"
+    },
+    "references": [],
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "fetchYouTubeVideoMetadata": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "videoId": "string"
+    },
+    "returnType": "Promise<YouTubeVideoMetadata>",
+    "file": "src/api/youtubeVideosApi.ts"
+  },
+  "importYouTubeVideo": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string",
+      "userId": "string"
+    },
+    "returnType": "Promise<YouTubeVideo>",
+    "file": "src/api/youtubeVideosApi.ts"
+  },
   "InterfaceAST": {
     "kind": "type",
     "properties": {},
     "references": [
+      "as",
       "or",
       "aliases",
       "alias",
@@ -3400,6 +4355,92 @@
     },
     "returnType": "Promise<SceneGraph>",
     "file": "src/data/demo-graphs/interfaceAstToSceneGraph.ts"
+  },
+  "alethiometerDemoGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "ringSize": "number",
+      "childrenPerNode": "number",
+      "labeledNodeLabels": "string[]"
+    },
+    "returnType": "void",
+    "file": "src/data/demo-graphs/random/alethiometerDemo.ts"
+  },
+  "LineWithIncreasingLengthsOptions": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "as"
+    ],
+    "definition": "LineWithIncreasingLengthsOptions",
+    "file": "src/data/demo-graphs/random/lineWithIncreasingLengths.ts"
+  },
+  "lineWithIncreasingLengthsGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "LineWithIncreasingLengthsOptions"
+    ],
+    "arguments": {
+      "options": "LineWithIncreasingLengthsOptions"
+    },
+    "returnType": "void",
+    "file": "src/data/demo-graphs/random/lineWithIncreasingLengths.ts"
+  },
+  "ProbabilisticBranchingOptions": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "of",
+      "to",
+      "as",
+      "with",
+      "by",
+      "or",
+      "1",
+      "on"
+    ],
+    "definition": "ProbabilisticBranchingOptions",
+    "file": "src/data/demo-graphs/random/probabilisticBranching.ts"
+  },
+  "probabilisticBranchingGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ProbabilisticBranchingOptions"
+    ],
+    "arguments": {
+      "options": "ProbabilisticBranchingOptions"
+    },
+    "returnType": "void",
+    "file": "src/data/demo-graphs/random/probabilisticBranching.ts"
+  },
+  "StarWithDecreasingLengthsOptions": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "Node",
+      "to",
+      "or",
+      "on"
+    ],
+    "definition": "StarWithDecreasingLengthsOptions",
+    "file": "src/data/demo-graphs/random/starWithDecreasingLengths.ts"
+  },
+  "starWithDecreasingLengthsGraph": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "StarWithDecreasingLengthsOptions"
+    ],
+    "arguments": {
+      "options": "StarWithDecreasingLengthsOptions"
+    },
+    "returnType": "void",
+    "file": "src/data/demo-graphs/random/starWithDecreasingLengths.ts"
   },
   "StoryCardOptions": {
     "kind": "interface",
@@ -4082,7 +5123,9 @@
     "kind": "type",
     "properties": {},
     "references": [
+      "Window",
       "let",
+      "or",
       "ISceneGraph",
       "SceneGraph",
       "2",
@@ -4207,6 +5250,28 @@
     },
     "returnType": "void",
     "file": "src/store/dialogStore.ts"
+  },
+  "setShowWorkspaceManager": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "show": "boolean"
+    },
+    "returnType": "void",
+    "file": "src/store/dialogStore.ts"
+  },
+  "ChatImage": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "dataUrl": "string",
+      "fileName": "string",
+      "fileType": "string",
+      "size": "number"
+    },
+    "references": [],
+    "file": "src/store/chatHistoryStore.ts"
   },
   "ChatMessage": {
     "kind": "interface",
@@ -4393,7 +5458,11 @@
       "showLayoutManager": "(mode: \"save\" | \"load\") => void",
       "showFilterWindow": "() => void",
       "showSceneGraphDetailView": "(readOnly: boolean) => void",
-      "showChatGptImporter": "() => void"
+      "showChatGptImporter": "() => void",
+      "showWorkspaceManager": "() => void",
+      "loadWorkspaceConfig": "() => void",
+      "saveWorkspaceConfig": "() => void",
+      "appShellWorkspaceFunctions": "{ saveCurrentLayout: (name: string) => Promise<any>; applyWorkspaceLayout: (id: string) => Promise<boolean>; getAllWorkspaces: () => any[]; getCurrentWorkspace: () => any; }"
     },
     "references": [],
     "file": "src/components/MenuConfig.ts"
@@ -4428,6 +5497,220 @@
       }
     },
     "file": "src/components/MenuConfig.ts"
+  },
+  "SceneGraphCommand": {
+    "kind": "interface",
+    "properties": {
+      "action": "string",
+      "parameters": "Record<string, any>"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "CommandDefinition": {
+    "kind": "interface",
+    "properties": {
+      "name": "string",
+      "description": "string",
+      "examples": "string[]",
+      "keywords": "string[]",
+      "apiFormat": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/sceneGraphController.ts"
+  },
+  "SceneGraphController": {
+    "kind": "class",
+    "properties": {},
+    "references": [],
+    "methods": {},
+    "file": "src/core/force-graph/SceneGraphController.ts"
+  },
+  "LLMStudioOptions": {
+    "kind": "interface",
+    "properties": {
+      "temperature": "number",
+      "top_p": "number",
+      "max_tokens": "number",
+      "model": "string"
+    },
+    "references": [],
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "getSystemPromptWithCommands": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string",
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "getCommandsContextForLLM": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string",
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "callLLMStudioAPI": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "LLMStudioOptions"
+    ],
+    "arguments": {
+      "messages": "ChatMessage[]",
+      "options": "LLMStudioOptions"
+    },
+    "returnType": "Promise<string>",
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "normalizeMessages": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "messages": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]"
+    },
+    "returnType": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]",
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "getEnhancedSystemPrompt": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string",
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "checkLLMStudioAvailability": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<boolean>",
+    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
+  },
+  "ViewDefinition": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "title": "string",
+      "icon": "string",
+      "category": "string",
+      "description": "string"
+    },
+    "references": [],
+    "file": "src/components/views/viewDefinitions.ts"
+  },
+  "OpenAITool": {
+    "kind": "interface",
+    "properties": {
+      "type": "\"function\"",
+      "function": "{ name: string; description: string; parameters: { type: string; properties: Record<string, any>; required: string[]; }; }"
+    },
+    "references": [],
+    "file": "src/components/ai/aiTools.ts"
+  },
+  "createCustomTool": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "OpenAITool"
+    ],
+    "arguments": {
+      "name": "string",
+      "description": "string",
+      "properties": "Record<string, any>",
+      "required": "string[]"
+    },
+    "returnType": "OpenAITool",
+    "file": "src/components/ai/aiTools.ts"
+  },
+  "combineTools": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "tools": "OpenAITool[]"
+    },
+    "returnType": "OpenAITool[]",
+    "file": "src/components/ai/aiTools.ts"
+  },
+  "ToolCall": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "type": "\"function\"",
+      "function": "{ name: string; arguments: string; }"
+    },
+    "references": [],
+    "file": "src/components/ai/aiTools.ts"
+  },
+  "parseToolCallArguments": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "ToolCall"
+    ],
+    "arguments": {
+      "toolCall": "ToolCall"
+    },
+    "returnType": "any",
+    "file": "src/components/ai/aiTools.ts"
+  },
+  "ApiProvider": {
+    "kind": "type",
+    "properties": {},
+    "references": [],
+    "definition": "ApiProvider",
+    "file": "src/components/ai/aiQueryLogic.ts"
+  },
+  "AIResponse": {
+    "kind": "interface",
+    "properties": {
+      "content": "string",
+      "toolCalls": "ToolCall[]"
+    },
+    "references": [],
+    "file": "src/components/ai/aiQueryLogic.ts"
+  },
+  "callOpenAIAPI": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "chatMessages": "ChatMessage[]",
+      "openaiApiKey": "string",
+      "temperature": "number",
+      "tools": "OpenAITool[]"
+    },
+    "returnType": "Promise<AIResponse>",
+    "file": "src/components/ai/aiQueryLogic.ts"
+  },
+  "callLiveChatAPI": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "chatMessages": "ChatMessage[]",
+      "liveChatUrl": "string",
+      "isCustomEndpoint": "boolean",
+      "isSignedIn": "boolean",
+      "user": "any",
+      "temperature": "number"
+    },
+    "returnType": "Promise<string>",
+    "file": "src/components/ai/aiQueryLogic.ts"
+  },
+  "sendAIMessage": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "Promise<AIResponse>",
+    "file": "src/components/ai/aiQueryLogic.ts"
   },
   "ParsedConversation": {
     "kind": "interface",
@@ -4663,100 +5946,6 @@
     "returnType": "Promise<{ imported: number; matched: number; topics?: { topics: number; connections: number; }; keywords?: { keywords: number; connections: number; }; }>",
     "file": "src/components/applets/ChatGptImporter/services/conversationsImporter.ts"
   },
-  "SceneGraphCommand": {
-    "kind": "interface",
-    "properties": {
-      "action": "string",
-      "parameters": "Record<string, any>"
-    },
-    "references": [],
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "CommandDefinition": {
-    "kind": "interface",
-    "properties": {
-      "name": "string",
-      "description": "string",
-      "examples": "string[]",
-      "keywords": "string[]",
-      "apiFormat": "string"
-    },
-    "references": [],
-    "file": "src/components/applets/ChatGptImporter/services/sceneGraphController.ts"
-  },
-  "SceneGraphController": {
-    "kind": "class",
-    "properties": {},
-    "references": [],
-    "methods": {},
-    "file": "src/core/force-graph/SceneGraphController.ts"
-  },
-  "LLMStudioOptions": {
-    "kind": "interface",
-    "properties": {
-      "temperature": "number",
-      "top_p": "number",
-      "max_tokens": "number",
-      "model": "string"
-    },
-    "references": [],
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "getSystemPromptWithCommands": {
-    "kind": "function",
-    "properties": {},
-    "references": [],
-    "arguments": {},
-    "returnType": "string",
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "getCommandsContextForLLM": {
-    "kind": "function",
-    "properties": {},
-    "references": [],
-    "arguments": {},
-    "returnType": "string",
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "callLLMStudioAPI": {
-    "kind": "function",
-    "properties": {},
-    "references": [
-      "LLMStudioOptions"
-    ],
-    "arguments": {
-      "messages": "ChatMessage[]",
-      "options": "LLMStudioOptions"
-    },
-    "returnType": "Promise<string>",
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "normalizeMessages": {
-    "kind": "function",
-    "properties": {},
-    "references": [],
-    "arguments": {
-      "messages": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]"
-    },
-    "returnType": "{ role: \"user\" | \"assistant\" | \"system\"; content: string; }[]",
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "getEnhancedSystemPrompt": {
-    "kind": "function",
-    "properties": {},
-    "references": [],
-    "arguments": {},
-    "returnType": "string",
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
-  "checkLLMStudioAvailability": {
-    "kind": "function",
-    "properties": {},
-    "references": [],
-    "arguments": {},
-    "returnType": "Promise<boolean>",
-    "file": "src/components/applets/ChatGptImporter/services/llmStudioService.ts"
-  },
   "main": {
     "kind": "function",
     "properties": {},
@@ -4894,10 +6083,160 @@
     "returnType": "boolean",
     "file": "src/components/applets/Lexical/nodes/MentionNode.ts"
   },
+  "debugAnnotationHighlighting": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void",
+    "file": "src/components/common/annotationDebug.ts"
+  },
+  "testSpecificHighlight": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "searchText": "string",
+      "startPos": "number",
+      "endPos": "number"
+    },
+    "returnType": "void",
+    "file": "src/components/common/annotationDebug.ts"
+  },
+  "cleanupTestHighlights": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void",
+    "file": "src/components/common/annotationDebug.ts"
+  },
+  "AnnotationHighlight": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "data": "{ selected_text: string; start_position?: number; end_position?: number; comment?: string; secondary_comment?: string; tags?: string[]; }"
+    },
+    "references": [],
+    "file": "src/components/common/enhancedAnnotationHighlighting.ts"
+  },
+  "ProcessedHtmlResult": {
+    "kind": "interface",
+    "properties": {
+      "html": "string",
+      "highlightsAdded": "number",
+      "annotationScripts": "string[]"
+    },
+    "references": [],
+    "file": "src/components/common/enhancedAnnotationHighlighting.ts"
+  },
+  "getHighlightColorForAnnotation": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "tags": "string[]",
+      "getTagColor": "(tag: string) => string"
+    },
+    "returnType": "string",
+    "file": "src/components/common/annotationHighlightingScript.ts"
+  },
+  "generateSelectionScript": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string",
+    "file": "src/components/common/enhancedAnnotationHighlighting.ts"
+  },
+  "generateAnnotationScript": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "annotationId": "string",
+      "searchText": "string",
+      "startPosition": "number",
+      "endPosition": "number"
+    },
+    "returnType": "string",
+    "file": "src/components/common/enhancedAnnotationHighlighting.ts"
+  },
+  "UnigraphIframeProps": {
+    "kind": "interface",
+    "properties": {
+      "src": "string",
+      "title": "string",
+      "width": "string | number",
+      "height": "string | number",
+      "resizable": "boolean",
+      "showControls": "boolean",
+      "className": "string",
+      "style": "React.CSSProperties",
+      "onLoad": "() => void",
+      "onError": "(error: Event) => void",
+      "showLoading": "boolean",
+      "loadingMessage": "string",
+      "allowFullscreen": "boolean",
+      "iframeProps": "React.IframeHTMLAttributes<HTMLIFrameElement>"
+    },
+    "references": [],
+    "file": "src/types/UnigraphIframe.ts"
+  },
+  "InteractiveDiagramConfig": {
+    "kind": "interface",
+    "properties": {
+      "src": "string",
+      "title": "string",
+      "dimensions": "{ width: number; height: number; }",
+      "interactive": "boolean",
+      "containerStyle": "React.CSSProperties"
+    },
+    "references": [],
+    "file": "src/types/UnigraphIframe.ts"
+  },
+  "DocumentationStructureConfig": {
+    "kind": "interface",
+    "properties": {
+      "src": "string",
+      "title": "string",
+      "showNavigation": "boolean",
+      "allowZoom": "boolean",
+      "showSearch": "boolean",
+      "style": "React.CSSProperties"
+    },
+    "references": [],
+    "file": "src/types/UnigraphIframe.ts"
+  },
+  "UnigraphIframeEventHandlers": {
+    "kind": "interface",
+    "properties": {
+      "onLoad": "() => void",
+      "onError": "(error: Event) => void",
+      "onFullscreenEnter": "() => void",
+      "onFullscreenExit": "() => void",
+      "onRefresh": "() => void",
+      "onExternalLink": "() => void"
+    },
+    "references": [],
+    "file": "src/types/UnigraphIframe.ts"
+  },
+  "UnigraphIframeTheme": {
+    "kind": "interface",
+    "properties": {
+      "primaryColor": "string",
+      "backgroundColor": "string",
+      "borderColor": "string",
+      "textColor": "string",
+      "darkMode": "boolean"
+    },
+    "references": [],
+    "file": "src/types/UnigraphIframe.ts"
+  },
   "ResourceSpecifier": {
     "kind": "interface",
     "properties": {
-      "type": "\"wikipedia\"",
+      "type": "\"wikipedia\" | \"markdown\"",
       "resource_id": "string"
     },
     "references": [],
@@ -4996,7 +6335,7 @@
     "properties": {
       "validate": "(value: string | number | boolean) => string",
       "label": "string",
-      "type": "\"number\" | \"checkbox\" | \"select\"",
+      "type": "\"number\" | \"color\" | \"checkbox\" | \"select\"",
       "options": "{ value: string; label: string; }[]",
       "min": "number",
       "max": "number",
@@ -5058,6 +6397,192 @@
     },
     "returnType": "string",
     "file": "src/components/utils/markdownUtils.ts"
+  },
+  "CodeGenerationPayload": {
+    "kind": "interface",
+    "properties": {
+      "code": "string",
+      "language": "string",
+      "description": "string",
+      "replace": "boolean"
+    },
+    "references": [],
+    "file": "src/components/views/MonacoEditorCodeTool.ts"
+  },
+  "MonacoEditorCodeToolState": {
+    "kind": "interface",
+    "properties": {
+      "setCode": "(code: string) => void",
+      "setLanguage": "(language: string) => void",
+      "getCurrentLanguage": "() => string",
+      "getCurrentCode": "() => string"
+    },
+    "references": [],
+    "file": "src/components/views/MonacoEditorCodeTool.ts"
+  },
+  "MonacoEditorCodeTool": {
+    "kind": "class",
+    "properties": {
+      "state": "MonacoEditorCodeToolState"
+    },
+    "references": [
+      "CommandTool",
+      "MonacoEditorCodeToolState",
+      "CodeGenerationPayload"
+    ],
+    "methods": {
+      "onCommand": {
+        "arguments": {
+          "payload": "CodeGenerationPayload"
+        },
+        "returnType": "void"
+      },
+      "updateState": {
+        "arguments": {
+          "newState": "MonacoEditorCodeToolState"
+        },
+        "returnType": "void"
+      }
+    },
+    "implements": [
+      "CommandTool"
+    ],
+    "file": "src/components/views/MonacoEditorCodeTool.ts"
+  },
+  "createMonacoEditorCodeTool": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "MonacoEditorCodeToolState",
+      "MonacoEditorCodeTool"
+    ],
+    "arguments": {
+      "state": "MonacoEditorCodeToolState"
+    },
+    "returnType": "MonacoEditorCodeTool",
+    "file": "src/components/views/MonacoEditorCodeTool.ts"
+  },
+  "WorkspaceLayoutPayload": {
+    "kind": "interface",
+    "properties": {
+      "viewId": "string",
+      "panelId": "string",
+      "action": "\"add\" | \"remove\" | \"focus\""
+    },
+    "references": [],
+    "file": "src/components/views/WorkspaceLayoutTool.ts"
+  },
+  "WorkspaceLayoutToolState": {
+    "kind": "interface",
+    "properties": {
+      "addViewToPanel": "(viewId: string, panelId: string) => void",
+      "removeViewFromPanel": "(viewId: string, panelId: string) => void",
+      "focusView": "(viewId: string) => void",
+      "getAvailableViews": "() => string[]",
+      "getAvailablePanels": "() => string[]"
+    },
+    "references": [],
+    "file": "src/components/views/WorkspaceLayoutTool.ts"
+  },
+  "WorkspaceLayoutTool": {
+    "kind": "class",
+    "properties": {
+      "state": "WorkspaceLayoutToolState"
+    },
+    "references": [
+      "CommandTool",
+      "WorkspaceLayoutToolState",
+      "WorkspaceLayoutPayload"
+    ],
+    "methods": {
+      "onCommand": {
+        "arguments": {
+          "payload": "WorkspaceLayoutPayload"
+        },
+        "returnType": "void"
+      },
+      "updateState": {
+        "arguments": {
+          "newState": "WorkspaceLayoutToolState"
+        },
+        "returnType": "void"
+      }
+    },
+    "implements": [
+      "CommandTool"
+    ],
+    "file": "src/components/views/WorkspaceLayoutTool.ts"
+  },
+  "createWorkspaceLayoutTool": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "WorkspaceLayoutToolState",
+      "WorkspaceLayoutTool"
+    ],
+    "arguments": {
+      "state": "WorkspaceLayoutToolState"
+    },
+    "returnType": "WorkspaceLayoutTool",
+    "file": "src/components/views/WorkspaceLayoutTool.ts"
+  },
+  "WorkspaceTemplate": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "category": "string",
+      "icon": "string",
+      "config": "{ description: string; }",
+      "layout": "{ horizontal: number[]; vertical: number[]; }",
+      "tabContainers": "{ id: string; tabs: { id: string; title: string; content: string; closable: boolean; }[]; activeTabId: string; }[]",
+      "theme": "ThemeId"
+    },
+    "references": [],
+    "file": "src/config/workspaceTemplates.ts"
+  },
+  "templateToWorkspaceState": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "WorkspaceTemplate"
+    ],
+    "arguments": {
+      "template": "WorkspaceTemplate"
+    },
+    "returnType": "WorkspaceState",
+    "file": "src/config/workspaceTemplates.ts"
+  },
+  "getTemplatesByCategory": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "category": "string"
+    },
+    "returnType": "WorkspaceTemplate[]",
+    "file": "src/config/workspaceTemplates.ts"
+  },
+  "getTemplateCategories": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "string[]",
+    "file": "src/config/workspaceTemplates.ts"
+  },
+  "findTemplateById": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "WorkspaceTemplate"
+    ],
+    "arguments": {
+      "id": "string"
+    },
+    "returnType": "WorkspaceTemplate",
+    "file": "src/config/workspaceTemplates.ts"
   },
   "HotkeyAction": {
     "kind": "interface",
@@ -5663,6 +7188,231 @@
     "returnType": "number",
     "file": "src/hooks/commandPaletteUtils.ts"
   },
+  "User": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "email": "string",
+      "user_metadata": "{ avatar_url?: string; picture?: string; name?: string; }"
+    },
+    "references": [],
+    "file": "src/store/userStore.ts"
+  },
+  "UserStore": {
+    "kind": "interface",
+    "properties": {
+      "isSignedIn": "boolean",
+      "user": "User",
+      "isLoading": "boolean",
+      "setSignedIn": "(signedIn: boolean) => void",
+      "setUser": "(user: User) => void",
+      "setLoading": "(loading: boolean) => void",
+      "initializeAuth": "() => Promise<void>",
+      "signOut": "() => Promise<void>",
+      "checkAuthStatus": "() => Promise<boolean>",
+      "getUserDetails": "() => User",
+      "getAvatarUrl": "() => string"
+    },
+    "references": [
+      "User"
+    ],
+    "file": "src/store/userStore.ts"
+  },
+  "useAuth": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {},
+    "returnType": "void",
+    "file": "src/hooks/useAuth.ts"
+  },
+  "UseDocumentsOptions": {
+    "kind": "interface",
+    "properties": {
+      "autoSync": "boolean",
+      "projectId": "string"
+    },
+    "references": [],
+    "file": "src/hooks/useDocuments.ts"
+  },
+  "useDocuments": {
+    "kind": "function",
+    "properties": {},
+    "references": [
+      "UseDocumentsOptions"
+    ],
+    "arguments": {
+      "options": "UseDocumentsOptions"
+    },
+    "returnType": "void",
+    "file": "src/hooks/useDocuments.ts"
+  },
+  "LogEntry": {
+    "kind": "interface",
+    "properties": {
+      "level": "LogLevel",
+      "message": "string",
+      "timestamp": "Date",
+      "context": "string",
+      "data": "any",
+      "error": "Error"
+    },
+    "references": [],
+    "file": "src/utils/logger.ts"
+  },
+  "LoggerConfig": {
+    "kind": "interface",
+    "properties": {
+      "level": "LogLevel",
+      "enableTimestamp": "boolean",
+      "enableContext": "boolean",
+      "enableColors": "boolean",
+      "maxEntries": "number",
+      "persistLogs": "boolean"
+    },
+    "references": [],
+    "file": "src/utils/logger.ts"
+  },
+  "Logger": {
+    "kind": "class",
+    "properties": {
+      "config": "LoggerConfig",
+      "logs": "LogEntry[]",
+      "subscribers": "((entry: LogEntry) => void)[]"
+    },
+    "references": [
+      "LoggerConfig",
+      "LogEntry"
+    ],
+    "methods": {
+      "shouldLog": {
+        "arguments": {
+          "level": "LogLevel"
+        },
+        "returnType": "boolean"
+      },
+      "formatMessage": {
+        "arguments": {
+          "entry": "LogEntry"
+        },
+        "returnType": "string"
+      },
+      "getColoredLevel": {
+        "arguments": {
+          "level": "string"
+        },
+        "returnType": "string"
+      },
+      "createEntry": {
+        "arguments": {
+          "level": "LogLevel",
+          "message": "string",
+          "context": "string",
+          "data": "any",
+          "error": "Error"
+        },
+        "returnType": "LogEntry"
+      },
+      "log": {
+        "arguments": {
+          "level": "LogLevel",
+          "message": "string",
+          "context": "string",
+          "data": "any",
+          "error": "Error"
+        },
+        "returnType": "void"
+      },
+      "error": {
+        "arguments": {
+          "message": "string",
+          "context": "string",
+          "data": "any",
+          "error": "Error"
+        },
+        "returnType": "void"
+      },
+      "warn": {
+        "arguments": {
+          "message": "string",
+          "context": "string",
+          "data": "any"
+        },
+        "returnType": "void"
+      },
+      "info": {
+        "arguments": {
+          "message": "string",
+          "context": "string",
+          "data": "any"
+        },
+        "returnType": "void"
+      },
+      "debug": {
+        "arguments": {
+          "message": "string",
+          "context": "string",
+          "data": "any"
+        },
+        "returnType": "void"
+      },
+      "trace": {
+        "arguments": {
+          "message": "string",
+          "context": "string",
+          "data": "any"
+        },
+        "returnType": "void"
+      },
+      "setLevel": {
+        "arguments": {
+          "level": "LogLevel"
+        },
+        "returnType": "void"
+      },
+      "setConfig": {
+        "arguments": {
+          "config": "Partial<LoggerConfig>"
+        },
+        "returnType": "void"
+      },
+      "getLogs": {
+        "arguments": {
+          "level": "LogLevel"
+        },
+        "returnType": "LogEntry[]"
+      },
+      "clearLogs": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "subscribe": {
+        "arguments": {
+          "callback": "(entry: LogEntry) => void"
+        },
+        "returnType": "void"
+      },
+      "exportLogs": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "time": {
+        "arguments": {
+          "label": "string",
+          "context": "string"
+        },
+        "returnType": "void"
+      },
+      "timeEnd": {
+        "arguments": {
+          "label": "string",
+          "context": "string"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "src/utils/logger.ts"
+  },
   "fetchSvgSceneGraph": {
     "kind": "function",
     "properties": {},
@@ -5704,6 +7454,144 @@
     },
     "file": "src/store/TagManager.ts"
   },
+  "DocumentEventType": {
+    "kind": "type",
+    "properties": {},
+    "references": [
+      "let"
+    ],
+    "definition": "DocumentEventType",
+    "file": "src/store/documentEventsStore.ts"
+  },
+  "DocumentEvent": {
+    "kind": "interface",
+    "properties": {
+      "type": "DocumentEventType",
+      "id": "string",
+      "parentId": "string",
+      "projectId": "string",
+      "title": "string",
+      "extension": "string",
+      "timestamp": "number",
+      "payload": "any"
+    },
+    "references": [
+      "DocumentEventType"
+    ],
+    "file": "src/store/documentEventsStore.ts"
+  },
+  "DocumentEventsStore": {
+    "kind": "interface",
+    "properties": {
+      "lastEvent": "DocumentEvent",
+      "version": "number",
+      "emit": "(event: Omit<DocumentEvent, \"timestamp\">) => void",
+      "getLastEvent": "() => DocumentEvent"
+    },
+    "references": [
+      "DocumentEvent"
+    ],
+    "file": "src/store/documentEventsStore.ts"
+  },
+  "HtmlPageViewerState": {
+    "kind": "interface",
+    "properties": {
+      "contentCache": "Record<string, { html: string; url: string; title: string; resourceId: string; timestamp: number; }>",
+      "loadingStates": "Record<string, boolean>",
+      "errorStates": "Record<string, string>",
+      "setContent": "(tabId: string, content: { html: string; url: string; title: string; resourceId: string; }) => void",
+      "getContent": "(tabId: string) => { html: string; url: string; title: string; resourceId: string; timestamp: number; }",
+      "setLoading": "(tabId: string, loading: boolean) => void",
+      "setError": "(tabId: string, error: string) => void",
+      "hasValidContent": "(tabId: string) => boolean",
+      "clearContent": "(tabId?: string) => void",
+      "getCachedTabIds": "() => string[]"
+    },
+    "references": [],
+    "file": "src/store/htmlPageViewerStore.ts"
+  },
+  "HtmlPageViewerTabQueueState": {
+    "kind": "interface",
+    "properties": {
+      "tabQueue": "string[]",
+      "addTabId": "(tabId: string) => void",
+      "getNextTabId": "() => string",
+      "clearQueue": "() => void"
+    },
+    "references": [],
+    "file": "src/store/htmlPageViewerTabQueue.ts"
+  },
+  "MapLocation": {
+    "kind": "interface",
+    "properties": {
+      "lat": "number",
+      "lng": "number",
+      "zoom": "number",
+      "name": "string"
+    },
+    "references": [],
+    "file": "src/store/mapControlStore.ts"
+  },
+  "MapMarker": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "position": "{ lat: number; lng: number; }",
+      "description": "string",
+      "type": "\"landmark\" | \"business\" | \"point-of-interest\""
+    },
+    "references": [],
+    "file": "src/store/mapControlStore.ts"
+  },
+  "MapPath": {
+    "kind": "interface",
+    "properties": {
+      "id": "string",
+      "name": "string",
+      "locations": "MapLocation[]",
+      "color": "string",
+      "description": "string"
+    },
+    "references": [],
+    "file": "src/store/mapControlStore.ts"
+  },
+  "MapControlState": {
+    "kind": "interface",
+    "properties": {
+      "center": "MapLocation",
+      "zoom": "number",
+      "mapType": "\"dark\" | \"roadmap\" | \"satellite\" | \"terrain\"",
+      "markers": "MapMarker[]",
+      "paths": "MapPath[]",
+      "setCenter": "(location: MapLocation) => void",
+      "setZoom": "(zoom: number) => void",
+      "setMapType": "(mapType: \"dark\" | \"roadmap\" | \"satellite\" | \"terrain\") => void",
+      "addMarker": "(marker: MapMarker) => void",
+      "removeMarker": "(markerId: string) => void",
+      "clearMarkers": "() => void",
+      "addPath": "(path: MapPath) => void",
+      "removePath": "(pathId: string) => void",
+      "clearPaths": "() => void",
+      "goToLocation": "(location: string) => Promise<void>",
+      "addLocationMarker": "(location: string, description?: string) => Promise<void>",
+      "createPath": "(locations: string[], pathName?: string) => Promise<void>"
+    },
+    "references": [
+      "MapLocation"
+    ],
+    "file": "src/store/mapControlStore.ts"
+  },
+  "geocodeLocation": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "location": "string"
+    },
+    "returnType": "Promise<MapLocation>",
+    "file": "src/store/mapControlStore.ts"
+  },
   "ReactFlowConfigState": {
     "kind": "interface",
     "properties": {
@@ -5714,35 +7602,218 @@
     "references": [],
     "file": "src/store/reactFlowConfigStore.ts"
   },
-  "User": {
+  "TagInfo": {
+    "kind": "interface",
+    "properties": {
+      "color": "string",
+      "description": "string",
+      "usageCount": "number",
+      "isDescriptionUserSet": "boolean"
+    },
+    "references": [],
+    "file": "src/store/tagStore.ts"
+  },
+  "TagStore": {
+    "kind": "interface",
+    "properties": {
+      "tagColors": "Map<string, string>",
+      "tagMetadata": "Map<string, TagInfo>",
+      "setTagColor": "(tag: string, color: string) => void",
+      "setTagMetadata": "(tag: string, metadata: TagInfo) => void",
+      "getTagColor": "(tag: string) => string",
+      "getTagMetadata": "(tag: string) => TagInfo",
+      "getAllTags": "() => string[]",
+      "generateTagColor": "(tag: string) => string",
+      "initializeTagColors": "(tags: string[]) => void",
+      "clearTags": "() => void"
+    },
+    "references": [],
+    "file": "src/store/tagStore.ts"
+  },
+  "HtmlPageViewerInstance": {
+    "kind": "interface",
+    "properties": {
+      "tabId": "string",
+      "resourceId": "string",
+      "url": "string",
+      "title": "string",
+      "html": "string",
+      "lastAccessed": "number"
+    },
+    "references": [],
+    "file": "src/store/viewInstancesStore.ts"
+  },
+  "ViewInstancesState": {
+    "kind": "interface",
+    "properties": {
+      "htmlPageViewers": "Map<string, HtmlPageViewerInstance>",
+      "createHtmlPageViewer": "(tabId: string, resourceId: string, url: string, title: string) => void",
+      "updateHtmlPageViewerContent": "(tabId: string, html: string) => void",
+      "getHtmlPageViewer": "(tabId: string) => HtmlPageViewerInstance",
+      "getAllHtmlPageViewers": "() => HtmlPageViewerInstance[]",
+      "removeHtmlPageViewer": "(tabId: string) => void",
+      "updateLastAccessed": "(tabId: string) => void",
+      "cleanupOldInstances": "() => void"
+    },
+    "references": [],
+    "file": "src/store/viewInstancesStore.ts"
+  },
+  "LayoutState": {
     "kind": "interface",
     "properties": {
       "id": "string",
-      "email": "string",
-      "user_metadata": "{ avatar_url?: string; picture?: string; name?: string; }"
+      "name": "string",
+      "timestamp": "number",
+      "description": "string",
+      "panelSizes": "{ leftWidth: number; rightWidth: number; bottomHeight: number; }",
+      "tabContainers": "{ id: string; tabs: { id: string; title: string; viewId: string; closable?: boolean; }[]; activeTabId?: string; }[]",
+      "theme": "string",
+      "workspaceState": "{ [key: string]: any; activeView?: string; activeLayout?: string; isDarkMode?: boolean; }"
     },
     "references": [],
-    "file": "src/store/userStore.ts"
+    "file": "src/types/LayoutState.ts"
   },
-  "UserStore": {
+  "LayoutManagerContext": {
     "kind": "interface",
     "properties": {
-      "isSignedIn": "boolean",
-      "user": "User",
-      "isLoading": "boolean",
-      "setSignedIn": "(signedIn: boolean) => void",
-      "setUser": "(user: User) => void",
-      "setLoading": "(loading: boolean) => void",
-      "initializeAuth": "() => Promise<void>",
-      "signOut": "() => Promise<void>",
-      "checkAuthStatus": "() => Promise<boolean>",
-      "getUserDetails": "() => User",
-      "getAvatarUrl": "() => string"
+      "saveLayout": "(state: LayoutState) => void",
+      "loadLayout": "(id: string) => LayoutState",
+      "deleteLayout": "(id: string) => void",
+      "getAllLayouts": "() => LayoutState[]",
+      "getCurrentLayout": "() => LayoutState"
+    },
+    "references": [],
+    "file": "src/types/LayoutState.ts"
+  },
+  "ForceGraphInitializerOptions": {
+    "kind": "interface",
+    "properties": {
+      "container": "HTMLDivElement",
+      "sceneGraph": "SceneGraph",
+      "layout": "\"Physics\" | \"Layout\"",
+      "onNodesRightClick": "(event: MouseEvent | React.MouseEvent<Element, MouseEvent>, nodeIds: EntityIds<...>) => void",
+      "onBackgroundRightClick": "(event: MouseEvent | React.MouseEvent<Element, MouseEvent>) => void",
+      "setAsMainInstance": "boolean",
+      "instanceId": "string"
     },
     "references": [
-      "User"
+      "SceneGraph"
     ],
-    "file": "src/store/userStore.ts"
+    "file": "src/utils/forceGraphInitializer.ts"
+  },
+  "LayoutManager": {
+    "kind": "class",
+    "properties": {
+      "instance": "LayoutManager",
+      "layouts": "LayoutState[]"
+    },
+    "references": [
+      "LayoutManager",
+      "LayoutState"
+    ],
+    "methods": {
+      "getInstance": {
+        "arguments": {},
+        "returnType": "LayoutManager"
+      },
+      "loadLayoutsFromStorage": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "saveLayoutsToStorage": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "saveLayout": {
+        "arguments": {
+          "layout": "LayoutState"
+        },
+        "returnType": "void"
+      },
+      "loadLayout": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "LayoutState"
+      },
+      "deleteLayout": {
+        "arguments": {
+          "id": "string"
+        },
+        "returnType": "boolean"
+      },
+      "getAllLayouts": {
+        "arguments": {},
+        "returnType": "LayoutState[]"
+      },
+      "getCurrentLayout": {
+        "arguments": {},
+        "returnType": "LayoutState"
+      },
+      "getCurrentWorkspaceState": {
+        "arguments": {},
+        "returnType": "Omit<LayoutState, \"id\" | \"description\" | \"name\" | \"timestamp\">"
+      },
+      "getCurrentActiveView": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getCurrentActiveLayout": {
+        "arguments": {},
+        "returnType": "string"
+      },
+      "getCurrentDarkMode": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "restoreWorkspaceState": {
+        "arguments": {
+          "layout": "LayoutState"
+        },
+        "returnType": "void"
+      }
+    },
+    "file": "src/utils/layoutManager.ts"
+  },
+  "fetchPdfAsBlob": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "Promise<string>",
+    "file": "src/utils/pdfProxy.ts"
+  },
+  "isExternalUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "boolean",
+    "file": "src/utils/pdfProxy.ts"
+  },
+  "processPdfUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "url": "string"
+    },
+    "returnType": "Promise<string>",
+    "file": "src/utils/pdfProxy.ts"
+  },
+  "cleanupBlobUrl": {
+    "kind": "function",
+    "properties": {},
+    "references": [],
+    "arguments": {
+      "blobUrl": "string"
+    },
+    "returnType": "void",
+    "file": "src/utils/pdfProxy.ts"
   },
   "replaceUnigraphUrlsWithLocalhost": {
     "kind": "function",
@@ -5772,6 +7843,186 @@
     },
     "returnType": "string",
     "file": "src/utils/urlUtils.ts"
+  },
+  "VideoAccessInfo": {
+    "kind": "interface",
+    "properties": {
+      "videoId": "string",
+      "lastAccessTime": "string",
+      "timestamp": "number",
+      "videoTitle": "string",
+      "watchDuration": "number",
+      "timestampAccessed": "string"
+    },
+    "references": [],
+    "file": "src/utils/userActivityCache.ts"
+  },
+  "DocumentAccessInfo": {
+    "kind": "interface",
+    "properties": {
+      "documentId": "string",
+      "lastAccessTime": "string",
+      "documentTitle": "string",
+      "accessType": "string"
+    },
+    "references": [],
+    "file": "src/utils/userActivityCache.ts"
+  },
+  "UserActivityCache": {
+    "kind": "class",
+    "properties": {
+      "videoAccessMap": "Map<string, VideoAccessInfo>",
+      "documentAccessMap": "Map<string, DocumentAccessInfo>",
+      "lastUpdated": "number"
+    },
+    "references": [
+      "VideoAccessInfo",
+      "DocumentAccessInfo"
+    ],
+    "methods": {
+      "updateCache": {
+        "arguments": {
+          "activities": "UserActivity[]"
+        },
+        "returnType": "void"
+      },
+      "getVideoAccessInfo": {
+        "arguments": {
+          "videoId": "string"
+        },
+        "returnType": "VideoAccessInfo"
+      },
+      "getMultipleVideoAccessInfo": {
+        "arguments": {
+          "videoIds": "string[]"
+        },
+        "returnType": "Record<string, VideoAccessInfo>"
+      },
+      "getAllVideoAccessInfo": {
+        "arguments": {},
+        "returnType": "VideoAccessInfo[]"
+      },
+      "getLastAccessTime": {
+        "arguments": {
+          "videoId": "string"
+        },
+        "returnType": "string"
+      },
+      "getDocumentAccessInfo": {
+        "arguments": {
+          "documentId": "string"
+        },
+        "returnType": "DocumentAccessInfo"
+      },
+      "getMultipleDocumentAccessInfo": {
+        "arguments": {
+          "documentIds": "string[]"
+        },
+        "returnType": "Record<string, DocumentAccessInfo>"
+      },
+      "getDocumentLastAccessTime": {
+        "arguments": {
+          "documentId": "string"
+        },
+        "returnType": "string"
+      },
+      "getDocumentLastAccessTimes": {
+        "arguments": {
+          "documentIds": "string[]"
+        },
+        "returnType": "Record<string, string>"
+      },
+      "getLastAccessTimes": {
+        "arguments": {
+          "videoIds": "string[]"
+        },
+        "returnType": "Record<string, string>"
+      },
+      "isExpired": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "isEmpty": {
+        "arguments": {},
+        "returnType": "boolean"
+      },
+      "size": {
+        "arguments": {},
+        "returnType": "number"
+      },
+      "clear": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "getStats": {
+        "arguments": {},
+        "returnType": "{ size: number; videoCount: number; documentCount: number; lastUpdated: number; isExpired: boolean; cacheAge: number; }"
+      },
+      "formatTimestamp": {
+        "arguments": {
+          "timestamp": "string"
+        },
+        "returnType": "string"
+      },
+      "getRelativeTime": {
+        "arguments": {
+          "timestamp": "string"
+        },
+        "returnType": "string"
+      }
+    },
+    "file": "src/utils/userActivityCache.ts"
+  },
+  "WorkspaceStateManager": {
+    "kind": "class",
+    "properties": {
+      "instance": "WorkspaceStateManager",
+      "currentSceneGraph": "SceneGraph"
+    },
+    "references": [
+      "WorkspaceStateManager",
+      "SceneGraph",
+      "WorkspaceState"
+    ],
+    "methods": {
+      "getInstance": {
+        "arguments": {},
+        "returnType": "WorkspaceStateManager"
+      },
+      "setCurrentSceneGraph": {
+        "arguments": {
+          "sceneGraph": "SceneGraph"
+        },
+        "returnType": "void"
+      },
+      "getCurrentSceneGraph": {
+        "arguments": {},
+        "returnType": "SceneGraph"
+      },
+      "saveCurrentWorkspaceState": {
+        "arguments": {
+          "workspaceState": "WorkspaceState"
+        },
+        "returnType": "void"
+      },
+      "loadWorkspaceState": {
+        "arguments": {},
+        "returnType": "WorkspaceState"
+      },
+      "clearWorkspaceState": {
+        "arguments": {},
+        "returnType": "void"
+      },
+      "captureAndSaveCurrentState": {
+        "arguments": {},
+        "returnType": "Promise<WorkspaceState>"
+      },
+      "restoreWorkspaceState": {
+        "arguments": {},
+        "returnType": "boolean"
+      }
+    },
+    "file": "src/utils/workspaceStateManager.ts"
   },
   "_files": {
     "src/AppConfig.ts": [
@@ -5859,9 +8110,44 @@
     ],
     "src/api/annotationsApi.ts": [
       "TextSelectionAnnotationData",
+      "generateUUID",
       "saveAnnotation",
       "listAnnotations",
-      "getAnnotation"
+      "getAnnotation",
+      "deleteAnnotation",
+      "checkAnnotationContent",
+      "getAnnotationContent"
+    ],
+    "src/api/documentsApi.ts": [
+      "DocumentMetadata",
+      "Document",
+      "DocumentReference",
+      "CreateDocumentParams",
+      "UpdateDocumentParams",
+      "SearchResult",
+      "createDocument",
+      "getDocument",
+      "updateDocument",
+      "deleteDocument",
+      "deleteDocumentRecursive",
+      "listDocuments",
+      "getDocumentsByProject",
+      "getChildDocuments",
+      "getDocumentTree",
+      "duplicateDocument",
+      "moveDocumentToProject",
+      "getDocumentStats",
+      "getDocumentsByExtension",
+      "searchDocuments",
+      "savePdfDocument",
+      "getPdfDocumentData"
+    ],
+    "src/api/filesApi.ts": [
+      "SaveFileParams",
+      "SaveFileResult",
+      "saveMarkdownFile",
+      "checkFileWritable",
+      "getFileMetadata"
     ],
     "src/api/projectActions.ts": [
       "ProjectActionResult",
@@ -5882,13 +8168,58 @@
       "deleteProject",
       "updateProject"
     ],
+    "src/api/userActivitiesApi.ts": [
+      "ResourceReference",
+      "UserActivityContext",
+      "UserActivity",
+      "CreateUserActivityParams",
+      "UpdateUserActivityParams",
+      "ListUserActivitiesParams",
+      "UserActivityStats",
+      "createUserActivity",
+      "getUserActivity",
+      "updateUserActivity",
+      "deleteUserActivity",
+      "listUserActivities",
+      "GetUserActivitiesParams",
+      "GetUserActivitiesResult",
+      "getUserActivities",
+      "getUserActivitiesByActivityId",
+      "getRecentUserActivities",
+      "getUserActivityStats",
+      "logActivity",
+      "logYouTubeActivity",
+      "logDocumentActivity",
+      "logAnnotationActivity",
+      "deleteOldActivities",
+      "getActivityTimeline",
+      "searchUserActivities"
+    ],
     "src/api/webpagesApi.ts": [
       "Webpage",
       "saveWebpage",
       "listWebpages",
-      "getWebpage"
+      "getWebpage",
+      "getWebpageContent",
+      "getWebpagesWithContent",
+      "checkWebpageContent",
+      "checkWebpagesContent",
+      "updateWebpageTitle",
+      "deleteWebpage"
+    ],
+    "src/api/youtubeVideosApi.ts": [
+      "AccessLog",
+      "YouTubeVideo",
+      "listYouTubeVideos",
+      "getYouTubeVideo",
+      "deleteYouTubeVideo",
+      "extractVideoId",
+      "YouTubeVideoMetadata",
+      "fetchYouTubeVideoMetadata",
+      "importYouTubeVideo"
     ],
     "src/assets/imageBoxes/demo_SceneGraph_ImageGallery_ImageBoxes.ts": [],
+    "src/assets/imageBoxes/demo_SceneGraph_Particulation_ImageBoxes.ts": [],
     "src/assets/imageBoxes/demo_SceneGraph_SolvayConference_ImageBoxes.ts": [],
     "src/assets/imageBoxes/demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes.ts": [],
     "src/assets/imageBoxes/demo_SceneGraph_Thinking_ImageBoxes.ts": [],
@@ -5900,6 +8231,22 @@
       "IMenuConfigCallbacks",
       "MenuConfig"
     ],
+    "src/components/ai/aiQueryLogic.ts": [
+      "ApiProvider",
+      "AIResponse",
+      "callOpenAIAPI",
+      "callLiveChatAPI",
+      "sendAIMessage"
+    ],
+    "src/components/ai/aiTools.ts": [
+      "OpenAITool",
+      "createCustomTool",
+      "combineTools",
+      "ToolCall",
+      "parseToolCallArguments"
+    ],
+    "src/components/ai/tools/codeGenerationTool.ts": [],
+    "src/components/ai/tools/toolsRegistry.ts": [],
     "src/components/annotations/exampleDefinitionCards.ts": [],
     "src/components/applets/ChatGptImporter/chatGptImportUtils.ts": [
       "ChatMessage",
@@ -5967,6 +8314,23 @@
       "StoryCardOptions"
     ],
     "src/components/applets/WikipediaViewer/factorGraphDataUrl.ts": [],
+    "src/components/common/annotationDebug.ts": [
+      "debugAnnotationHighlighting",
+      "testSpecificHighlight",
+      "cleanupTestHighlights"
+    ],
+    "src/components/common/annotationHighlightingScript.ts": [
+      "getHighlightColorForAnnotation"
+    ],
+    "src/components/common/crossElementTest.ts": [],
+    "src/components/common/enhancedAnnotationHighlighting.test.ts": [],
+    "src/components/common/enhancedAnnotationHighlighting.ts": [
+      "AnnotationHighlight",
+      "ProcessedHtmlResult",
+      "generateSelectionScript",
+      "generateAnnotationScript"
+    ],
+    "src/components/common/index.ts": [],
     "src/components/common/saveAnnotationToSceneGraph.ts": [
       "ResourceSpecifier"
     ],
@@ -5990,6 +8354,31 @@
     "src/components/utils/markdownUtils.ts": [
       "extractFirstImageSrc",
       "removeFirstImage"
+    ],
+    "src/components/views/MonacoEditorCodeTool.ts": [
+      "CodeGenerationPayload",
+      "MonacoEditorCodeToolState",
+      "MonacoEditorCodeTool",
+      "createMonacoEditorCodeTool"
+    ],
+    "src/components/views/MonacoEditorExamples.ts": [],
+    "src/components/views/WorkspaceLayoutTool.ts": [
+      "WorkspaceLayoutPayload",
+      "WorkspaceLayoutToolState",
+      "WorkspaceLayoutTool",
+      "createWorkspaceLayoutTool"
+    ],
+    "src/components/views/index.ts": [],
+    "src/components/views/viewDefinitions.ts": [
+      "ViewDefinition"
+    ],
+    "src/config/initialWorkspaces.ts": [],
+    "src/config/workspaceTemplates.ts": [
+      "WorkspaceTemplate",
+      "templateToWorkspaceState",
+      "getTemplatesByCategory",
+      "getTemplateCategories",
+      "findTemplateById"
     ],
     "src/configs/hotkeyConfig.ts": [],
     "src/controllers/RenderingManager.ts": [
@@ -6232,6 +8621,10 @@
     "src/core/types/ImageBoxData.ts": [
       "ImageBoxData"
     ],
+    "src/core/types/ResourceId.ts": [
+      "ResourceId",
+      "WebUrlResourceId"
+    ],
     "src/core/types/StoryCard.ts": [
       "StoryCard",
       "StoryCardId",
@@ -6273,8 +8666,23 @@
       "extractReferences",
       "demo_scenegraph_ast"
     ],
+    "src/data/demo-graphs/random/alethiometerDemo.ts": [
+      "alethiometerDemoGraph"
+    ],
+    "src/data/demo-graphs/random/lineWithIncreasingLengths.ts": [
+      "LineWithIncreasingLengthsOptions",
+      "lineWithIncreasingLengthsGraph"
+    ],
+    "src/data/demo-graphs/random/probabilisticBranching.ts": [
+      "ProbabilisticBranchingOptions",
+      "probabilisticBranchingGraph"
+    ],
     "src/data/demo-graphs/random/randomBig.ts": [],
     "src/data/demo-graphs/random/randomBiggest.ts": [],
+    "src/data/demo-graphs/random/starWithDecreasingLengths.ts": [
+      "StarWithDecreasingLengthsOptions",
+      "starWithDecreasingLengthsGraph"
+    ],
     "src/data/demo-graphs/story-cards/demo_scenegraph_unigraph_applications.ts": [],
     "src/data/graphs/Feature.ts": [
       "SubFeature",
@@ -6286,6 +8694,7 @@
     "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph.ts": [],
     "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph_ComplexExpansion.ts": [],
     "src/data/graphs/Gallery_Demos/demo_SceneGraph_ImageGallery.ts": [],
+    "src/data/graphs/Gallery_Demos/demo_SceneGraph_Particulation.ts": [],
     "src/data/graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree.ts": [],
     "src/data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference.ts": [],
     "src/data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery.ts": [],
@@ -6358,12 +8767,20 @@
       "commandMatchesQueryUnordered",
       "getCommandMatchScore"
     ],
+    "src/hooks/useAuth.ts": [
+      "useAuth"
+    ],
     "src/hooks/useCommandPalette.ts": [
       "Command"
+    ],
+    "src/hooks/useDocuments.ts": [
+      "UseDocumentsOptions",
+      "useDocuments"
     ],
     "src/hooks/useHotkeys.ts": [
       "HotkeyAction"
     ],
+    "src/hooks/useLogger.ts": [],
     "src/hooks/useSvgSceneGraph.ts": [
       "fetchSvgSceneGraph",
       "useSvgSceneGraph"
@@ -6389,6 +8806,7 @@
       "AppState"
     ],
     "src/store/chatHistoryStore.ts": [
+      "ChatImage",
       "ChatHistoryState"
     ],
     "src/store/dialogStore.ts": [
@@ -6405,7 +8823,13 @@
       "setShowSceneGraphDetailView",
       "setShowFilterManager",
       "setShowFilterWindow",
-      "setShowCommandPalette"
+      "setShowCommandPalette",
+      "setShowWorkspaceManager"
+    ],
+    "src/store/documentEventsStore.ts": [
+      "DocumentEventType",
+      "DocumentEvent",
+      "DocumentEventsStore"
     ],
     "src/store/documentStore.ts": [
       "DocumentState",
@@ -6416,6 +8840,19 @@
     ],
     "src/store/graphInteractionStore.ts": [
       "GraphInteractionState"
+    ],
+    "src/store/htmlPageViewerStore.ts": [
+      "HtmlPageViewerState"
+    ],
+    "src/store/htmlPageViewerTabQueue.ts": [
+      "HtmlPageViewerTabQueueState"
+    ],
+    "src/store/mapControlStore.ts": [
+      "MapLocation",
+      "MapMarker",
+      "MapPath",
+      "MapControlState",
+      "geocodeLocation"
     ],
     "src/store/mouseControlsStore.ts": [
       "MouseControlMode",
@@ -6435,24 +8872,63 @@
       "computeLayoutAndTriggerAppUpdate",
       "computeLayoutAndTriggerUpdateForCurrentSceneGraph"
     ],
+    "src/store/tagStore.ts": [
+      "TagInfo",
+      "TagStore"
+    ],
     "src/store/userStore.ts": [
       "User",
       "UserStore"
+    ],
+    "src/store/viewInstancesStore.ts": [
+      "HtmlPageViewerInstance",
+      "ViewInstancesState"
     ],
     "src/store/workspaceConfigStore.ts": [
       "ISidebarConfig",
       "SectionWidthConfig",
       "WorkspaceConfigState"
     ],
+    "src/themes/customUnigraphTheme.ts": [],
+    "src/types/LayoutState.ts": [
+      "LayoutState",
+      "LayoutManagerContext"
+    ],
+    "src/types/UnigraphIframe.ts": [
+      "UnigraphIframeProps",
+      "InteractiveDiagramConfig",
+      "DocumentationStructureConfig",
+      "UnigraphIframeEventHandlers",
+      "UnigraphIframeTheme"
+    ],
     "src/utils/__tests__/filterUtils.test.ts": [],
+    "src/utils/aggridThemeUtils.ts": [],
     "src/utils/colorUtils.ts": [
-      "RGB"
+      "RGB",
+      "getRelativeLuminance",
+      "parseColor",
+      "isDarkBackground",
+      "getContrastingTextColors"
+    ],
+    "src/utils/envUtils.ts": [
+      "EnvVars",
+      "getEnvVar",
+      "getAllEnvVars",
+      "isVercel",
+      "isDevelopment",
+      "debugEnvVars"
     ],
     "src/utils/failedLoadTracker.ts": [],
     "src/utils/filterUtils.ts": [],
     "src/utils/forceGraphDebugUtils.ts": [],
+    "src/utils/forceGraphInitializer.ts": [
+      "ForceGraphInitializerOptions"
+    ],
     "src/utils/generateAnnotations.ts": [
       "Annotation"
+    ],
+    "src/utils/getLocalCoords.ts": [
+      "getLocalCoords"
     ],
     "src/utils/graphUtils.ts": [
       "RandomNodeOptions",
@@ -6462,16 +8938,40 @@
       "generateRandomGraph",
       "addRandomCluster"
     ],
+    "src/utils/htmlPageViewerUtils.ts": [],
+    "src/utils/layoutManager.ts": [
+      "LayoutManager"
+    ],
+    "src/utils/logger.ts": [
+      "LogEntry",
+      "LoggerConfig",
+      "Logger"
+    ],
+    "src/utils/pdfProxy.ts": [
+      "fetchPdfAsBlob",
+      "isExternalUrl",
+      "processPdfUrl",
+      "cleanupBlobUrl"
+    ],
     "src/utils/supabaseClient.ts": [],
     "src/utils/svgLoader.ts": [
       "loadSvgFromUrl",
       "ILoadSvgToSceneGraphOptions",
       "findClosestNode"
     ],
+    "src/utils/themeUtils.ts": [],
     "src/utils/urlUtils.ts": [
       "replaceUnigraphUrlsWithLocalhost",
       "getUnigraphBaseUrl",
       "fixWikipediaLinks"
+    ],
+    "src/utils/userActivityCache.ts": [
+      "VideoAccessInfo",
+      "DocumentAccessInfo",
+      "UserActivityCache"
+    ],
+    "src/utils/workspaceStateManager.ts": [
+      "WorkspaceStateManager"
     ]
   },
   "_directories": {
@@ -6524,12 +9024,17 @@
     ],
     "src/api": [
       "src/api/annotationsApi.ts",
+      "src/api/documentsApi.ts",
+      "src/api/filesApi.ts",
       "src/api/projectActions.ts",
       "src/api/supabaseProjects.ts",
-      "src/api/webpagesApi.ts"
+      "src/api/userActivitiesApi.ts",
+      "src/api/webpagesApi.ts",
+      "src/api/youtubeVideosApi.ts"
     ],
     "src/assets/imageBoxes": [
       "src/assets/imageBoxes/demo_SceneGraph_ImageGallery_ImageBoxes.ts",
+      "src/assets/imageBoxes/demo_SceneGraph_Particulation_ImageBoxes.ts",
       "src/assets/imageBoxes/demo_SceneGraph_SolvayConference_ImageBoxes.ts",
       "src/assets/imageBoxes/demo_SceneGraph_StackedImageGalleryTransparent_ImageBoxes.ts",
       "src/assets/imageBoxes/demo_SceneGraph_Thinking_ImageBoxes.ts",
@@ -6541,6 +9046,14 @@
     "src/assets": [],
     "src/components": [
       "src/components/MenuConfig.ts"
+    ],
+    "src/components/ai": [
+      "src/components/ai/aiQueryLogic.ts",
+      "src/components/ai/aiTools.ts"
+    ],
+    "src/components/ai/tools": [
+      "src/components/ai/tools/codeGenerationTool.ts",
+      "src/components/ai/tools/toolsRegistry.ts"
     ],
     "src/components/annotations": [
       "src/components/annotations/exampleDefinitionCards.ts"
@@ -6570,6 +9083,12 @@
       "src/components/applets/WikipediaViewer/factorGraphDataUrl.ts"
     ],
     "src/components/common": [
+      "src/components/common/annotationDebug.ts",
+      "src/components/common/annotationHighlightingScript.ts",
+      "src/components/common/crossElementTest.ts",
+      "src/components/common/enhancedAnnotationHighlighting.test.ts",
+      "src/components/common/enhancedAnnotationHighlighting.ts",
+      "src/components/common/index.ts",
       "src/components/common/saveAnnotationToSceneGraph.ts",
       "src/components/common/sharedContextMenuItems.ts"
     ],
@@ -6587,6 +9106,17 @@
     ],
     "src/components/utils": [
       "src/components/utils/markdownUtils.ts"
+    ],
+    "src/components/views": [
+      "src/components/views/MonacoEditorCodeTool.ts",
+      "src/components/views/MonacoEditorExamples.ts",
+      "src/components/views/WorkspaceLayoutTool.ts",
+      "src/components/views/index.ts",
+      "src/components/views/viewDefinitions.ts"
+    ],
+    "src/config": [
+      "src/config/initialWorkspaces.ts",
+      "src/config/workspaceTemplates.ts"
     ],
     "src/configs": [
       "src/configs/hotkeyConfig.ts"
@@ -6703,6 +9233,7 @@
     "src/core/types": [
       "src/core/types/ImageAnnotation.ts",
       "src/core/types/ImageBoxData.ts",
+      "src/core/types/ResourceId.ts",
       "src/core/types/StoryCard.ts"
     ],
     "src/core/utils": [
@@ -6727,8 +9258,12 @@
       "src/data/demo-graphs/interfaceAstToSceneGraph.ts"
     ],
     "src/data/demo-graphs/random": [
+      "src/data/demo-graphs/random/alethiometerDemo.ts",
+      "src/data/demo-graphs/random/lineWithIncreasingLengths.ts",
+      "src/data/demo-graphs/random/probabilisticBranching.ts",
       "src/data/demo-graphs/random/randomBig.ts",
-      "src/data/demo-graphs/random/randomBiggest.ts"
+      "src/data/demo-graphs/random/randomBiggest.ts",
+      "src/data/demo-graphs/random/starWithDecreasingLengths.ts"
     ],
     "src/data/demo-graphs/story-cards": [
       "src/data/demo-graphs/story-cards/demo_scenegraph_unigraph_applications.ts"
@@ -6767,6 +9302,7 @@
       "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph.ts",
       "src/data/graphs/Gallery_Demos/demo_SceneGraph_FactorGraph_ComplexExpansion.ts",
       "src/data/graphs/Gallery_Demos/demo_SceneGraph_ImageGallery.ts",
+      "src/data/graphs/Gallery_Demos/demo_SceneGraph_Particulation.ts",
       "src/data/graphs/Gallery_Demos/demo_SceneGraph_PhylogeneticTree.ts",
       "src/data/graphs/Gallery_Demos/demo_SceneGraph_SolvayConference.ts",
       "src/data/graphs/Gallery_Demos/demo_SceneGraph_StackedImageGallery.ts",
@@ -6787,8 +9323,11 @@
     ],
     "src/hooks": [
       "src/hooks/commandPaletteUtils.ts",
+      "src/hooks/useAuth.ts",
       "src/hooks/useCommandPalette.ts",
+      "src/hooks/useDocuments.ts",
       "src/hooks/useHotkeys.ts",
+      "src/hooks/useLogger.ts",
       "src/hooks/useSvgSceneGraph.ts"
     ],
     "src/store": [
@@ -6799,32 +9338,56 @@
       "src/store/appConfigStore.ts",
       "src/store/chatHistoryStore.ts",
       "src/store/dialogStore.ts",
+      "src/store/documentEventsStore.ts",
       "src/store/documentStore.ts",
       "src/store/forceGraphConfigStore.ts",
       "src/store/graphInteractionStore.ts",
+      "src/store/htmlPageViewerStore.ts",
+      "src/store/htmlPageViewerTabQueue.ts",
+      "src/store/mapControlStore.ts",
       "src/store/mouseControlsStore.ts",
       "src/store/notificationStore.ts",
       "src/store/reactFlowConfigStore.ts",
       "src/store/sceneGraphHooks.ts",
+      "src/store/tagStore.ts",
       "src/store/userStore.ts",
+      "src/store/viewInstancesStore.ts",
       "src/store/workspaceConfigStore.ts"
     ],
     "src/store/__tests__": [
       "src/store/__tests__/graphInteractionStore.test.ts"
     ],
+    "src/themes": [
+      "src/themes/customUnigraphTheme.ts"
+    ],
+    "src/types": [
+      "src/types/LayoutState.ts",
+      "src/types/UnigraphIframe.ts"
+    ],
     "src/utils/__tests__": [
       "src/utils/__tests__/filterUtils.test.ts"
     ],
     "src/utils": [
+      "src/utils/aggridThemeUtils.ts",
       "src/utils/colorUtils.ts",
+      "src/utils/envUtils.ts",
       "src/utils/failedLoadTracker.ts",
       "src/utils/filterUtils.ts",
       "src/utils/forceGraphDebugUtils.ts",
+      "src/utils/forceGraphInitializer.ts",
       "src/utils/generateAnnotations.ts",
+      "src/utils/getLocalCoords.ts",
       "src/utils/graphUtils.ts",
+      "src/utils/htmlPageViewerUtils.ts",
+      "src/utils/layoutManager.ts",
+      "src/utils/logger.ts",
+      "src/utils/pdfProxy.ts",
       "src/utils/supabaseClient.ts",
       "src/utils/svgLoader.ts",
-      "src/utils/urlUtils.ts"
+      "src/utils/themeUtils.ts",
+      "src/utils/urlUtils.ts",
+      "src/utils/userActivityCache.ts",
+      "src/utils/workspaceStateManager.ts"
     ]
   }
 }

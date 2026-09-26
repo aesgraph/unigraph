@@ -57,59 +57,6 @@
   flex-direction: column;
 }
 
-.documentation-welcome {
-  padding: 40px;
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.documentation-welcome h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0 0 16px 0;
-}
-
-.documentation-welcome p {
-  font-size: 16px;
-  line-height: 1.5;
-  margin: 0 0 32px 0;
-}
-
-.documentation-features {
-  text-align: left;
-  border-radius: 6px;
-  padding: 24px;
-}
-
-.documentation-features h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0 0 16px 0;
-}
-
-.documentation-features ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.documentation-features li {
-  font-size: 14px;
-  line-height: 1.6;
-  margin: 0 0 8px 0;
-  padding: 0;
-}
-
-.documentation-features li:last-child {
-  margin-bottom: 0;
-}
-
-.documentation-features strong {
-  font-weight: 600;
-}
-
-/* Markdown content styling for documentation view */
 .documentation-content .markdown-content {
   color: inherit;
   font-size: 16px;

@@ -58,11 +58,6 @@
               "children": []
             },
             {
-              "path": "assets/images/loadMermaidjs",
-              "type": "directory",
-              "children": []
-            },
-            {
               "path": "assets/images/unigraphDesign",
               "type": "directory",
               "children": []

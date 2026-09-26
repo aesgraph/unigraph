@@ -340,13 +340,6 @@
           ]
         },
         {
-          "path": "unigraph/index.md",
-          "type": "file",
-          "name": "index.md",
-          "title": "Unigraph",
-          "order": 0
-        },
-        {
           "path": "unigraph/papers",
           "type": "directory",
           "children": [
